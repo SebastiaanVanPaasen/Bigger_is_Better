@@ -8,7 +8,7 @@ Created on Mon May  6 12:16:04 2019
 import numpy as np #delete later should be loaded in the general program
 
 
-def planform(M_cruise, CL_cruise, surface_area, aspect_ratio):
+def 3D_wing(M_cruise, CL_cruise, surface_area, aspect_ratio):
     
     #Sweep calulation
     M_t = 0.935 #Technoligy factor for super critical airfoild
@@ -44,7 +44,7 @@ surface_area = 500  #inputs from different part
 aspect_ratio = 9    #inputs from different part 
 CL_cruise = 0.5
 
-quarter_cord_sweep, taper_ratio, span, cord_root, cord_tip, dihedral, tickness_over_cord = planform(M_cruise, CL_cruise, surface_area, aspect_ratio)
+quarter_cord_sweep, taper_ratio, span, cord_root, cord_tip, dihedral, tickness_over_cord = 3D_wing(M_cruise, CL_cruise, surface_area, aspect_ratio)
 print(quarter_cord_sweep, taper_ratio, span, cord_root, cord_tip, dihedral, tickness_over_cord)
     
     
