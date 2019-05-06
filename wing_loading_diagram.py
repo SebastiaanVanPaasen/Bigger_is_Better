@@ -41,7 +41,7 @@ class TWdiagram:
 
                 tw[i][j] = ((Rho_0 / rho_cruise) ** 0.75) * (
                         (self.cd_0 * 0.5 * rho_cruise * (velocity ** 2)) / self.ws[j] + self.ws[j] / (
-                        np.pi * self.aspect_ratio[i] * self.oswald * 0.5 * rho_cruise * (velocity ** 2)))
+                            np.pi * self.aspect_ratio[i] * self.oswald * 0.5 * rho_cruise * (velocity ** 2)))
 
         return tw, label
 
@@ -105,9 +105,9 @@ class TWdiagram:
 diagram = TWdiagram(Sigma_TO, WS, TW, CD_0, Oswald_factor, AR)
 take_off, labels_to = diagram.calc_take_off(CL_TO, TOP)
 cruise, labels_cruise = diagram.calc_cruise(Rho_Cruise, V_cruise)
-climb_rate, labels_climb_rate = diagram.calc_climb_rate(Climb_rate, Rho_TO)
-climb_gradient, labels_climb_gradient = diagram.calc_climb_gradient(Delta_CD_TO_gear_up, N_engines,
-                                                                    Climb_gradient, Delta_oswald_TO)
+climb_rate_performance, labels_climb_rate = diagram.calc_climb_rate(Climb_rate, Rho_TO)
+climb_gradient_performance, labels_climb_gradient = diagram.calc_climb_gradient(Delta_CD_TO_gear_up, N_engines,
+                                                                                Climb_gradient, Delta_oswald_TO)
 
 landing, labels_landing = diagram.calc_landing(Landing_factor, Rho_Landing, V_stall_Landing, CL_Landing, )
 stall, labels_stall = diagram.calc_stall([V_stall_TO, V_stall_Cruise, V_stall_Landing],
@@ -122,7 +122,7 @@ stall, labels_stall = diagram.calc_stall([V_stall_TO, V_stall_Cruise, V_stall_La
 # print("the stall speed requirement is set by :" + str(wing_loading_stall))
 # print("the landing requirement is set by :" + str(wing_loading_landing))
 
-all_requirements = [climb_gradient, climb_rate, cruise,
+all_requirements = [climb_gradient_performance, climb_rate_performance, cruise,
                     take_off, landing, stall]
 labels = [labels_climb_gradient, labels_climb_rate, labels_cruise, labels_to, labels_landing, labels_stall]
 
