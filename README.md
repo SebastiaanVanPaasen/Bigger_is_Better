@@ -1,2 +1,2 @@
-# Bigger_is_Better
+# Bigger_is_Betterst
 Design Synthesis Excercise
