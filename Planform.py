@@ -6,9 +6,9 @@ Created on Mon May  6 12:16:04 2019
 @author: Max
 """
 import numpy as np #delete later should be loaded in the general program
+import matplotlib.pyplot as plt
 
-
-def 3D_wing(M_cruise, CL_cruise, surface_area, aspect_ratio):
+def wing_parameters(M_cruise, CL_cruise, surface_area, aspect_ratio):
     
     #Sweep calulation
     M_t = 0.935 #Technoligy factor for super critical airfoild
@@ -37,15 +37,31 @@ def 3D_wing(M_cruise, CL_cruise, surface_area, aspect_ratio):
     tickness_over_cord = (np.cos(half_cord_sweep)**3*(M_t-M_dd*np.cos(half_cord_sweep))-0.115*CL_cruise**1.5)/(np.cos(half_cord_sweep)**2)
     tickness_over_cord = min(tickness_over_cord,0.18)
     
-    return(quarter_cord_sweep, taper_ratio, span, cord_root, cord_tip, dihedral, tickness_over_cord)
+    return(quarter_cord_sweep, leading_edge_sweep, taper_ratio, span, cord_root, cord_tip, dihedral, tickness_over_cord)
 
-M_cruise = 0.8      #inputs from different part 
-surface_area = 500  #inputs from different part 
-aspect_ratio = 9    #inputs from different part 
+M_cruise = 0.75      #inputs from different part 
+surface_area = 600  #inputs from different part 
+aspect_ratio = 7    #inputs from different part 
 CL_cruise = 0.5
 
-quarter_cord_sweep, taper_ratio, span, cord_root, cord_tip, dihedral, tickness_over_cord = 3D_wing(M_cruise, CL_cruise, surface_area, aspect_ratio)
-print(quarter_cord_sweep, taper_ratio, span, cord_root, cord_tip, dihedral, tickness_over_cord)
+quarter_cord_sweep, leading_edge_sweep, taper_ratio, span, cord_root, cord_tip, dihedral, tickness_over_cord= wing_parameters(M_cruise, CL_cruise, surface_area, aspect_ratio)
+print(quarter_cord_sweep, leading_edge_sweep, taper_ratio, span, cord_root, cord_tip, dihedral, tickness_over_cord)
+
+
+def Plot_planform(leading_edge_sweep, cord_root, cord_tip, span):
+    
+    x_list = [0,span/2,span/2,0,0]
+    y_list = [0,span/2*np.tan(leading_edge_sweep), span/2*np.tan(leading_edge_sweep)+cord_tip, cord_root,0]
+    plt.plot(x_list,y_list)
+    plt.axis([0, 35, 0, 30], 'equal')
+#    plt.plot([0,cord_root],[0,0])
+#    plt.plot([span/2*np.tan(leading_edge_sweep),span/2*np.tan(leading_edge_sweep) + cord_tip ],[span/2,span/2])
+#    plt.plot([0,span/2*np.tan(leading_edge_sweep)],[0, span/2])
+#    plt.plot([cord_root,span/2*np.tan(leading_edge_sweep)+cord_tip],[0, span/2])
+#    plt.show()
+
+Plot_planform(leading_edge_sweep, cord_root, cord_tip, span)    
+    
     
     
     
