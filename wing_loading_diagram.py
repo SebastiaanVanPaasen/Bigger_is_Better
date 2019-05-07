@@ -2,7 +2,7 @@ from inputs import *
 import matplotlib.pyplot as plt
 
 #  Create the wing loading for which all inputs have to be evaluated
-WS = np.arange(0., 8050., 50)
+WS = np.arange(0., 10050., 50)
 TW = np.arange(0., 0.45, 0.05)
 
 
@@ -41,7 +41,7 @@ class TWdiagram:
 
                 tw[i][j] = ((Rho_0 / rho_cruise) ** 0.75) * (
                         (self.cd_0 * 0.5 * rho_cruise * (velocity ** 2)) / self.ws[j] + self.ws[j] / (
-                            np.pi * self.aspect_ratio[i] * self.oswald * 0.5 * rho_cruise * (velocity ** 2)))
+                        np.pi * self.aspect_ratio[i] * self.oswald * 0.5 * rho_cruise * (velocity ** 2)))
 
         return tw, label
 
@@ -73,8 +73,8 @@ class TWdiagram:
         for i in range(len(self.aspect_ratio)):
             label.append("c/V with A = " + str(round(self.aspect_ratio[i], 2)))
             for j in range(len(tw[0])):
-                tw[i][j] = ((n_engines / (n_engines - 1)) * climb_gradient + 2 * np.sqrt(
-                    cd_0 / (np.pi * oswald_factor * self.aspect_ratio[i])))
+                tw[i][j] = ((n_engines / (n_engines - 1)) * (climb_gradient + 2 * np.sqrt(
+                    cd_0 / (np.pi * oswald_factor * self.aspect_ratio[i]))))
 
         return tw, label
 
@@ -126,6 +126,7 @@ all_requirements = [climb_gradient_performance, climb_rate_performance, cruise,
                     take_off, landing, stall]
 labels = [labels_climb_gradient, labels_climb_rate, labels_cruise, labels_to, labels_landing, labels_stall]
 
+fig = plt.figure(figsize=(15, 9))
 for p in range(len(all_requirements)):
     for q in range(len(all_requirements[p])):
         if len(all_requirements[p][q]) == len(TW):
@@ -133,9 +134,29 @@ for p in range(len(all_requirements)):
         else:
             plt.plot(WS, all_requirements[p][q], label=labels[p][q])
 
-plt.legend(loc='upper right')
+
+plt.scatter(5860, 0.2819, label="Airbus A330-300", color="r")
+plt.scatter(6940, 0.2205, label="Airbus A340-200", color="r")
+plt.scatter(7318, 0.2272, label="Airbus A340-300", color="r")
+plt.scatter(8184, 0.2634, label="Airbus A340-500", color="r")
+plt.scatter(8184, 0.2783, label="Airbus A340-600", color="r")
+plt.scatter(5562, 0.2878, label="Boeing 777-200", color="r")
+plt.scatter(6576, 0.2655, label="Boeing 777-200IGW", color="r")
+plt.scatter(6861, 0.2818, label="Boeing 777-200XI", color="r")
+plt.scatter(7173, 0.2841, label="Boeing 777-200X2", color="r")
+plt.scatter(5479, 0.322, label="Tupolev Tu-334", color="b")
+plt.scatter(5178, 0.272, label="BAe RJ70", color="b")
+plt.scatter(5351, 0.301, label="BAe RJ85", color="b")
+plt.scatter(5610, 0.287, label="BAe RJ100", color="b")
+plt.scatter(5840, 0.276, label="BAe RJ115", color="b")
+plt.scatter(3678, 0.333, label="Embraer EMB-145", color="b")
+plt.scatter(3853, 0.342, label="Fokker F70", color="b")
+plt.scatter(4519, 0.291, label="Fokker F100", color="b")
+
+
+plt.legend(loc='center left', bbox_to_anchor=(1, 0.5))
 plt.xlabel("W/S [N/m^2]")
 plt.ylabel("T/W [-]")
-plt.xlim(0, 8000)
+plt.xlim(0, 10000)
 plt.ylim(0.0, 0.4)
 plt.show()
