@@ -43,6 +43,7 @@ def manoevring_envelope(w, h, cl_max_pos, cl_max_neg, s, v_cruise):
 
 def gust_envelope(w, h, cl_alpha, s, c, v_cruise, v):
     # construct gust loading plot
+    # first determine density at altitude
     rho = Rho_0 * ((1 + (a * h) / T_0) ** (-(g_0 / (R_gas * a) + 1)))
 
     mu_g = (2 * (w / s)) / (rho * c * cl_alpha * g_0)
@@ -53,6 +54,7 @@ def gust_envelope(w, h, cl_alpha, s, c, v_cruise, v):
     # Kg = gust alleviation coefficient (as function of GH) with
     # c =  mean geometric chord (m)
 
+    # Interpolate for the gust speeds at the desired altitude
     if h / ft_to_m < 20000.:
         U_B = 66 * ft_to_m
         U_C = 50 * ft_to_m
@@ -63,7 +65,8 @@ def gust_envelope(w, h, cl_alpha, s, c, v_cruise, v):
         U_D = (33.34 - 0.000417 * h / ft_to_m) * ft_to_m
 
     v_gusts = np.array([0, U_B, U_C, U_D])
-    print(v[0])
+    # print(v[0])
+    #  Calculate V_B based on the stall speed and load increase
     V_B = v[0] * np.sqrt(1 + ((cl_alpha * K_g * U_B * v_cruise) / (w / s)))
     v[0] = 0
     v[1] = V_B
@@ -72,6 +75,7 @@ def gust_envelope(w, h, cl_alpha, s, c, v_cruise, v):
     n_neg = np.zeros(len(v))
     print("the gust speeds are " + str(v_gusts))
     print("the speeds are " + str(v))
+    #  Calculate the load factor based on the gust speed that accompanies the aircraft speed
     for i in range(len(v)):
         n_pos[i] = 1 + (0.5 * Rho_0 * cl_alpha * v_gusts[i] * v[i] * K_g)/(w / s)
         n_neg[i] = 1 - (0.5 * Rho_0 * cl_alpha * v_gusts[i] * v[i] * K_g)/(w / s)
@@ -79,12 +83,13 @@ def gust_envelope(w, h, cl_alpha, s, c, v_cruise, v):
     n_pos = np.append(n_pos, n_neg[-1])
     v_pos = np.append(v, v[-1])
     v_neg = v
-    print(n_pos)
+
     return v_pos, n_pos, v_neg, n_neg
 
 
 def construct_envelope():
-    v_pos, n_pos, v_neg, n_neg, gust_speeds = manoevring_envelope(1364000, 8000, 1.6, -0.8, 250, 250)
+    # Note: used values are only estimation and are definitely not correct!
+    v_pos, n_pos, v_neg, n_neg, gust_speeds = manoevring_envelope(1364000, 8000, 1.4, -0.8, 250, 250)
     v_gust_pos, n_gust_pos, v_gust_neg, n_gust_neg = gust_envelope(1364000, 8000, 3.8, 250, 8, 250, gust_speeds)
 
     plt.plot(v_pos, n_pos)
