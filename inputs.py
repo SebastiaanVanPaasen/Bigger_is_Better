@@ -39,7 +39,7 @@ V_cruise = 250.  # m/s      Guestimated cruise speed of Boeing 777
 Oswald_factor = 0.76  # Guestimated from ADSEE-I L3
 
 Climb_rate = 2000 * ftmin_to_ms  # m/s      set climb rate by CS25
-Climb_gradient = 0.03  # c/V set by CS25
+Climb_gradient = 0.024  # c/V set by CS25 in case 4 engines, should be 0.03
 N_engines = 2  # Guestimated
 
 Delta_CD_TO_gear_up = 0.015  # Guestimated from ADSEE-I L3

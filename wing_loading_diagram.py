@@ -2,7 +2,7 @@ from inputs import *
 import matplotlib.pyplot as plt
 
 #  Create the wing loading for which all inputs have to be evaluated
-WS = np.arange(0., 10050., 50)
+WS = np.arange(0., 10500., 500)
 TW = np.arange(0., 0.45, 0.05)
 
 
@@ -126,33 +126,36 @@ all_requirements = [climb_gradient_performance, climb_rate_performance, cruise,
                     take_off, landing, stall]
 labels = [labels_climb_gradient, labels_climb_rate, labels_cruise, labels_to, labels_landing, labels_stall]
 
+r = 0
 fig = plt.figure(figsize=(15, 9))
 for p in range(len(all_requirements)):
     for q in range(len(all_requirements[p])):
         if len(all_requirements[p][q]) == len(TW):
-            plt.plot(all_requirements[p][q], TW, label=labels[p][q])
+            plt.plot(all_requirements[p][q], TW, label=labels[p][q], marker="o")
         else:
-            plt.plot(WS, all_requirements[p][q], label=labels[p][q])
+            if r < 10:
+                plt.plot(WS, all_requirements[p][q], label=labels[p][q], marker="^")
+            else:
+                plt.plot(WS, all_requirements[p][q], label=labels[p][q], marker="o")
+            r += 1
 
-
-plt.scatter(5860, 0.2819, label="Airbus A330-300", color="r")
-plt.scatter(6940, 0.2205, label="Airbus A340-200", color="r")
-plt.scatter(7318, 0.2272, label="Airbus A340-300", color="r")
-plt.scatter(8184, 0.2634, label="Airbus A340-500", color="r")
-plt.scatter(8184, 0.2783, label="Airbus A340-600", color="r")
-plt.scatter(5562, 0.2878, label="Boeing 777-200", color="r")
-plt.scatter(6576, 0.2655, label="Boeing 777-200IGW", color="r")
-plt.scatter(6861, 0.2818, label="Boeing 777-200XI", color="r")
-plt.scatter(7173, 0.2841, label="Boeing 777-200X2", color="r")
-plt.scatter(5479, 0.322, label="Tupolev Tu-334", color="b")
-plt.scatter(5178, 0.272, label="BAe RJ70", color="b")
-plt.scatter(5351, 0.301, label="BAe RJ85", color="b")
-plt.scatter(5610, 0.287, label="BAe RJ100", color="b")
-plt.scatter(5840, 0.276, label="BAe RJ115", color="b")
-plt.scatter(3678, 0.333, label="Embraer EMB-145", color="b")
-plt.scatter(3853, 0.342, label="Fokker F70", color="b")
-plt.scatter(4519, 0.291, label="Fokker F100", color="b")
-
+plt.scatter(5860, 0.2819, label="Airbus A330-300", c="r", marker="o")
+plt.scatter(6940, 0.2205, label="Airbus A340-200", c="g", marker="o")
+plt.scatter(7318, 0.2272, label="Airbus A340-300", c="b", marker="o")
+plt.scatter(8184, 0.2634, label="Airbus A340-500", c="y", marker="o")
+plt.scatter(8184, 0.2783, label="Airbus A340-600", c="k", marker="o")
+plt.scatter(5562, 0.2878, label="Boeing 777-200", c="m", marker="o")
+plt.scatter(6576, 0.2655, label="Boeing 777-200IGW", c="c", marker="o")
+plt.scatter(6861, 0.2818, label="Boeing 777-200XI", c="r", marker="^")
+plt.scatter(7173, 0.2841, label="Boeing 777-200X2", c="g", marker="^")
+plt.scatter(5479, 0.322, label="Tupolev Tu-334", c="b", marker="^")
+plt.scatter(5178, 0.272, label="BAe RJ70", c="y", marker="^")
+plt.scatter(5351, 0.301, label="BAe RJ85", c="k", marker="^")
+plt.scatter(5610, 0.287, label="BAe RJ100", c="m", marker="^")
+plt.scatter(5840, 0.276, label="BAe RJ115", c="c", marker="^")
+plt.scatter(3678, 0.333, label="Embraer EMB-145", c="r", marker="*")
+plt.scatter(3853, 0.342, label="Fokker F70", c="g", marker="*")
+plt.scatter(4519, 0.291, label="Fokker F100", c="b", marker="*")
 
 plt.legend(loc='center left', bbox_to_anchor=(1, 0.5))
 plt.xlabel("W/S [N/m^2]")
