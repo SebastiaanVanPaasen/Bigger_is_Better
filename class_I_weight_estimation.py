@@ -14,8 +14,8 @@ def calc_payload_weight(n_passengers, n_crew, w_person):
 
 
 def calc_cruise_coefficient(aspect_ratio, oswald_factor, surface_ratio, c_fe, r, velocity, c_j):
-    CD_0 = c_fe * surface_ratio
-    LD_ratio = 0.75 * np.sqrt((np.pi * aspect_ratio * oswald_factor) / (3 * CD_0))
+    cd_0 = c_fe * surface_ratio
+    LD_ratio = 0.75 * np.sqrt((np.pi * aspect_ratio * oswald_factor) / (3 * cd_0))
 
     return 1 / (np.e ** (r / ((velocity / (c_j * g_0 * per_hr_to_N)) * LD_ratio)))
 

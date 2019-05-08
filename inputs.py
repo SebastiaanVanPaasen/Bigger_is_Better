@@ -4,12 +4,17 @@ import numpy as np
 
 # Standard constants ---------------------------------------------------------------------------------------------------
 Rho_0 = 1.225  # kg/m^3
-a = -0.065  # K/m up to 10 km
+a = -0.0065  # K/m up to 10 km
+g_0 = 9.80565  # m/s^2
+T_0 = 288  # K
+R_gas = 287  # J/kg/K
 
 # Conversion factors ---------------------------------------------------------------------------------------------------
 ftmin_to_ms = 0.00508
 kts_to_ms = 0.51444444
 lbft2_Nm2 = 47.880172
+lbs_to_kg = 0.454
+ft_to_m = 0.3048
 
 # Input parameters for the aircraft ------------------------------------------------------------------------------------
 Landing_runway = 2500  # m  Guestimated from ADSEE-I L3
@@ -27,7 +32,7 @@ V_stall_Landing = min(np.sqrt(Landing_runway / 0.5847), 65)  # m/s     Guestimat
 V_stall_TO = V_stall_Landing * 1.05  # m/s  guestimated
 
 CL_Cruise_max = 1.6  # Guestimated from ADSEE-I L3
-CL_Landing_max = 3.2  # Guestimated from ADSEE-I L3
+CL_Landing_max = 3.2  # From Obert
 CL_TO_max = 0.8 * CL_Landing_max  # Guestimated from ADSEE-I L3
 
 CL_TO = [(CL_TO_max / 1.21 - 0.2), CL_TO_max / 1.21, (CL_TO_max / 1.21 + 0.2)]  # Based on CL_max
