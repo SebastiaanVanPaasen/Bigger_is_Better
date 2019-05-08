@@ -59,7 +59,7 @@ def main(r_1, r_2):
     V = 499 * kts_to_ms  # m/s
     C_fe = 0.003  # estimated
     S_ratio = 6.3  # estimated
-    A = 6.96  # estimated
+    A = 9  # estimated
     oswald = 0.76  # estimated
     c_j_cruise = 0.75  # 1/hr
     c_j_loiter = 0.5  # 1/hr
@@ -68,9 +68,9 @@ def main(r_1, r_2):
     # loiter = calc_loiter_coefficient(A, oswald, S_ratio, C_fe, E, c_j_loiter)
     cruise_2 = calc_cruise_coefficient(A, oswald, S_ratio, C_fe, r_2, V, c_j_cruise)
 
-    # print("The first cruise coefficient equals " + str(cruise_1))
+    print("The first cruise coefficient equals " + str(cruise_1))
     # print("The loiter coefficient equals " + str(loiter))
-    # print("The second cruise coefficient equals " + str(cruise_2))
+    print("The second cruise coefficient equals " + str(cruise_2))
 
     fuel_fractions = np.array(
         [start, taxi, t_o, climb_1, cruise_1, descent_1, climb_2, cruise_2, descent_2, landing])
@@ -94,9 +94,6 @@ for i in range(len(R_1)):
     value = main(R_1[i], R_2)
     for j in range(4):
         results[j][i] = value[j]
-
-plt.plot(R_1, results[1])
-plt.show()
 
 # print((design_range[1] - different_range[1]) / ((R_1 - D_range) / 1000))
 #
