@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 lb_to_kg = 0.45359237
 hr_to_sec = 3600
 kts_to_ms = 0.51444444444
+nm_to_km = 1.852
 g_0 = 9.80565  # m/s^2
 per_hr_to_N = 1 / (hr_to_sec * g_0)
 
@@ -19,12 +20,12 @@ def calc_cruise_coefficient(aspect_ratio, oswald_factor, surface_ratio, c_fe, r,
     return 1 / (np.e ** (r / ((velocity / (c_j * g_0 * per_hr_to_N)) * LD_ratio)))
 
 
-def calc_loiter_coefficient(aspect_ratio, oswald_factor, surface_ratio, c_fe, e, c_j):
-    CD_0 = c_fe * surface_ratio
-    CD = 2 * CD_0
-    CL = np.sqrt((np.pi * aspect_ratio * oswald_factor * CD_0))
-
-    return 1 / (np.e ** (e / ((1 / (c_j * g_0 * per_hr_to_N)) * (CL / CD))))
+# def calc_loiter_coefficient(aspect_ratio, oswald_factor, surface_ratio, c_fe, e, c_j):
+#     CD_0 = c_fe * surface_ratio
+#     CD = 2 * CD_0
+#     CL = np.sqrt((np.pi * aspect_ratio * oswald_factor * CD_0))
+#
+#     return 1 / (np.e ** (e / ((1 / (c_j * g_0 * per_hr_to_N)) * (CL / CD))))
 
 
 def calc_fuel_fraction(coefficients):
@@ -48,42 +49,63 @@ landing = 0.992
 N_pas = 450
 N_crew = 11
 W_person = 205  # lbs
-W_tfo = 0.003  # estimated
-empty_fraction = 0.498  # Roskam estimation
+W_tfo = 0.003  # estimated from slides ADSEE-I, lecture 3
+empty_fraction = 0.525  # Based on Ed Obart
 # max_fuel_fraction = 0.410283406
-
-R_1 = 2000000  # m
-R_2 = 300000  # m
-E = 0.5 * hr_to_sec  # s
-V = 499*kts_to_ms  # m/s
-C_fe = 0.003  # estimated
-S_ratio = 6.3  # estimated
-A = 6.96  # estimated
-oswald = 0.80  # estimated
-c_j_cruise = 0.75  # 1/hr
-c_j_loiter = 0.5  # 1/hr
 # ----------------------------------------------------------------------------------------------------------------------
 
-cruise_1 = calc_cruise_coefficient(A, oswald, S_ratio, C_fe, R_1, V, c_j_cruise)
-loiter = calc_loiter_coefficient(A, oswald, S_ratio, C_fe, E, c_j_loiter)
-cruise_2 = calc_cruise_coefficient(A, oswald, S_ratio, C_fe, R_2, V, c_j_cruise)
 
-# print("The first cruise coefficient equals " + str(cruise_1))
-# print("The loiter coefficient equals " + str(loiter))
-# print("The second cruise coefficient equals " + str(cruise_2))
+def main(r_1, r_2):
+    V = 499 * kts_to_ms  # m/s
+    C_fe = 0.003  # estimated
+    S_ratio = 6.3  # estimated
+    A = 6.96  # estimated
+    oswald = 0.76  # estimated
+    c_j_cruise = 0.75  # 1/hr
+    c_j_loiter = 0.5  # 1/hr
 
-fuel_fractions = np.array(
-    [start, taxi, t_o, climb_1, cruise_1, descent_1, climb_2, cruise_2, loiter, descent_2, landing])
+    cruise_1 = calc_cruise_coefficient(A, oswald, S_ratio, C_fe, r_1, V, c_j_cruise)
+    # loiter = calc_loiter_coefficient(A, oswald, S_ratio, C_fe, E, c_j_loiter)
+    cruise_2 = calc_cruise_coefficient(A, oswald, S_ratio, C_fe, r_2, V, c_j_cruise)
 
-fuel_fraction = calc_fuel_fraction(fuel_fractions)
-weight_fraction = 1 - fuel_fraction - W_tfo - empty_fraction
+    # print("The first cruise coefficient equals " + str(cruise_1))
+    # print("The loiter coefficient equals " + str(loiter))
+    # print("The second cruise coefficient equals " + str(cruise_2))
 
-W_P = calc_payload_weight(N_pas, N_crew, W_person)
-W_TO = W_P / weight_fraction
-W_F = fuel_fraction * W_TO
-W_E = empty_fraction * W_TO
-# W_F_max = max_fuel_fraction * W_TO
+    fuel_fractions = np.array(
+        [start, taxi, t_o, climb_1, cruise_1, descent_1, climb_2, cruise_2, descent_2, landing])
 
-print("The take-off mass equals " + str(W_TO/g_0))
-print("The fuel mass equals " + str(W_F/g_0))
-print("The payload mass equals " + str(W_P/g_0))
+    fuel_fraction = calc_fuel_fraction(fuel_fractions)
+    weight_fraction = 1 - fuel_fraction - W_tfo - empty_fraction
+
+    W_P = calc_payload_weight(N_pas, N_crew, W_person)
+    W_TO = W_P / weight_fraction
+    W_F = fuel_fraction * W_TO
+    W_E = empty_fraction * W_TO
+
+    return np.array([W_TO, W_E, W_P, W_F]) / g_0
+
+
+R_1 = np.arange(1000000., 2100000., 100000.)
+R_2 = 250 * 1.852 * 1000  # m
+results = np.zeros((4, len(R_1)))
+
+for i in range(len(R_1)):
+    value = main(R_1[i], R_2)
+    for j in range(4):
+        results[j][i] = value[j]
+
+plt.plot(R_1, results[1])
+plt.show()
+
+# print((design_range[1] - different_range[1]) / ((R_1 - D_range) / 1000))
+#
+# print("The take-off mass equals " + str(round(design_range[1], 2)))
+# print("The fuel mass equals " + str(round(design_range[2], 2)))
+# print("The payload mass equals " + str(round(design_range[0], 2)))
+# print("The empty mass equals " + str(round(design_range[3], 2)))
+#
+# print("The take-off mass equals " + str(round(different_range[1], 2)))
+# print("The fuel mass equals " + str(round(different_range[2], 2)))
+# print("The payload mass equals " + str(round(different_range[0], 2)))
+# print("The empty mass equals " + str(round(different_range[3], 2)))

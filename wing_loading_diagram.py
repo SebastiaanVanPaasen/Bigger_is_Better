@@ -112,8 +112,7 @@ climb_gradient_performance, labels_climb_gradient = diagram.calc_climb_gradient(
 landing, labels_landing = diagram.calc_landing(Landing_factor, Rho_Landing, V_stall_Landing, CL_Landing, )
 stall, labels_stall = diagram.calc_stall([V_stall_TO, V_stall_Cruise, V_stall_Landing],
                                          [CL_TO_max, CL_Cruise_max, CL_Landing_max],
-                                         [Rho_TO, Rho_Cruise, Rho_Landing],
-                                         )
+                                         [Rho_TO, Rho_Cruise, Rho_Landing])
 
 # print("The take-off requirement is seb by :" + str(thrust_to_weight_to))
 # print("The cruise requirement is set by :" + str(thrust_to_weight_cruise))
@@ -158,8 +157,9 @@ plt.scatter(3853, 0.342, label="Fokker F70", c="g", marker="*")
 plt.scatter(4519, 0.291, label="Fokker F100", c="b", marker="*")
 
 plt.legend(loc='center left', bbox_to_anchor=(1, 0.5))
-plt.xlabel("W/S [N/m^2]")
-plt.ylabel("T/W [-]")
+plt.xlabel(r"$\frac{W}{S}$ [$N/m^2$]")
+plt.ylabel(r"$\frac{T}{W}$ [-]")
 plt.xlim(0, 10000)
 plt.ylim(0.0, 0.4)
 plt.show()
+plt.savefig("Wing_loading_diagram")
