@@ -27,7 +27,7 @@ def wing_parameters(m_cruise, cl_cruise, surface_area, aspect_ratio):
     # thickness over chord ratio
     leading_edge_sweep = np.arctan(np.tan(quarter_chord_sweep) - (chord_root / (2 * span) * (taper_ratio - 1)))
 
-    #print("The sweep at the leading edge equals: " +str(leading_edge_sweep))
+    # print("The sweep at the leading edge equals: " +str(leading_edge_sweep))
 
     half_chord_sweep = np.arctan(
         ((chord_tip / 2 + span / 2 * np.tan(leading_edge_sweep)) - (chord_root / 2)) / (span / 2))
@@ -55,11 +55,16 @@ def plot_planform(leading_edge_sweep, chord_root, chord_tip, span):
     plt.show()
 
 
-M_cruise = 0.7  # inputs from different part
-surface_area = 350  # inputs from different part
-aspect_ratio = 15  # inputs from different part
-CL_cruise = 0.7
+def determine_half_chord_sweep(root_chord, tip_chord, span, qc_sweep):
+    root_half = root_chord * 0.5
+    tip_half = root_chord * 0.25 * (span / 2) * np.tan(np.radians(qc_sweep)) + 0.25 * tip_chord
+    hc_sweep = np.tan((root_half - tip_half) / (span / 2))
 
-quarter_cord_sweep, leading_edge_sweep, taper_ratio, span, cord_root, cord_tip, dihedral, tickness_over_cord = wing_parameters(
-    M_cruise, CL_cruise, surface_area, aspect_ratio)
-print(quarter_cord_sweep, leading_edge_sweep, taper_ratio, span, cord_root, cord_tip, dihedral, tickness_over_cord)
+# M_cruise = 0.7  # inputs from different part
+# surface_area = 350  # inputs from different part
+# aspect_ratio = 15  # inputs from different part
+# CL_cruise = 0.7
+#
+# quarter_cord_sweep, leading_edge_sweep, taper_ratio, span, cord_root, cord_tip, dihedral, tickness_over_cord = wing_parameters(
+#     M_cruise, CL_cruise, surface_area, aspect_ratio)
+# print(quarter_cord_sweep, leading_edge_sweep, taper_ratio, span, cord_root, cord_tip, dihedral, tickness_over_cord)

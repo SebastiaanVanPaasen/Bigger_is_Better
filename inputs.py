@@ -24,28 +24,34 @@ W_person = 205  # lbs
 V_cruise = 499 * kts_to_ms  # m/s  based on the reference aircraft B747
 M_cruise = 0.7
 CL_cruise = 0.7
+h_cruise = 11000  # m based on the sustainability analysis so far
 
 # Aircraft geometry parameters -----------------------------------------------------------------------------------------
+# aircraft cg-locations ------------------------------------------------------------------------------------------------
+x_engines = -1.  # m    x-location engines w.r.t. X_LEMAC
+x_fuel = 22  # m    cg-location fuel w.r.t nose
+
+xcg_oew_mac = 0.25  # m     initial cg location OEW w.r.t. MAC
+
+# engine characteristics -----------------------------------------------------------------------------------------------
+l_nacelle = 2.  # m   length nacelle
+
 # main wing ------------------------------------------------------------------------------------------------------------
-HC_sweep = 0.5
 airfoil_efficiency = 0.95
 alpha = 0.5
 alpha_0 = 0.3
 CL_des = 1.2
 A = 6.96  # based on the reference aircraft B747
 S_ratio = 6.3  # estimated from ADSEE-I L3
+mac = 8.  # m   mean aerodynamic chord
 
 # horizontal tail ------------------------------------------------------------------------------------------------------
-root_chord_h = 5
-span_h = 20
-taper_ratio_h = 0.5
-S_h = 50
+QC_sweep_h = 32.7  # degrees    based on wide body statistics
+A_h = 4.61  # based on wide body statistics
 
 # vertical tail --------------------------------------------------------------------------------------------------------
-root_chord_v = 4
-span_v = 25
-taper_ratio_v = 0.5
-S_v = 70
+QC_sweep_v = 44  # degrees  based on wide body statistics
+A_v = 1.73  # based on wide body statistics
 
 # Coefficients ---------------------------------------------------------------------------------------------------------
 C_fe = 0.003  # estimated from ADSEE-I L3
@@ -68,7 +74,7 @@ Landing_factor = 0.84  # Guestimated from ADSEE-I L3
 
 # Densities ------------------------------------------------------------------------------------------------------------
 Rho_TO = Rho_0  # kg/m^3    standard sea-level density
-Rho_Cruise = 0.6  # kg/m^3      estimated cruise density
+Rho_Cruise = Rho_0 * ((1 + (a * h_cruise) / T_0) ** (-(g_0 / (R_gas * a))))  # kg/m^3   based on cruise altitude
 Rho_Landing = Rho_0  # kg/m^3   standard sea-level density
 
 # Take-off paramters ---------------------------------------------------------------------------------------------------
@@ -97,5 +103,3 @@ Delta_oswald_Land = 0.1  # Guestimated from ADSEE-I L3
 N_engines = 2  # Guestimated
 Climb_rate = 2000 * ftmin_to_ms  # m/s      set climb rate by CS25
 Climb_gradient = 0.024  # c/V set by CS25 in case 4 engines, should be 0.03
-
-

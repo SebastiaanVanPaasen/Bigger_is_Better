@@ -79,7 +79,6 @@ class TWdiagram:
         ws = np.zeros((len(cl), len(self.tw)))
 
         for i in range(len(ws)):
-
             for j in range(len(ws[0])):
                 ws[i][j] = 0.5 * rho[i] * cl[i] * (v_stall[i] ** 2)
 
