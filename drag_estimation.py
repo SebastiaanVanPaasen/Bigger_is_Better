@@ -1,4 +1,5 @@
 import numpy as np
+
 # def Exposed_Areas(root_chord, span, S, taper_ratio, wing type): #exposed wing area calculation
 #    projected_length_fuselage = D_fuselage/2*(np.tan(LE_sweep)+root_chord*taper_ratio*2/span)
 #    total_area = projected_length_fuselage*D_fuselage/2
@@ -7,6 +8,34 @@ import numpy as np
 #    if wing type == "Vertical":
 #        exposed_area= exposed_area/2
 #    return exposed_area
+
+D_fuselage = 3
+L1 = 5
+L2 = 30
+L3 = 5
+S = 500
+A = 10
+M_cruise = 0.7
+half_chord_sweep = 0.5
+quarter_chord_sweep = 0.6
+LE_sweep = 0.65
+alpha = 0.5
+alpha_0 = 0.3
+Cl_des = 1.2
+airfoil_eff_factor = 0.95
+root_chord = 15
+span = np.sqrt(S * A)
+taper_ratio = 0.3
+root_chord_h = 5
+root_chord_v = 4
+span_h = 20
+span_v = 25
+taper_ratio_h = 0.5
+taper_ratio_v = 0.5
+S_h = 50
+S_v = 70
+tip_chord = root_chord * taper_ratio
+winglet_height = 0.
 
 
 def Wing_wetted_area(root_chord, tip_chord, D_fuselage, span, S,
