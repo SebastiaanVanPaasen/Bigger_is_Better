@@ -4,25 +4,33 @@ Created on Mon May  6 13:32:31 2019
 
 @author: Hidde
 """
+
+from fuselage_cross_section import *
+
 # Inputs
 
-MAC               = 4.         # mean aerodynamic chord [m]
-l_fuse            = 40.        # length fuselage [m]
+MAC               = 8.         # mean aerodynamic chord [m]
+n_pax             = 450     # Number of passengers
+n_paxbelow        = 450
 x_eng             = -1.        # x-location engines w.r.t. XLEMAC [m]
 l_n               = 2.         # length nacelle [m]          
 xcg_OEW_MAC       = 0.25       # initial cg location OEW w.r.t. MAC [m]
 mass_frac_OEW     = 0.5        # mass fraction OEW
-xcg_payload       = 18         # cg-location payload w.r.t. nose [m]  
 mass_frac_payload = 0.2        # mass fraction payload
 xcg_fuel          = 22         # cg-location fuel w.r.t nose [m]
 mass_frac_fuel    = 0.3        # mass fraction fuel 
-D_fuse            = 2.         # diameter fuselage [m]
 b                 = 30.        # wingspan [m]
 MLW               = 1500000    # maximum landing weight [N]
 MTOW              = 2000000    # maximum take-off weight [N]
-l_nosecone        = 4          # length of nosecone [m]
 
-def classI_empennage(MAC, l_fuse, x_eng, l_n, xcg_OEW_MAC, mass_frac_OEW, xcg_payload, mass_frac_payload, xcg_fuel, mass_frac_fuel, D_fuse, b):
+
+d_inner, d_outer, lcabin, lcabin_below, lcabin_above, l_tailcone_range, l_nosecone_range, l_fuselage, tot_seating_abreast, N_aisle_above, N_aisle_below = fuselage_cross_section(n_pax, n_paxbelow)
+
+D_fuse = d_outer
+l_nosecone = (l_nosecone_range[0]+l_nosecone_range[1])/2.
+xcg_payload       = l_fuselage*0.5         # cg-location payload w.r.t. nose [m]
+
+def classI_empennage(MAC, l_fuselage, x_eng, l_n, xcg_OEW_MAC, mass_frac_OEW, xcg_payload, mass_frac_payload, xcg_fuel, mass_frac_fuel, D_fuse, b):
     # Mass fractions main components, landing gear neglected 
     mass_frac_wing = 0.117
     mass_frac_emp  = 0.023
@@ -39,9 +47,9 @@ def classI_empennage(MAC, l_fuse, x_eng, l_n, xcg_OEW_MAC, mass_frac_OEW, xcg_pa
     xcg_nac  = x_eng + 0.4*l_n
     
     # Fuselage group - in [m] w.r.t. nose
-    xcg_fuse = 0.4*l_fuse
-    xcg_fix  = 0.4*l_fuse
-    xcg_emp  = 0.9*l_fuse
+    xcg_fuse = 0.4*l_fuselage
+    xcg_fix  = 0.4*l_fuselage
+    xcg_emp  = 0.9*l_fuselage
     
     # Averaged mass fractions and cg locations
     
@@ -86,9 +94,9 @@ def classI_empennage(MAC, l_fuse, x_eng, l_n, xcg_OEW_MAC, mass_frac_OEW, xcg_pa
     S_h_frac_S = (V_h_norm*MAC)/(x_h - xcg_aft)
     S_v_frac_S = (V_v_norm*b)/(x_v - xcg_aft)
     
-    return S_h_frac_S, S_v_frac_S, X_LEMAC, xcg_fwd, xcg_aft, zcg
+    return(xcg_fuse, xcg_emp, xcg_fix, xcg_nac, xcg_prop, xcg_wing, S_h_frac_S, S_v_frac_S, X_LEMAC, xcg_fwd, xcg_aft, zcg)
     
-classI_empennage(MAC, l_fuse, x_eng, l_n, xcg_OEW_MAC, mass_frac_OEW, xcg_payload, mass_frac_payload, xcg_fuel, mass_frac_fuel, D_fuse, b)
+classI_empennage(MAC, l_fuselage, x_eng, l_n, xcg_OEW_MAC, mass_frac_OEW, xcg_payload, mass_frac_payload, xcg_fuel, mass_frac_fuel, D_fuse, b)
 
 def classI_landinggear(MTOW, MLW, l_nosecone):
     N_mw = MLW/210000
@@ -106,5 +114,5 @@ def classI_landinggear(MTOW, MLW, l_nosecone):
     
     return N_mw, N_s
 
-print (classI_landinggear(MTOW, MLW, l_nosecone))
+#print (classI_landinggear(MTOW, MLW, l_nosecone))
 
