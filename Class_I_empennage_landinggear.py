@@ -86,7 +86,7 @@ def classI_empennage(MAC, l_fuse, x_eng, l_n, xcg_OEW_MAC, mass_frac_OEW, xcg_pa
     S_h_frac_S = (V_h_norm*MAC)/(x_h - xcg_aft)
     S_v_frac_S = (V_v_norm*b)/(x_v - xcg_aft)
     
-    return S_h_frac_S, S_v_frac_S, X_LEMAC, xcg_fwd, xcg_aft, zcg
+    return(xcg_fuse, xcg_emp, xcg_fix, xcg_nac, xcg_prop, xcg_wing, S_h_frac_S, S_v_frac_S, X_LEMAC, xcg_fwd, xcg_aft, zcg)
     
 classI_empennage(MAC, l_fuse, x_eng, l_n, xcg_OEW_MAC, mass_frac_OEW, xcg_payload, mass_frac_payload, xcg_fuel, mass_frac_fuel, D_fuse, b)
 
@@ -106,5 +106,5 @@ def classI_landinggear(MTOW, MLW, l_nosecone):
     
     return N_mw, N_s
 
-print (classI_landinggear(MTOW, MLW, l_nosecone))
+#print (classI_landinggear(MTOW, MLW, l_nosecone))
 
