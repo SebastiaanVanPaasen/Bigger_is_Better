@@ -8,6 +8,7 @@ Created on Thu May  9 08:38:50 2019
 import numpy as np
 import matplotlib.pyplot as plt
 from Class_I_empennage_landinggear import *
+from fuselage_cross_section import *
 
 
 # ---------------INPUTS--------------------------------------------------------
