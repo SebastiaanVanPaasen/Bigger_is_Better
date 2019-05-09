@@ -1,4 +1,5 @@
-from inputs import *
+from constants_and_conversions import *
+import numpy as np
 
 
 def calc_payload_weight(n_passengers, n_crew, w_person):
@@ -33,7 +34,8 @@ def calc_fuel_fraction(coefficients):
     return 1 - fraction
 
 
-def class_I(aspect_ratio, oswald, s_ratio, c_fe, r_cruise, r_res, v_cruise, cj_cruise):
+def class_I(aspect_ratio, oswald, s_ratio, c_fe, r_cruise, r_res, v_cruise, cj_cruise, W_tfo_frac, W_e_frac, fractions,
+            N_pas, N_crew, W_person):
     cruise_1 = calc_cruise_coefficient(aspect_ratio, oswald, s_ratio, c_fe, r_cruise, v_cruise, cj_cruise)
     # loiter = calc_loiter_coefficient(A, Oswald, S_ratio, C_fe, E, c_j_loiter)
     cruise_2 = calc_cruise_coefficient(aspect_ratio, oswald, s_ratio, c_fe, r_res, v_cruise, cj_cruise)
@@ -42,7 +44,9 @@ def class_I(aspect_ratio, oswald, s_ratio, c_fe, r_cruise, r_res, v_cruise, cj_c
     # print("The loiter coefficient equals " + str(loiter))
     # print("The second cruise coefficient equals " + str(cruise_2))
 
-    mission_frac = np.array([start, taxi, t_o, climb_1, cruise_1, descent_1, climb_2, cruise_2, descent_2, landing])
+    mission_frac = np.array(
+        [fractions[0], fractions[1], fractions[2], fractions[3], cruise_1, fractions[4], fractions[5], cruise_2,
+         fractions[6], fractions[7]])
 
     W_f_frac = calc_fuel_fraction(mission_frac)
     W_to_frac = 1 - W_f_frac - W_tfo_frac - W_e_frac

@@ -1,4 +1,5 @@
-from inputs import *
+from constants_and_conversions import *
+import numpy as np
 
 
 def wing_weight(w_to, w_f, b, semi_chord_sweep, n_ult, s, t_max, choice):
