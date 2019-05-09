@@ -253,7 +253,7 @@ def fuselage_cross_section(Npax, Npax_below):
     # tot seating abreast    [8]
     # Number of aisles above [9]
     # Number of aisles below [10]
-    
+
     return (d_inner, d_outer, lcabin, lcabin_below, lcabin_above, l_tailcone_range, l_nosecone_range, l_fuselage,
             tot_seating_abreast, N_aisle_above, N_aisle_below)
 
