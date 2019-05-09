@@ -58,7 +58,7 @@ import matplotlib as plt
 #-----------------------------DEFINITIONS------------------------
 def Sh_S_control(CL_H,CL_AH,l_h,Vh_V,c,Cm_ac,x_ac,x_cg):                        #final definition for control curve
     is_list = isinstance(x_cg,list)                                             #as a function of the cg position over mac
-    den = (CL_H/CL_AH)*(l_h/c)*Vh_V**2.     #denominator                        #should be ebaluated at landing conditions
+    den = (CL_H/CL_AH)*(l_h/c)*Vh_V     #denominator                        #should be ebaluated at landing conditions
     
     if is_list == True:
         Sh_S = []
@@ -83,14 +83,15 @@ def dfus_Cm_ac(b_f,h_f,l_f,S,S_net,A,hcsweep,M_app,eta,CL_0):                   
     beta = np.sqrt(1. - M_app**2)
     CL_alpha_w = (2.*np.pi*A)/(2 + np.sqrt(4. + ((A*beta)/eta)**2 + \\
     (1. + (np.tan(hcsweep)**2. / beta**2.))))
-    CL_alpha_AH = CL_alpha_w * (1. + 2.15*(b_f/b)) * (S_net/S) + \\
+    CL_alpha_AH = CL_alpha_w * (1. + 2.15*(b_f/b)) * (S_net/S)+ \\
     (np.pi/2.)*(b_f**2./S)
     
     dfus_Cm_ac = -1.8*(1. - (2.5*b_f/b))*((np.pi*b_f*h_f*l_f)/4.*S*c)* \\
     (CL_0/CL_alpha_AH)
     return dfus_Cm_ac
 
-def dflap_Cm_ac():                                                              #Cm_ac due to flaps
+def dflap_Cm_ac(delta_flap,b,b_f0,b_fi,taper,c_f,cdc_c_f,mu_2,mu_3,A,qcsweep,x_ac,CL_land):
+                                                                                #Cm_ac due to flaps
     dflap_Cl_max = 2.*delta_flap * np.sin(delta_flap)                           #change in airfoil Cl_max due to flaps
                                                                                 #calculated using thin airfoil theory as initial guess
     Swf_S = ((b_f0-b_fi)/b)*(1. + ((1.-taper)/(1.+taper))*(1.-((b_f0+b_fi)/b))) #ratio flap affected area over total are

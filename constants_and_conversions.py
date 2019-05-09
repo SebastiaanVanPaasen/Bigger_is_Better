@@ -25,3 +25,6 @@ V_h_V = 0.85 #  0.85 = fuselage mounted stabilizer
              #  0.95 = fin mounted stabilizer
              #  1 = for T-tial and canard
 eta = 0.95   #  usually used (see slides)
+CL_H = -0.8  #lift coefficient for an adjustable tail
+             # -1 for full movable tail
+             # -0.35*A_H**(1./3.) for a fixed tail
