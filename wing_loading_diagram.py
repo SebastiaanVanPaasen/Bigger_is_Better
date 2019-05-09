@@ -2,7 +2,7 @@ from inputs import *
 import matplotlib.pyplot as plt
 
 #  Create the wing loading for which all inputs have to be evaluated
-WS = np.arange(0., 10500., 500)
+WS = np.arange(0., 10250., 250)
 TW = np.arange(0., 0.45, 0.05)
 
 
@@ -87,7 +87,7 @@ class TWdiagram:
             for j in range(len(ws[0])):
                 ws[i][j] = 0.5 * rho[i] * cl[i] * (v_stall[i] ** 2)
 
-        return ws, ["Stall in take-off config", "Stall in cruise config", "Stall in landing config"]
+        return ws, ["Stall in cruise config", "Stall in landing config"]
 
     # Calculate the climb gradient requirement, equation form ADSEE-I, lecture 3
     def calc_landing(self, f, rho, v_stall, cl):
@@ -110,9 +110,8 @@ climb_gradient_performance, labels_climb_gradient = diagram.calc_climb_gradient(
                                                                                 Climb_gradient, Delta_oswald_TO)
 
 landing, labels_landing = diagram.calc_landing(Landing_factor, Rho_Landing, V_stall_Landing, CL_Landing, )
-stall, labels_stall = diagram.calc_stall([V_stall_TO, V_stall_Cruise, V_stall_Landing],
-                                         [CL_TO_max, CL_Cruise_max, CL_Landing_max],
-                                         [Rho_TO, Rho_Cruise, Rho_Landing])
+stall, labels_stall = diagram.calc_stall([V_stall_Cruise, V_stall_Landing], [CL_Cruise_max, CL_Landing_max],
+                                         [Rho_Cruise, Rho_Landing])
 
 # print("The take-off requirement is seb by :" + str(thrust_to_weight_to))
 # print("The cruise requirement is set by :" + str(thrust_to_weight_cruise))
@@ -138,23 +137,23 @@ for p in range(len(all_requirements)):
                 plt.plot(WS, all_requirements[p][q], label=labels[p][q], marker="o")
             r += 1
 
-plt.scatter(5860, 0.2819, label="Airbus A330-300", c="r", marker="o")
-plt.scatter(6940, 0.2205, label="Airbus A340-200", c="g", marker="o")
-plt.scatter(7318, 0.2272, label="Airbus A340-300", c="b", marker="o")
-plt.scatter(8184, 0.2634, label="Airbus A340-500", c="y", marker="o")
-plt.scatter(8184, 0.2783, label="Airbus A340-600", c="k", marker="o")
-plt.scatter(5562, 0.2878, label="Boeing 777-200", c="m", marker="o")
-plt.scatter(6576, 0.2655, label="Boeing 777-200IGW", c="c", marker="o")
-plt.scatter(6861, 0.2818, label="Boeing 777-200XI", c="r", marker="^")
-plt.scatter(7173, 0.2841, label="Boeing 777-200X2", c="g", marker="^")
-plt.scatter(5479, 0.322, label="Tupolev Tu-334", c="b", marker="^")
-plt.scatter(5178, 0.272, label="BAe RJ70", c="y", marker="^")
-plt.scatter(5351, 0.301, label="BAe RJ85", c="k", marker="^")
-plt.scatter(5610, 0.287, label="BAe RJ100", c="m", marker="^")
-plt.scatter(5840, 0.276, label="BAe RJ115", c="c", marker="^")
-plt.scatter(3678, 0.333, label="Embraer EMB-145", c="r", marker="*")
-plt.scatter(3853, 0.342, label="Fokker F70", c="g", marker="*")
-plt.scatter(4519, 0.291, label="Fokker F100", c="b", marker="*")
+plt.scatter(5860, 0.2819, label="Airbus A330-300 (wb)", c="r", marker="o")
+plt.scatter(6940, 0.2205, label="Airbus A340-200 (wb)", c="g", marker="o")
+plt.scatter(7318, 0.2272, label="Airbus A340-300 (wb)", c="b", marker="o")
+plt.scatter(8184, 0.2634, label="Airbus A340-500 (wb)", c="y", marker="o")
+plt.scatter(8184, 0.2783, label="Airbus A340-600 (wb)", c="k", marker="o")
+plt.scatter(5562, 0.2878, label="Boeing 777-200 (wb)", c="m", marker="o")
+plt.scatter(6576, 0.2655, label="Boeing 777-200IGW (wb)", c="c", marker="o")
+plt.scatter(6861, 0.2818, label="Boeing 777-200XI (wb)", c="r", marker="^")
+plt.scatter(7173, 0.2841, label="Boeing 777-200X2 (wb)", c="g", marker="^")
+plt.scatter(5479, 0.322, label="Tupolev Tu-334 (nb)", c="b", marker="^")
+plt.scatter(5178, 0.272, label="BAe RJ70 (nb)", c="y", marker="^")
+plt.scatter(5351, 0.301, label="BAe RJ85 (nb)", c="k", marker="^")
+plt.scatter(5610, 0.287, label="BAe RJ100 (nb)", c="m", marker="^")
+plt.scatter(5840, 0.276, label="BAe RJ115 (nb)", c="c", marker="^")
+plt.scatter(3678, 0.333, label="Embraer EMB-145 (nb)", c="r", marker="*")
+plt.scatter(3853, 0.342, label="Fokker F70 (nb)", c="g", marker="*")
+plt.scatter(4519, 0.291, label="Fokker F100 (nb)", c="b", marker="*")
 
 plt.legend(loc='center left', bbox_to_anchor=(1, 0.5))
 plt.xlabel(r"$\frac{W}{S}$ [$N/m^2$]")

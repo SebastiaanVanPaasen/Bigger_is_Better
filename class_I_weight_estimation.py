@@ -17,7 +17,7 @@ def calc_cruise_coefficient(aspect_ratio, oswald_factor, surface_ratio, c_fe, r,
     cd_0 = c_fe * surface_ratio
     LD_ratio = 0.75 * np.sqrt((np.pi * aspect_ratio * oswald_factor) / (3 * cd_0))
 
-    return 1 / (np.e ** (r / ((velocity / (c_j * g_0 * per_hr_to_N)) * LD_ratio)))
+    return 1 / (np.e ** (r / ((velocity / (c_j * per_hr_to_N * g_0)) * LD_ratio)))
 
 
 # def calc_loiter_coefficient(aspect_ratio, oswald_factor, surface_ratio, c_fe, e, c_j):
@@ -59,8 +59,8 @@ def main(r_1, r_2):
     V = 499 * kts_to_ms  # m/s
     C_fe = 0.003  # estimated
     S_ratio = 6.3  # estimated
-    A = 9  # estimated
-    oswald = 0.76  # estimated
+    A = 6.96  # estimated
+    oswald = 0.8  # estimated
     c_j_cruise = 0.75  # 1/hr
     c_j_loiter = 0.5  # 1/hr
 
@@ -76,7 +76,9 @@ def main(r_1, r_2):
         [start, taxi, t_o, climb_1, cruise_1, descent_1, climb_2, cruise_2, descent_2, landing])
 
     fuel_fraction = calc_fuel_fraction(fuel_fractions)
+    print(fuel_fraction)
     weight_fraction = 1 - fuel_fraction - W_tfo - empty_fraction
+    print(weight_fraction)
 
     W_P = calc_payload_weight(N_pas, N_crew, W_person)
     W_TO = W_P / weight_fraction
@@ -86,21 +88,21 @@ def main(r_1, r_2):
     return np.array([W_TO, W_E, W_P, W_F]) / g_0
 
 
-R_1 = np.arange(1000000., 2100000., 100000.)
+# R_1 = np.arange(1000000., 2100000., 100000.)
 R_2 = 250 * 1.852 * 1000  # m
-results = np.zeros((4, len(R_1)))
-
-for i in range(len(R_1)):
-    value = main(R_1[i], R_2)
-    for j in range(4):
-        results[j][i] = value[j]
+# results = np.zeros((4, len(R_1)))
+#
+# for i in range(len(R_1)):
+#     value = main(R_1[i], R_2)
+#     for j in range(4):
+#         results[j][i] = value[j]
 
 # print((design_range[1] - different_range[1]) / ((R_1 - D_range) / 1000))
-#
-# print("The take-off mass equals " + str(round(design_range[1], 2)))
-# print("The fuel mass equals " + str(round(design_range[2], 2)))
-# print("The payload mass equals " + str(round(design_range[0], 2)))
-# print("The empty mass equals " + str(round(design_range[3], 2)))
+design_range = main(1800000, R_2)
+print("The take-off mass equals " + str(round(design_range[0], 2)))
+print("The fuel mass equals " + str(round(design_range[3], 2)))
+print("The payload mass equals " + str(round(design_range[2], 2)))
+print("The empty mass equals " + str(round(design_range[1], 2)))
 #
 # print("The take-off mass equals " + str(round(different_range[1], 2)))
 # print("The fuel mass equals " + str(round(different_range[2], 2)))

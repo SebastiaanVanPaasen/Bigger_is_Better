@@ -15,6 +15,8 @@ kts_to_ms = 0.51444444
 lbft2_Nm2 = 47.880172
 lbs_to_kg = 0.454
 ft_to_m = 0.3048
+psf_to_nm2 = 1/0.020885
+nm_to_km = 1.852
 
 # Input parameters for the aircraft ------------------------------------------------------------------------------------
 Landing_runway = 2500  # m  Guestimated from ADSEE-I L3
@@ -29,7 +31,6 @@ Sigma_TO = Rho_TO / Rho_0  # Ratio of densities
 
 V_stall_Cruise = 140  # m/s   Guestimated from ADSEE-I L3
 V_stall_Landing = min(np.sqrt(Landing_runway / 0.5847), 65)  # m/s     Guestimated from ADSEE-I L3
-V_stall_TO = V_stall_Landing * 1.05  # m/s  guestimated
 
 CL_Cruise_max = 1.6  # Guestimated from ADSEE-I L3
 CL_Landing_max = 3.2  # From Obert
@@ -40,8 +41,8 @@ CL_Landing = [(CL_Landing_max - 0.2), CL_Landing_max, (CL_Landing_max + 0.2)]  #
 
 CD_0 = 0.018  # guestimated from ADSEE-I L3
 AR = [4.96, 6.96, 8.96]  #
-V_cruise = 250.  # m/s      Guestimated cruise speed of Boeing 777
-Oswald_factor = 0.76  # Guestimated from ADSEE-I L3
+V_cruise = 499 * kts_to_ms  # m/s      Guestimated cruise speed of Boeing 777
+Oswald_factor = 0.8  # Guestimated from ADSEE-I L3
 
 Climb_rate = 2000 * ftmin_to_ms  # m/s      set climb rate by CS25
 Climb_gradient = 0.024  # c/V set by CS25 in case 4 engines, should be 0.03
