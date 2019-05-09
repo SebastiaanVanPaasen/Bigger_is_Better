@@ -27,7 +27,7 @@ V_stall_Landing = min(np.sqrt(Landing_runway / 0.5847), 65)  # m/s     Guestimat
 V_stall_TO = V_stall_Landing * 1.05  # m/s  guestimated
 
 CL_Cruise_max = 1.6  # Guestimated from ADSEE-I L3
-CL_Landing_max = 3.2  # Guestimated from ADSEE-I L3
+CL_Landing_max = 3.2  # book van ed obert
 CL_TO_max = 0.8 * CL_Landing_max  # Guestimated from ADSEE-I L3
 
 CL_TO = [(CL_TO_max / 1.21 - 0.2), CL_TO_max / 1.21, (CL_TO_max / 1.21 + 0.2)]  # Based on CL_max
