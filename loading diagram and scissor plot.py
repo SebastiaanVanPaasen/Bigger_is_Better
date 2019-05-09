@@ -17,7 +17,7 @@ g              = 9.81    # [m/s^2]
 W_payload      = 500000  # [N]
 n_cargo        = 2       # Number of cargo compartments (1 or 2)
 m_passenger    = 90      # mass of passenger and hand baggage kg
-n_pax          = 450     # Number of passengers
+
 cargo_fwdfrac  = 0.6     # Fraction of the amount the front compartment holds, if n_cargo = 1 then the value is 1
 
 # Weights from class II in [N]
@@ -33,7 +33,7 @@ W_mlg       = 6000
 
 # Import cg values from class I sizing
 
-xcg_fuse, xcg_emp, xcg_fix, xcg_nac, xcg_prop, xcg_wing, S_h_frac_S, S_v_frac_S, X_LEMAC, xcg_fwd, xcg_aft, zcg = classI_empennage(MAC, l_fuse, x_eng, l_n, xcg_OEW_MAC, mass_frac_OEW, xcg_payload, mass_frac_payload, xcg_fuel, mass_frac_fuel, D_fuse, b)
+xcg_fuse, xcg_emp, xcg_fix, xcg_nac, xcg_prop, xcg_wing, S_h_frac_S, S_v_frac_S, X_LEMAC, xcg_fwd, xcg_aft, zcg = classI_empennage(MAC, l_fuselage, x_eng, l_n, xcg_OEW_MAC, mass_frac_OEW, xcg_payload, mass_frac_payload, xcg_fuel, mass_frac_fuel, D_fuse, b)
 
 xcg_nlg = l_nosecone  # assumption, use landing gear function !!!
 xcg_mlg = 0.75*MAC    # assumption, use landing gear function !!!
@@ -44,7 +44,7 @@ xcg_mlg = 0.75*MAC    # assumption, use landing gear function !!!
 
 #------------------------------------------------------------------------------
 
-def potato(W_fuse, W_nlg, W_vt, W_ht, W_fix, W_wing, W_nac, W_prop, W_mlg, xcg_fuse, xcg_emp, xcg_fix, xcg_nac, xcg_prop, xcg_wing, xcg_nlg, xcg_mlg, X_LEMAC, W_payload, n_cargo, l_fuse, MAC, n_pax, m_passenger, g, cargo_fwdfrac):
+def potato(W_fuse, W_nlg, W_vt, W_ht, W_fix, W_wing, W_nac, W_prop, W_mlg, xcg_fuse, xcg_emp, xcg_fix, xcg_nac, xcg_prop, xcg_wing, xcg_nlg, xcg_mlg, X_LEMAC, W_payload, n_cargo, l_fuselage, MAC, n_pax, m_passenger, g, cargo_fwdfrac):
 
     # Fuselage group weight and cg
     W_fusegroup   = W_fuse + W_nlg + W_vt + W_ht + W_fix
@@ -66,14 +66,14 @@ def potato(W_fuse, W_nlg, W_vt, W_ht, W_fix, W_wing, W_nac, W_prop, W_mlg, xcg_f
     W_cargo = W_payload - W_pax
     
     if n_cargo == 1:
-        xcg_cargo1_MAC  = (0.45*l_fuse - X_LEMAC)/MAC   # cg cargo as percentage of MAC
+        xcg_cargo1_MAC  = (0.45*l_fuselage - X_LEMAC)/MAC   # cg cargo as percentage of MAC
         xcg_cargo2_MAC  = 0
         W_cargo1        = W_cargo         
         W_cargo2        = 0
         
     if n_cargo == 2:
-        xcg_cargo1_MAC  = (0.3*l_fuse - X_LEMAC)/MAC   # cg cargo 1 as percentage of MAC
-        xcg_cargo2_MAC  = (0.6*l_fuse - X_LEMAC)/MAC   # cg cargo 2 as percentage of MAC
+        xcg_cargo1_MAC  = (0.3*l_fuselage - X_LEMAC)/MAC   # cg cargo 1 as percentage of MAC
+        xcg_cargo2_MAC  = (0.6*l_fuselage - X_LEMAC)/MAC   # cg cargo 2 as percentage of MAC
         W_cargo1        = W_cargo*(cargo_fwdfrac)          
         W_cargo2        = W_cargo*(1-cargo_fwdfrac)        
     
@@ -119,9 +119,9 @@ def potato(W_fuse, W_nlg, W_vt, W_ht, W_fix, W_wing, W_nac, W_prop, W_mlg, xcg_f
     plt.plot(xcg_Backloading, W_Backloading)
     plt.plot(xcg_Fwdloading, W_Fwdloading)
     plt.show()
-    
+    print(X_LEMAC)
     return(xcg_fusegroup, xcg_winggroup, xcg_OEW_MAC)
     
+
     
-    
-potato(W_fuse, W_nlg, W_vt, W_ht, W_fix, W_wing, W_nac, W_prop, W_mlg, xcg_fuse, xcg_emp, xcg_fix, xcg_nac, xcg_prop, xcg_wing, xcg_nlg, xcg_mlg, X_LEMAC, W_payload, n_cargo, l_fuse, MAC, n_pax, m_passenger, g, cargo_fwdfrac)
+potato(W_fuse, W_nlg, W_vt, W_ht, W_fix, W_wing, W_nac, W_prop, W_mlg, xcg_fuse, xcg_emp, xcg_fix, xcg_nac, xcg_prop, xcg_wing, xcg_nlg, xcg_mlg, X_LEMAC, W_payload, n_cargo, l_fuselage, MAC, n_pax, m_passenger, g, cargo_fwdfrac)
