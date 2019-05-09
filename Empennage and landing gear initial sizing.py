@@ -18,6 +18,9 @@ xcg_fuel          = 22         # cg-location fuel w.r.t nose [m]
 mass_frac_fuel    = 0.3        # mass fraction fuel 
 D_fuse            = 2.         # diameter fuselage [m]
 b                 = 30.        # wingspan [m]
+MLW               = 1500000    # maximum landing weight [N]
+MTOW              = 2000000    # maximum take-off weight [N]
+l_nosecone        = 4          # length of nosecone [m]
 
 def classI_empennage(MAC, l_fuse, x_eng, l_n, xcg_OEW_MAC, mass_frac_OEW, xcg_payload, mass_frac_payload, xcg_fuel, mass_frac_fuel, D_fuse, b):
     # Mass fractions main components, landing gear neglected 
@@ -83,12 +86,25 @@ def classI_empennage(MAC, l_fuse, x_eng, l_n, xcg_OEW_MAC, mass_frac_OEW, xcg_pa
     S_h_frac_S = (V_h_norm*MAC)/(x_h - xcg_aft)
     S_v_frac_S = (V_v_norm*b)/(x_v - xcg_aft)
     
-    return(S_h_frac_S, S_v_frac_S, X_LEMAC, xcg_fwd, xcg_aft, zcg)
+    return S_h_frac_S, S_v_frac_S, X_LEMAC, xcg_fwd, xcg_aft, zcg
     
 classI_empennage(MAC, l_fuse, x_eng, l_n, xcg_OEW_MAC, mass_frac_OEW, xcg_payload, mass_frac_payload, xcg_fuel, mass_frac_fuel, D_fuse, b)
 
-def landinggearlocation():
+def classI_landinggear(MTOW, MLW, l_nosecone):
+    N_mw = MLW/210000
+    N_mw = int(N_mw)
     
-    return
+    while N_mw%4 != 0:
+        N_mw = N_mw + 1
+    
+    if N_mw <= 12:
+        N_s = 2
+    else:
+        N_s = 4
+    
+    #l_nlg = 
+    
+    return N_mw, N_s
 
+print (classI_landinggear(MTOW, MLW, l_nosecone))
 

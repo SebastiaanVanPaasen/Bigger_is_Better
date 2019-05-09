@@ -2,7 +2,7 @@ from inputs import *
 import matplotlib.pyplot as plt
 
 #  Create the wing loading for which all inputs have to be evaluated
-WS = np.arange(0., 8050., 50)
+WS = np.arange(0., 10250., 250)
 TW = np.arange(0., 0.45, 0.05)
 
 
@@ -73,8 +73,8 @@ class TWdiagram:
         for i in range(len(self.aspect_ratio)):
             label.append("c/V with A = " + str(round(self.aspect_ratio[i], 2)))
             for j in range(len(tw[0])):
-                tw[i][j] = ((n_engines / (n_engines - 1)) * climb_gradient + 2 * np.sqrt(
-                    cd_0 / (np.pi * oswald_factor * self.aspect_ratio[i])))
+                tw[i][j] = ((n_engines / (n_engines - 1)) * (climb_gradient + 2 * np.sqrt(
+                    cd_0 / (np.pi * oswald_factor * self.aspect_ratio[i]))))
 
         return tw, label
 
@@ -87,7 +87,7 @@ class TWdiagram:
             for j in range(len(ws[0])):
                 ws[i][j] = 0.5 * rho[i] * cl[i] * (v_stall[i] ** 2)
 
-        return ws, ["Stall in take-off config", "Stall in cruise config", "Stall in landing config"]
+        return ws, ["Stall in cruise config", "Stall in landing config"]
 
     # Calculate the climb gradient requirement, equation form ADSEE-I, lecture 3
     def calc_landing(self, f, rho, v_stall, cl):
@@ -105,15 +105,13 @@ class TWdiagram:
 diagram = TWdiagram(Sigma_TO, WS, TW, CD_0, Oswald_factor, AR)
 take_off, labels_to = diagram.calc_take_off(CL_TO, TOP)
 cruise, labels_cruise = diagram.calc_cruise(Rho_Cruise, V_cruise)
-climb_rate, labels_climb_rate = diagram.calc_climb_rate(Climb_rate, Rho_TO)
-climb_gradient, labels_climb_gradient = diagram.calc_climb_gradient(Delta_CD_TO_gear_up, N_engines,
-                                                                    Climb_gradient, Delta_oswald_TO)
+climb_rate_performance, labels_climb_rate = diagram.calc_climb_rate(Climb_rate, Rho_TO)
+climb_gradient_performance, labels_climb_gradient = diagram.calc_climb_gradient(Delta_CD_TO_gear_up, N_engines,
+                                                                                Climb_gradient, Delta_oswald_TO)
 
 landing, labels_landing = diagram.calc_landing(Landing_factor, Rho_Landing, V_stall_Landing, CL_Landing, )
-stall, labels_stall = diagram.calc_stall([V_stall_TO, V_stall_Cruise, V_stall_Landing],
-                                         [CL_TO_max, CL_Cruise_max, CL_Landing_max],
-                                         [Rho_TO, Rho_Cruise, Rho_Landing],
-                                         )
+stall, labels_stall = diagram.calc_stall([V_stall_Cruise, V_stall_Landing], [CL_Cruise_max, CL_Landing_max],
+                                         [Rho_Cruise, Rho_Landing])
 
 # print("The take-off requirement is seb by :" + str(thrust_to_weight_to))
 # print("The cruise requirement is set by :" + str(thrust_to_weight_cruise))
@@ -122,20 +120,45 @@ stall, labels_stall = diagram.calc_stall([V_stall_TO, V_stall_Cruise, V_stall_La
 # print("the stall speed requirement is set by :" + str(wing_loading_stall))
 # print("the landing requirement is set by :" + str(wing_loading_landing))
 
-all_requirements = [climb_gradient, climb_rate, cruise,
+all_requirements = [climb_gradient_performance, climb_rate_performance, cruise,
                     take_off, landing, stall]
 labels = [labels_climb_gradient, labels_climb_rate, labels_cruise, labels_to, labels_landing, labels_stall]
 
+r = 0
+fig = plt.figure(figsize=(15, 9))
 for p in range(len(all_requirements)):
     for q in range(len(all_requirements[p])):
         if len(all_requirements[p][q]) == len(TW):
-            plt.plot(all_requirements[p][q], TW, label=labels[p][q])
+            plt.plot(all_requirements[p][q], TW, label=labels[p][q], marker="o")
         else:
-            plt.plot(WS, all_requirements[p][q], label=labels[p][q])
+            if r < 10:
+                plt.plot(WS, all_requirements[p][q], label=labels[p][q], marker="^")
+            else:
+                plt.plot(WS, all_requirements[p][q], label=labels[p][q], marker="o")
+            r += 1
 
-plt.legend(loc='upper right')
-plt.xlabel("W/S [N/m^2]")
-plt.ylabel("T/W [-]")
-plt.xlim(0, 8000)
+plt.scatter(5860, 0.2819, label="Airbus A330-300 (wb)", c="r", marker="o")
+plt.scatter(6940, 0.2205, label="Airbus A340-200 (wb)", c="g", marker="o")
+plt.scatter(7318, 0.2272, label="Airbus A340-300 (wb)", c="b", marker="o")
+plt.scatter(8184, 0.2634, label="Airbus A340-500 (wb)", c="y", marker="o")
+plt.scatter(8184, 0.2783, label="Airbus A340-600 (wb)", c="k", marker="o")
+plt.scatter(5562, 0.2878, label="Boeing 777-200 (wb)", c="m", marker="o")
+plt.scatter(6576, 0.2655, label="Boeing 777-200IGW (wb)", c="c", marker="o")
+plt.scatter(6861, 0.2818, label="Boeing 777-200XI (wb)", c="r", marker="^")
+plt.scatter(7173, 0.2841, label="Boeing 777-200X2 (wb)", c="g", marker="^")
+plt.scatter(5479, 0.322, label="Tupolev Tu-334 (nb)", c="b", marker="^")
+plt.scatter(5178, 0.272, label="BAe RJ70 (nb)", c="y", marker="^")
+plt.scatter(5351, 0.301, label="BAe RJ85 (nb)", c="k", marker="^")
+plt.scatter(5610, 0.287, label="BAe RJ100 (nb)", c="m", marker="^")
+plt.scatter(5840, 0.276, label="BAe RJ115 (nb)", c="c", marker="^")
+plt.scatter(3678, 0.333, label="Embraer EMB-145 (nb)", c="r", marker="*")
+plt.scatter(3853, 0.342, label="Fokker F70 (nb)", c="g", marker="*")
+plt.scatter(4519, 0.291, label="Fokker F100 (nb)", c="b", marker="*")
+
+plt.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+plt.xlabel(r"$\frac{W}{S}$ [$N/m^2$]")
+plt.ylabel(r"$\frac{T}{W}$ [-]")
+plt.xlim(0, 10000)
 plt.ylim(0.0, 0.4)
 plt.show()
+plt.savefig("Wing_loading_diagram")
