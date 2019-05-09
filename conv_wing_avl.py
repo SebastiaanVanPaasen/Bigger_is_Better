@@ -5,26 +5,24 @@ Created on Thu May  9 13:38:52 2019
 @author: floyd
 """
 import numpy as np
+from inputs import *
+from planform import wing_parameters
 
-M_cruise = 0.75      #inputs from different part 
-surface_area = 200  #inputs from different part 
-aspect_ratio = 9    #inputs from different part 
-CL_cruise = 0.5
-CD0 = 0.010
-root_chord = 4 #from planform file
-tip_chord = 2#planform
+
+surface_area = 200  #Once this is included in inputs file then this should be deleted 
+wing_geo  = wing_parameters(M_cruise, CL_cruise, surface_area, A) #planform parameters: 
+#0 quarter_chord_sweep, 1 leading_edge_sweep, 2 taper_ratio, 3 span, 4 chord_root, 5 chord_tip, 6dihedral, 7thickness_over_chord)
+
+CD0 = 0.010 
 Angle = 0.0 #Incidence angle
-leading_edge_sweep = 25 #planform file
-dihedral = 0.5
 
-span = np.sqrt(surface_area*aspect_ratio)
-chords= [root_chord, tip_chord]
+chords= [wing_geo[4], wing_geo[5]]
 Ainc = [0.0, 0.0]
 Nspanwise = [0, 0]
 Sspace = [0, 0]
-x_loc_LE = [0, span/2*np.tan(np.radians(leading_edge_sweep))]
-y_loc_LE = [0, span/2]
-z_loc_LE = [0,span/2*np.tan(dihedral)] #change for dihedral angle low/high wing
+x_loc_LE = [0, wing_geo[3]/2*np.tan(wing_geo[1])]
+y_loc_LE = [0, wing_geo[3]]
+z_loc_LE = [0,wing_geo[3]*np.tan(wing_geo[6])] #change for dihedral angle low/high wing
 
 
 with open("conv_wing.avl", "w") as text_file:
@@ -34,7 +32,7 @@ with open("conv_wing.avl", "w") as text_file:
         "#IYsym IZsym Zsym" +"\n"
         "0  0  0" +"\n" 
         "#Sref  Cref  Bref" +"\n" +
-        str(surface_area), str(root_chord), str(span), "\n"          
+        str(surface_area), str(wing_geo[4]), str(wing_geo[3]), "\n"          
         "#Xref Yref Zref" +"\n"
         "0.3  0.0  0.0806" + "\n"
         "CDdp" + "\n" +
