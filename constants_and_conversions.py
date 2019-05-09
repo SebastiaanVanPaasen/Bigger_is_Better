@@ -17,3 +17,11 @@ psf_to_nm2 = 1/0.020885
 nm_to_km = 1.852
 hr_to_sec = 3600
 per_hr_to_N = 1 / (hr_to_sec * g_0)
+
+# Constants for control and stability
+k_n = -2.5   # -4 = nacelle in front of the LE of the wing or in fuselage nose
+             # -2.5 = jet engine pods mounted to de sides of the rear fuselage
+V_h_V = 0.85 #  0.85 = fuselage mounted stabilizer 
+             #  0.95 = fin mounted stabilizer
+             #  1 = for T-tial and canard
+eta = 0.95   #  usually used (see slides)
