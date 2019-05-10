@@ -9,26 +9,24 @@ from fuselage_cross_section import *
 
 # Inputs
 
-# MAC = 8.  # mean aerodynamic chord [m]
-# n_pax = 450  # Number of passengers
-# n_paxbelow = 450
-# x_eng = -1.  # x-location engines w.r.t. XLEMAC [m]
-# l_n = 2.  # length nacelle [m]
-# xcg_OEW_MAC = 0.25  # initial cg location OEW w.r.t. MAC [m]
-# mass_frac_OEW = 0.5  # mass fraction OEW
-# mass_frac_payload = 0.2  # mass fraction payload
-# xcg_fuel = 22  # cg-location fuel w.r.t nose [m]
-# mass_frac_fuel = 0.3  # mass fraction fuel
-# b = 30.  # wingspan [m]
-# MLW = 1500000  # maximum landing weight [N]
-# MTOW = 2000000  # maximum take-off weight [N]
-#
-# d_inner, d_outer, lcabin, lcabin_below, lcabin_above, l_tailcone_range, l_nosecone_range, l_fuselage, tot_seating_abreast, N_aisle_above, N_aisle_below = fuselage_cross_section(
-#     n_pax, n_paxbelow)
-#
-# D_fuse = d_outer
-# l_nosecone = (l_nosecone_range[0] + l_nosecone_range[1]) / 2.
-# xcg_payload = l_fuselage * 0.5  # cg-location payload w.r.t. nose [m]
+MAC = 8.  # mean aerodynamic chord [m]
+n_pax = 450  # Number of passengers
+n_paxbelow = 450
+x_eng = -1.  # x-location engines w.r.t. XLEMAC [m]
+l_n = 2.  # length nacelle [m]
+xcg_OEW_MAC = 0.25  # initial cg location OEW w.r.t. MAC [m]
+mass_frac_OEW = 0.5  # mass fraction OEW
+mass_frac_payload = 0.2  # mass fraction payload
+xcg_fuel = 22  # cg-location fuel w.r.t nose [m]
+mass_frac_fuel = 0.3  # mass fraction fuel
+b = 30.  # wingspan [m]
+MLW = 1500000  # maximum landing weight [N]
+MTOW = 2000000  # maximum take-off weight [N]
+
+
+
+
+
 
 
 def class_I_empennage(MAC, l_fuselage, x_eng, l_n, xcg_OEW_MAC, mass_frac_OEW, xcg_payload, mass_frac_payload, xcg_fuel,
@@ -105,8 +103,8 @@ def class_I_empennage(MAC, l_fuselage, x_eng, l_n, xcg_OEW_MAC, mass_frac_OEW, x
     return cg_locations, S_h_frac_S, S_v_frac_S, X_LEMAC,
 
 
-class_I_empennage(MAC, l_fuselage, x_eng, l_n, xcg_OEW_MAC, mass_frac_OEW, xcg_payload, mass_frac_payload, xcg_fuel,
-                 mass_frac_fuel, D_fuse, b)
+#class_I_empennage(MAC, l_fuselage, x_eng, l_n, xcg_OEW_MAC, mass_frac_OEW, xcg_payload, mass_frac_payload, xcg_fuel,
+ #                mass_frac_fuel, D_fuse, b)
 
 
 def size_tail(wing_area, volume_fraction, tail_sweep, aspect_ratio):
@@ -119,7 +117,7 @@ def size_tail(wing_area, volume_fraction, tail_sweep, aspect_ratio):
 
 
 def classI_landinggear(MTOW, MLW, l_nosecone):
-    N_mw = MLW / 210000
+    N_mw = MLW / 210000.
     N_mw = int(N_mw)
 
     while N_mw % 4 != 0:
