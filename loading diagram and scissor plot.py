@@ -48,7 +48,7 @@ l_nosecone = (l_nosecone_range[0] + l_nosecone_range[1]) / 2.
 xcg_payload = l_fuselage * 0.5  # cg-location payload w.r.t. nose [m]
 # Import cg values from class I sizing
 
-cg_locations, S_h_frac_S, S_v_frac_S, X_LEMAC = class_I_empennage(MAC, l_fuselage, x_eng, l_n, xcg_OEW_MAC, mass_frac_OEW, xcg_payload, mass_frac_payload, xcg_fuel, mass_frac_fuel, D_fuse, b)
+cg_locations, S_h_frac_S, S_v_frac_S, X_LEMAC, x_h = class_I_empennage(MAC, l_fuselage, x_eng, l_n, xcg_OEW_MAC, mass_frac_OEW, xcg_payload, mass_frac_payload, xcg_fuel, mass_frac_fuel, D_fuse, b)
 
 xcg_nlg = l_nosecone  # assumption, use landing gear function !!!
 xcg_mlg = 0.75*MAC    # assumption, use landing gear function !!!
