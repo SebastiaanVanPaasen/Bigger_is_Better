@@ -39,6 +39,9 @@ Created on Thu May  9 14:08:37 2019
 import numpy as np
 from constants_and_conversions import *
 from scipy.interpolate import interp1d
+import scipy as sp
+import matplotlib.pyplot as plt
+
 
 x_ac_wing = 0.4 #this value needs to be read of a graph which requires (M at max cruise speed, AR, taper, sweep)
 SM = 0.05
@@ -80,7 +83,7 @@ def x_ac(b_n_1, b_n_2, b_n_3, b_n_4, l_n_1, l_n_2, l_n_3, l_n_4, x_ac_wing, M_w_
     
     return x_ac
 
-def de_da(l_h, b, qcsweep, phi, h_wh, s_wTEh, A, M_w_cruise, eta, hcsweepw, A_w):
+def de_da(l_h, b, qcsweep, phi, h_wh, s_wTEh, A_w, M_w_cruise, eta, hcsweepw):
     
     r = 2*l_h/b
     w = h_wh**2 + s_wTEh**2
@@ -100,10 +103,10 @@ def Sh_S_stability(x_cg, M_h_cruise, eta, hcsweeph, hcsweepw, A_w, A_h, M_w_crui
     Sh_S_stability = [] #with SM
     Sh_S_stability_lessSM = []
     for i in range(len(x_cg)):
-        den = (C_L_alpha_h(M_h_cruise, eta, hcsweeph, A_h)/C_L_alpha_Ah(M_w_cruise, eta, hcsweepw, A_w, b_f, b, S, c_r))*(1-de_da(l_h, b, qcsweep, phi, h_wh, s_wTEh, A, M_w_cruise, eta, hcsweepw, A_w))*(l_h/c)*(V_h_V)
+        den = (C_L_alpha_h(M_h_cruise, eta, hcsweeph, A_h)/C_L_alpha_Ah(M_w_cruise, eta, hcsweepw, A_w, b_f, b, S, c_r))*(1-de_da(l_h, b, qcsweep, phi, h_wh, s_wTEh, A_w, M_w_cruise, eta, hcsweepw))*(l_h/c)*(V_h_V)
         Sh_S = (1/den)*x_cg[i] - (x_ac(b_n_1, b_n_2, b_n_3, b_n_4, l_n_1, l_n_2, l_n_3, l_n_4, x_ac_wing, M_w_cruise, eta, hcsweepw, A_w, b_f, b, c_r, S, h_f, l_fn, c, c_g, qcsweep, taper) - SM)/den
         Sh_S_stability.append(Sh_S)
-        den = (C_L_alpha_h(M_h_cruise, eta, hcsweeph, A_h)/C_L_alpha_Ah(M_w_cruise, eta, hcsweepw, A_w, b_f, b, S, c_r))*(1-de_da(l_h, b, qcsweep, phi, h_wh, s_wTEh, A, M_w_cruise, eta, hcsweepw, A_w))*(l_h/c)*(V_h_V)
+        den = (C_L_alpha_h(M_h_cruise, eta, hcsweeph, A_h)/C_L_alpha_Ah(M_w_cruise, eta, hcsweepw, A_w, b_f, b, S, c_r))*(1-de_da(l_h, b, qcsweep, phi, h_wh, s_wTEh, A_w, M_w_cruise, eta, hcsweepw))*(l_h/c)*(V_h_V)
         Sh_S_less = (1/den)*x_cg[i] - x_ac(b_n_1, b_n_2, b_n_3, b_n_4, l_n_1, l_n_2, l_n_3, l_n_4, x_ac_wing, M_w_cruise, eta, hcsweepw, A_w, b_f, b, c_r, S, h_f, l_fn, c, c_g, qcsweep, taper)/den
         Sh_S_stability_lessSM.append(Sh_S_less)
     

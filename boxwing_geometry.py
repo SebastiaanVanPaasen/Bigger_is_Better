@@ -8,10 +8,9 @@ import matplotlib as mpl
 from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
 import matplotlib.pyplot as plt
-#import subprocess
-#import os
 
-from Planform import wing_parameters
+
+from planform import wing_parameters
 
 M_cruise = 0.75      #inputs from different part 
 surface_area = 200  #inputs from different part 
@@ -19,12 +18,15 @@ aspect_ratio = 9    #inputs from different part
 CL_cruise = 0.5
 CD0 = 0.010
 #variables in defining the boxwing geometry
-delta_x_quarterchord = 30
-height_boxwing_root = 10
-angle_winglet = 60 #degrees
+
+delta_x_quarterchord = 30 #distance of quarter chords of upper and lower wing in case this increases
+                            #then the upper wing is elongated as the lower wing is sized conventionally
+height_boxwing_root = 10    #height of the boxed wing
+angle_winglet = 60 #angle of the side winglets in degrees, increasing this angle then upper wing length decreases.
+
 def boxed_wing_geometry(M_cruise, CL_cruise, surface_area, aspect_ratio, delta_x_quarterchord, height_boxwing_root, angle_winglet):
     #Use planform function to find span
-    wing_geo = wing_parameters(M_cruise, CL_cruise, surface_area, aspect_ratio)
+    wing_geo = wing_parameters(M_cruise, CL_cruise, surface_area, aspect_ratio) #function from planform.py
     span = wing_geo[3]
     
     #Surface and aspect ratio single wing 
@@ -72,48 +74,39 @@ x_loc_LE, y_loc_LE, z_loc_LE, chords = boxed_wing_geometry(M_cruise, CL_cruise, 
 #plt.show()
 
 
-
-name = ["Lower wing", "Right winglet", "Upper wing"]
-Ainc = [0.0, 0.0, 0.0, 0.0]
-Nspanwise = [0, 0, 0, 0]
-Sspace = [0, 0, 0, 0]
-Angle = [0.0, 0.0, 0.0, 0.0] #Incidence angle
-
-
-
-with open("Output.avl", "w") as text_file:
-    print("Boxed Wing" +"\n"
-          "#Mach" +"\n" + 
-          str(M_cruise) +"\n"
-          "#IYsym IZsym Zsym" +"\n"
-          "0  0  0" +"\n" 
-          "#Sref  Cref  Bref" +"\n" +
-          str(surface_area), str(chords[0]), str(np.sqrt(surface_area*aspect_ratio)), "\n"          
-          "#Xref Yref Zref" +"\n"
-          "0.3  0.0  0.0806" + "\n"
-          "CDdp" + "\n" +
-          str(CD0), file=text_file)
-    for j in range(3):
-        print("\n" + "SURFACE" +"\n" +
-              str(name[j]), "\n"
-              "8  1.0  12  -2.0"+"\n"
-              "COMPONENT"+"\n" +
-              str(1), "\n"
-              "YDUPLICATE"+"\n" +
-              str(0.0), "\n" +
-              "ANGLE"+"\n"+
-              str(Angle[j]), file=text_file)
-        for i in range(2):
-            print("SECTION", file=text_file)            
-            print(x_loc_LE[j+i],y_loc_LE[j+i],z_loc_LE[j+i],chords[j+i],Ainc[j+i],Nspanwise[j+i], Sspace[j+i], file=text_file)
-            
-#p = subprocess.Popen(r"C:\Users\floyd\Desktop\avl.exe", stdin=subprocess.PIPE, universal_newlines=True)
-#p.communicate(os.linesep.join(["load", "Output", "oper", "W", "test"]))
-
-#p.communicate("load")
-#p.communicate("Output")
-#p.communicate("oper")
-#p.communicate("W")
-#p.communicate("test")
-#            
+def make_avl_file_bw(x_loc_LE, y_loc_LE, z_loc_LE, chords, M_cruise, surface_area, CD0, aspect_ratio):
+    name = ["Lower wing", "Right winglet", "Upper wing"]
+    Ainc = [0.0, 0.0, 0.0, 0.0] # delta to increase/decrease incidence angle locally
+    Nspanwise = [0, 0, 0, 0]        #avl bullshit
+    Sspace = [0, 0, 0, 0]           #same
+    Angle = [0.0, 0.0, 0.0, 0.0] #Incidence angle
     
+    
+    
+    with open("Output.avl", "w") as text_file:
+        print("Boxed Wing" +"\n"
+              "#Mach" +"\n" + 
+              str(M_cruise) +"\n"
+              "#IYsym IZsym Zsym" +"\n"
+              "0  0  0" +"\n" 
+              "#Sref  Cref  Bref" +"\n" +
+              str(surface_area), str(chords[0]), str(np.sqrt(surface_area*aspect_ratio)), "\n"          
+              "#Xref Yref Zref" +"\n"
+              "0.3  0.0  0.0806" + "\n"
+              "CDcp" + "\n" +
+              str(CD0), file=text_file)
+        for j in range(3):
+            print("\n" + "SURFACE" +"\n" +
+                  str(name[j]), "\n"
+                  "8  1.0  12  -2.0"+"\n"
+                  "COMPONENT"+"\n" +
+                  str(1), "\n"
+                  "YDUPLICATE"+"\n" +
+                  str(0.0), "\n" +
+                  "ANGLE"+"\n"+
+                  str(Angle[j]), file=text_file)
+            for i in range(2):
+                print("SECTION", file=text_file)            
+                print(x_loc_LE[j+i],y_loc_LE[j+i],z_loc_LE[j+i],chords[j+i],Ainc[j+i],Nspanwise[j+i], Sspace[j+i], file=text_file)
+            
+make_avl_file_bw(x_loc_LE, y_loc_LE, z_loc_LE, chords, M_cruise, surface_area, CD0, aspect_ratio)
