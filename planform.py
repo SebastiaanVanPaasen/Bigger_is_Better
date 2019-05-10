@@ -41,6 +41,26 @@ def wing_parameters(m_cruise, cl_cruise, surface_area, aspect_ratio):
         quarter_chord_sweep, leading_edge_sweep, taper_ratio, span, chord_root, chord_tip, dihedral,
         thickness_over_chord, mac)
 
+#inputs
+#s_ratio = 0.05
+#v_tail_le_sweep = np.rad2deg(35)
+#v_tail_aspect_ratio = 1.5
+#v_tail_taper_ratio = 0.4
+#h_tail_height = 0.5 #ratio of tail height on vertical tail 0.5 is at half the vertical tail
+#    
+
+def tail_distance(s_ref, s_ratio, aspect_ratio, leadin_edge_sweep, h_tail_height):
+    s = s_ref*s_ratio
+    span = np.sqrt(s * aspect_ratio)
+    height = h_tail_height*span
+    x_dist_tails = height/np.tan(leadin_edge_sweep)
+    chord_root = (2 * s) / ((1 + taper_ratio) * span)
+    chord_tip = taper_ratio * chord_root
+    print (chord_root, chord_tip, x_dist_tails)
+    return(x_dist_tails)
+    
+
+
 
 def plot_planform(leading_edge_sweep, chord_root, chord_tip, span):
     x_list = [0, span / 2, span / 2, 0, 0]
@@ -69,4 +89,6 @@ def determine_half_chord_sweep(root_chord, tip_chord, span, qc_sweep):
 #
 #quarter_cord_sweep, leading_edge_sweep, taper_ratio, span, cord_root, cord_tip, dihedral, tickness_over_cord, mac = wing_parameters(
 #     M_cruise, CL_cruise, surface_area, aspect_ratio)
-#print(quarter_cord_sweep, leading_edge_sweep, taper_ratio, span, cord_root, cord_tip, dihedral, tickness_over_cord, mac)
+##print(quarter_cord_sweep, leading_edge_sweep, taper_ratio, span, cord_root, cord_tip, dihedral, tickness_over_cord, mac)
+#x_dist_tails = tail_distance(surface_area, s_ratio, v_tail_aspect_ratio, v_tail_le_sweep,  h_tail_height)
+#print(x_dist_tails)
