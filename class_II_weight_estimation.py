@@ -22,8 +22,9 @@ def wing_weight(w_to, w_f, b, semi_chord_sweep, n_ult, s, t_max, choice):
     # first is to include spoilers and speed brakes
     # second is with 2 wing mounted engines
     # third is with 4 wing mounted engines
-    # fourth is for strutted wings
-    # fifth is for fowler flaps
+    # fourth is if landing gear is not wing mounted
+    # fifth is for strutted wings
+    # sixth is for fowler flaps
 
     for i in range(len(choice)):
         if choice[i] == 1:
@@ -32,16 +33,18 @@ def wing_weight(w_to, w_f, b, semi_chord_sweep, n_ult, s, t_max, choice):
     return w_weight
 
 
-def tail_weight(k, s, v_d, semi_chord_sweep):
+def _tail_weight(k, s, v_d, semi_chord_sweep):
     # variables are explained under empennage_weight function
     return k * s((3.81 * (s ** 0.2) * v_d) / (1000 * np.cos(np.radians(semi_chord_sweep)) ** 0.5) - 0.287)
 
 
 def empennage_weight(choice, surface, v_d, sweep, z_h, span_v):
     # surface is an array of the horizontal and vertical tail surface area
+    # v_d is the design dive speed
     # sweep is an array list of the semi_chord sweep angle of the horizontal and vertical tail
     # z_h is the distance between root of vertical tail and start of horizontal tail on vertical tail
     # span_v is the span of the vertical tail
+    v_d = v_d / kts_to_ms
     surface = surface / ft_to_m
     z_h = z_h / ft_to_m
     span_v = span_v / ft_to_m
@@ -51,22 +54,24 @@ def empennage_weight(choice, surface, v_d, sweep, z_h, span_v):
     if choice[0] == 1:
         k_h = 1.1
 
-    weight_h_tail = tail_weight(k_h, surface[0], v_d, sweep[0])
+    weight_h_tail = _tail_weight(k_h, surface[0], v_d, sweep[0])
 
     k_v = 1
     # choose 1 if the horizontal tails are fin mounted
     if choice[1] == 1:
         k_v = 1 + 0.15 * ((surface[0] * z_h) / (surface[1] * span_v))
 
-    weight_v_tail = tail_weight(k_v, surface[1], v_d, sweep[1])
+    weight_v_tail = _tail_weight(k_v, surface[1], v_d, sweep[1])
 
     return weight_h_tail, weight_v_tail
 
 
 def fuselage_weight(choice, v_d, l_h, w_f, h_f, s_fgs):
+    # v_d is the design dive speed
     # w_f is maximum width of the fuselage
     # f_h is maximum height of the fuselage
     # s_fgs = fuselage fross shell area in ft^2
+    v_d = v_d / kts_to_ms
     w_f = w_f / ft_to_m
     h_f = h_f / ft_to_m
     l_h = l_h / ft_to_m
@@ -213,7 +218,7 @@ def fixed_equipment_weight(q_d, w_to, w_e, w_f, v_pax, n_crew, n_pax, s_ff, r, c
     w_f = (w_f / lbs_to_kg) / g_0
     v_pax = v_pax / (ft_to_m ** 3)
     r = r / nm_to_km
-    s_ff = s_ff/(ft_to_m**2)
+    s_ff = s_ff / (ft_to_m ** 2)
 
     w_fc = 56.01 * (((w_to * q_d) / 100000) ** 0.576)
 
@@ -229,13 +234,12 @@ def fixed_equipment_weight(q_d, w_to, w_e, w_f, v_pax, n_crew, n_pax, s_ff, r, c
     w_apu = 0.0085 * w_to
 
     # if more detail is required, look in Torenbeek p292
-    w_fur = 0.211*((w_to - w_f)**0.91)
+    w_fur = 0.211 * ((w_to - w_f) ** 0.91)
 
     # cargo containers require more investigatoin, roskam 110
     w_bc = 3 * s_ff
 
     return w_fc + w_hps + w_els + w_instr + w_api + w_ox + w_apu + w_fur + w_bc
-
 
 # def structural_weight(weights):
 #
