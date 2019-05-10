@@ -49,7 +49,6 @@ alpha_0 = 0.3
 CL_des = 1.2
 A = 6.96  # based on the reference aircraft B747
 S_ratio = 6.3  # estimated from ADSEE-I L3
-mac = 8.  # m   mean aerodynamic chord
 
 # horizontal tail ------------------------------------------------------------------------------------------------------
 QC_sweep_h = 32.7  # degrees    based on wide body statistics
@@ -64,6 +63,7 @@ C_fe = 0.003  # estimated from ADSEE-I L3
 c_j_cruise = 0.75  # 1/hr
 c_j_loiter = 0.5  # 1/hr
 Oswald = 0.8  # estimated from ADSEE-I L3
+CD_0 = C_fe * S_ratio
 
 # Ranges ---------------------------------------------------------------------------------------------------------------
 cruise_range = 1800000  # m based on market analysis
@@ -87,7 +87,6 @@ V_stall_Cruise = 140  # m/s   Guestimated from ADSEE-I L3
 V_stall_Landing = min(np.sqrt(Landing_runway / 0.5847), 65)  # m/s     Guestimated from ADSEE-I L3
 
 # Lift and drag coefficients -------------------------------------------------------------------------------------------
-CD_0 = 0.018  # guestimated from ADSEE-I L3
 CL_Cruise_max = 1.6  # Guestimated from ADSEE-I L3
 CL_Landing_max = 3.2  # From Obert
 CL_TO_max = 0.8 * CL_Landing_max  # Guestimated from ADSEE-I L3
