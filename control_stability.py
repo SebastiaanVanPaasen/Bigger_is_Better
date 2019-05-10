@@ -25,7 +25,7 @@ c_f        =   2.625 #flap chord
 taper      =   0.149 #taper ratio
 b_f0       =   15.6 #end of flap span
 b_fi       =   4.1 #begin of flap span
-l_f        =   56.4 #fuselage length
+#l_f        =   56.4 #fuselage length
 b_f        =   6.2 #fuselage diameter
 h_f        =   6.2 #fuselage height
 l_h        =   24.71 #tailarm
@@ -49,7 +49,7 @@ eta        =  0.95# airfoil efficiency = 0.95
 x_ac       =  0.3   # aerodynamic centre location over the mac [n/m]
 V_h_V      =  0.8    #(V_h/V) ratio  [m/s / m/s]
 CL_alpha_AH =   4.788 # lif#t gradient of tailless aircraft [1/rad]
-CL_AH       =  3.25 #lift coefficient A-H
+CL_AH       =  2. #lift coefficient A-H
 CL_H        = -0.8 #liftcoefficient tail
 
 
@@ -78,7 +78,7 @@ x_ac_wing=0.4
 l_fn= 20
 c_g=c
 SM=0.05
-
+l_f = l_fuselage*1.
 min_cg = potato(Safety_margin, xcg_fuel, W_fuel, W_fuse, W_nlg, W_vt, W_ht, W_fix, W_wing, W_nac, W_prop, W_mlg, cg_locations, xcg_nlg, xcg_mlg, X_LEMAC, W_payload, n_cargo, l_fuselage, MAC, n_pax, m_passenger, g, cargo_fwdfrac, xcg_seats, W_window, W_aisle, W_middle)[3] 
 max_cg = potato(Safety_margin, xcg_fuel, W_fuel, W_fuse, W_nlg, W_vt, W_ht, W_fix, W_wing, W_nac, W_prop, W_mlg, cg_locations, xcg_nlg, xcg_mlg, X_LEMAC, W_payload, n_cargo, l_fuselage, MAC, n_pax, m_passenger, g, cargo_fwdfrac, xcg_seats, W_window, W_aisle, W_middle)[4]
 X_LEMAC_range = potato(Safety_margin, xcg_fuel, W_fuel, W_fuse, W_nlg, W_vt, W_ht, W_fix, W_wing, W_nac, W_prop, W_mlg, cg_locations, xcg_nlg, xcg_mlg, X_LEMAC, W_payload, n_cargo, l_fuselage, MAC, n_pax, m_passenger, g, cargo_fwdfrac, xcg_seats, W_window, W_aisle, W_middle)[5]
@@ -107,14 +107,14 @@ def control_stability_plot(min_cg, max_cg, X_LEMAC_range, S_control, S_stability
                 Sh_opt.append(Sh_S[j])
                 LEMAC_opt.append(X_LEMAC_range[i])
                 break
-
-    print(len(Sh_opt))
-    print(len(X_LEMAC_range))          
-    print(LEMAC_opt)
-    print(LEMAC_opt[Sh_opt.index(min(Sh_opt))])
-    print(min(Sh_opt))
-    print(min_cg[Sh_opt.index(min(Sh_opt))])
-    print(max_cg[Sh_opt.index(min(Sh_opt))])
+#
+#    print(len(Sh_opt))
+#    print(len(X_LEMAC_range))          
+#    print(LEMAC_opt)
+#    print(LEMAC_opt[Sh_opt.index(min(Sh_opt))])
+#    print(min(Sh_opt))
+#    print(min_cg[Sh_opt.index(min(Sh_opt))])
+#    print(max_cg[Sh_opt.index(min(Sh_opt))])
     
     X_LEMAC = list(np.array(X_LEMAC_range)+LEMAC_opt[Sh_opt.index(min(Sh_opt))])
     
@@ -130,7 +130,7 @@ def control_stability_plot(min_cg, max_cg, X_LEMAC_range, S_control, S_stability
     
     return
 
-control_stability_plot(min_cg, max_cg, X_LEMAC_range, S_control, S_stability)
+print(control_stability_plot(min_cg, max_cg, X_LEMAC_range, S_control, S_stability))
 
 
     

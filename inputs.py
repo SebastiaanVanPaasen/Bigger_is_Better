@@ -15,23 +15,22 @@ landing = 0.992
 fractions = [start, taxi, t_o, climb_1, descent_1, climb_2, descent_2, landing]
 
 # Passenger characteristics --------------------------------------------------------------------------------------------
-N_pas = 450
-N_crew = 11
-W_person = 205  # lbs
+N_pas = 450  # Requirement set by the exercise
+N_pas_below = 450  # Depends on if you want a double-decker 242 if you want a equally sized fuselage for double floor
+N_crew = 11  # Based on the amount of passengers
+W_person = 205  # lbs   Based on statistics of Roskam
 
 # General aircraft input parameters ------------------------------------------------------------------------------------
 # General cruise parameters
-h_cruise = 11000  # m based on the sustainability analysis so far
-M_cruise = 0.65
-T_cruise = T_0 + a * h_cruise
-a_cruise = np.sqrt(gamma * R_gas * T_cruise)
-V_cruise = M_cruise * a_cruise  # m/s  based on the reference aircraft B747
-CL_cruise = 0.7
+h_cruise = 7000  # m based on the sustainability analysis so far
+M_cruise = 0.7  # Mach number decided to cruise on
+Temp_cruise = Temp_0 + a * h_cruise  # K  based on the altitude you fly at
+a_cruise = np.sqrt(gamma * R_gas * Temp_cruise)  # m/s based on the temperature
+V_cruise = M_cruise * a_cruise  # m/s  based on the Mach number and speed of sound
 
-print(V_cruise)
 # Densities ------------------------------------------------------------------------------------------------------------
 Rho_TO = Rho_0  # kg/m^3    standard sea-level density
-Rho_Cruise = Rho_0 * ((1 + (a * h_cruise) / T_0) ** (-(g_0 / (R_gas * a))))  # kg/m^3   based on cruise altitude
+Rho_Cruise = Rho_0 * ((1 + (a * h_cruise) / Temp_0) ** (-(g_0 / (R_gas * a))))  # kg/m^3   based on cruise altitude
 Rho_Landing = Rho_0  # kg/m^3   standard sea-level density
 
 # aircraft cg-locations ------------------------------------------------------------------------------------------------
@@ -41,15 +40,26 @@ x_fuel = 22  # m    cg-location fuel w.r.t nose
 xcg_oew_mac = 0.25  # m     initial cg location OEW w.r.t. MAC
 
 # engine characteristics -----------------------------------------------------------------------------------------------
+N_engines = 2  #
+w_engine = 7000  # kg   Obtained from Bram
+propeller_choice = 0
+
+# in case propellers are used
+prop_characteristics = [2, 50, 1.5, 0.8]  # Number of props, blades per prop, prop diameter and prop efficiency
 l_nacelle = 2.  # m   length nacelle
 
+# in case of buried engines
+duct_length = 0
+n_inlets = 2
+a_inlets = 3
+n_fuel_tanks = 2
+
 # main wing ------------------------------------------------------------------------------------------------------------
-airfoil_efficiency = 0.95
-alpha = 0.5
-alpha_0 = 0.3
-CL_des = 1.2
 A = 6.96  # based on the reference aircraft B747
 S_ratio = 6.3  # estimated from ADSEE-I L3
+wing_option = 1  # Depending on the type of wing configuration, 1 is high wing, 0 is low wing
+winglet_height = 0.  # Mostly important for boxed wing, else leave as 0
+tail_type = 0  # Depending on the type of tail configuration, 1 is T-tail, 0 is conventional
 
 # horizontal tail ------------------------------------------------------------------------------------------------------
 QC_sweep_h = 32.7  # degrees    based on wide body statistics
@@ -65,10 +75,13 @@ c_j_cruise = 0.75  # 1/hr
 c_j_loiter = 0.5  # 1/hr
 Oswald = 0.8  # estimated from ADSEE-I L3
 CD_0 = C_fe * S_ratio
+CD_cruise = (4/3) * CD_0
+CL_cruise = np.sqrt((CD_0*np.pi*A*Oswald)/3)
 
 # Ranges ---------------------------------------------------------------------------------------------------------------
-cruise_range = 1800000  # m based on market analysis
+mission_range = 1800000  # m     based on market analysis
 reserve_range = 250 * 1.852 * 1000  # m based on requirement for domestic flights of ADSEE-I L3
+maximum_range = 2000000  # m    Guestimated
 
 # Fractions ------------------------------------------------------------------------------------------------------------
 W_tfo_frac = 0.003  # estimated from slides ADSEE-I, lecture 3
@@ -101,6 +114,5 @@ Delta_oswald_TO = 0.05  # Guestimated from ADSEE-I L3
 Delta_oswald_Land = 0.1  # Guestimated from ADSEE-I L3
 
 # Estimated parameters -------------------------------------------------------------------------------------------------
-N_engines = 2  # Guestimated
 Climb_rate = 2000 * ftmin_to_ms  # m/s      set climb rate by CS25
 Climb_gradient = 0.024  # c/V set by CS25 in case 4 engines, should be 0.03
