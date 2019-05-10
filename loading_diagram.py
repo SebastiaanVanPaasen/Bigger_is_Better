@@ -22,17 +22,17 @@ m_passenger    = 90      # mass of passenger and hand baggage kg
 cargo_fwdfrac  = 0.6     # Fraction of the amount the front compartment holds, if n_cargo = 1 then the value is 1
 
 # Weights from class II in [N]
-W_fuse      = 80000  
-W_nlg       = 1500
-W_vt        = 2500
-W_ht        = 3500
-W_fix       = 50000
-W_wing      = 70000
-W_nac       = 8000
-W_prop      = 15000
-W_mlg       = 6000
+W_fuse      = 80000*5  
+W_nlg       = 1500*5
+W_vt        = 2500*5
+W_ht        = 3500*5
+W_fix       = 50000*5
+W_wing      = 70000*5
+W_nac       = 8000*5
+W_prop      = 15000*5
+W_mlg       = 6000*5
 
-W_fuel      = 150000
+W_fuel      = 938780
 
 xcg_fuel    = 0.55   # % MAC
 
@@ -83,13 +83,14 @@ def potato(Safety_margin, xcg_fuel, W_fuel, W_fuse, W_nlg, W_vt, W_ht, W_fix, W_
     min_cg = []
     max_cg = []
     X_LEMAC_range = []
-    for j in np.arange(X_LEMAC/l_fuselage-0.1, X_LEMAC/l_fuselage+0.1, 0.001):
+
+    for j in np.arange((X_LEMAC/l_fuselage)-0.2, (X_LEMAC/l_fuselage)+0.2, 0.1):
         
         X_LEMAC_range.append(j)
         X_LEMAC = j*l_fuselage
         
         # Aircraft OEW weight and cg
-        xcg_OEW_MAC = (xcg_fusegroup + W_winggroup/W_fusegroup*xcg_wg_MAC - X_LEMAC)/(1. + W_winggroup/W_fusegroup) 
+        xcg_OEW_MAC = (xcg_fusegroup + (W_winggroup/W_fusegroup)*xcg_wg_MAC - X_LEMAC)/(1. + W_winggroup/W_fusegroup) 
         W_OEW       = W_fusegroup + W_winggroup
         
         #------------Cargo loading-------------------------------------------------
@@ -149,14 +150,15 @@ def potato(Safety_margin, xcg_fuel, W_fuel, W_fuse, W_nlg, W_vt, W_ht, W_fix, W_
         min_cg.append(min(xcg_Fwdloading)-Safety_margin)
         max_cg.append(max(xcg_Backloading)+Safety_margin)
         
-#        plt.plot(xcg_Backloading, W_Backloading)
-#        plt.plot(xcg_Fwdloading, W_Fwdloading)
-#        plt.show()
+        plt.plot(xcg_Backloading, W_Backloading)
+        plt.plot(xcg_Fwdloading, W_Fwdloading)
+        plt.show()
     
-    plt.plot(min_cg, X_LEMAC_range)
-    plt.plot(max_cg, X_LEMAC_range)
-    plt.show()
-    return(xcg_fusegroup, xcg_winggroup, xcg_OEW_MAC)
+#    plt.plot(min_cg, X_LEMAC_range)
+#    plt.plot(max_cg, X_LEMAC_range)
+#    plt.xlim(0,1)
+#    plt.show()
+    return(xcg_fusegroup, xcg_winggroup, xcg_OEW_MAC,min_cg, max_cg,X_LEMAC_range)
     
 
     

@@ -161,9 +161,9 @@ x_cg = np.linspace(0.,1,100)
 Sh_S = Sh_S_control(CL_H,CL_AH,l_h,Vh_V,x_cg,Cm_0,A,qcsweep,delta_flap,b,b_f0,b_fi,taper,c,c_f,dc_c_f,mu_2,mu_3,x_ac,CL_land,b_f,h_f,l_f,S,S_net,hcsweep,M_app,eta,CL_0)
 x_as = 0.*x_cg
 
-plt.plot(x_cg,Sh_S,x_cg,x_as,"k")
-plt.ylim(0.,1.2)
-plt.show()
+#plt.plot(x_cg,Sh_S,x_cg,x_as,"k")
+#plt.ylim(0.,1.2)
+#plt.show()
 
 
 
