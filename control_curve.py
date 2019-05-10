@@ -82,7 +82,7 @@ def Cm_ac_w(Cm_0,A,qcsweep):                                                    
     
     
     
-def dfus_Cm_ac(b_f,h_f,l_f,b,c,S,S_net,A,hcsweep,M_app,eta,CL_0):            #Cm_ac change due to fuselage
+def dfus_Cm_ac(b_f,h_f,l_f,b,c,S,S_net,A,hcsweep,M_app,eta,CL_0):               #Cm_ac change due to fuselage
     beta = np.sqrt(1. - M_app**2)
     CL_alpha_w = (2.*np.pi*A)/(2. + np.sqrt(4. + ((A*beta)/eta)**2 +  (1. + (np.tan(hcsweep)**2. / beta**2.))))
     CL_alpha_AH = CL_alpha_w * (1. + 2.15*(b_f/b)) * (S_net/S) + (np.pi/2.)*(b_f**2./S)
@@ -109,7 +109,7 @@ def dflap_Cm_ac(delta_flap,b,b_f0,b_fi,taper,c,c_f,dc_c_f,mu_2,mu_3,A,qcsweep,x_
     
   
 
-#--------------------------Unit tests---------------------------- 
+#-----------------------------Unit tests----------------------------------
 """Geometry"""
 qcsweep    =  0.5515 #quarter chord sweep [rad]
 hcsweep    =  0.4869 #half chord sweep [rad]
@@ -151,22 +151,12 @@ CL_H        = -0.8 #liftcoefficient tail
 
 
 
-#------------------------------VALUES GRAPHS--------------------------
+#-----------------------------------VALUES GRAPHS------------------------------
 mu_2       = 1. #2D to 3D correction factor from graph  
 mu_3       = 0.025#  correction factor for sweep from graph
 dc_c_f     =  0.5 # flap geometry ratio, see torenbeek book
 
 x_cg = np.linspace(0.,1,100)
-
-
-#dflap_Cm_ac = dflap_Cm_ac(delta_flap,b,b_f0,b_fi,taper,c,c_f,dc_c_f,mu_2,mu_3,A,qcsweep,x_ac,CL_land)
-#dfus_Cm_ac = dfus_Cm_ac(b_f,h_f,l_f,b,c,S,S_net,A,hcsweep,M_app,eta,CL_0)
-#Cm_ac_w = Cm_ac_w(Cm_0,A,qcsweep)
-#Cm_ac = Cm_ac(Cm_ac_w,dflap_Cm_ac,dfus_Cm_ac)
-#print dflap_Cm_ac
-#print dfus_Cm_ac
-#print Cm_ac_w
-#print Cm_ac
 
 Sh_S = Sh_S_control(CL_H,CL_AH,l_h,Vh_V,x_cg,Cm_0,A,qcsweep,delta_flap,b,b_f0,b_fi,taper,c,c_f,dc_c_f,mu_2,mu_3,x_ac,CL_land,b_f,h_f,l_f,S,S_net,hcsweep,M_app,eta,CL_0)
 x_as = 0.*x_cg
