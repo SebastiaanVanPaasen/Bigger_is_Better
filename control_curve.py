@@ -57,21 +57,21 @@ import matplotlib.pyplot as plt
 
 
 #------------------------------------DEFINITIONS-----------------------------
-def Sh_S_control(CL_H,CL_AH,l_h,Vh_V,c,Cm_ac,x_ac,x_cg):                        #final definition for control curve
+def Sh_S_control(CL_H,CL_AH,l_h,Vh_V,x_cg,Cm_0,A,qcsweep,delta_flap,b,b_f0,b_fi,taper,c,c_f,dc_c_f,mu_2,mu_3,x_ac,CL_land,b_f,h_f,l_f,S,S_net,hcsweep,M_app,eta,CL_0):                        #final definition for control curve
                                                                                 #as a function of the cg position over mac
     den = (CL_H/CL_AH)*(l_h/c)*Vh_V     #denominator                            #should be ebaluated at landing conditions
     
     Sh_S = []
     for i in range(len(x_cg)):
-        Sh_S_i = (1./den)*x_cg[i]  + (((Cm_ac/CL_AH)-x_ac)/den)
+        Sh_S_i = (1./den)*x_cg[i]  + (((Cm_ac(Cm_0,A,qcsweep,delta_flap,b,b_f0,b_fi,taper,c,c_f,dc_c_f,mu_2,mu_3,x_ac,CL_land,b_f,h_f,l_f,S,S_net,hcsweep,M_app,eta,CL_0)/CL_AH)-x_ac)/den)
         Sh_S.append(Sh_S_i)
         
     return Sh_S
     
     
     
-def Cm_ac(Cm_ac_w,dflap_Cm_ac,dfus_Cm_ac):                                      #C_mac consists of three parts
-    Cm_ac = Cm_ac_w + dflap_Cm_ac + dfus_Cm_ac                                  #due to wing, due to fuselage and due to flaps
+def Cm_ac(Cm_0,A,qcsweep,delta_flap,b,b_f0,b_fi,taper,c,c_f,dc_c_f,mu_2,mu_3,x_ac,CL_land,b_f,h_f,l_f,S,S_net,hcsweep,M_app,eta,CL_0):                                      #C_mac consists of three parts
+    Cm_ac = Cm_ac_w(Cm_0,A,qcsweep) + dflap_Cm_ac(delta_flap,b,b_f0,b_fi,taper,c,c_f,dc_c_f,mu_2,mu_3,A,qcsweep,x_ac,CL_land) + dfus_Cm_ac(b_f,h_f,l_f,b,c,S,S_net,A,hcsweep,M_app,eta,CL_0)                #due to wing, due to fuselage and due to flaps
     return Cm_ac
     
     
@@ -159,18 +159,17 @@ dc_c_f     =  0.5 # flap geometry ratio, see torenbeek book
 x_cg = np.linspace(0.,1,100)
 
 
-dflap_Cm_ac = dflap_Cm_ac(delta_flap,b,b_f0,b_fi,taper,c,c_f,dc_c_f,mu_2,mu_3,A,qcsweep,x_ac,CL_land)
-dfus_Cm_ac = dfus_Cm_ac(b_f,h_f,l_f,b,c,S,S_net,A,hcsweep,M_app,eta,CL_0)
-Cm_ac_w = Cm_ac_w(Cm_0,A,qcsweep)
-Cm_ac = Cm_ac(Cm_ac_w,dflap_Cm_ac,dfus_Cm_ac)
-print dflap_Cm_ac
-print dfus_Cm_ac
-print Cm_ac_w
-print Cm_ac
+#dflap_Cm_ac = dflap_Cm_ac(delta_flap,b,b_f0,b_fi,taper,c,c_f,dc_c_f,mu_2,mu_3,A,qcsweep,x_ac,CL_land)
+#dfus_Cm_ac = dfus_Cm_ac(b_f,h_f,l_f,b,c,S,S_net,A,hcsweep,M_app,eta,CL_0)
+#Cm_ac_w = Cm_ac_w(Cm_0,A,qcsweep)
+#Cm_ac = Cm_ac(Cm_ac_w,dflap_Cm_ac,dfus_Cm_ac)
+#print dflap_Cm_ac
+#print dfus_Cm_ac
+#print Cm_ac_w
+#print Cm_ac
 
-Sh_S = Sh_S_control(CL_H,CL_AH,l_h,Vh_V,c,Cm_ac,x_ac,x_cg)
+Sh_S = Sh_S_control(CL_H,CL_AH,l_h,Vh_V,x_cg,Cm_0,A,qcsweep,delta_flap,b,b_f0,b_fi,taper,c,c_f,dc_c_f,mu_2,mu_3,x_ac,CL_land,b_f,h_f,l_f,S,S_net,hcsweep,M_app,eta,CL_0)
 x_as = 0.*x_cg
-
 
 plt.plot(x_cg,Sh_S,x_cg,x_as,"k")
 plt.ylim(0.,1.2)
