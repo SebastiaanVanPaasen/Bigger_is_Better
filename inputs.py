@@ -21,12 +21,18 @@ W_person = 205  # lbs
 
 # General aircraft input parameters ------------------------------------------------------------------------------------
 # General cruise parameters
-V_cruise = 499 * kts_to_ms  # m/s  based on the reference aircraft B747
-M_cruise = 0.7
-CL_cruise = 0.7
 h_cruise = 11000  # m based on the sustainability analysis so far
+M_cruise = 0.7
+T_cruise = T_0 + a * h_cruise
+a_cruise = np.sqrt(gamma * R_gas * T_cruise)
+V_cruise = M_cruise * a_cruise  # m/s  based on the reference aircraft B747
+CL_cruise = 0.7
 
-# Aircraft geometry parameters -----------------------------------------------------------------------------------------
+# Densities ------------------------------------------------------------------------------------------------------------
+Rho_TO = Rho_0  # kg/m^3    standard sea-level density
+Rho_Cruise = Rho_0 * ((1 + (a * h_cruise) / T_0) ** (-(g_0 / (R_gas * a))))  # kg/m^3   based on cruise altitude
+Rho_Landing = Rho_0  # kg/m^3   standard sea-level density
+
 # aircraft cg-locations ------------------------------------------------------------------------------------------------
 x_engines = -1.  # m    x-location engines w.r.t. X_LEMAC
 x_fuel = 22  # m    cg-location fuel w.r.t nose
@@ -71,11 +77,6 @@ W_e_frac = 0.525  # Based on average between wide and narrow body, from Ed Obert
 # Landing requirements -------------------------------------------------------------------------------------------------
 Landing_runway = 2500  # m  Guestimated from ADSEE-I L3
 Landing_factor = 0.84  # Guestimated from ADSEE-I L3
-
-# Densities ------------------------------------------------------------------------------------------------------------
-Rho_TO = Rho_0  # kg/m^3    standard sea-level density
-Rho_Cruise = Rho_0 * ((1 + (a * h_cruise) / T_0) ** (-(g_0 / (R_gas * a))))  # kg/m^3   based on cruise altitude
-Rho_Landing = Rho_0  # kg/m^3   standard sea-level density
 
 # Take-off paramters ---------------------------------------------------------------------------------------------------
 TOP = 220 * lbft2_Nm2  # Guestimated from ADSEE-I L3
