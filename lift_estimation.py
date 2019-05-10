@@ -17,3 +17,13 @@ def Clean_Wing_Lift(aspect_ratio, m_cruise, half_chord_sweep, quarter_chord_swee
     alpha_trim = CL_des / CL_alpha + alpha_0_L  # Find trim angle to obtain required lift
 
     return np.array([CL_alpha, CL, alpha_trim])
+
+#
+# A = 9
+# M_cruise = 0.7
+# half_chord_sweep = 0.5
+# quarter_chord_sweep = 0.6
+# alpha = 0.5
+# alpha_0 = 0.3
+# Cl_des = 1.2
+# airfoil_eff_factor = 0.95

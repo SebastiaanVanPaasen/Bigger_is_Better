@@ -1,4 +1,5 @@
 import numpy as np
+
 # def Exposed_Areas(root_chord, span, S, taper_ratio, wing type): #exposed wing area calculation
 #    projected_length_fuselage = D_fuselage/2*(np.tan(LE_sweep)+root_chord*taper_ratio*2/span)
 #    total_area = projected_length_fuselage*D_fuselage/2
@@ -7,6 +8,34 @@ import numpy as np
 #    if wing type == "Vertical":
 #        exposed_area= exposed_area/2
 #    return exposed_area
+
+# D_fuselage = 3
+# L1 = 5
+# L2 = 30
+# L3 = 5
+# S = 500
+# A = 10
+# M_cruise = 0.7
+# half_chord_sweep = 0.5
+# quarter_chord_sweep = 0.6
+# LE_sweep = 0.65
+# alpha = 0.5
+# alpha_0 = 0.3
+# Cl_des = 1.2
+# airfoil_eff_factor = 0.95
+# root_chord = 15
+# span = np.sqrt(S * A)
+# taper_ratio = 0.3
+# root_chord_h = 5
+# root_chord_v = 4
+# span_h = 20
+# span_v = 25
+# taper_ratio_h = 0.5
+# taper_ratio_v = 0.5
+# S_h = 50
+# S_v = 70
+# tip_chord = root_chord * taper_ratio
+# winglet_height = 0.
 
 
 def Wing_wetted_area(root_chord, tip_chord, D_fuselage, span, S,
@@ -40,7 +69,7 @@ def Fus_wetted_area(D_fuselage, L1, L2, L3):
 
 
 # zero lift drag is estimated using wetted areas and factors from adsee, lift induced drag is done in AVL
-def Zero_Lift_Drag_est(S, Wing_wetted_area, H_wetted_area, V_wetted_area, Fus_wetted_area):
-    CD_0 = 1.15 * (1 / S) * (0.003 * Wing_wetted_area + 0.0024 * Fus_wetted_area + 0.0025 * (
-            H_wetted_area + V_wetted_area))  # adsee relations add 15% instead of 10 because nacelles are neglected
+def Zero_Lift_Drag_est(S, wing_wetted_area, h_wetted_area, v_wetted_area, fus_wetted_area):
+    CD_0 = 1.15 * (1 / S) * (0.003 * wing_wetted_area + 0.0024 * fus_wetted_area + 0.0025 * (
+            h_wetted_area + v_wetted_area))  # adsee relations add 15% instead of 10 because nacelles are neglected
     return CD_0
