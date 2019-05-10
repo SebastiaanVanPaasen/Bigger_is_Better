@@ -3,14 +3,14 @@ import matplotlib.pyplot as plt
 from inputs import *
 
 
-def manoevring_envelope(w_to, h, cl_max_pos, cl_max_neg, s, v_cruise):
-    # construct the manoevring plot
+def manoeuvring_envelope(w_to, h, cl_max_pos, s, v_cruise):
+    # construct the manoeuvring plot
     n_max = min(3.8, max(2.5, 2.1 + (24000 / (w_to / lbs_to_kg + 10000))))
-    print(n_max)
+    #print(n_max)
     rho = Rho_0 * ((1 + (a * h) / T_0) ** (-(g_0 / (R_gas * a) + 1)))
 
     cn_max_pos = 1.1 * cl_max_pos
-    cn_max_neg = -1 * 1.1 * cl_max_neg
+    cn_max_neg = -1.1 * cl_max_pos * 0.8
 
     n_pos = np.arange(0., n_max + 0.1, 0.1)
     n_pos = np.append(n_pos, n_max)
@@ -21,7 +21,10 @@ def manoevring_envelope(w_to, h, cl_max_pos, cl_max_neg, s, v_cruise):
     for i in range(len(n_pos)):
         v_pos[i] = np.sqrt((2 * w_to * n_pos[i]) / (rho * cn_max_pos * s))
     for i in range(len(n_neg)):
-        v_neg[i] = np.sqrt((2 * w_to * -1 * n_neg[i]) / (rho * cn_max_neg * s))
+        if n_neg[i] == 0.:
+            v_neg[i] = 0
+        else:
+            v_neg[i] = np.sqrt((2 * w_to * -1 * n_neg[i]) / (rho * cn_max_neg * s))
 
     V_A = v_pos[-2]
     V_C = v_cruise
@@ -43,7 +46,7 @@ def manoevring_envelope(w_to, h, cl_max_pos, cl_max_neg, s, v_cruise):
 def gust_envelope(w, h, cl_alpha, s, c, v_cruise, v):
     # construct gust loading plot
     # first determine density at altitude
-    rho = Rho_0 * ((1 + (a * h) / T_0) ** (-(g_0 / (R_gas * a) + 1)))
+    rho = Rho_0 * ((1 + (a * h) / Temp_0) ** (-(g_0 / (R_gas * a) + 1)))
 
     mu_g = (2 * (w / s)) / (rho * c * cl_alpha * g_0)
     # print(mu_g)
@@ -72,8 +75,8 @@ def gust_envelope(w, h, cl_alpha, s, c, v_cruise, v):
 
     n_pos = np.zeros(len(v))
     n_neg = np.zeros(len(v))
-    print("the gust speeds are " + str(v_gusts))
-    print("the speeds are " + str(v))
+    # print("the gust speeds are " + str(v_gusts))
+    # print("the speeds are " + str(v))
     #  Calculate the load factor based on the gust speed that accompanies the aircraft speed
     for i in range(len(v)):
         n_pos[i] = 1 + (0.5 * Rho_0 * cl_alpha * v_gusts[i] * v[i] * K_g) / (w / s)
@@ -88,7 +91,7 @@ def gust_envelope(w, h, cl_alpha, s, c, v_cruise, v):
 
 def construct_envelope():
     # Note: used values are only estimation and are definitely not correct!
-    v_pos, n_pos, v_neg, n_neg, gust_speeds = manoevring_envelope(1592281, 11000, 1.6, -1.28, 265, 295)
+    v_pos, n_pos, v_neg, n_neg, gust_speeds = manoeuvring_envelope(1592281, 11000, 1.6, -1.28, 265, 295)
     v_gust_pos, n_gust_pos, v_gust_neg, n_gust_neg = gust_envelope(1592281, 11000, 3.8, 295, 8, 265, gust_speeds)
 
     plt.plot(v_pos, n_pos)
@@ -97,3 +100,6 @@ def construct_envelope():
     plt.plot(v_gust_neg, n_gust_neg)
 
     plt.show()
+
+
+# construct_envelope()

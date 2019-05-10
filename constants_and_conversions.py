@@ -4,7 +4,7 @@
 Rho_0 = 1.225  # kg/m^3
 a = -0.0065  # K/m up to 10 km
 g_0 = 9.80565  # m/s^2
-T_0 = 288.15  # K
+Temp_0 = 288.15  # K
 R_gas = 287  # J/kg/K
 gamma = 1.4
 
