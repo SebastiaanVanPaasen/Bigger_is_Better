@@ -4,8 +4,9 @@
 Rho_0 = 1.225  # kg/m^3
 a = -0.0065  # K/m up to 10 km
 g_0 = 9.80565  # m/s^2
-T_0 = 288  # K
+T_0 = 288.15  # K
 R_gas = 287  # J/kg/K
+gamma = 1.4
 
 # Conversion factors ---------------------------------------------------------------------------------------------------
 ftmin_to_ms = 0.00508
@@ -25,3 +26,6 @@ V_h_V = 0.85 #  0.85 = fuselage mounted stabilizer
              #  0.95 = fin mounted stabilizer
              #  1 = for T-tial and canard
 eta = 0.95   #  usually used (see slides)
+CL_H = -0.8  #lift coefficient for an adjustable tail
+             # -1 for full movable tail
+             # -0.35*A_H**(1./3.) for a fixed tail
