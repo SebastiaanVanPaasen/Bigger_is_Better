@@ -7,34 +7,58 @@ from drag_estimation import Wing_wetted_area, H_tail_wetted_area, V_tail_wetted_
 from class_I_empennage_landinggear import class_I_empennage, size_tail
 from flight_envelope import manoeuvring_envelope, gust_envelope
 from conv_wing_avl import make_avl_file, run_avl, find_clalpha
+from wing_loading_diagram import final_diagram
 from class_II_weight_estimation import *
 import matplotlib.pyplot as plt
 
-# parameters that will be updated All weights,
+# Parameters that will be iterated through-out the process -------------------------------------------------------------
 T_input = 0.3
 S_input = 7000
-
 CL_cruise = CL_cruise
 CD_cruise = CD_cruise
 W_e_frac = W_e_frac
 Oswald = Oswald
 
-wing_choice = [0, 0, 0, 0, 0, 0]
+# Design choices required for the Roskam equations ---------------------------------------------------------------------
+# first is to include spoilers and speed brakes
+# second is with 2 wing mounted engines
+# third is with 4 wing mounted engines
+# fourth is if landing gear is not wing mounted
+# fifth is for strutted wings
+# sixth is for fowler flaps
+wing_choice = [1, 1, 0, 0, 0, 0]
+# choose 1 if you have variable incidence stabilizers
+# choose 1 if the horizontal tails are fin mounted
 empennage_choice = [0, 0]
+# choose 1 if your landing gear is attached to the fuselage
 fuselage_choice = 0
+# choose 1 if a turbojet or low bypass ratio turbofan is used
 nacelle_choice = 0
+# choose first if you have buried engine, 0 for no buried engines
+# choose secondly if the ducts have a flat cross section, in this case 1
 induction_choice = [0, 0]
+# choose 1 if piston engines are used
 prop_choice = 1
+# choose 1 if you hae non self-sealing bladder tanks
 fuel_sys_choice = 0
+# choice is the type of starting system, 1 for one or two jet engines with pneumatic starting system
+# 2 for four jet engines with pneumatic starting systems, 3 for jet engines using electric starting systems
+# 4 for turboprops with pneumatics, 5 for piston engines using electric systems
 start_up_choice = 1
-engine_choice = 2
+# Choose 1 for fuselage mounted jet, 2 for wing mounted jet, 3 for wing mounted turboprops and 4 for wing mounted piston
+# engines the second choice should be 1 if an afterburner is present
+engine_choice = [2, 0]
+# choice depends on engines, 1 for jet, 2 for turboprop, 3 for radial piston engines, 4 for horizontally opposed
+# piston engines
 oil_choice = 1
+# choice depends on engines, 1 is propellers
 hydro_choice = 0
 
-
+# Starting the iteration process ---------------------------------------------------------------------------------------
 i = 0
 maximum = 30
 empty_weight = np.zeros(30)
+final_diagram(CD_0, Oswald)
 
 while i < maximum:
     # Performing class I weight estimation -----------------------------------------------------------------------------
@@ -220,5 +244,6 @@ while i < maximum:
 
 iterations = np.arange(0, 30, 1)
 
+final_diagram(CD_0, Oswald)
 plt.plot(iterations, empty_weight)
 plt.show()

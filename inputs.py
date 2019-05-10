@@ -87,6 +87,12 @@ maximum_range = 2000000  # m    Guestimated
 W_tfo_frac = 0.003  # estimated from slides ADSEE-I, lecture 3
 W_e_frac = 0.525  # Based on average between wide and narrow body, from Ed Obert
 
+
+
+
+
+
+
 # T/W-W/S diagram inputs  ----------------------------------------------------------------------------------------------
 # Landing requirements -------------------------------------------------------------------------------------------------
 Landing_runway = 2500  # m  Guestimated from ADSEE-I L3

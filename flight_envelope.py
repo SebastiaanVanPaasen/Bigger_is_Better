@@ -6,8 +6,7 @@ from inputs import *
 def manoeuvring_envelope(w_to, h, cl_max_pos, s, v_cruise):
     # construct the manoeuvring plot
     n_max = min(3.8, max(2.5, 2.1 + (24000 / (w_to / lbs_to_kg + 10000))))
-    #print(n_max)
-    rho = Rho_0 * ((1 + (a * h) / T_0) ** (-(g_0 / (R_gas * a) + 1)))
+    rho = Rho_0 * ((1 + (a * h) / Temp_0) ** (-(g_0 / (R_gas * a) + 1)))
 
     cn_max_pos = 1.1 * cl_max_pos
     cn_max_neg = -1.1 * cl_max_pos * 0.8
