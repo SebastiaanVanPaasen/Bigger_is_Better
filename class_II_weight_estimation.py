@@ -35,7 +35,7 @@ def wing_weight(w_to, w_f, b, semi_chord_sweep, n_ult, s, t_max, choice):
 
 def _tail_weight(k, s, v_d, semi_chord_sweep):
     # variables are explained under empennage_weight function
-    return k * s((3.81 * (s ** 0.2) * v_d) / (1000 * np.cos(np.radians(semi_chord_sweep)) ** 0.5) - 0.287)
+    return k * s * ((3.81 * (s ** 0.2) * v_d) / (1000 * np.cos(np.radians(semi_chord_sweep)) ** 0.5) - 0.287)
 
 
 def empennage_weight(choice, surface, v_d, sweep, z_h, span_v):
@@ -63,7 +63,7 @@ def empennage_weight(choice, surface, v_d, sweep, z_h, span_v):
 
     weight_v_tail = _tail_weight(k_v, surface[1], v_d, sweep[1])
 
-    return weight_h_tail, weight_v_tail
+    return weight_h_tail + weight_v_tail
 
 
 def fuselage_weight(choice, v_d, l_h, w_f, h_f, s_fgs):
@@ -304,16 +304,3 @@ def calc_w_bc(s_ff):
 
     return 3 * s_ff
 
-
-# def structural_weight(weights):
-#
-#     total_weight = np.sum(weights)
-#     fractions = np.zeros(len(weights))
-#     for i in range(len(fractions)):
-#         fractions[i] = weights[i]/total_weight
-#
-#     return total_weight, fractions, np.sum(fractions)
-#
-#
-# def powerplant_weight(engines, induction, propeller, fuel_system, propulsion_system):
-#     return engines + induction + propeller + fuel_system + propulsion_system

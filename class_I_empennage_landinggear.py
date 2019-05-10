@@ -104,7 +104,7 @@ def size_tail(wing_area, volume_fraction, tail_sweep, aspect_ratio):
     tail_span = np.sqrt(tail_area*aspect_ratio)
     root_chord = (2*tail_area)/((1+taper_ratio)*tail_span)
     tip_chord = root_chord*taper_ratio
-    return root_chord, tip_chord, taper_ratio, tail_span, tail_area
+    return root_chord, tip_chord, tail_span, tail_area
 
 
 def classI_landinggear(MTOW, MLW, l_nosecone):

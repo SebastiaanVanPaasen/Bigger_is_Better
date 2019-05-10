@@ -33,11 +33,11 @@ def calc_fuel_fraction(coefficients):
     return 1 - fraction
 
 
-def class_I(aspect_ratio, oswald, s_ratio, c_fe, r_cruise, r_res, v_cruise, cj_cruise, W_tfo_frac, W_e_frac, fractions,
+def class_I(aspect_ratio, oswald, cd_0, r_cruise, r_res, v_cruise, cj_cruise, W_tfo_frac, W_e_frac, fractions,
             N_pas, N_crew, W_person):
-    cruise_1 = calc_cruise_coefficient(aspect_ratio, oswald, s_ratio, c_fe, r_cruise, v_cruise, cj_cruise)
+    cruise_1 = calc_cruise_coefficient(aspect_ratio, oswald, cd_0, r_cruise, v_cruise, cj_cruise)
     # loiter = calc_loiter_coefficient(A, Oswald, S_ratio, C_fe, E, c_j_loiter)
-    cruise_2 = calc_cruise_coefficient(aspect_ratio, oswald, s_ratio, c_fe, r_res, v_cruise, cj_cruise)
+    cruise_2 = calc_cruise_coefficient(aspect_ratio, oswald, cd_0, r_res, v_cruise, cj_cruise)
 
     # print("The first cruise coefficient equals " + str(cruise_1))
     # print("The loiter coefficient equals " + str(loiter))
@@ -58,4 +58,4 @@ def class_I(aspect_ratio, oswald, s_ratio, c_fe, r_cruise, r_res, v_cruise, cj_c
     W_F = W_f_frac * W_TO
     W_E = W_e_frac * W_TO
 
-    return np.array([W_TO, W_E, W_P, W_F]) / g_0
+    return np.array([W_TO, W_E, W_P, W_F])
