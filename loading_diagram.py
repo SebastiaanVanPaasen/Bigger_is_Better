@@ -38,8 +38,8 @@ xcg_fuel    = 0.55   # % MAC
 
 Safety_margin = 0.02   # for cg range
 
-Npax = 450
-Npax_below = 450
+Npax = 330
+Npax_below = 330
 d_inner, d_outer, lcabin, lcabin_below, lcabin_above, l_tailcone_range, l_nosecone_range, l_fuselage,tot_seating_abreast, N_aisle_above, N_aisle_below,N_rows_above,N_rows_below,lpax_below,lpax_above,tot_seating_abreast_last_row,Pseat=fuselage_cross_section(Npax,Npax_below)
 xcg_seats = cg_seats(Pseat, tot_seating_abreast,N_rows_above,N_rows_below,lpax_below,lpax_above,l_nosecone_range,tot_seating_abreast_last_row)
 W_window, W_aisle, W_middle = W_seats(tot_seating_abreast,N_rows_above,N_rows_below,lpax_below,lpax_above,l_nosecone_range,tot_seating_abreast_last_row)
@@ -70,13 +70,15 @@ def potato(Safety_margin, xcg_fuel, W_fuel, W_fuse, W_nlg, W_vt, W_ht, W_fix, W_
     xcg_prop = cg_locations[4]
     xcg_wing = cg_locations[5]
     # Fuselage group weight and cg
-    W_fusegroup   = W_fuse + W_nlg + W_vt + W_ht + W_fix
+    #W_fusegroup   = W_fuse + W_nlg + W_vt + W_ht + W_fix
+    W_fusegroup = 2866210*0.4*0.35
     xcg_vt        = xcg_emp
     xcg_ht        = xcg_emp
     xcg_fusegroup = (xcg_fuse*W_fuse + xcg_nlg*W_nlg + xcg_vt*W_vt + xcg_ht*W_ht + xcg_fix*W_fix)/W_fusegroup
     
     # Wing group weight and cg
-    W_winggroup   = W_wing + W_nac + W_prop + W_mlg
+    #W_winggroup   = W_wing + W_nac + W_prop + W_mlg
+    W_winggroup = 2866210*0.4*0.17
     xcg_winggroup = (xcg_wing*W_wing + xcg_nac*W_nac + xcg_prop*W_prop + xcg_mlg*W_mlg)/W_winggroup
     xcg_wg_MAC    = xcg_winggroup/MAC
     
@@ -84,14 +86,17 @@ def potato(Safety_margin, xcg_fuel, W_fuel, W_fuse, W_nlg, W_vt, W_ht, W_fix, W_
     max_cg = []
     X_LEMAC_range = []
 
-    for j in np.arange((X_LEMAC/l_fuselage)-0.2, (X_LEMAC/l_fuselage)+0.2, 0.1):
+    for j in np.arange((X_LEMAC/l_fuselage)-0.3, (X_LEMAC/l_fuselage)+0.3, 0.001):
         
         X_LEMAC_range.append(j)
         X_LEMAC = j*l_fuselage
         
         # Aircraft OEW weight and cg
-        xcg_OEW_MAC = (xcg_fusegroup + (W_winggroup/W_fusegroup)*xcg_wg_MAC - X_LEMAC)/(1. + W_winggroup/W_fusegroup) 
+        #xcg_OEW_MAC = (xcg_fusegroup + (W_winggroup/W_fusegroup)*xcg_wg_MAC - X_LEMAC)/(1. + W_winggroup/W_fusegroup) 
         W_OEW       = W_fusegroup + W_winggroup
+        xcg_OEW_MAC = ((xcg_fusegroup-X_LEMAC)/MAC*W_fusegroup + xcg_wg_MAC*W_winggroup)/W_OEW
+        
+        
         
         #------------Cargo loading-------------------------------------------------
         W_pax = n_pax*m_passenger*g
@@ -149,14 +154,13 @@ def potato(Safety_margin, xcg_fuel, W_fuel, W_fuse, W_nlg, W_vt, W_ht, W_fix, W_
         
         min_cg.append(min(xcg_Fwdloading)-Safety_margin)
         max_cg.append(max(xcg_Backloading)+Safety_margin)
-        
-        plt.plot(xcg_Backloading, W_Backloading)
-        plt.plot(xcg_Fwdloading, W_Fwdloading)
-        plt.show()
-    
+      
+#        plt.plot(xcg_Backloading, W_Backloading)
+#        plt.plot(xcg_Fwdloading, W_Fwdloading)
+#        plt.show()
+#       
 #    plt.plot(min_cg, X_LEMAC_range)
 #    plt.plot(max_cg, X_LEMAC_range)
-#    plt.xlim(0,1)
 #    plt.show()
     return(xcg_fusegroup, xcg_winggroup, xcg_OEW_MAC,min_cg, max_cg,X_LEMAC_range)
     

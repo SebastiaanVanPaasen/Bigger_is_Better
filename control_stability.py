@@ -9,8 +9,8 @@ import math
 import scipy as sp
 import matplotlib.pyplot as plt
 
-from control_curve import Sh_S_control
-from stability import Sh_S_stability
+from control_curve import *
+from stability import *
 from loading_diagram import *
 from seats import *
 
@@ -87,7 +87,7 @@ S_stability = Sh_S_stability(x_cg, M_h_cruise, eta, hcsweeph, hcsweepw, A_w, A_h
 
 def control_stability_plot(min_cg, max_cg, X_LEMAC_range, S_control, S_stability):
     
-    Sh_S = np.linspace(0,1,100)
+    Sh_S = np.linspace(0,2,100)
     contr_trend = np.polyfit(x_cg, S_control, 1)
     stability_trend = np.polyfit(x_cg, S_stability, 1)
     a_control = contr_trend[0]
@@ -112,6 +112,9 @@ def control_stability_plot(min_cg, max_cg, X_LEMAC_range, S_control, S_stability
     print(len(X_LEMAC_range))          
     print(LEMAC_opt)
     print(LEMAC_opt[Sh_opt.index(min(Sh_opt))])
+    print(min(Sh_opt))
+    print(min_cg[Sh_opt.index(min(Sh_opt))])
+    print(max_cg[Sh_opt.index(min(Sh_opt))])
     
 #    X_LEMAC = list(np.array(X_LEMAC_range)+LEMAC_opt[Sh_opt.index(min(Sh_opt))])
 #    
