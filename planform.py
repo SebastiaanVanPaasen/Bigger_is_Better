@@ -2,7 +2,9 @@ import numpy as np  # delete later should be loaded in the general program
 import matplotlib.pyplot as plt
 
 
-def wing_parameters(m_cruise, cl_cruise, surface_area, aspect_ratio):
+option = 0 #0 for low wing 1 for high wing
+
+def wing_parameters(m_cruise, cl_cruise, surface_area, aspect_ratio, option):
     # Sweep calculation
     m_t = 0.935  # Technology factor for super critical airfoil
     m_dd = m_cruise + 0.03  # drag divergence mach number
@@ -21,8 +23,12 @@ def wing_parameters(m_cruise, cl_cruise, surface_area, aspect_ratio):
     chord_tip = taper_ratio * chord_root
 
     # Select dihedral using ADSEE approach
-    dihedral = np.deg2rad(
-        3 - (np.rad2deg(quarter_chord_sweep) / 10) + 2)  # selected for low wing if height wing use -2 instead of +2
+    if option == 0:
+        dihedral = np.deg2rad(
+                3 - (np.rad2deg(quarter_chord_sweep) / 10) + 2)  # selected for low wing if height wing use -2 instead of +2
+    else:
+        dihedral = np.deg2rad(
+                3 - (np.rad2deg(quarter_chord_sweep) / 10) - 2)
 
     # thickness over chord ratio
     leading_edge_sweep = np.arctan(np.tan(quarter_chord_sweep) - (chord_root / (2 * span) * (taper_ratio - 1)))

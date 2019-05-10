@@ -22,8 +22,9 @@ def wing_weight(w_to, w_f, b, semi_chord_sweep, n_ult, s, t_max, choice):
     # first is to include spoilers and speed brakes
     # second is with 2 wing mounted engines
     # third is with 4 wing mounted engines
-    # fourth is for strutted wings
-    # fifth is for fowler flaps
+    # fourth is if landing gear is not wing mounted
+    # fifth is for strutted wings
+    # sixth is for fowler flaps
 
     for i in range(len(choice)):
         if choice[i] == 1:
@@ -32,16 +33,18 @@ def wing_weight(w_to, w_f, b, semi_chord_sweep, n_ult, s, t_max, choice):
     return w_weight
 
 
-def tail_weight(k, s, v_d, semi_chord_sweep):
+def _tail_weight(k, s, v_d, semi_chord_sweep):
     # variables are explained under empennage_weight function
     return k * s((3.81 * (s ** 0.2) * v_d) / (1000 * np.cos(np.radians(semi_chord_sweep)) ** 0.5) - 0.287)
 
 
 def empennage_weight(choice, surface, v_d, sweep, z_h, span_v):
     # surface is an array of the horizontal and vertical tail surface area
+    # v_d is the design dive speed
     # sweep is an array list of the semi_chord sweep angle of the horizontal and vertical tail
     # z_h is the distance between root of vertical tail and start of horizontal tail on vertical tail
     # span_v is the span of the vertical tail
+    v_d = v_d / kts_to_ms
     surface = surface / ft_to_m
     z_h = z_h / ft_to_m
     span_v = span_v / ft_to_m
@@ -51,22 +54,24 @@ def empennage_weight(choice, surface, v_d, sweep, z_h, span_v):
     if choice[0] == 1:
         k_h = 1.1
 
-    weight_h_tail = tail_weight(k_h, surface[0], v_d, sweep[0])
+    weight_h_tail = _tail_weight(k_h, surface[0], v_d, sweep[0])
 
     k_v = 1
     # choose 1 if the horizontal tails are fin mounted
     if choice[1] == 1:
         k_v = 1 + 0.15 * ((surface[0] * z_h) / (surface[1] * span_v))
 
-    weight_v_tail = tail_weight(k_v, surface[1], v_d, sweep[1])
+    weight_v_tail = _tail_weight(k_v, surface[1], v_d, sweep[1])
 
     return weight_h_tail, weight_v_tail
 
 
 def fuselage_weight(choice, v_d, l_h, w_f, h_f, s_fgs):
+    # v_d is the design dive speed
     # w_f is maximum width of the fuselage
     # f_h is maximum height of the fuselage
     # s_fgs = fuselage fross shell area in ft^2
+    v_d = v_d / kts_to_ms
     w_f = w_f / ft_to_m
     h_f = h_f / ft_to_m
     l_h = l_h / ft_to_m
@@ -105,16 +110,18 @@ def induction_weight(l_d, n_inl, a_inl, choice):
     # l_d is the duct length
     # n_inl is the number of inlets
     # a_inl is the cross sectional area of an inlet
+    if choice[0] == 1:
+        return 0
+    else:
+        l_d = l_d / ft_to_m
+        a_inl = a_inl / (ft_to_m ** 2)
+        k_d = 1.
 
-    l_d = l_d / ft_to_m
-    a_inl = a_inl / (ft_to_m ** 2)
-    k_d = 1.
+        # choose 1 if the ducts have a flat cross section
+        if choice[1] == 1:
+            k_d = 1.33
 
-    # choose 1 if the ducts have a flat cross section
-    if choice == 1:
-        k_d = 1.33
-
-    return 11.45 * ((l_d * n_inl * (a_inl ** 0.5) * k_d) ** 0.7331)
+        return 11.45 * ((l_d * n_inl * (a_inl ** 0.5) * k_d) ** 0.7331)
 
 
 def propeller_weight(choice, n_p, d_p, p_to, n_bl):
@@ -145,96 +152,157 @@ def fuel_system_weight(n_e, n_t, w_f, choice):
         return 80 * (n_e + n_t - 1) + 15 * (n_t ** 0.5) * ((w_f / k_fsp) ** 0.333)
 
 
-def propulsion_system_weight(choice, l_f, b, n_e=0, w_e=0, n_bl=0, n_p=0, d_p=0, p_to=0):
+def calc_w_ec(l_f, n_e, b, choice):
     # n_e is the number of engines
     # l_f is the fuselage length
-    # w_e is the total weight of all engines
-    # n_bl is the number of blades per propeller
-    # n_p is the number of propellers
-    # d_p is the diameter of a propeller
-    # p_to is the take-off power MUST BE ENTERED IN hp
+    # b is the span of the main wing
+    # the first choice is regarding the type of engine controls: 1 for fuselage mounted jet, 2 for wing mounted jet,
+    # 3 for wing mounted turboprops and 4 for wing mounted piston engines
+    # the second choice should be 1 if an afterburner is present
 
     l_f = l_f / ft_to_m
     b = b / ft_to_m
-    d_p = d_p / ft_to_m
 
-    # the first choice is regarding the type of engine controls (fuselage mounted jet, wing mounted jet, wing mounted
-    # turboprops, wing mounted piston engines
-    # the second choice should be 1 if an afterburner is present
-    # the third choice is regarding type of engines (1 or 2 jets with pneumatic systems, 4 jets with pneumatic systems
-    # jet engines with electric starting systems, turboprops using pneumatic systems,
-    # piston engines using electric starting systems.
     if choice[0] == 1:
         k_ec = 0.686
         if choice[1] == 1:
             k_ec = 1.080
 
-        w_ec = k_ec * ((l_f * n_e) ** 0.792)
+        return k_ec * ((l_f * n_e) ** 0.792)
 
     elif choice[0] == 2:
-        w_ec = 88.46 * (((l_f + b) / n_e / 100) ** 0.294)
+        return 88.46 * (((l_f + b) / n_e / 100) ** 0.294)
+
     elif choice[0] == 3:
-        w_ec = 56.84 * (((l_f + b) / n_e / 100) ** 0.514)
+        return 56.84 * (((l_f + b) / n_e / 100) ** 0.514)
+
     else:
-        w_ec = 60.27 * (((l_f + b) / n_e / 100) ** 0.724)
-
-    w_ess = 9.33 * (w_e / 1000) ** 1.078
-    w_osc = 0
-    w_pc = 0
-    if choice[2] == 1:
-        w_ess = 49.19 * (w_e / 1000) ** 0.541
-        w_osc = 0
-    elif choice[2] == 2:
-        w_ess = 38.93 * (w_e / 1000) ** 0.918
-        w_osc = 0
-        w_pc = 0
-    elif choice[2] == 3:
-        w_ess = 12.05 * (w_e / 1000) ** 1.458
-        w_pc = 0.322 * (n_bl ** 0.589) * (((n_p * d_p * p_to / n_e) / 1000) ** 1.178)
-        w_osc = 0.07 * w_e
-    elif choice[2] == 4:
-        w_ess = 50.38 * (w_e / 1000) ** 0.459
-        w_pc = 0.322 * (n_bl ** 0.589) * (((n_p * d_p * p_to / n_e) / 1000) ** 1.178)
-        w_osc = 0.05 * w_e
-
-    return w_ec + w_ess + w_pc + w_osc
+        return 60.27 * (((l_f + b) / n_e / 100) ** 0.724)
 
 
-def fixed_equipment_weight(q_d, w_to, w_e, w_f, v_pax, n_crew, n_pax, s_ff, r, choice):
+def calc_w_ess(w_e, n_e, choice):
+    # w_e is the weight per engine
+    # n_e is the number of engines
+    # choice is the type of starting system, 1 for one or two jet engines with pneumatic starting system
+    # 2 for four jet engines with pneumatic starting systems, 3 for jet engines using electric starting systems
+    # 4 for turboprops with pneumatics, 5 for piston engines using electric systems
+    w_e = w_e * n_e
+    if choice == 1:
+        return 9.33 * (w_e / 1000) ** 1.078
+    elif choice == 2:
+        return 49.19 * (w_e / 1000) ** 0.541
+    elif choice == 3:
+        return 38.93 * (w_e / 1000) ** 0.918
+
+    elif choice == 4:
+        return 12.05 * (w_e / 1000) ** 1.458
+
+    elif choice == 5:
+        return 50.38 * (w_e / 1000) ** 0.459
+
+
+def calc_w_pc(n_bl, n_p, d_p, n_e, p_to, choice):
+    # choice depends on the typ of engines, 1 is for jets, 2 for turboprops and 3 for piston engines
+    # input parameters are as defined previously
+    d_p = d_p / ft_to_m
+
+    if choice == 1:
+        return 0
+    elif choice == 2:
+        return 0.322 * (n_bl ** 0.589) * (((n_p * d_p * p_to / n_e) / 1000) ** 1.178)
+    else:
+        return 4.552 * (n_bl ** 0.379) * (((n_p * d_p * p_to / n_e) / 1000) ** 0.759)
+
+
+def calc_w_osc(choice, w_e, n_e):
+    # choice depends on engines, 1 for jet, 2 for turboprop, 3 for radial piston engines, 4 for horizontally opposed
+    # piston engines
+    # w_e is the weight per engine
+    # n_e is the number of engines
+    w_e = w_e * n_e
+
+    if choice == 1:
+        return 0
+    elif choice == 2:
+        return 0.07 * w_e
+    elif choice == 3:
+        return 0.08 * w_e
+    else:
+        return 0.03 * w_e
+
+
+def calc_w_fc(w_to, q_d):
     # q_d is the dynamic pressure in dive conditions
     # w_to is the take-off weight
-    # w_e is the empty weight of the aircraft
-    # v_pax is the passenger cabin volume
-    # r is the maximum range of the aircraft
-    # s_ff is the freight floor area
-    q_d = q_d / psf_to_nm2
+
     w_to = (w_to / lbs_to_kg) / g_0
-    w_e = (w_e / lbs_to_kg) / g_0
-    w_f = (w_f / lbs_to_kg) / g_0
+    q_d = q_d / psf_to_nm2
+
+    return 56.01 * (((w_to * q_d) / 100000) ** 0.576)
+
+
+def calc_w_hps_els(choice, w_to, v_pax):
+    # choice depends on engines, 1 is propellers
+    # w_to is the take-off weight
+    # v_pax is the passenger cabin volume
+
+    w_to = (w_to / lbs_to_kg) / g_0
     v_pax = v_pax / (ft_to_m ** 3)
-    r = r / nm_to_km
-    s_ff = s_ff/(ft_to_m**2)
 
-    w_fc = 56.01 * (((w_to * q_d) / 100000) ** 0.576)
-
-    w_hps = 0.325 * (w_to ** 0.8)
-    w_els = 0
-    if choice[0] == 1:
+    if choice == 1:
+        return 0.325 * (w_to ** 0.8)
+    else:
         w_hyd = 0.009 * w_to
         w_els = 10.8 * (v_pax ** 0.7) * (1 - 0.018 * (v_pax ** 0.35))
+        return w_hyd + w_els
 
-    w_instr = 0.575 * (w_e ** 0.556) * (r ** 0.25)
-    w_api = 469 * (((v_pax * (n_crew + n_pax)) / 10000) ** 0.419)
-    w_ox = 7 * ((n_crew + n_pax) ** 0.702)
-    w_apu = 0.0085 * w_to
 
+def calc_w_instr(w_e, r_max):
+    # w_e is the empty weight of the aircraft
+    # r is the maximum range of the aircraft
+
+    w_e = (w_e / lbs_to_kg) / g_0
+    r_max = r_max / nm_to_km
+
+    return 0.575 * (w_e ** 0.556) * (r_max ** 0.25)
+
+
+def calc_w_api(v_pax, n_crew, n_pax):
+    # v_pax is the passenger cabin volume
+    v_pax = v_pax / (ft_to_m ** 3)
+
+    return 469 * (((v_pax * (n_crew + n_pax)) / 10000) ** 0.419)
+
+
+def calc_w_ox(n_crew, n_pax):
+    return 7 * ((n_crew + n_pax) ** 0.702)
+
+
+def calc_w_apu(w_to):
+    # w_to is the take-off weight
+    w_to = (w_to / lbs_to_kg) / g_0
+
+    return 0.0085 * w_to
+
+
+def calc_w_fur(w_to, w_f):
     # if more detail is required, look in Torenbeek p292
-    w_fur = 0.211*((w_to - w_f)**0.91)
+    # w_to is the take-off weight
+    # w_f is the fuel weight of the aircraft
 
+    w_to = (w_to / lbs_to_kg) / g_0
+    w_f = (w_f / lbs_to_kg) / g_0
+
+    return 0.211 * ((w_to - w_f) ** 0.91)
+
+
+def calc_w_bc(s_ff):
     # cargo containers require more investigatoin, roskam 110
-    w_bc = 3 * s_ff
+    # s_ff is the freight floor area
 
-    return w_fc + w_hps + w_els + w_instr + w_api + w_ox + w_apu + w_fur + w_bc
+    s_ff = s_ff / (ft_to_m ** 2)
+
+    return 3 * s_ff
 
 
 # def structural_weight(weights):

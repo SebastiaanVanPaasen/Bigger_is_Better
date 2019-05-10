@@ -28,24 +28,25 @@ def fuselage_cross_section(Npax, Npax_below):
     tot_seating_abreast = np.zeros([2, 3])
     # single floor configuration
     if Npax_below == Npax:
-        N_sa = round(0.45 * sqrt(Npax))
+        N_sa_below = round(0.45 * sqrt(Npax))
+        N_sa_above = 0
         # Check number of aisle and create the seating abreast
-        if N_sa <= 6:
+        if N_sa_below <= 6:
             k_cabin = 1.08
             N_aisles = 1
-            N_right = ceil(N_sa / 2)
-            N_left = N_sa - N_right
+            N_right = ceil(N_sa_below / 2)
+            N_left = N_sa_below - N_right
             N_middle = 0
-        elif N_sa >= 6 and N_sa <= 12:
+        elif N_sa_below >= 6 and N_sa_below <= 12:
             k_cabin = 1.17
             N_aisles = 2
-            if N_sa < 9:
+            if N_sa_below < 9:
                 N_left = 2
                 N_right = 2
             else:
                 N_left = 3
                 N_right = 3
-            N_middle = N_sa - N_left - N_right
+            N_middle = N_sa_below - N_left - N_right
 
         else:
             print("This aircraft has more than 2 aisle")
@@ -53,7 +54,7 @@ def fuselage_cross_section(Npax, Npax_below):
             N_left = 0
             N_middle = 0
             N_aisles = 0
-            N_sa = 0
+            N_sa_below = 0
             k_cabin = 0
 
         # Place the seating configuration in a array
@@ -62,8 +63,8 @@ def fuselage_cross_section(Npax, Npax_below):
         tot_seating_abreast[1, 2] = N_left
 
         # Compute length of compartments
-        lcabin = (Npax / N_sa) * k_cabin
-        W_cabin = N_sa * Wseat + (N_sa + N_aisles + 1) * Warmrest + N_aisles * Waisle + 2 * Sclearance
+        lcabin = (Npax / N_sa_below) * k_cabin
+        W_cabin = N_sa_below * Wseat + (N_sa_below + N_aisles + 1) * Warmrest + N_aisles * Waisle + 2 * Sclearance
         W_headroom = W_cabin - 2 * (Warmrest + Sclearance) - Wseat
         V_os = (Nos_lat * Aos_lat + Nos_ce * Aos_ce) * lcabin * Kos
 
@@ -107,7 +108,7 @@ def fuselage_cross_section(Npax, Npax_below):
         N_aisle_above = 0
         N_aisle_below = N_aisles
         N_rows_above = 0
-        N_rows_below = ceil(Npax_below/N_sa)
+        N_rows_below = ceil(Npax_below/N_sa_below)
 
     # Same applies for a double decker configuration
     else:
@@ -249,13 +250,14 @@ def fuselage_cross_section(Npax, Npax_below):
     lpax_above = N_rows_above * Pseat
     Npax_tot_seats = N_rows_below * N_sa_below+ N_rows_above * N_sa_above
     diff = Npax_tot_seats - Npax
-    print(diff)
-    tot_seating_abreast_last_row = np.zeros([2, 3])
+    
+    tot_seating_abreast_last_row = tot_seating_abreast*1
     if diff>0:
+        tot_seating_abreast_last_row = np.zeros([2, 3])
         if N_sa_below>=N_sa_above:
         
             N_sa_below_last_row = N_sa_below-diff
-            print(N_sa_below_last_row)
+            
             if N_sa_below_last_row <= 6:
                 k_cabin = 1.08
                 N_aisles = 1
@@ -280,7 +282,6 @@ def fuselage_cross_section(Npax, Npax_below):
             tot_seating_abreast_last_row[1, 2] = N_left
         else:
             N_sa_above_last_row = N_sa_above-diff
-            print(N_sa_above_last_row)
             if N_sa_above_last_row <= 6:
                 k_cabin = 1.08
                 N_aisles = 1
@@ -326,5 +327,5 @@ def fuselage_cross_section(Npax, Npax_below):
             tot_seating_abreast, N_aisle_above, N_aisle_below,N_rows_above,N_rows_below,lpax_below,lpax_above,tot_seating_abreast_last_row,Pseat)
 
 
-a = fuselage_cross_section(450,106)
-print(a)
+
+

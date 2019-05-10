@@ -7,12 +7,11 @@ def calc_payload_weight(n_passengers, n_crew, w_person):
     return (n_passengers * w_person * lbs_to_kg + n_crew * w_person * lbs_to_kg) * g_0
 
 
-def calc_cruise_coefficient(aspect_ratio, oswald_factor, surface_ratio, c_fe, r, velocity, c_j):
+def calc_cruise_coefficient(aspect_ratio, oswald_factor, cd_0, r, velocity, c_j):
     # c_fe is the equivalent skin friction coeficient
     # surface_ratio is the wetted surface over the total surface
     # equations come from ADSEE-I lecture 2
 
-    cd_0 = c_fe * surface_ratio
     LD_ratio = 0.75 * np.sqrt((np.pi * aspect_ratio * oswald_factor) / (3 * cd_0))
 
     return 1 / (np.e ** (r / ((velocity / (c_j * per_hr_to_N * g_0)) * LD_ratio)))
