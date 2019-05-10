@@ -6,8 +6,6 @@ Created on Thu May 09 14:36:48 2019
 """
 #-------------------------MODULES---------------------------
 import numpy as np
-import math
-import scipy as sp
 import matplotlib.pyplot as plt
 
 #--------------------------INPUTS---------------------------- 
