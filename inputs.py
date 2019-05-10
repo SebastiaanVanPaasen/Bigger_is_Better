@@ -22,12 +22,13 @@ W_person = 205  # lbs
 # General aircraft input parameters ------------------------------------------------------------------------------------
 # General cruise parameters
 h_cruise = 11000  # m based on the sustainability analysis so far
-M_cruise = 0.7
+M_cruise = 0.65
 T_cruise = T_0 + a * h_cruise
 a_cruise = np.sqrt(gamma * R_gas * T_cruise)
 V_cruise = M_cruise * a_cruise  # m/s  based on the reference aircraft B747
 CL_cruise = 0.7
 
+print(V_cruise)
 # Densities ------------------------------------------------------------------------------------------------------------
 Rho_TO = Rho_0  # kg/m^3    standard sea-level density
 Rho_Cruise = Rho_0 * ((1 + (a * h_cruise) / T_0) ** (-(g_0 / (R_gas * a))))  # kg/m^3   based on cruise altitude
@@ -83,11 +84,11 @@ TOP = 220 * lbft2_Nm2  # Guestimated from ADSEE-I L3
 Sigma_TO = Rho_TO / Rho_0  # Ratio of densities
 
 # Stall speeds ---------------------------------------------------------------------------------------------------------
-V_stall_Cruise = 140  # m/s   Guestimated from ADSEE-I L3
+V_stall_Cruise = V_cruise/1.3  # m/s   Guestimated from ADSEE-I L3 Take requirements 
 V_stall_Landing = min(np.sqrt(Landing_runway / 0.5847), 65)  # m/s     Guestimated from ADSEE-I L3
 
 # Lift and drag coefficients -------------------------------------------------------------------------------------------
-CL_Cruise_max = 1.6  # Guestimated from ADSEE-I L3
+CL_Cruise_max = 1.7  # Guestimated from ADSEE-I L3
 CL_Landing_max = 3.2  # From Obert
 CL_TO_max = 0.8 * CL_Landing_max  # Guestimated from ADSEE-I L3
 
