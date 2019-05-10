@@ -27,9 +27,7 @@ M_cruise = 0.7  # Mach number decided to cruise on
 Temp_cruise = Temp_0 + a * h_cruise  # K  based on the altitude you fly at
 a_cruise = np.sqrt(gamma * R_gas * Temp_cruise)  # m/s based on the temperature
 V_cruise = M_cruise * a_cruise  # m/s  based on the Mach number and speed of sound
-CL_cruise = 0.7  # Guestmate based on reference data
 
-print(V_cruise)
 # Densities ------------------------------------------------------------------------------------------------------------
 Rho_TO = Rho_0  # kg/m^3    standard sea-level density
 Rho_Cruise = Rho_0 * ((1 + (a * h_cruise) / Temp_0) ** (-(g_0 / (R_gas * a))))  # kg/m^3   based on cruise altitude
@@ -61,6 +59,7 @@ A = 6.96  # based on the reference aircraft B747
 S_ratio = 6.3  # estimated from ADSEE-I L3
 wing_option = 1  # Depending on the type of wing configuration, 1 is high wing, 0 is low wing
 winglet_height = 0.  # Mostly important for boxed wing, else leave as 0
+tail_type = 0  # Depending on the type of tail configuration, 1 is T-tail, 0 is conventional
 
 # horizontal tail ------------------------------------------------------------------------------------------------------
 QC_sweep_h = 32.7  # degrees    based on wide body statistics
@@ -76,12 +75,13 @@ c_j_cruise = 0.75  # 1/hr
 c_j_loiter = 0.5  # 1/hr
 Oswald = 0.8  # estimated from ADSEE-I L3
 CD_0 = C_fe * S_ratio
+CD_cruise = (4/3) * CD_0
+CL_cruise = np.sqrt((CD_0*np.pi*A*Oswald)/3)
 
 # Ranges ---------------------------------------------------------------------------------------------------------------
 mission_range = 1800000  # m     based on market analysis
 reserve_range = 250 * 1.852 * 1000  # m based on requirement for domestic flights of ADSEE-I L3
 maximum_range = 2000000  # m    Guestimated
-
 
 # Fractions ------------------------------------------------------------------------------------------------------------
 W_tfo_frac = 0.003  # estimated from slides ADSEE-I, lecture 3

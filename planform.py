@@ -44,7 +44,7 @@ def wing_parameters(m_cruise, cl_cruise, surface_area, aspect_ratio, option):
     mac = (2 / 3) * chord_root * ((1 + taper_ratio + taper_ratio ** 2) / (1 + taper_ratio))
 
     return (
-        quarter_chord_sweep, span, chord_root, chord_tip, dihedral,
+        quarter_chord_sweep, leading_edge_sweep, span, chord_root, chord_tip, dihedral,
         thickness_over_chord, mac)
 
 

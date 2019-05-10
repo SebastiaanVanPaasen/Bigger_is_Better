@@ -95,7 +95,7 @@ def class_I_empennage(MAC, l_fuselage, x_eng, l_n, xcg_OEW_MAC, mass_frac_OEW, x
     S_v_frac_S = (V_v_norm * b) / (x_v - xcg_aft)
     cg_locations = np.array([xcg_fuse, xcg_emp, xcg_fix, xcg_nac, xcg_prop, xcg_wing, xcg_fwd, xcg_aft, zcg])
 
-    return cg_locations, S_h_frac_S, S_v_frac_S, X_LEMAC, x_h
+    return cg_locations, S_h_frac_S, S_v_frac_S, X_LEMAC, x_h, x_v
 
 
 def size_tail(wing_area, volume_fraction, tail_sweep, aspect_ratio):

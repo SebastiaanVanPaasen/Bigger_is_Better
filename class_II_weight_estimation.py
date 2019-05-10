@@ -303,4 +303,3 @@ def calc_w_bc(s_ff):
     s_ff = s_ff / (ft_to_m ** 2)
 
     return 3 * s_ff
-
