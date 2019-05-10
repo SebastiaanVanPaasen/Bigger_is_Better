@@ -69,24 +69,23 @@ def potato(Safety_margin, xcg_fuel, W_fuel, W_fuse, W_nlg, W_vt, W_ht, W_fix, W_
     xcg_nac = cg_locations[3]
     xcg_prop = cg_locations[4]
     xcg_wing = cg_locations[5]
+    
     # Fuselage group weight and cg
-    #W_fusegroup   = W_fuse + W_nlg + W_vt + W_ht + W_fix
-    W_fusegroup = 2866210*0.4*0.35
+    W_fusegroup   = W_fuse + W_nlg + W_vt + W_ht + W_fix
     xcg_vt        = xcg_emp
     xcg_ht        = xcg_emp
     xcg_fusegroup = (xcg_fuse*W_fuse + xcg_nlg*W_nlg + xcg_vt*W_vt + xcg_ht*W_ht + xcg_fix*W_fix)/W_fusegroup
     
     # Wing group weight and cg
-    #W_winggroup   = W_wing + W_nac + W_prop + W_mlg
-    W_winggroup = 2866210*0.4*0.17
+    W_winggroup   = W_wing + W_nac + W_prop + W_mlg
     xcg_winggroup = (xcg_wing*W_wing + xcg_nac*W_nac + xcg_prop*W_prop + xcg_mlg*W_mlg)/W_winggroup
     xcg_wg_MAC    = xcg_winggroup/MAC
     
     min_cg = []
     max_cg = []
     X_LEMAC_range = []
-
-    for j in np.arange((X_LEMAC/l_fuselage)-0.3, (X_LEMAC/l_fuselage)+0.3, 0.001):
+    #print(X_LEMAC/l_fuselage)
+    for j in np.arange((X_LEMAC/l_fuselage)-0.2, (X_LEMAC/l_fuselage)+0.2, 0.001):
         
         X_LEMAC_range.append(j)
         X_LEMAC = j*l_fuselage
