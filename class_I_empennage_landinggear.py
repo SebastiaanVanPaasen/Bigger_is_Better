@@ -101,6 +101,7 @@ def class_I_empennage(MAC, l_fuselage, x_eng, l_n, xcg_OEW_MAC, mass_frac_OEW, x
     cg_locations = np.array([xcg_fuse, xcg_emp, xcg_fix, xcg_nac, xcg_prop, xcg_wing, xcg_fwd, xcg_aft, zcg])
 
     return cg_locations, S_h_frac_S, S_v_frac_S, X_LEMAC,
+    return cg_locations, S_h_frac_S, S_v_frac_S, X_LEMAC, x_h
 
 
 #class_I_empennage(MAC, l_fuselage, x_eng, l_n, xcg_OEW_MAC, mass_frac_OEW, xcg_payload, mass_frac_payload, xcg_fuel,
@@ -114,6 +115,7 @@ def size_tail(wing_area, volume_fraction, tail_sweep, aspect_ratio):
     root_chord = (2*tail_area)/((1+taper_ratio)*tail_span)
     tip_chord = root_chord*taper_ratio
     return root_chord, tip_chord, taper_ratio, tail_span
+    return root_chord, tip_chord, taper_ratio, tail_span, tail_area
 
 
 def classI_landinggear(MTOW, MLW, l_nosecone):
