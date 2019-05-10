@@ -6,8 +6,6 @@ Created on Thu May 09 14:36:48 2019
 """
 #-------------------------MODULES---------------------------
 import numpy as np
-import math
-import scipy as sp
 import matplotlib.pyplot as plt
 
 #--------------------------INPUTS---------------------------- 
@@ -144,9 +142,9 @@ eta        =  0.95# airfoil efficiency = 0.95
 
 """Retrieve from stability cruve program"""
 x_ac       =  0.3   # aerodynamic centre location over the mac [n/m]
-Vh_V      =  0.8    #(V_h/V) ratio  [m/s / m/s]
+Vh_V      =  0.85    #(V_h/V) ratio  [m/s / m/s]
 CL_alpha_AH =   4.788 # lif#t gradient of tailless aircraft [1/rad]
-CL_AH       =  3.25 #lift coefficient A-H
+CL_AH       =  2. #3.25 #lift coefficient A-H
 CL_H        = -0.8 #liftcoefficient tail
 
 
@@ -160,6 +158,10 @@ x_cg = np.linspace(0.,1,100)
 
 Sh_S = Sh_S_control(CL_H,CL_AH,l_h,Vh_V,x_cg,Cm_0,A,qcsweep,delta_flap,b,b_f0,b_fi,taper,c,c_f,dc_c_f,mu_2,mu_3,x_ac,CL_land,b_f,h_f,l_f,S,S_net,hcsweep,M_app,eta,CL_0)
 x_as = 0.*x_cg
+
+print Sh_S
+
+
 
 plt.plot(x_cg,Sh_S,x_cg,x_as,"k")
 plt.ylim(0.,1.2)

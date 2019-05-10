@@ -9,8 +9,10 @@ import math
 import scipy as sp
 import matplotlib.pyplot as plt
 
-from control_curve import Sh_S_control
-from stability import Sh_S_stability
+from control_curve import *
+from stability import *
+from loading_diagram import *
+from seats import *
 
 qcsweep    =  0.5515 #quarter chord sweep [rad]
 hcsweepw    =  0.4869 #half chord sweep [rad]
@@ -77,38 +79,60 @@ l_fn= 20
 c_g=c
 SM=0.05
 
+min_cg = potato(Safety_margin, xcg_fuel, W_fuel, W_fuse, W_nlg, W_vt, W_ht, W_fix, W_wing, W_nac, W_prop, W_mlg, cg_locations, xcg_nlg, xcg_mlg, X_LEMAC, W_payload, n_cargo, l_fuselage, MAC, n_pax, m_passenger, g, cargo_fwdfrac, xcg_seats, W_window, W_aisle, W_middle)[3] 
+max_cg = potato(Safety_margin, xcg_fuel, W_fuel, W_fuse, W_nlg, W_vt, W_ht, W_fix, W_wing, W_nac, W_prop, W_mlg, cg_locations, xcg_nlg, xcg_mlg, X_LEMAC, W_payload, n_cargo, l_fuselage, MAC, n_pax, m_passenger, g, cargo_fwdfrac, xcg_seats, W_window, W_aisle, W_middle)[4]
+X_LEMAC_range = potato(Safety_margin, xcg_fuel, W_fuel, W_fuse, W_nlg, W_vt, W_ht, W_fix, W_wing, W_nac, W_prop, W_mlg, cg_locations, xcg_nlg, xcg_mlg, X_LEMAC, W_payload, n_cargo, l_fuselage, MAC, n_pax, m_passenger, g, cargo_fwdfrac, xcg_seats, W_window, W_aisle, W_middle)[5]
+S_control = Sh_S_control(CL_H,CL_AH,l_h,V_h_V,x_cg,Cm_0,A_w,qcsweep,delta_flap,b,b_f0,b_fi,taper,c,c_f,dc_c_f,mu_2,mu_3,x_ac,CL_land,b_f,h_f,l_f,S,S_net,hcsweepw,M_app,eta,CL_0)
+S_stability = Sh_S_stability(x_cg, M_h_cruise, eta, hcsweeph, hcsweepw, A_w, A_h, M_w_cruise, b_f, b, S, l_h, qcsweep, phi, h_wh, s_wTEh, V_h_V, b_n_1, b_n_2, b_n_3, b_n_4, l_n_1, l_n_2, l_n_3, l_n_4, x_ac_wing, h_f, l_fn, c, c_r, c_g, taper, SM)
 
-def control_stability_plot(CL_H,CL_AH,x_cg,Cm_0,delta_flap,b_f0,b_fi,c_f,dc_c_f,mu_2,mu_3,x_ac,CL_land,l_f,S_net,M_app,CL_0, M_h_cruise, eta, hcsweeph, hcsweepw, A_w, A_h, M_w_cruise, b_f, b, S, l_h, qcsweep, phi, h_wh, s_wTEh, V_h_V,b_n_1, b_n_2, b_n_3, b_n_4, l_n_1, l_n_2, l_n_3, l_n_4, x_ac_wing, h_f, l_fn, c, c_r, c_g, taper, SM):
+def control_stability_plot(min_cg, max_cg, X_LEMAC_range, S_control, S_stability):
     
-    S_control = Sh_S_control(CL_H,CL_AH,l_h,V_h_V,x_cg,Cm_0,A_w,qcsweep,delta_flap,b,b_f0,b_fi,taper,c,c_f,dc_c_f,mu_2,mu_3,x_ac,CL_land,b_f,h_f,l_f,S,S_net,hcsweepw,M_app,eta,CL_0)
+    Sh_S = np.linspace(0,2,100)
+    contr_trend = np.polyfit(x_cg, S_control, 1)
+    stability_trend = np.polyfit(x_cg, S_stability, 1)
+    a_control = contr_trend[0]
+    b_control = contr_trend[1]
+    a_stability = stability_trend[0]
+    b_stability = stability_trend[1]
+
+    Sh_opt = []
+    LEMAC_opt = []
+    for i in range(len(X_LEMAC_range)):
+        
+        for j in range(len(Sh_S)):
+            x1 = (Sh_S[j] - b_control)/a_control
+            x2 = (Sh_S[j] - b_stability)/a_stability
+            
+            if min_cg[i]>= x1 and max_cg[i]<x2:
+                Sh_opt.append(Sh_S[j])
+                LEMAC_opt.append(X_LEMAC_range[i])
+                break
+
+    print(len(Sh_opt))
+    print(len(X_LEMAC_range))          
+    print(LEMAC_opt)
+    print(LEMAC_opt[Sh_opt.index(min(Sh_opt))])
+    print(min(Sh_opt))
+    print(min_cg[Sh_opt.index(min(Sh_opt))])
+    print(max_cg[Sh_opt.index(min(Sh_opt))])
     
-    S_stability = Sh_S_stability(x_cg, M_h_cruise, eta, hcsweeph, hcsweepw, A_w, A_h, M_w_cruise, b_f, b, S, l_h, qcsweep, phi, h_wh, s_wTEh, V_h_V,b_n_1, b_n_2, b_n_3, b_n_4, l_n_1, l_n_2, l_n_3, l_n_4, x_ac_wing, h_f, l_fn, c, c_r, c_g, taper, SM)
-    return S_control, S_stability
-    # Calculating the trendline
-#    contr_trend = np.polyfit(x_cg, S_control, 1)
-#    stability_trend = np.polyfit(x_cg, S_stability, 1)
-#    a_control = contr_trend[0]
-#    b_control = contr_trend[1]
-#    a_stability = stability_trend[0]
-#    b_stability = stability_trend[1]
+#    X_LEMAC = list(np.array(X_LEMAC_range)+LEMAC_opt[Sh_opt.index(min(Sh_opt))])
 #    
-#    margin = []
-#    Sh_S = np.linspace(0,1,100)
-#    for i in range(len(Sh_S)):
-#        x1 = (Sh_S[i] - b_control)/a_control
-#        x2 = (Sh_S[i] - b_stability)/a_stability
-#        margin_sc = x2-x1
-#        margin.append(margin_sc)
-#        
-#    print(margin)
+#    fig, ax1 = plt.subplots()
+#
+#    ax2 = ax1.twinx()
+#    ax1.plot(x_cg, S_control, 'g-')
+#    ax1.plot(x_cg, S_stability, 'r')
+#    ax2.plot(min_cg, X_LEMAC, 'b-')
+#    ax2.plot(max_cg, X_LEMAC, 'b')
 #    
-#    plt.plot(x_cg, S_control, 'r')
-#    plt.plot(x_cg, S_stability)
 #    plt.show()
     
-#print(control_stability_plot(CL_H,CL_AH,x_cg,Cm_0,delta_flap,b_f0,b_fi,c_f,dc_c_f,mu_2,mu_3,x_ac,CL_land,l_f,S_net,M_app,CL_0, M_h_cruise, eta, hcsweeph, hcsweepw, A_w, A_h, M_w_cruise, b_f, b, S, l_h, qcsweep, phi, h_wh, s_wTEh, V_h_V,b_n_1, b_n_2, b_n_3, b_n_4, l_n_1, l_n_2, l_n_3, l_n_4, x_ac_wing, h_f, l_fn, c, c_r, c_g, taper, SM))
+    return
 
-    print(min(abs(S_stability-S_control)))
+control_stability_plot(min_cg, max_cg, X_LEMAC_range, S_control, S_stability)
+
+
     
             
 
