@@ -11,61 +11,124 @@ from drag_estimation import *
 import subprocess
 import os
 
+"""
+Comments about this file:
+    avl.exe, mach0.7.run and the python file should be in the same file location. 
+    Also airfoil files should be in the same file location
+    The filepath in run_avl function should be changed to your filepath. 
+"""
 
-#MANUALLY PUT IN PARAMETERS from latest iteration
-surface_area = 200  #Once this is included in inputs file then this should be deleted 
-d_fuselage, l_nosecone, l_cabin, l_tailcone = 5, 10, 50, 15 #same as surface area, should come from iteration.
-#GET PLANFORM PARAMETERS
-wing_geo  = wing_parameters(M_cruise, CL_cruise, surface_area, A) #planform parameters: 
-#0 quarter_chord_sweep, 1 leading_edge_sweep, 2 taper_ratio, 3 span, 4 chord_root, 5 chord_tip, 6dihedral, 7thickness_over_chord)
+def make_avl_file(root_chord, tip_chord, span, LE_sweep, dihedral, S, CD_0, M_cruise, tailarm_h, span_h, \
+                  root_chord_h, quarter_chord_sweep_h, taper_ratio_h, tailarm_v, span_v, root_chord_v, \
+                  quarter_chord_sweep_v, taper_ratio_v, wingtype): #for wingtype: input "T-tail" in case 
+                                                                   # of T-tail else random input
+    Angle = 0 #Incidence angle
+    chords= [root_chord, tip_chord]
+    Ainc = [0.0, 0.0]
+    Nspanwise = [0, 0]
+    Sspace = [0, 0]
+    x_loc_LE = [0, span/2*np.tan(LE_sweep)]
+    y_loc_LE = [0, span/2]
+    z_loc_LE = [0,span/2*np.tan(dihedral)] #change for dihedral angle low/high wing
+       
+    dx = 0.25*root_chord_h*(1-taper_ratio_h) + span_h/2*np.tan(quarter_chord_sweep_h)
+    y_loc_LE_h = [0, span_h/2]
+    if wingtype == "T-tail":
+        dx_sweep =  0.25*root_chord_v*(1-taper_ratio_v) + span_v/2*np.tan(quarter_chord_sweep_v)
+        z_loc_LE_h = [span_v/2, span_v/2]
+        x_loc_LE_h = [tailarm_h + dx_sweep, tailarm_h + dx +dx_sweep]
+    else:
+        z_loc_LE_h = [0,0]
+        x_loc_LE_h = [tailarm_h, tailarm_h + dx]
+    chords_h = [root_chord_h, root_chord_h*taper_ratio_h]
+    Angle_h = 0.0#Incidence angle horizontal stabilizer    
+        
+    dx = 0.25*root_chord_v*(1-taper_ratio_v) + span_v/2*np.tan(quarter_chord_sweep_v)
+    x_loc_LE_v = [tailarm_v, tailarm_v + dx]
+    y_loc_LE_v = [0, 0]
+    z_loc_LE_v = [0, span_v/2]
+    chords_v = [root_chord_v, root_chord_v*taper_ratio_v]
+    Angle_v = 0.0
+    with open("conv_wing.avl", "w") as text_file:
+        print("Wing" +"\n"
+            "#Mach" +"\n" + 
+            str(M_cruise) +"\n"
+            "#IYsym IZsym Zsym" +"\n"
+            "0  0  0" +"\n" 
+            "#Sref  Cref  Bref" +"\n" +
+            str(S), str(round(root_chord,3)), str(round(span)), "\n"          
+            "#Xref Yref Zref" +"\n"
+            "0  0.0  0" + "\n"
+            "#CDcp" + "\n" +
+            str(round(CD_0,3)), "\n"
+            "\n" + "SURFACE" +"\n" +
+            "Wing", "\n"
+            "8  1.0  12  -2.0"+"\n"
+            "YDUPLICATE"+"\n" +
+            str(0.0), "\n" +
+            "ANGLE"+"\n"+
+            str(Angle), file=text_file)
+        for i in range(2):
+            print("SECTION", file=text_file)            
+            print(round(x_loc_LE[i],3),round(y_loc_LE[i],3),round(z_loc_LE[i],3),round(chords[i],3),Ainc[i],Nspanwise[i], Sspace[i], file=text_file)        
+        print("AFILE" + "\n"
+              "n2414.dat.txt", file=text_file)
+        
+        # HORIZONTAL TAIL surface
+        print("\n" + "SURFACE" +"\n" +
+            "Stab", "\n"
+            "6 1.0 15 -1.1"+"\n"
+            "YDUPLICATE"+"\n" +
+            str(0.0), "\n" +
+            "ANGLE"+"\n"+
+            str(Angle_h), file=text_file)
+        for i in range(2):
+            print("SECTION", file=text_file)            
+            print(round(x_loc_LE_h[i],3),round(y_loc_LE_h[i],3),round(z_loc_LE_h[i],3),round(chords_h[i],3),Ainc[i],Nspanwise[i], Sspace[i], file=text_file)        
+        print("AFILE" + "\n"
+              "n2414.dat.txt", file=text_file)
+        
+        #Vertical tail surface
+        print("\n" +"SURFACE" +"\n" +
+            "FIN", "\n"
+            "7 1.0 11 1.0"+"\n"
+            "YDUPLICATE"+"\n" +
+            str(0.0), "\n" +
+            "ANGLE"+"\n"+
+            str(Angle_v), file=text_file)
+        for i in range(2):
+            print("SECTION", file=text_file)            
+            print(round(x_loc_LE_v[i],3),round(y_loc_LE_v[i],3),round(z_loc_LE_v[i],3),round(chords_v[i],3),Ainc[i],Nspanwise[i], Sspace[i], file=text_file)        
+        print("AFILE" + "\n"
+              "n0010.dat.txt", file=text_file)
+    return
+make_avl_file(12.22,12.22*0.149,60.90,0.56,0.03,427.8,0.015,0.7,27.90,21.35,5,np.radians(35), 0.5, 26.6,18.48,4,np.radians(46),0.5, "T-tail")
 
+def run_avl(cl_cruise):        
+    p = subprocess.Popen(r"C:\Users\floyd\Desktop\avl.exe", stdin=subprocess.PIPE, universal_newlines=True)
+    set_cl_cruise = "a c " + str(cl_cruise)
+    p.communicate(os.linesep.join(["load", "conv_wing","case", "mach0.7", "oper", set_cl_cruise, "x","ft", "endresult"]))          
+    lines = [line.rstrip('\n') for line in open('endresult')]
+    alpha = float(lines[15].split()[2])
+    CD = float(lines[24].split()[2])
+    e = float(lines[27].split()[5])
+    print("Alpha is ", alpha)
+    print("CD is ", CD)
+    print("eff factor is ", e)
+    os.remove("endresult")
+run_avl(0.7)
 
-#OBTAIN ZERO LIFT DRAG
-wing_wet = Wing_wetted_area(wing_geo[4],wing_geo[5], d_fuselage, wing_geo[3], surface_area,0)
-h_wet = H_tail_wetted_area(root_chord_h, taper_ratio_h, span_h)
-v_wet = V_tail_wetted_area(root_chord_v, taper_ratio_v, span_v)
-fus_wet = Fus_wetted_area(d_fuselage, l_nosecone, l_cabin, l_tailcone)
-CD0 = Zero_Lift_Drag_est(surface_area, wing_wet, h_wet, v_wet, fus_wet)
-
-#CD0 = 0.010 
-Angle = 0.0 #Incidence angle
-
-chords= [wing_geo[4], wing_geo[5]]
-Ainc = [0.0, 0.0]
-Nspanwise = [0, 0]
-Sspace = [0, 0]
-x_loc_LE = [0, wing_geo[3]/2*np.tan(wing_geo[1])]
-y_loc_LE = [0, wing_geo[3]]
-z_loc_LE = [0,wing_geo[3]*np.tan(wing_geo[6])] #change for dihedral angle low/high wing
-
-
-with open("conv_wing.avl", "w") as text_file:
-    print("Wing" +"\n"
-        "#Mach" +"\n" + 
-        str(0.70) +"\n"
-        "#IYsym IZsym Zsym" +"\n"
-        "0  0  0" +"\n" 
-        "#Sref  Cref  Bref" +"\n" +
-        str(surface_area), str(round(wing_geo[4],3)), str(round(wing_geo[3])), "\n"          
-        "#Xref Yref Zref" +"\n"
-        "0.3  0.0  0.0806" + "\n"
-        "#CDcp" + "\n" +
-        str(round(CD0,3)), "\n"
-        "\n" + "SURFACE" +"\n" +
-        "Wing", "\n"
-        "8  1.0  12  -2.0"+"\n"
-        "YDUPLICATE"+"\n" +
-        str(0.0), "\n" +
-        "ANGLE"+"\n"+
-        str(Angle), file=text_file)
-    for i in range(2):
-        print("SECTION", file=text_file)            
-        print(round(x_loc_LE[i],3),round(y_loc_LE[i],3),round(z_loc_LE[i],3),round(chords[i],3),Ainc[i],Nspanwise[i], Sspace[i], file=text_file)        
-
-
-p = subprocess.Popen(r"C:\Users\floyd\Desktop\avl.exe", stdin=subprocess.PIPE, universal_newlines=True)
-p.communicate(os.linesep.join(["load", "testwing", "oper", "W", "test"]))            
-
-#
-#p = subprocess.Popen(r"C:\Users\floyd\Desktop\avl.exe", stdin=subprocess.PIPE, universal_newlines=True)
-#p.communicate(os.linesep.join(["load", "testwing", "oper","a a 2", "x","ft", "results"]))   
+def find_clalpha():
+    alpha_range = [0, 5]
+    CL_range = []
+    for j in range(len(alpha_range)):
+        p = subprocess.Popen(r"C:\Users\floyd\Desktop\avl.exe", stdin=subprocess.PIPE, universal_newlines=True)
+        set_alpha = "a a " + str(alpha_range[j])
+        p.communicate(os.linesep.join(["load", "conv_wing","case", "mach0.7", "oper", set_alpha, "x","ft", "endresult"]))          
+        lines = [line.rstrip('\n') for line in open('endresult')]
+        CL = float(lines[23].split()[2])
+        CL_range.append(CL)
+        os.remove("endresult")
+    CL_alpha = round((CL_range[1]-CL_range[0]) / (alpha_range[1] - alpha_range[0]),3)
+    return CL_alpha
+print("CLa is ",find_clalpha())
