@@ -72,10 +72,10 @@ for i in range(len(r_cruise)):
         percentages[1][i - 1] = ((result[1] - results[1][i - 1])/results[1][i - 1]) * 100
         percentages[2][i - 1] = ((result[3] - results[3][i - 1])/results[3][i - 1]) * 100
 
-# plt.plot(r_cruise, results[0])
+# plt.plot(percentages[0], percentages[1])
 # plt.plot(r_cruise, results[3])
 # plt.plot(r_cruise, results[2])
 # plt.plot(r_cruise, results[1])
 # plt.show()
-
-print(percentages)
+#
+# print(percentages[1])

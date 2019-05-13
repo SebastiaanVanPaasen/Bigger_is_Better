@@ -56,9 +56,9 @@ hydro_choice = 0
 
 # Starting the iteration process ---------------------------------------------------------------------------------------
 i = 0
-maximum = 30
+maximum = 50
 empty_weight = np.zeros(maximum)
-final_diagram(CD_0, Oswald)
+# final_diagram(CD_0, Oswald)
 
 while i < maximum:
     # Performing class I weight estimation -----------------------------------------------------------------------------
@@ -106,18 +106,19 @@ while i < maximum:
     # Perform first order cg-range estimation based on statistics ------------------------------------------------------
     # Note that the cg-location estimates should be updated after the first iteration!
     x_payload = 0.5 * l_fuselage  # m     cg-location payload w.r.t. nose
-    cg_locations, S_h_frac, S_v_frac, x_lemac, l_h, l_v = class_I_empennage(mac, l_fuselage, x_engines, l_nacelle,
-                                                                            xcg_oew_mac,
-                                                                            m_e_frac, x_payload, m_p_frac, x_fuel,
-                                                                            m_f_frac,
+    cg_locations, S_h_frac, S_v_frac, x_lemac, l_h, l_v = class_I_empennage(mass_fractions, mac, l_fuselage, x_engines,
+                                                                            l_nacelle, xcg_oew_mac, x_payload, x_fuel,
                                                                             d_fuselage, b)
-
+    print(cg_locations, S_h_frac, S_v_frac, x_lemac, l_h, l_v)
     # Calculate the accompanying tail sizes ----------------------------------------------------------------------------
     c_root_h, c_tip_h, b_h, S_h = size_tail(S, S_h_frac, QC_sweep_h, A_h)
     c_root_v, c_tip_v, b_v, S_v = size_tail(S, S_v_frac, QC_sweep_v, A_v)
     HC_sweep_h = determine_half_chord_sweep(c_root_h, c_tip_h, b_h, QC_sweep_h)
     HC_sweep_v = determine_half_chord_sweep(c_root_v, c_tip_v, b_v, QC_sweep_v)
 
+    print("here")
+    print(HC_sweep_h)
+    print(HC_sweep_v)
     taper_h = c_root_h / c_tip_h
     taper_v = c_root_v / c_tip_v
 
@@ -227,23 +228,27 @@ while i < maximum:
 
     W_e_frac = W_E / W_TO
 
-    print("The take-off weight equals: " + str(round(weights[0], 2)))
-    print("The fuel weight equals: " + str(round(weights[3], 2)))
-    print("The payload weight equals: " + str(round(weights[2], 2)))
-    print("The empty weight equals: " + str(round(weights[1], 2)))
+    print("The surface area of the vertical tail equals: " + str(S_v))
+    print("The surface area of the horizontal tail equals: " + str(S_h))
 
-    print("The required thrust equals: " + str(T))
-    print("The calculated surface area equals: " + str(S))
-    print("The new approximated CL_cruise is: " + str(CL_cruise))
-
-    print("The wing wetted area is: " + str(main_wing_wet))
-    print("The vertical tail wetted area is: " + str(vertical_tail_wet))
-    print("The horizontal tail wetted area is: " + str(horizontal_tail_wet))
-    print("The fuselage wetted area is: " + str(fuselage_wet))
-
-    print("The new approximated CD_0 is: " + str(CD_0))
-    print("The CL_alpha value equals: " + str(CL_alpha))
-    print("The new operating empty weight equals: " + str(W_E))
+    #
+    # print("The take-off weight equals: " + str(round(weights[0], 2)))
+    # print("The fuel weight equals: " + str(round(weights[3], 2)))
+    # print("The payload weight equals: " + str(round(weights[2], 2)))
+    # print("The empty weight equals: " + str(round(weights[1], 2)))
+    #
+    # print("The required thrust equals: " + str(T))
+    # print("The calculated surface area equals: " + str(S))
+    # print("The new approximated CL_cruise is: " + str(CL_cruise))
+    #
+    # print("The wing wetted area is: " + str(main_wing_wet))
+    # print("The vertical tail wetted area is: " + str(vertical_tail_wet))
+    # print("The horizontal tail wetted area is: " + str(horizontal_tail_wet))
+    # print("The fuselage wetted area is: " + str(fuselage_wet))
+    #
+    # print("The new approximated CD_0 is: " + str(CD_0))
+    # print("The CL_alpha value equals: " + str(CL_alpha))
+    # print("The new operating empty weight equals: " + str(W_E))
 
     empty_weight[i] = W_E
 

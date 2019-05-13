@@ -38,12 +38,12 @@ def class_I_empennage(m_fracs, MAC, l_fuselage, x_eng, l_n, xcg_OEW_MAC, xcg_pay
 
     # xcg-locations for wing mounted engines aircraft
 
-    # Wing group - in [m] w.r.t. X-LEMAC
+    # Wing group - in [m] w.r.t. X-LEMAC based on ADSEE-I slides L7
     xcg_wing = 0.4 * MAC
     xcg_prop = x_eng + 0.4 * l_n
     xcg_nac = x_eng + 0.4 * l_n
 
-    # Fuselage group - in [m] w.r.t. nose
+    # Fuselage group - in [m] w.r.t. nose based on ADSEE-I slides L7
     xcg_fuse = 0.4 * l_fuselage
     xcg_fix = 0.4 * l_fuselage
     xcg_emp = 0.9 * l_fuselage
@@ -59,30 +59,27 @@ def class_I_empennage(m_fracs, MAC, l_fuselage, x_eng, l_n, xcg_OEW_MAC, xcg_pay
     xcg_fuse_group = (xcg_fuse * m_fracs[2] + xcg_fix * m_fracs[5] + xcg_emp * m_fracs[8]) / m_fracs_fuse_group
 
     # X location of the leading edge of the mean aerodynamic chord
-    X_LEMAC = xcg_fuse_group + MAC * (
-                (xcg_wing_group / MAC) * (m_fracs_wing_group / m_fracs_fuse_group) - xcg_OEW_MAC * (
-                1 + (m_fracs_wing_group / m_fracs_fuse_group)))
+    X_LEMAC = xcg_fuse_group + MAC * ((xcg_wing_group / MAC) * (m_fracs_wing_group / m_fracs_fuse_group) - xcg_OEW_MAC *
+                                      (1 + (m_fracs_wing_group / m_fracs_fuse_group)))
 
-    # cg excursion
+    # cg excursion w.r.t. nose
+    xcg_list = []
     xcg_OEW = xcg_OEW_MAC * MAC + X_LEMAC
-    xcglist = []
-
-    xcglist.append(xcg_OEW)
-    xcglist.append((xcg_OEW * m_fracs[8] + xcg_payload * m_fracs[6]) / (
+    xcg_list.append(xcg_OEW)
+    xcg_list.append((xcg_OEW * m_fracs[8] + xcg_payload * m_fracs[6]) / (
             m_fracs[8] + m_fracs[7]))
-    xcglist.append((xcg_OEW * m_fracs[8] + xcg_fuel * m_fracs[7]) / (m_fracs[8] + m_fracs[7]))
-    xcglist.append((xcg_OEW * m_fracs[8] + xcg_payload * m_fracs[6] + xcg_fuel * m_fracs[7]) / (
-                m_fracs[8] + m_fracs[6] + m_fracs[7]))
+    xcg_list.append((xcg_OEW * m_fracs[8] + xcg_fuel * m_fracs[7]) / (m_fracs[8] + m_fracs[7]))
+    xcg_list.append((xcg_OEW * m_fracs[8] + xcg_payload * m_fracs[6] + xcg_fuel * m_fracs[7]) / (
+            m_fracs[8] + m_fracs[6] + m_fracs[7]))
 
     # Maximum and minimum cg locations w.r.t. nose [m]
-    xcg_fwd = min(xcglist)
-    xcg_aft = max(xcglist)
+    xcg_fwd = min(xcg_list)
+    xcg_aft = max(xcg_list)
 
     # Z location cg
     zcg = 0.5 * D_fuse
 
     # Empennage sizing -------------------------------------------------------------------------------------------------
-
     # Assumption: tail arms are taken from the cg of the tail
     # Horizontal and vertical tail locations
 
@@ -93,11 +90,11 @@ def class_I_empennage(m_fracs, MAC, l_fuselage, x_eng, l_n, xcg_OEW_MAC, xcg_pay
     V_h_norm = 0.99
     V_v_norm = 0.081
 
-    S_h_frac_S = (V_h_norm * MAC) / (x_h - xcg_aft)
-    S_v_frac_S = (V_v_norm * b) / (x_v - xcg_aft)
+    S_frac_h = (V_h_norm * MAC) / (x_h - xcg_aft)
+    S_frac_v = (V_v_norm * b) / (x_v - xcg_aft)
     cg_locations = np.array([xcg_fuse, xcg_emp, xcg_fix, xcg_nac, xcg_prop, xcg_wing, xcg_fwd, xcg_aft, zcg])
 
-    return cg_locations, S_h_frac_S, S_v_frac_S, X_LEMAC, x_h, x_v
+    return cg_locations, S_frac_h, S_frac_v, X_LEMAC, x_h, x_v
 
 
 def size_tail(wing_area, volume_fraction, tail_sweep, aspect_ratio):
