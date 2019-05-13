@@ -10,6 +10,7 @@ from planform import wing_parameters
 from drag_estimation import *
 from subprocess import Popen, DEVNULL, PIPE
 import os
+ROOT_DIR = os.path.dirname(os.path.abspath("conv_wing_avl"))
 
 """
 Comments about this file:
@@ -28,11 +29,11 @@ def make_avl_file(root_chord, tip_chord, span, LE_sweep, dihedral, S, CD_0, M_cr
     Nspanwise = [0, 0]
     Sspace = [0, 0]
     x_loc_LE = [0, span / 2 * np.tan(LE_sweep)]
-    print(x_loc_LE)
+    # print(x_loc_LE)
     y_loc_LE = [0, span / 2]
-    print(y_loc_LE)
+    # print(y_loc_LE)
     z_loc_LE = [0, span / 2 * np.tan(dihedral)]  # change for dihedral angle low/high wing
-    print(z_loc_LE)
+    # print(z_loc_LE)
     dx = 0.25 * root_chord_h * (1 - taper_ratio_h) + span_h / 2 * np.tan(quarter_chord_sweep_h)
     y_loc_LE_h = [0, span_h / 2]
     if wingtype == 1:
@@ -114,7 +115,7 @@ make_avl_file(12.22, 12.22 * 0.149, 60.90, 0.56, 0.03, 427.8, 0.015, 0.7, 27.90,
 
 
 def run_avl(cl_cruise):
-    p = Popen(r"C:\Users\floyd\OneDrive\Documenten\GitHub\Bigger_is_Better\avl.exe", stdin=PIPE,
+    p = Popen(str(ROOT_DIR) + "/avl.exe", stdin=PIPE,
               stdout=DEVNULL, universal_newlines=True)
     set_cl_cruise = "a c " + str(cl_cruise)
     p.communicate(
@@ -139,7 +140,7 @@ def find_clalpha():
     alpha_range = [0, 5]
     CL_range = []
     for j in range(len(alpha_range)):
-        p = Popen(r"C:\Users\floyd\OneDrive\Documenten\GitHub\Bigger_is_Better\avl.exe", stdin=PIPE,
+        p = Popen(str(ROOT_DIR) + "/avl.exe", stdin=PIPE,
                   stdout=DEVNULL, universal_newlines=True)
         set_alpha = "a a " + str(alpha_range[j])
         p.communicate(
