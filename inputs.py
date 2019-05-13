@@ -12,13 +12,24 @@ descent_1 = 0.99
 climb_2 = 0.98
 descent_2 = 0.99
 landing = 0.992
-fractions = [start, taxi, t_o, climb_1, descent_1, climb_2, descent_2, landing]
+fuel_fractions = [start, taxi, t_o, climb_1, descent_1, climb_2, descent_2, landing]
+
+# Define mass fractions from statistics for the cg-determination based on Roskam ---------------------------------------
+mass_frac_wing = 0.117
+mass_frac_emp = 0.023
+mass_frac_fuse = 0.098
+mass_frac_nac = 0.018
+mass_frac_prop = 0.072
+mass_frac_fix = 0.118
+mass_fractions = [mass_frac_wing, mass_frac_emp, mass_frac_fuse, mass_frac_nac, mass_frac_prop, mass_frac_fix, 0, 0, 0]
 
 # Passenger characteristics --------------------------------------------------------------------------------------------
 N_pas = 450  # Requirement set by the exercise
 N_pas_below = 450  # Depends on if you want a double-decker 242 if you want a equally sized fuselage for double floor
 N_crew = 11  # Based on the amount of passengers
 W_person = 205  # lbs   Based on statistics of Roskam
+N_cargo = 2  # Number of cargo compartments (1 or 2)
+
 
 # General aircraft input parameters ------------------------------------------------------------------------------------
 # General cruise parameters
@@ -33,11 +44,10 @@ Rho_TO = Rho_0  # kg/m^3    standard sea-level density
 Rho_Cruise = Rho_0 * ((1 + (a * h_cruise) / Temp_0) ** (-(g_0 / (R_gas * a))))  # kg/m^3   based on cruise altitude
 Rho_Landing = Rho_0  # kg/m^3   standard sea-level density
 
-# aircraft cg-locations ------------------------------------------------------------------------------------------------
+# aircraft cg-locations CAREFUL ----------------------------------------------------------------------------------------
 x_engines = -1.  # m    x-location engines w.r.t. X_LEMAC
 x_fuel = 22  # m    cg-location fuel w.r.t nose
-
-xcg_oew_mac = 0.25  # m     initial cg location OEW w.r.t. MAC
+xcg_oew_mac = 0.25  # m    based on ADSEE-I cg determination
 
 # engine characteristics -----------------------------------------------------------------------------------------------
 N_engines = 2  #
