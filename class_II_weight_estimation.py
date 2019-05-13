@@ -35,6 +35,8 @@ def wing_weight(w_to, w_f, b, semi_chord_sweep, n_ult, s, t_max, choice):
 
 def _tail_weight(k, s, v_d, semi_chord_sweep):
     # variables are explained under empennage_weight function
+    print(" k equals " + str(v_d))
+    print("s equals "+ str(semi_chord_sweep))
     return k * s * ((3.81 * (s ** 0.2) * v_d) / (1000 * np.cos(np.radians(semi_chord_sweep)) ** 0.5) - 0.287)
 
 

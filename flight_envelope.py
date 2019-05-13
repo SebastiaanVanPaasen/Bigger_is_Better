@@ -6,8 +6,7 @@ from inputs import *
 def manoeuvring_envelope(w_to, h, cl_max_pos, s, v_cruise):
     # construct the manoeuvring plot
     n_max = min(3.8, max(2.5, 2.1 + (24000 / (w_to / lbs_to_kg + 10000))))
-    #print(n_max)
-    rho = Rho_0 * ((1 + (a * h) / T_0) ** (-(g_0 / (R_gas * a) + 1)))
+    rho = Rho_0 * ((1 + (a * h) / Temp_0) ** (-(g_0 / (R_gas * a) + 1)))
 
     cn_max_pos = 1.1 * cl_max_pos
     cn_max_neg = -1.1 * cl_max_pos * 0.8
@@ -91,7 +90,7 @@ def gust_envelope(w, h, cl_alpha, s, c, v_cruise, v):
 
 def construct_envelope():
     # Note: used values are only estimation and are definitely not correct!
-    v_pos, n_pos, v_neg, n_neg, gust_speeds = manoeuvring_envelope(1592281, 11000, 1.6, -1.28, 265, 295)
+    v_pos, n_pos, v_neg, n_neg, gust_speeds = manoeuvring_envelope(1592281, 11000, 1.6, 265, 295)
     v_gust_pos, n_gust_pos, v_gust_neg, n_gust_neg = gust_envelope(1592281, 11000, 3.8, 295, 8, 265, gust_speeds)
 
     plt.plot(v_pos, n_pos)
