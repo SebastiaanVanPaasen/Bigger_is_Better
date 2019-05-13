@@ -141,8 +141,9 @@ def payload_range():
     plt.ylabel("Weight [N]")
     plt.show()
 
-    
-    
+
+
+payload_range()
     
     
     
