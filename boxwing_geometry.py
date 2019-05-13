@@ -13,20 +13,20 @@ import matplotlib.pyplot as plt
 from planform import wing_parameters
 
 M_cruise = 0.75      #inputs from different part 
-surface_area = 200  #inputs from different part 
-aspect_ratio = 9    #inputs from different part 
+surface_area = 400  #inputs from different part 
+aspect_ratio = 10   #inputs from different part 
 CL_cruise = 0.5
 CD0 = 0.010
 #variables in defining the boxwing geometry
 
 delta_x_quarterchord = 30 #distance of quarter chords of upper and lower wing in case this increases
                             #then the upper wing is elongated as the lower wing is sized conventionally
-height_boxwing_root = 10    #height of the boxed wing
-angle_winglet = 60 #angle of the side winglets in degrees, increasing this angle then upper wing length decreases.
+height_boxwing_root = 6   #height of the boxed wing
+angle_winglet = 45 #angle of the side winglets in degrees, increasing this angle then upper wing length decreases.
 
 def boxed_wing_geometry(M_cruise, CL_cruise, surface_area, aspect_ratio, delta_x_quarterchord, height_boxwing_root, angle_winglet):
     #Use planform function to find span
-    wing_geo = wing_parameters(M_cruise, CL_cruise, surface_area, aspect_ratio) #function from planform.py
+    wing_geo = wing_parameters(M_cruise, CL_cruise, surface_area, aspect_ratio, 0) #function from planform.py
     span = wing_geo[3]
     
     #Surface and aspect ratio single wing 
@@ -34,7 +34,7 @@ def boxed_wing_geometry(M_cruise, CL_cruise, surface_area, aspect_ratio, delta_x
     aspect_ratio_single = span**2/surface_single
     
     #FIND planform for lower wing
-    wing_geo_lower = wing_parameters(M_cruise, CL_cruise, surface_single, aspect_ratio_single)
+    wing_geo_lower = wing_parameters(M_cruise, CL_cruise, surface_single, aspect_ratio_single, 0)
     sweep_lower = wing_geo_lower[0] #quarterchord sweep
     sweep_lower_LE = wing_geo_lower[1]
     
@@ -62,9 +62,9 @@ def boxed_wing_geometry(M_cruise, CL_cruise, surface_area, aspect_ratio, delta_x
     z_loc_LE = np.array([0,z_tip_lower, height_boxwing_root ,height_boxwing_root])
     chords = np.array([wing_geo_lower[4],tip_chord, tip_chord, root_chord_upper])
     #x_loc_TE = x_loc_LE + chords
-    return(x_loc_LE,y_loc_LE,z_loc_LE,chords)
+    return(x_loc_LE,y_loc_LE,z_loc_LE,chords,sweep_upper)
 
-x_loc_LE, y_loc_LE, z_loc_LE, chords = boxed_wing_geometry(M_cruise, CL_cruise, surface_area, aspect_ratio, delta_x_quarterchord, height_boxwing_root, angle_winglet)
+x_loc_LE, y_loc_LE, z_loc_LE, chords,sweep_upper = boxed_wing_geometry(M_cruise, CL_cruise, surface_area, aspect_ratio, delta_x_quarterchord, height_boxwing_root, angle_winglet)
 
 #OPTIONAL plotting of the leading edge
 #fig = plt.figure()
@@ -73,17 +73,41 @@ x_loc_LE, y_loc_LE, z_loc_LE, chords = boxed_wing_geometry(M_cruise, CL_cruise, 
 ##ax.plot(x_loc_TE, y_loc_LE, z_loc_LE, color='black')
 #plt.show()
 
+def V_tail_sizing(root_chord_h, tip_chord_h, span_h, root_chord_v, tip_chord_v, span_v):
+    S_v = .5*(root_chord_v+tip_chord_v)*span_v/2
+    S_h = .5*(root_chord_h+tip_chord_h)*span_h
+    Total_area = S_v + S_h
+    angle = np.arctan(np.sqrt(S_v/S_h))
+    return(Total_area, angle)
 
-def make_avl_file_bw(x_loc_LE, y_loc_LE, z_loc_LE, chords, M_cruise, surface_area, CD0, aspect_ratio):
+Total_area, angle = V_tail_sizing(3,1.5,13,2.5,1,11)
+
+def V_tail_geometry(angle, Total_area, chords, y_loc_LE, sweep_upper, x_loc_LE):
+    lateral_distance = height_boxwing_root * np.tan(angle) 
+    lateral_ratio = lateral_distance/y_loc_LE[1]
+    local_chord = chords[3] - (chords[3] - chords[2])*lateral_ratio
+    forward_delta_x = lateral_distance*np.tan(sweep_upper)#-0.25*local_chord
+    x_upper = x_loc_LE[3] - forward_delta_x
+    
+    pythagoras = np.sqrt(lateral_distance**2 + height_boxwing_root**2)
+    x_lower = x_upper - pythagoras*np.tan(np.radians(46))
+    root_chord = Total_area/pythagoras-local_chord 
+    x_loc_LE_tail = [x_lower,x_upper]
+    y_loc_LE_tail = [0,lateral_distance]
+    z_loc_LE_tail = [0,height_boxwing_root]
+    chords = [root_chord, local_chord]
+    return(x_loc_LE_tail, y_loc_LE_tail,z_loc_LE_tail,chords)
+geo_tail = V_tail_geometry(angle, Total_area, chords, y_loc_LE,sweep_upper,x_loc_LE)    
+
+def make_avl_file_bw(x_loc_LE, y_loc_LE, z_loc_LE, chords, M_cruise, surface_area, CD0, aspect_ratio, geo_tail):
     name = ["Lower wing", "Right winglet", "Upper wing"]
     Ainc = [0.0, 0.0, 0.0, 0.0] # delta to increase/decrease incidence angle locally
     Nspanwise = [0, 0, 0, 0]        #avl bullshit
     Sspace = [0, 0, 0, 0]           #same
-    Angle = [0.0, 0.0, 0.0, 0.0] #Incidence angle
+    Angle = [0.0, 0.0, 3.0, 3.0] #Incidence angle
+        
     
-    
-    
-    with open("Output.avl", "w") as text_file:
+    with open("prandtl.avl", "w") as text_file:
         print("Boxed Wing" +"\n"
               "#Mach" +"\n" + 
               str(M_cruise) +"\n"
@@ -108,5 +132,20 @@ def make_avl_file_bw(x_loc_LE, y_loc_LE, z_loc_LE, chords, M_cruise, surface_are
             for i in range(2):
                 print("SECTION", file=text_file)            
                 print(x_loc_LE[j+i],y_loc_LE[j+i],z_loc_LE[j+i],chords[j+i],Ainc[j+i],Nspanwise[j+i], Sspace[j+i], file=text_file)
+        
+        
+        # HORIZONTAL TAIL surface
+        print("\n" + "SURFACE" +"\n" +
+            "Stab", "\n"
+            "6 1.0 15 -1.1"+"\n"
+            "YDUPLICATE"+"\n" +
+            str(0.0), "\n" +
+            "ANGLE"+"\n"+
+            str(0.0), file=text_file)
+        for i in range(2):
+            print("SECTION", file=text_file)            
+            print(round(geo_tail[0][i],3),round(geo_tail[1][i],3),round(geo_tail[2][i],3),round(geo_tail[3][i],3),Ainc[i],Nspanwise[i], Sspace[i], file=text_file)        
+            print("AFILE" + "\n"
+              "n0010.dat.txt", file=text_file)
             
-make_avl_file_bw(x_loc_LE, y_loc_LE, z_loc_LE, chords, M_cruise, surface_area, CD0, aspect_ratio)
+make_avl_file_bw(x_loc_LE, y_loc_LE, z_loc_LE, chords, M_cruise, surface_area, CD0, aspect_ratio, geo_tail)

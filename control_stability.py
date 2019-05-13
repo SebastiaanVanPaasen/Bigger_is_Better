@@ -116,19 +116,19 @@ def control_stability_plot(min_cg, max_cg, X_LEMAC_range, S_control, S_stability
 #    print(min_cg[Sh_opt.index(min(Sh_opt))])
 #    print(max_cg[Sh_opt.index(min(Sh_opt))])
     
-    Sh_S_opt    = min(Sh_opt)
-    X_LEMAC_opt = LEMAC_opt[Sh_opt.index(min(Sh_opt))]
+    X_LEMAC = list(np.array(X_LEMAC_range)+LEMAC_opt[Sh_opt.index(min(Sh_opt))])
     
-#    fig, ax1 = plt.subplots()
-#    ax2 = ax1.twinx()
-#    ax1.plot(x_cg, S_control, 'g-')
-#    ax1.plot(x_cg, S_stability, 'r')
-#    ax2.plot(min_cg, X_LEMAC_range, 'b-')
-#    ax2.plot(max_cg, X_LEMAC_range, 'b')
-#    
-#    plt.show()
+    fig, ax1 = plt.subplots()
+
+    ax2 = ax1.twinx()
+    ax1.plot(x_cg, S_control, 'g-')
+    ax1.plot(x_cg, S_stability, 'r')
+    ax2.plot(min_cg, X_LEMAC, 'b-')
+    ax2.plot(max_cg, X_LEMAC, 'b')
     
-    return(Sh_S_opt, X_LEMAC_opt)
+    plt.show()
+    
+    return
 
 print(control_stability_plot(min_cg, max_cg, X_LEMAC_range, S_control, S_stability))
 
