@@ -14,6 +14,7 @@ def wing_parameters(m_cruise, cl_cruise, surface_area, aspect_ratio, option):
         quarter_chord_sweep = 0.
     else:
         quarter_chord_sweep = np.arccos(0.75 * (m_t / m_dd))
+
     # calculate taper ratio using Torenbeek
     taper_ratio = 0.2 * (2. - quarter_chord_sweep)
 
@@ -41,7 +42,7 @@ def wing_parameters(m_cruise, cl_cruise, surface_area, aspect_ratio, option):
             m_t - m_dd * np.cos(half_chord_sweep)) - 0.115 * cl_cruise ** 1.5) / (np.cos(half_chord_sweep) ** 2)
     thickness_over_chord = min(thickness_over_chord, 0.18)
 
-    mac = (2 / 3) * chord_root * ((1 + taper_ratio + taper_ratio ** 2) / (1 + taper_ratio))
+    mac = (2 / 3) * chord_root * ((1 + taper_ratio + (taper_ratio ** 2)) / (1 + taper_ratio))
 
     return (
         quarter_chord_sweep, leading_edge_sweep, span, chord_root, chord_tip, dihedral,
@@ -82,10 +83,9 @@ def plot_planform(leading_edge_sweep, chord_root, chord_tip, span):
     plt.show()
 
 
-def determine_half_chord_sweep(root_chord, tip_chord, span, qc_sweep):
-    root_half = root_chord * 0.5
-    tip_half = root_chord * 0.25 * (span / 2) * np.tan(np.radians(qc_sweep)) + 0.25 * tip_chord
-    hc_sweep = np.tan((root_half - tip_half) / (span / 2))
+def determine_half_chord_sweep(chord_tip, qc_sweep, chord_root, span):
+    hc_sweep = np.arctan(
+        ((chord_tip / 4 + span / 2 * np.tan(qc_sweep)) - (chord_root / 4)) / (span / 2))
     return hc_sweep
 
 # M_cruise = 0.7  # inputs from different part

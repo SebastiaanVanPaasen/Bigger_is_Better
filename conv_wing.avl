@@ -4,11 +4,11 @@ Wing
 #IYsym IZsym Zsym
 0  0  0
 #Sref  Cref  Bref
-nan nan nan 
+363.48085610737905 10.756 50.0 
 #Xref Yref Zref
 0  0.0  0
 #CDcp
-nan 
+0.025 
 
 SURFACE
 Wing 
@@ -18,8 +18,8 @@ YDUPLICATE
 ANGLE
 0.0
 SECTION
-0 0 0 nan 3.0 0 0
+0 0 0 10.756 3.0 0 0
 SECTION
-nan nan nan nan -2.0 0 0
+9.04 25.149 -0.269 3.697 -2.0 0 0
 AFILE
 n2414.dat.txt

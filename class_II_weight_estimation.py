@@ -13,7 +13,8 @@ def wing_weight(w_to, w_f, b, semi_chord_sweep, n_ult, s, t_max, choice):
     w_mzf = ((w_to - w_f) / lbs_to_kg) / g_0
     b = b / ft_to_m
     t_max = t_max / ft_to_m
-    s_angle = np.cos(np.radians(semi_chord_sweep))
+    s_angle = np.cos(semi_chord_sweep)
+    s = s / (ft_to_m ** 2)
 
     w_weight = 0.0017 * w_mzf * ((b / s_angle) ** 0.75) * (1 + np.sqrt(6.3 * s_angle / b)) * (n_ult ** 0.55) * (
             (b * s / (t_max * w_mzf * s_angle)) ** 0.30)
@@ -35,9 +36,7 @@ def wing_weight(w_to, w_f, b, semi_chord_sweep, n_ult, s, t_max, choice):
 
 def _tail_weight(k, s, v_d, semi_chord_sweep):
     # variables are explained under empennage_weight function
-    print(" k equals " + str(v_d))
-    print("s equals "+ str(semi_chord_sweep))
-    return k * s * ((3.81 * (s ** 0.2) * v_d) / (1000 * np.cos(np.radians(semi_chord_sweep)) ** 0.5) - 0.287)
+    return k * s * ((3.81 * (s ** 0.2) * v_d) / (1000 * np.cos(semi_chord_sweep) ** 0.5) - 0.287)
 
 
 def empennage_weight(choice, surface, v_d, sweep, z_h, span_v):
@@ -47,7 +46,7 @@ def empennage_weight(choice, surface, v_d, sweep, z_h, span_v):
     # z_h is the distance between root of vertical tail and start of horizontal tail on vertical tail
     # span_v is the span of the vertical tail
     v_d = v_d / kts_to_ms
-    surface = surface / ft_to_m
+    surface = surface / (ft_to_m ** 2)
     z_h = z_h / ft_to_m
     span_v = span_v / ft_to_m
 
@@ -104,7 +103,7 @@ def landing_gear_weight(w_to):
 
 def engine_weight(n_e, w_e):
     # w_e is the weight of one engine
-    w_e = (w_e / g_0) / lbs_to_kg
+    w_e = (w_e / lbs_to_kg)
     return n_e * w_e
 
 
@@ -129,10 +128,11 @@ def induction_weight(l_d, n_inl, a_inl, choice):
 def propeller_weight(choice, n_p, d_p, p_to, n_bl):
     # n_p is the number of propellers
     # n_bl is the number of blades per propeller
-    # p_to is the required take-off power MUST BE ENTERED IN HP
+    # p_to is the required take-off power
     # d_p is the propeller diameter
     k_prop = 0.108
     d_p = d_p / ft_to_m
+    p_to = p_to / hp_to_N
 
     # choose 1 if piston engines are used
     if choice == 1:
@@ -145,7 +145,10 @@ def fuel_system_weight(n_e, n_t, w_f, choice):
     # n_e is the number of engines
     # n_t is the number of separate fuel tanks
     # k_fsp is for aviation gasoline
+    # w_f is the fuel weight
+
     k_fsp = 5.87
+    w_f = (w_f / lbs_to_kg) / g_0
 
     # choose 1 if you hae non self-sealing bladder tanks
     if choice == 1:
@@ -188,7 +191,8 @@ def calc_w_ess(w_e, n_e, choice):
     # choice is the type of starting system, 1 for one or two jet engines with pneumatic starting system
     # 2 for four jet engines with pneumatic starting systems, 3 for jet engines using electric starting systems
     # 4 for turboprops with pneumatics, 5 for piston engines using electric systems
-    w_e = w_e * n_e
+    w_e = ((w_e * n_e) / lbs_to_kg)
+
     if choice == 1:
         return 9.33 * (w_e / 1000) ** 1.078
     elif choice == 2:
@@ -207,6 +211,7 @@ def calc_w_pc(n_bl, n_p, d_p, n_e, p_to, choice):
     # choice depends on the typ of engines, 1 is for jets, 2 for turboprops and 3 for piston engines
     # input parameters are as defined previously
     d_p = d_p / ft_to_m
+    p_to = p_to / hp_to_N
 
     if choice == 1:
         return 0
@@ -221,7 +226,7 @@ def calc_w_osc(choice, w_e, n_e):
     # piston engines
     # w_e is the weight per engine
     # n_e is the number of engines
-    w_e = w_e * n_e
+    w_e = ((w_e * n_e) / lbs_to_kg)
 
     if choice == 1:
         return 0
