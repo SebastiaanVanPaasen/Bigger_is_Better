@@ -1,12 +1,12 @@
 from constants_and_conversions import *
 import numpy as np
-from inputs import *
-import matplotlib.pyplot as plt
+# from inputs import *
+# import matplotlib.pyplot as plt
 
 
 def calc_payload_weight(n_passengers, n_crew, w_person):
     # calculate the total payload weight, using the number of passengers, crew and the weight of a person
-    return (n_passengers * w_person * lbs_to_kg + n_crew * w_person * lbs_to_kg) * g_0
+    return (n_passengers * w_person + n_crew * w_person) * lbs_to_kg * g_0
 
 
 def calc_cruise_coefficient(cl, cd, r, velocity, c_j):
@@ -47,9 +47,6 @@ def class_I(cl, cd, r_cruise, r_res, v_cruise, cj_cruise, W_tfo_frac, W_e_frac, 
     W_f_frac = calc_fuel_fraction(mission_frac)
     W_to_frac = 1 - W_f_frac - W_tfo_frac - W_e_frac
 
-    # print(w_f_frac)
-    # print(w_to_frac)
-
     W_P = calc_payload_weight(N_pas, N_crew, W_person)
     W_TO = W_P / W_to_frac
     W_F = W_f_frac * W_TO
@@ -57,20 +54,19 @@ def class_I(cl, cd, r_cruise, r_res, v_cruise, cj_cruise, W_tfo_frac, W_e_frac, 
 
     return np.array([W_TO, W_E, W_P, W_F])
 
-
-r_cruise = np.arange(1000000, 2000000, 1000)
-results = np.zeros((4, len(r_cruise)))
-percentages = np.zeros((3, len(r_cruise) - 1))
-for i in range(len(r_cruise)):
-    result = class_I(CL_cruise, CD_cruise, r_cruise[i], reserve_range, V_cruise, c_j_cruise, W_tfo_frac, W_e_frac, fuel_fractions,
-                     N_pas, N_crew, W_person)
-    for j in range(4):
-        results[j][i] = result[j]
-
-    if i > 0:
-        percentages[0][i - 1] = ((r_cruise[i] - r_cruise[i - 1])/r_cruise[i - 1]) * 100
-        percentages[1][i - 1] = ((result[1] - results[1][i - 1])/results[1][i - 1]) * 100
-        percentages[2][i - 1] = ((result[3] - results[3][i - 1])/results[3][i - 1]) * 100
+# r_cruise = np.arange(1000000, 2000000, 1000)
+# results = np.zeros((4, len(r_cruise)))
+# percentages = np.zeros((3, len(r_cruise) - 1))
+# for i in range(len(r_cruise)):
+#     result = class_I(CL_cruise, CD_cruise, r_cruise[i], reserve_range, V_cruise, c_j_cruise, W_tfo_frac, W_e_frac, fuel_fractions,
+#                      N_pas, N_crew, W_person)
+#     for j in range(4):
+#         results[j][i] = result[j]
+#
+#     if i > 0:
+#         percentages[0][i - 1] = ((r_cruise[i] - r_cruise[i - 1])/r_cruise[i - 1]) * 100
+#         percentages[1][i - 1] = ((result[1] - results[1][i - 1])/results[1][i - 1]) * 100
+#         percentages[2][i - 1] = ((result[3] - results[3][i - 1])/results[3][i - 1]) * 100
 
 # plt.plot(percentages[0], percentages[1])
 # plt.plot(r_cruise, results[3])
