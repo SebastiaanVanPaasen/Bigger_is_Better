@@ -18,6 +18,8 @@ import matplotlib.pyplot as plt
 #A          =       Aspect ratio
 #e          =       Oswald efficiency factor 
 #R_des      =       Design range [m]
+#Tcr        =       Thrust setting during cruise
+#T_W        =       Thrust to weight ratio during cruise
 
 
 #------------------------------VERIFICATION DATA--------------------------------
@@ -31,12 +33,14 @@ MZFW = 65952.* 9.81
 MFW  = 20826.*9.81          # Maximum fuel weight (including reserve fuel)
 W_fr = MFW/105. * 5.        #reserve fuel
 
+Tcr = 117.3e03  #N
 A = 8.45
 e = 0.85
 CD0 = 0.020
 V = 236. #m/s
 g = 9.81
 S = 124.5 
+T_W = 0.3027
 
 h = 10000
 #assume weight in cruise is at least MLW to allow for a save landing
@@ -70,7 +74,7 @@ def ISA_density(h):      # enter height in m
         return D1
 
 def drag_plot(h,S,A,e,Wcr):         #Drag VS velocity graph
-    V = np.linspace(200,1000,800)   #V range in km/h
+    V = np.linspace(200,1200,800)   #V range in km/h
     CL_list = []
     CD_list = []
     for i in V:
@@ -86,12 +90,56 @@ def drag_plot(h,S,A,e,Wcr):         #Drag VS velocity graph
     plt.plot(V, D)
     plt.xlabel("Speed [km/h]")
     plt.ylabel("Drag [kN]")
+    #plt.show()
+    
+    k = D.index(min(D))            
+    return V[k]                 #speed at which the minimum drag is experienced
+
+
+def power_plot(h,Wcr,S,Tcr):
+    V = np.linspace(200,1200,800)   #V range in km/h
+    Pr_list = []                    #power required list in kW
+    Pa_list = []                    #Power available list in kW
+    for i in V:
+        CL = Wcr / (0.5*ISA_density(h)*(i/3.6)**2*S)
+        CD = CD0 + (CL**2 / (np.pi*A*e))
+        Pr = Wcr*np.sqrt((2*Wcr*CD**2)/(S*ISA_density(h)*CL**3))
+        Pr_list.append(Pr/1000.)
+        
+        Pa_list.append((i/3.6)*Tcr/1000.)
+        
+    plt.plot(V,Pr_list,label = "P_req")
+    plt.plot(V,Pa_list, label = "P_av")
+    plt.legend(loc = "upper right")
+    plt.xlabel("Airspeed [km/h]")
+    plt.ylabel("Power [kW]")
     plt.show()
     
-    k = D.index(min(D))
-    return V[k]                 #speed at which the minimum drag is experienced
+    Pc_list = []                    # Excess power used to climb in kW
+    for i in range(len(Pa_list)):
+        Pc = Pa_list[i] - Pr_list[i]
+        Pc_list.append(Pc)
     
+    RC_list = []                    # rate of climb is proportional to excess power
+    for j in Pc_list:
+        RC_list.append((j*1000)/Wcr)
+    
+    plt.plot(V,RC_list)
+    plt.xlabel("Airspeed [km/h]")   
+    plt.ylabel("Rate of climb [m/s]")
+    plt.show()
+    
+    k = RC_list.index(max(RC_list))
+    return V[k]                     #speed at which the maxmimum RC is obtained 
 
+
+
+
+    
+    
+    
+    
+    
 
         
         
