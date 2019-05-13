@@ -20,7 +20,7 @@ import matplotlib.pyplot as plt
 #R_des      =       Design range [m]
 #Tcr        =       Thrust setting during cruise
 #T_W        =       Thrust to weight ratio during cruise
-
+#R_design   =       design range in m
 
 #------------------------------VERIFICATION DATA--------------------------------
 
@@ -41,7 +41,7 @@ V = 236. #m/s
 g = 9.81
 S = 124.5 
 T_W = 0.3027
-
+R_des = 1400e03
 h = 10000
 #assume weight in cruise is at least MLW to allow for a save landing
 Wcr = MLW
@@ -87,10 +87,9 @@ def drag_plot(h,S,A,e,Wcr):         #Drag VS velocity graph
     for j in range(len(CL_list)):
         D.append((Wcr * (CD_list[j]/CL_list[j]))/1000.)
         
-    plt.plot(V, D)
-    plt.xlabel("Speed [km/h]")
-    plt.ylabel("Drag [kN]")
-    plt.show()
+    #plt.plot(V, D)
+    #plt.xlabel("Speed [km/h]")
+    #plt.show()
     
     k = D.index(min(D))            
     return V[k]                 #speed at which the minimum drag is experienced
@@ -108,12 +107,12 @@ def power_plot(h,Wcr,S,Tcr):
         
         Pa_list.append((i/3.6)*Tcr/1000.)
         
-    plt.plot(V,Pr_list,label = "P_req")
-    plt.plot(V,Pa_list, label = "P_av")
-    plt.legend(loc = "upper right")
-    plt.xlabel("Airspeed [km/h]")
-    plt.ylabel("Power [kW]")
-    plt.show()
+    #plt.plot(V,Pr_list,label = "P_req")
+    #plt.plot(V,Pa_list, label = "P_av")
+    #plt.legend(loc = "upper right")
+    #plt.xlabel("Airspeed [km/h]")
+    #plt.ylabel("Power [kW]")
+    #plt.show()
     
     Pc_list = []                    # Excess power used to climb in kW
     for i in range(len(Pa_list)):
@@ -124,10 +123,10 @@ def power_plot(h,Wcr,S,Tcr):
     for j in Pc_list:
         RC_list.append((j*1000)/Wcr)
     
-    plt.plot(V,RC_list)
-    plt.xlabel("Airspeed [km/h]")   
-    plt.ylabel("Rate of climb [m/s]")
-    plt.show()
+    #plt.plot(V,RC_list)
+    #plt.xlabel("Airspeed [km/h]")   
+    #plt.ylabel("Rate of climb [m/s]")
+    #plt.show()
     
     k = RC_list.index(max(RC_list))
     return V[k], max(RC_list)        #speed at which the maxmimum RC is obtained 
@@ -135,7 +134,7 @@ def power_plot(h,Wcr,S,Tcr):
 
 #----------------------------MAIN PROGRAM-----------------------------------
 """Find RC max and corresponding airspeed + fuel consumption at different h"""
-h = np.linspace(7000,12000,5000)  #look at altitudes between 7 and 12 km
+h = np.linspace(8000,9000,100)  #look at altitudes between 7 and 12 km
 
 V_RCmax = []
 RC_max = []
@@ -145,6 +144,14 @@ for i in h:
     
     V_RCmax.append(V_RCmaxi)
     RC_max.append(RC_maxi)
+    
+plt.plot(RC_max,h,label = "RC max")
+plt.plot(V_RCmax,h, label = "V at RC max")
+plt.legend()
+plt.xlabel("height [m]")
+plt.ylabel("Speed [m/s]")
+plt.show()
+    
     
 
 
