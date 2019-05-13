@@ -77,7 +77,7 @@ def lift_distribution(CL):
     elements = np.reshape(np.array(elements),(count,-1))
     os.remove("endresult")
     return(elements)
-output_avl = lift_distribution(2)
+output_avl = lift_distribution(1)
 
 def get_correct_data(output_avl):
     y_pos = []
