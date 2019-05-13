@@ -22,21 +22,23 @@ Comments about this file:
 def make_avl_file(root_chord, tip_chord, span, LE_sweep, dihedral, S, CD_0, M_cruise, tailarm_h, span_h, \
                   root_chord_h, quarter_chord_sweep_h, taper_ratio_h, tailarm_v, span_v, root_chord_v, \
                   quarter_chord_sweep_v, taper_ratio_v, wingtype):
-    Angle = 0  # Incidence angle
+    Angle = 0.0  # Incidence angle
     chords = [root_chord, tip_chord]
-    Ainc = [0.0, 0.0]
+    Ainc = [3.0, -2.0]
     Nspanwise = [0, 0]
     Sspace = [0, 0]
     x_loc_LE = [0, span / 2 * np.tan(LE_sweep)]
+    print(x_loc_LE)
     y_loc_LE = [0, span / 2]
+    print(y_loc_LE)
     z_loc_LE = [0, span / 2 * np.tan(dihedral)]  # change for dihedral angle low/high wing
-
+    print(z_loc_LE)
     dx = 0.25 * root_chord_h * (1 - taper_ratio_h) + span_h / 2 * np.tan(quarter_chord_sweep_h)
     y_loc_LE_h = [0, span_h / 2]
     if wingtype == 1:
         dx_sweep = 0.25 * root_chord_v * (1 - taper_ratio_v) + span_v / 2 * np.tan(quarter_chord_sweep_v)
         z_loc_LE_h = [span_v / 2, span_v / 2]
-        x_loc_LE_h = [tailarm_h + dx_sweep, tailarm_h + dx + dx_sweep]
+        x_loc_LE_h = [tailarm_v + dx_sweep, tailarm_v + dx + dx_sweep]
     else:
         z_loc_LE_h = [0, 0]
         x_loc_LE_h = [tailarm_h, tailarm_h + dx]
@@ -63,7 +65,7 @@ def make_avl_file(root_chord, tip_chord, span, LE_sweep, dihedral, S, CD_0, M_cr
               str(round(CD_0, 3)), "\n"
                                    "\n" + "SURFACE" + "\n" +
               "Wing", "\n"
-                      "8  1.0  12  -2.0" + "\n"
+                      "12  1.0  26  -2.0" + "\n"
                                            "YDUPLICATE" + "\n" +
               str(0.0), "\n" +
               "ANGLE" + "\n" +
@@ -75,35 +77,35 @@ def make_avl_file(root_chord, tip_chord, span, LE_sweep, dihedral, S, CD_0, M_cr
         print("AFILE" + "\n"
                         "n2414.dat.txt", file=text_file)
 
-        # HORIZONTAL TAIL surface
-        print("\n" + "SURFACE" + "\n" +
-              "Stab", "\n"
-                      "6 1.0 15 -1.1" + "\n"
-                                        "YDUPLICATE" + "\n" +
-              str(0.0), "\n" +
-              "ANGLE" + "\n" +
-              str(Angle_h), file=text_file)
-        for i in range(2):
-            print("SECTION", file=text_file)
-            print(round(x_loc_LE_h[i], 3), round(y_loc_LE_h[i], 3), round(z_loc_LE_h[i], 3), round(chords_h[i], 3),
-                  Ainc[i], Nspanwise[i], Sspace[i], file=text_file)
-        print("AFILE" + "\n"
-                        "n2414.dat.txt", file=text_file)
-
-        # Vertical tail surface
-        print("\n" + "SURFACE" + "\n" +
-              "FIN", "\n"
-                     "7 1.0 11 1.0" + "\n"
-                                      "YDUPLICATE" + "\n" +
-              str(0.0), "\n" +
-              "ANGLE" + "\n" +
-              str(Angle_v), file=text_file)
-        for i in range(2):
-            print("SECTION", file=text_file)
-            print(round(x_loc_LE_v[i], 3), round(y_loc_LE_v[i], 3), round(z_loc_LE_v[i], 3), round(chords_v[i], 3),
-                  Ainc[i], Nspanwise[i], Sspace[i], file=text_file)
-        print("AFILE" + "\n"
-                        "n0010.dat.txt", file=text_file)
+#        # HORIZONTAL TAIL surface
+#        print("\n" + "SURFACE" + "\n" +
+#              "Stab", "\n"
+#                      "6 1.0 15 -1.1" + "\n"
+#                                        "YDUPLICATE" + "\n" +
+#              str(0.0), "\n" +
+#              "ANGLE" + "\n" +
+#              str(Angle_h), file=text_file)
+#        for i in range(2):
+#            print("SECTION", file=text_file)
+#            print(round(x_loc_LE_h[i], 3), round(y_loc_LE_h[i], 3), round(z_loc_LE_h[i], 3), round(chords_h[i], 3),
+#                  Ainc[i], Nspanwise[i], Sspace[i], file=text_file)
+#        print("AFILE" + "\n"
+#                        "n2414.dat.txt", file=text_file)
+#
+#        # Vertical tail surface
+#        print("\n" + "SURFACE" + "\n" +
+#              "FIN", "\n"
+#                     "7 1.0 11 1.0" + "\n"
+##                                      "YDUPLICATE" + "\n" +
+##              str(0.0), "\n" +
+#              "ANGLE" + "\n" +
+#              str(Angle_v), file=text_file)
+#        for i in range(2):
+#            print("SECTION", file=text_file)
+#            print(round(x_loc_LE_v[i], 3), round(y_loc_LE_v[i], 3), round(z_loc_LE_v[i], 3), round(chords_v[i], 3),
+#                  Ainc[i], Nspanwise[i], Sspace[i], file=text_file)
+#        print("AFILE" + "\n"
+#                        "n0010.dat.txt", file=text_file)
     return
 
 
@@ -112,7 +114,7 @@ make_avl_file(12.22, 12.22 * 0.149, 60.90, 0.56, 0.03, 427.8, 0.015, 0.7, 27.90,
 
 
 def run_avl(cl_cruise):
-    p = Popen(r"C:\Users\sebas\OneDrive\Documents\DSE\Bigger_is_Better\avl.exe", stdin=PIPE,
+    p = Popen(r"C:\Users\floyd\OneDrive\Documenten\GitHub\Bigger_is_Better\avl.exe", stdin=PIPE,
               stdout=DEVNULL, universal_newlines=True)
     set_cl_cruise = "a c " + str(cl_cruise)
     p.communicate(
@@ -131,13 +133,13 @@ def run_avl(cl_cruise):
 run_avl(0.7)
 
 
-# path for floyd: "C:\Users\floyd\Desktop\avl.exe"
+# path for floyd: "C:\Users\floyd\OneDrive\Documenten\GitHub\Bigger_is_Better\avl.exe"
 # path for sebas: "C:\Users\sebas\OneDrive\Documents\DSE\Bigger_is_Better\avl.exe"
 def find_clalpha():
     alpha_range = [0, 5]
     CL_range = []
     for j in range(len(alpha_range)):
-        p = Popen(r"C:\Users\sebas\OneDrive\Documents\DSE\Bigger_is_Better\avl.exe", stdin=PIPE,
+        p = Popen(r"C:\Users\floyd\OneDrive\Documenten\GitHub\Bigger_is_Better\avl.exe", stdin=PIPE,
                   stdout=DEVNULL, universal_newlines=True)
         set_alpha = "a a " + str(alpha_range[j])
         p.communicate(
