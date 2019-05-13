@@ -19,6 +19,7 @@ def make_avl_file():
     qc_sweep = np.radians(31.60)
     dihedral = 0
     Cr = (2*S)/((1+taper)*span)
+    print(Cr)
     Ct = Cr*taper
     chords = [Cr, Ct]
     CD_0 = 0.015
@@ -62,7 +63,7 @@ def make_avl_file():
 make_avl_file()
 
 def lift_distribution(CL):        
-    p = subprocess.Popen(r"C:\Users\floyd\Desktop\avl.exe", stdin=subprocess.PIPE, universal_newlines=True)
+    p = subprocess.Popen(r"C:\Users\floyd\OneDrive\Documenten\GitHub\Bigger_is_Better\avl.exe", stdin=subprocess.PIPE, universal_newlines=True)
     set_CL = "a c " + str(CL)
     p.communicate(os.linesep.join(["load", "avl_testing","case", "mach0.7", "oper", set_CL, "x","fs", "endresult"]))          
     lines = [line.rstrip('\n') for line in open('endresult')]
@@ -77,15 +78,16 @@ def lift_distribution(CL):
     elements = np.reshape(np.array(elements),(count,-1))
     os.remove("endresult")
     return(elements)
-output_avl = lift_distribution(1)
+output_avl = lift_distribution(2.5)
 
-def get_correct_data(output_avl):
+mac = 8.67
+def get_correct_data(output_avl,mac):
     y_pos = []
     cl = []
     cd = []
     for i in range(len(output_avl)):
         y_pos.append(output_avl[i][1])
-        cl.append(output_avl[i][4])
+        cl.append(output_avl[i][4]/mac)
         cd.append(output_avl[i][8])
     y_pos = y_pos[len(y_pos):int(len(y_pos)/2)-1:-1] + y_pos[0:int(len(y_pos)/2)]
     cl = cl[len(y_pos):int(len(y_pos)/2)-1:-1] + cl[0:int(len(y_pos)/2)]
@@ -94,4 +96,4 @@ def get_correct_data(output_avl):
 #    plt.scatter(y_pos,cd)
     plt.grid()
     return(y_pos,cl, cd)
-x = get_correct_data(output_avl)
+x = get_correct_data(output_avl,mac)
