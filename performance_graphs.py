@@ -90,7 +90,7 @@ def drag_plot(h,S,A,e,Wcr):         #Drag VS velocity graph
     plt.plot(V, D)
     plt.xlabel("Speed [km/h]")
     plt.ylabel("Drag [kN]")
-    #plt.show()
+    plt.show()
     
     k = D.index(min(D))            
     return V[k]                 #speed at which the minimum drag is experienced
@@ -130,13 +130,24 @@ def power_plot(h,Wcr,S,Tcr):
     plt.show()
     
     k = RC_list.index(max(RC_list))
-    return V[k]                     #speed at which the maxmimum RC is obtained 
+    return V[k], max(RC_list)        #speed at which the maxmimum RC is obtained 
 
 
+#----------------------------MAIN PROGRAM-----------------------------------
+"""Find RC max and corresponding airspeed + fuel consumption at different h"""
+h = np.linspace(7000,12000,5000)  #look at altitudes between 7 and 12 km
 
-
+V_RCmax = []
+RC_max = []
+for i in h:
+    V_RCmaxi = power_plot(i,Wcr,S,Tcr)[0]
+    RC_maxi = power_plot(i,Wcr,S,Tcr)[1]
     
+    V_RCmax.append(V_RCmaxi)
+    RC_max.append(RC_maxi)
     
+
+
     
     
     
