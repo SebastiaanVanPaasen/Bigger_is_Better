@@ -137,7 +137,7 @@ def payload_range():
     plt.plot(range_weight, weight, "k")    
     
 
-    plt.xlabel("Range [m]")
+    plt.xlabel("Range [km]")
     plt.ylabel("Weight [N]")
     plt.show()
 

@@ -1,33 +1,23 @@
 # -*- coding: utf-8 -*-
 """
-Created on Mon May 13 15:34:38 2019
+Created on Mon May 13 16:00:12 2019
 
 @author: nikki
 """
-
 #-------------------------------MODULES---------------------------------------
 import numpy as np
 import matplotlib.pyplot as plt
 
 #-------------------------------INPUTS-----------------------------------------
-"""Weights"""
-#MTOW       =       Maximum take-off weight [N] (optional as fraction of W_TO)
-#MLW        =       Maximum landing weight [N] (optional as fraction of W_TO)
-#MZFW       =       Maximum zero fuel weight [N] (optional as fraction of W_TO)
-#OEW        =       Operational empty weight [N] (optional as fraction of W_TO)
-#MWP        =       Maximum payload weight [N] (optional as fraction of W_TO)
-#MFW        =       Maximum fuel weight [N] (optional as fraction of W_TO)
+"""Geometry"""
+# S         =       Surface area 
+
 
 """Aicraft configuration"""
 #CD0        =       Zero lift drag coefficient
 #A          =       Aspect ratio
 #e          =       Oswald efficiency factor 
 #R_des      =       Design range [m]
-
-
-#------------------------STATISTICAL INPUTS----------------------------------
-#W_fr        = 0.05*W_f      #Reserve fuel weight as percentage of fuel weight
-Ct           = 12e-06      #Specific fuel conspumtion [kg/N/s] from B737MAX + requirement 
 
 
 #------------------------------VERIFICATION DATA--------------------------------
@@ -46,10 +36,45 @@ e = 0.85
 CD0 = 0.020
 V = 236. #m/s
 g = 9.81
-
+S = 124.5 
 R_range = 11000.  #range of x-axis
 R_design = 1400e03 #[m]
 
 
 
 #------------------------------DEFINITIONS-----------------------------------
+
+def ISA_density(h):      # enter height in m
+    # Temperature
+    if h<=11000:
+        T0=288.15
+        a=-0.0065
+        T=T0+a*h
+    if 11000<h<=20000:
+        T1=216.65
+
+    #Density
+    if h<=11000:
+        d0=1.225
+        g=9.80665
+        R=287.00
+        D=d0*(T/T0)**((-g/(a*R))-1)
+        return D
+        
+    if 11000<h<=20000:
+        d0=1.225
+        g=9.80665
+        R=287.
+        T1=216.65
+        D1=d0*np.e**(((-g/(R*T1))*(h)))
+        return D1
+
+def drag_plot():
+    
+
+        
+        
+    
+
+
+
