@@ -7,44 +7,69 @@ from drag_estimation import Wing_wetted_area, H_tail_wetted_area, V_tail_wetted_
 from class_I_empennage_landinggear import class_I_empennage, size_tail
 from flight_envelope import manoeuvring_envelope, gust_envelope
 from conv_wing_avl import make_avl_file, run_avl, find_clalpha
+from wing_loading_diagram import final_diagram
 from class_II_weight_estimation import *
 import matplotlib.pyplot as plt
 
-# parameters that will be updated All weights,
+# Parameters that will be iterated through-out the process -------------------------------------------------------------
 T_input = 0.3
 S_input = 7000
-
 CL_cruise = CL_cruise
 CD_cruise = CD_cruise
 W_e_frac = W_e_frac
 Oswald = Oswald
 
-wing_choice = [0, 0, 0, 0, 0, 0]
+# Design choices required for the Roskam equations ---------------------------------------------------------------------
+# first is to include spoilers and speed brakes
+# second is with 2 wing mounted engines
+# third is with 4 wing mounted engines
+# fourth is if landing gear is not wing mounted
+# fifth is for strutted wings
+# sixth is for fowler flaps
+wing_choice = [1, 1, 0, 0, 0, 0]
+# choose 1 if you have variable incidence stabilizers
+# choose 1 if the horizontal tails are fin mounted
 empennage_choice = [0, 0]
+# choose 1 if your landing gear is attached to the fuselage
 fuselage_choice = 0
+# choose 1 if a turbojet or low bypass ratio turbofan is used
 nacelle_choice = 0
+# choose first if you have buried engine, 0 for no buried engines
+# choose secondly if the ducts have a flat cross section, in this case 1
 induction_choice = [0, 0]
+# choose 1 if piston engines are used
 prop_choice = 1
+# choose 1 if you hae non self-sealing bladder tanks
 fuel_sys_choice = 0
+# choice is the type of starting system, 1 for one or two jet engines with pneumatic starting system
+# 2 for four jet engines with pneumatic starting systems, 3 for jet engines using electric starting systems
+# 4 for turboprops with pneumatics, 5 for piston engines using electric systems
 start_up_choice = 1
-engine_choice = 2
+# Choose 1 for fuselage mounted jet, 2 for wing mounted jet, 3 for wing mounted turboprops and 4 for wing mounted piston
+# engines the second choice should be 1 if an afterburner is present
+engine_choice = [2, 0]
+# choice depends on engines, 1 for jet, 2 for turboprop, 3 for radial piston engines, 4 for horizontally opposed
+# piston engines
 oil_choice = 1
+# choice depends on engines, 1 is propellers
 hydro_choice = 0
 
-
+# Starting the iteration process ---------------------------------------------------------------------------------------
 i = 0
 maximum = 30
-empty_weight = np.zeros(30)
+empty_weight = np.zeros(maximum)
+final_diagram(CD_0, Oswald)
 
 while i < maximum:
     # Performing class I weight estimation -----------------------------------------------------------------------------
     weights = class_I(CL_cruise, CD_cruise, mission_range, reserve_range, V_cruise, c_j_cruise, W_tfo_frac, W_e_frac,
-                      fractions, N_crew, N_pas, W_person)
+                      fuel_fractions, N_crew, N_pas, W_person)
 
     W_TO, W_E, W_P, W_F = weights[0], weights[1], weights[2], weights[3]
     m_e_frac = (weights[1] / weights[0])  # empty mass fraction
     m_p_frac = (weights[2] / weights[0])  # payload mass fraction
     m_f_frac = (weights[3] / weights[0])  # fuel mass fraction
+    mass_fractions[6], mass_fractions[7], mass_fractions[8] = m_p_frac, m_f_frac, m_e_frac
 
     # Choosing a design point based on the T/W-W/S diagram -------------------------------------------------------------
     T, S = W_TO * T_input, W_TO / S_input
@@ -134,22 +159,26 @@ while i < maximum:
     # Determine the structural weight components -----------------------------------------------------------------------
     t_max_root = t_over_c * c_root
 
-    w_weight = wing_weight(W_TO, W_F, b, HC_sweep, n_ult, S, t_max_root, wing_choice)
+    w_weight = wing_weight(W_TO, W_F, b, HC_sweep, n_ult, S, t_max_root, wing_choice) * lbs_to_kg * g_0
+    mass_fractions[0] = w_weight / W_TO
     emp_weight = empennage_weight(empennage_choice, np.array([S_h, S_v]), V_D, np.array([HC_sweep_h, HC_sweep_v]), z_h,
-                                  b_v)
+                                  b_v) * lbs_to_kg * g_0
+    mass_fractions[1] = emp_weight / W_TO
 
     # Note that the fuselage is assumed circular in this case
-    fus_weight = fuselage_weight(fuselage_choice, V_D, l_h, d_fuselage, d_fuselage, fuselage_wet)
+    fus_weight = fuselage_weight(fuselage_choice, V_D, l_h, d_fuselage, d_fuselage, fuselage_wet) * lbs_to_kg * g_0
+    mass_fractions[2] = fus_weight / W_TO
 
     # Note that the choice includes the engine choice here
-    nac_weight = nacelle_weight(W_TO, nacelle_choice)
-    lg_weight = landing_gear_weight(W_TO)
-    eng_weight = engine_weight(N_engines, w_engine)
+    nac_weight = nacelle_weight(W_TO, nacelle_choice) * lbs_to_kg * g_0
+    mass_fractions[3] = nac_weight / W_TO
+    lg_weight = landing_gear_weight(W_TO) * lbs_to_kg * g_0
+    eng_weight = engine_weight(N_engines, w_engine) * lbs_to_kg * g_0
 
     structural_weight = w_weight + emp_weight + fus_weight + nac_weight + lg_weight + eng_weight
 
     # Determine the propulsion system weight components ----------------------------------------------------------------
-    ai_weight = induction_weight(duct_length, n_inlets, a_inlets, induction_choice)
+    ai_weight = induction_weight(duct_length, n_inlets, a_inlets, induction_choice) * lbs_to_kg * g_0
 
     n_prop = prop_characteristics[0]
     n_blades = prop_characteristics[1]
@@ -157,43 +186,45 @@ while i < maximum:
 
     if propeller_choice == 1:
         to_power = ((T * V_cruise) / (550 * prop_characteristics[3])) / hp_to_N
-        prop_weight = propeller_weight(prop_choice, n_prop, d_prop, to_power, n_blades)
+        prop_weight = propeller_weight(prop_choice, n_prop, d_prop, to_power, n_blades) * lbs_to_kg * g_0
     else:
         prop_weight = 0
         to_power = 0
 
     # Note that choice is regarding type of fuel tanks
-    fuel_sys_weight = fuel_system_weight(N_engines, n_fuel_tanks, W_F, fuel_sys_choice)
+    fuel_sys_weight = fuel_system_weight(N_engines, n_fuel_tanks, W_F, fuel_sys_choice) * lbs_to_kg * g_0
     # Choice is depending on type of engine controls and whether there is an afterburner
-    w_ec = calc_w_ec(l_fuselage, N_engines, b, engine_choice)
+    w_ec = calc_w_ec(l_fuselage, N_engines, b, engine_choice) * lbs_to_kg * g_0
     # Choice is depending on type of starting system and type of engine
-    w_ess = calc_w_ess(w_engine, N_engines, start_up_choice)
+    w_ess = calc_w_ess(w_engine, N_engines, start_up_choice) * lbs_to_kg * g_0
     # Choice is depending on type of engine
-    w_pc = calc_w_pc(n_blades, n_prop, d_prop, N_engines, to_power, prop_choice)
+    w_pc = calc_w_pc(n_blades, n_prop, d_prop, N_engines, to_power, prop_choice) * lbs_to_kg * g_0
     # Choice is depending on type of engines
-    w_osc = calc_w_osc(oil_choice, w_engine, N_engines)
+    w_osc = calc_w_osc(oil_choice, w_engine, N_engines) * lbs_to_kg * g_0
 
     prop_sys_weight = w_engine * N_engines + ai_weight + prop_weight + fuel_sys_weight + w_ec + w_ess + w_pc + w_osc
+    mass_fractions[4] = prop_sys_weight / W_TO
 
     # Determine fixed equipment weight components ----------------------------------------------------------------------
     # Calculate dynamic pressure at dive speed
     q_D = 0.5 * Rho_Cruise * V_D
     w_fc = calc_w_fc(W_TO, q_D)
     # Choice depends on type of engines
-    w_hps_els = calc_w_hps_els(hydro_choice, W_TO, V_pax)
+    w_hps_els = calc_w_hps_els(hydro_choice, W_TO, V_pax) * lbs_to_kg * g_0
     # Maximum range has still to be determined
-    w_instr = calc_w_instr(W_E, maximum_range)
+    w_instr = calc_w_instr(W_E, maximum_range) * lbs_to_kg * g_0
 
-    w_api = calc_w_api(V_pax, N_crew, N_pas)
-    w_ox = calc_w_ox(N_crew, N_pas)
-    w_apu = calc_w_apu(W_TO)
-    w_fur = calc_w_fur(W_TO, W_F)
-    w_bc = calc_w_bc(S_ff)
+    w_api = calc_w_api(V_pax, N_crew, N_pas) * lbs_to_kg * g_0
+    w_ox = calc_w_ox(N_crew, N_pas) * lbs_to_kg * g_0
+    w_apu = calc_w_apu(W_TO) * lbs_to_kg * g_0
+    w_fur = calc_w_fur(W_TO, W_F) * lbs_to_kg * g_0
+    w_bc = calc_w_bc(S_ff) * lbs_to_kg * g_0
 
     fix_equip_weight = w_fc + w_hps_els + w_instr + w_api + w_ox + w_apu + w_fur + w_bc
-
+    mass_fractions[5] = fix_equip_weight / W_TO
     # Determine final operational empty weight -------------------------------------------------------------------------
-    W_E = (structural_weight + prop_sys_weight + fix_equip_weight) * lbs_to_kg * g_0
+    W_E = structural_weight + prop_sys_weight + fix_equip_weight
+
     W_e_frac = W_E / W_TO
 
     print("The take-off weight equals: " + str(round(weights[0], 2)))
@@ -220,5 +251,6 @@ while i < maximum:
 
 iterations = np.arange(0, 30, 1)
 
+final_diagram(CD_0, Oswald)
 plt.plot(iterations, empty_weight)
 plt.show()
