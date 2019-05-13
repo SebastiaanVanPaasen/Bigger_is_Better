@@ -37,10 +37,10 @@ CD0 = 0.020
 V = 236. #m/s
 g = 9.81
 S = 124.5 
-R_range = 11000.  #range of x-axis
-R_design = 1400e03 #[m]
 
-
+h = 10000
+#assume weight in cruise is at least MLW to allow for a save landing
+Wcr = MLW
 
 #------------------------------DEFINITIONS-----------------------------------
 
@@ -69,8 +69,29 @@ def ISA_density(h):      # enter height in m
         D1=d0*np.e**(((-g/(R*T1))*(h)))
         return D1
 
-def drag_plot():
+def drag_plot(h,S,A,e,Wcr):         #Drag VS velocity graph
+    V = np.linspace(200,1000,800)   #V range in km/h
+    CL_list = []
+    CD_list = []
+    for i in V:
+        CL = Wcr / (0.5*ISA_density(h)*(i/3.6)**2*S)
+        CD = CD0 + (CL**2 / (np.pi*A*e))
+        CL_list.append(CL)
+        CD_list.append(CD)
     
+    D = []
+    for j in range(len(CL_list)):
+        D.append((Wcr * (CD_list[j]/CL_list[j]))/1000.)
+        
+    plt.plot(V, D)
+    plt.xlabel("Speed [km/h]")
+    plt.ylabel("Drag [kN]")
+    plt.show()
+    
+    k = D.index(min(D))
+    return V[k]                 #speed at which the minimum drag is experienced
+    
+
 
         
         
