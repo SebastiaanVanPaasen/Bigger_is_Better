@@ -60,6 +60,13 @@ def ISA_density(h):      # enter height in m
         
     return rho
     
+def ISA_temp(h):
+    if h < 11000:
+        T = 288.15 - 0.0065*h   #in Kelvin
+        return T
+    if h >= 11000:
+        return 216.65    #in Kelvin
+    
 
 def drag_plot(h,S,A,e,Wcr):         #Drag VS velocity graph
     V = np.linspace(200,1200,800)   #V range in km/h
@@ -121,6 +128,25 @@ def power_plot(h,Wcr,S,Tcr):        #input weight in Newtons!!!
     
     k = RC_list.index(max(RC_list))
     return V[k], max(RC_list),Pr_list,Pa_list,V  #peed at which the maxmimum RC is obtained 
+
+
+def opt_alt(Wcr,h,S,A,e):
+    H = range(7000,12000,dh)                #altitude range
+    gamma = 1.4
+    R = 287 #J/kg/K
+    M_list = []
+    for h in H:
+        CL = np.sqrt((CD0*np.pi*A*e)/(3.))
+        M = np.sqrt((2.*Wcr)/(CL*ISA_density(h)*gamma*R*S*ISA_temp(h)))
+        M_list.append(M)
+        
+    plt.plot(M_list,H)
+    plt.xlabel("Mach number")
+    plt.ylabel("Altitude [m]")
+    plt.show()
+        
+
+
 
 
 #----------------------------MAIN PROGRAM-----------------------------------
@@ -198,29 +224,29 @@ for h in H:
 
 tmin.remove(0)
 plt.subplot(221)
-plt.plot(H,tmin)
+plt.plot(H,tmin,"r")
 plt.ylabel("T min to climb [s]")
 plt.xlabel("Altitude [m]")
 
 plt.subplot(222)
-plt.plot(H,RC_max)
+plt.plot(H,RC_max,"b")
 plt.ylabel("RC_max [m/s]")
 plt.xlabel("Altitude [m]")
 
 plt.subplot(223)
-plt.plot(H,V_RCmax)
+plt.plot(H,V_RCmax,"g")
 plt.ylabel("V at RC_max [km/s]")
 plt.xlabel("Altitude [m]")
 
 plt.subplot(224)
-plt.plot(H,W_fuel)
+plt.plot(H,W_fuel,"purple")
 plt.xlabel("Altitude [m]")
-plt.ylabel("Fuel consumption [kg]")
+plt.ylabel("Fuel consumption to climb to H [kg]")
 
 
 plt.show()
 
-
+opt_alt(Wcr,h,S,A,e)
 
 
 
