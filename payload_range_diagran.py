@@ -73,10 +73,10 @@ def Wf_Wto():              #find V for which Wf/W_TO can be minimised
     
 def payload_range():
     """Standard weight lines"""
-    plt.hlines(MTOW,0.,R_range,"g","--")
-    plt.hlines(OEW,0.,R_range,"r","--")
-    plt.hlines(MZFW,0.,R_range,"b","--")
-    plt.hlines(MLW,0.,R_range,"y","--")    
+    plt.hlines(MTOW,0.,R_range,"g","--",label = "MTOW")
+    plt.hlines(OEW,0.,R_range,"r","--",label = "OEW")
+    plt.hlines(MZFW,0.,R_range,"b","--", label = "MZFW")
+    plt.hlines(MLW,0.,R_range,"y","--", label = "MLW")    
     
     
     """Compute different ranges"""
@@ -92,6 +92,9 @@ def payload_range():
     Wf2 =  MFW - W_fr 
     R_ferry = ((V/(g*Ct))*CL_CD(A,e,CD0)*np.log(W_TO/(W_TO - Wf2)))/1000.
     
+    plt.vlines(R_harmonic,OEW,MTOW,"m","--",label="Harmonic Range")
+    plt.vlines(R_max, OEW,MTOW,"crimson","--",label="Maximum Range")
+    plt.vlines(R_ferry,OEW,MTOW,"gray","--",label="Ferry Range")
     
     """Take-off weight line"""    
     #TO line up to MTOW and R_harmonic 
@@ -110,7 +113,7 @@ def payload_range():
     TO.append(OEW)
     range_TO.append(R_ferry)
     
-    plt.plot(range_TO, TO,"purple")
+    plt.plot(range_TO, TO,"navy",label = "TO weight")
     
 
     """Range line without reserve fuel"""
@@ -125,20 +128,21 @@ def payload_range():
     weight.append(OEW)            #weight line up to ferry range
     range_weight.append(R_ferry)
 
-    plt.plot(range_weight,weight, "k")
+    plt.plot(range_weight,weight, "k", label = "Payload weight")
     
     """Range line including reserve fuel"""
     #Max payload line 
-    plt.hlines(MZFW+W_fr,0.,R_harmonic,"k")   
+    plt.hlines(MZFW+W_fr,0.,R_harmonic,"gray")   
     
     for i in range(len(weight)):
         weight[i] = weight[i] + W_fr
 
-    plt.plot(range_weight, weight, "k")    
+    plt.plot(range_weight, weight, "gray",label = "With reserve fuel")    
     
 
     plt.xlabel("Range [km]")
     plt.ylabel("Weight [N]")
+    plt.legend()
     plt.show()
 
 
