@@ -33,7 +33,7 @@ def make_avl_file():
     z_loc_LE = [0, dz]
     
     Ainc = [0.0, 0.0]
-    spanwise_discretize_points = 50    #If you go too high then your computer is dead
+    spanwise_discretize_points = 20    #If you go too high then your computer is dead
     chordwise_discretize_point = 12     # " "
     
     with open("avl_testing.avl", "w") as text_file:
@@ -80,14 +80,14 @@ def lift_distribution(CL):
     return(elements)
 output_avl = lift_distribution(0.8)
 
-mac = 8.67
-def get_correct_data(output_avl,mac):
+c = 8.67
+def get_correct_data(output_avl,c):
     x_pos = []
     cl = []
     cd = []
     for i in range(len(output_avl)):
         x_pos.append(output_avl[i][1])
-        cl.append(output_avl[i][4]/mac)
+        cl.append(output_avl[i][4]/c)
         cd.append(output_avl[i][8])
 #    x_pos = x_pos[len(x_pos):int(len(x_pos)/2)-1:-1] + x_pos[0:int(len(x_pos)/2)]
 #    cl = cl[len(x_pos):int(len(x_pos)/2)-1:-1] + cl[0:int(len(x_pos)/2)]
@@ -96,5 +96,5 @@ def get_correct_data(output_avl,mac):
 #    plt.scatter(y_pos,cd)
 #    plt.grid()
     return(x_pos,cl, cd)
-x = get_correct_data(output_avl,mac)
-print(x)
+x = get_correct_data(output_avl,c)
+#print(x)
