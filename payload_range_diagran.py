@@ -17,6 +17,7 @@ import matplotlib.pyplot as plt
 #OEW        =       Operational empty weight [N] (optional as fraction of W_TO)
 #MWP        =       Maximum payload weight [N] (optional as fraction of W_TO)
 #MFW        =       Maximum fuel weight [N] (optional as fraction of W_TO)
+#W_fr        = 0.05*W_f      #Reserve fuel weight as percentage of fuel weight
 
 """Aicraft configuration"""
 #CD0        =       Zero lift drag coefficient
@@ -26,8 +27,8 @@ import matplotlib.pyplot as plt
 
 
 #------------------------STATISTICAL INPUTS----------------------------------
-#W_fr        = 0.05*W_f      #Reserve fuel weight as percentage of fuel weight
-Ct           = 12e-06      #Specific fuel conspumtion [kg/N/s] from B737MAX + requirement 
+
+Ct           = 12e-06      #Specific fuel conspumtion [kg/N/s] from B737MAX 
 
 
 #------------------------------VERIFICATION DATA--------------------------------
@@ -48,7 +49,7 @@ V = 236. #m/s
 g = 9.81
 
 R_range = 11000.  #range of x-axis
-R_design = 1400e03 #[m]
+R_des = 7000 #[km]
 
 
 
@@ -64,7 +65,7 @@ def Wf_Wto():              #find V for which Wf/W_TO can be minimised
     V = []
     for i in range(200,600):
         V.append(i)
-        Wf_Wto = 1. - e**((-R_design)/((i/Ct)*(CL_CD(A,e,CD0))))
+        Wf_Wto = 1. - e**((-R_des*1000)/((i/Ct)*(CL_CD(A,e,CD0))))
         Wf_Wto_opt.append(Wf_Wto)
         
     plt.plot(V,Wf_Wto_opt)
@@ -73,10 +74,10 @@ def Wf_Wto():              #find V for which Wf/W_TO can be minimised
     
 def payload_range():
     """Standard weight lines"""
-    plt.hlines(MTOW,0.,R_range,"g","--")
-    plt.hlines(OEW,0.,R_range,"r","--")
-    plt.hlines(MZFW,0.,R_range,"b","--")
-    plt.hlines(MLW,0.,R_range,"y","--")    
+    plt.hlines(MTOW,0.,R_range,"g","--",label = "MTOW")
+    plt.hlines(OEW,0.,R_range,"r","--",label = "OEW")
+    plt.hlines(MZFW,0.,R_range,"b","--", label = "MZFW")
+    plt.hlines(MLW,0.,R_range,"y","--", label = "MLW")    
     
     
     """Compute different ranges"""
@@ -92,6 +93,10 @@ def payload_range():
     Wf2 =  MFW - W_fr 
     R_ferry = ((V/(g*Ct))*CL_CD(A,e,CD0)*np.log(W_TO/(W_TO - Wf2)))/1000.
     
+    plt.vlines(R_harmonic,OEW,MTOW,"m","--",label="Harmonic Range")
+    plt.vlines(R_max, OEW,MTOW,"crimson","--",label="Maximum Range")
+    plt.vlines(R_ferry,OEW,MTOW,"gray","--",label="Ferry Range")
+    plt.vlines(R_des,OEW,MTOW,"orange","--",label="Design Range")
     
     """Take-off weight line"""    
     #TO line up to MTOW and R_harmonic 
@@ -110,7 +115,7 @@ def payload_range():
     TO.append(OEW)
     range_TO.append(R_ferry)
     
-    plt.plot(range_TO, TO,"purple")
+    plt.plot(range_TO, TO,"navy",label = "TO weight")
     
 
     """Range line without reserve fuel"""
@@ -125,20 +130,21 @@ def payload_range():
     weight.append(OEW)            #weight line up to ferry range
     range_weight.append(R_ferry)
 
-    plt.plot(range_weight,weight, "k")
+    plt.plot(range_weight,weight, "k", label = "Payload weight")
     
     """Range line including reserve fuel"""
     #Max payload line 
-    plt.hlines(MZFW+W_fr,0.,R_harmonic,"k")   
+    plt.hlines(MZFW+W_fr,0.,R_harmonic,"gray")   
     
     for i in range(len(weight)):
         weight[i] = weight[i] + W_fr
 
-    plt.plot(range_weight, weight, "k")    
+    plt.plot(range_weight, weight, "gray",label = "With reserve fuel")    
     
-
-    plt.xlabel("Range [m]")
+    plt.title('Payload - range diagram')
+    plt.xlabel("Range [km]")
     plt.ylabel("Weight [N]")
+    plt.legend()
     plt.show()
 
 
