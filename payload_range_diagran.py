@@ -17,7 +17,7 @@ import matplotlib.pyplot as plt
 #OEW        =       Operational empty weight [N] (optional as fraction of W_TO)
 #MWP        =       Maximum payload weight [N] (optional as fraction of W_TO)
 #MFW        =       Maximum fuel weight [N] (optional as fraction of W_TO)
-
+#W_fr        = 0.05*W_f      #Reserve fuel weight as percentage of fuel weight
 """Aicraft configuration"""
 #CD0        =       Zero lift drag coefficient
 #A          =       Aspect ratio
@@ -26,8 +26,8 @@ import matplotlib.pyplot as plt
 
 
 #------------------------STATISTICAL INPUTS----------------------------------
-#W_fr        = 0.05*W_f      #Reserve fuel weight as percentage of fuel weight
-Ct           = 12e-06      #Specific fuel conspumtion [kg/N/s] from B737MAX + requirement 
+
+Ct           = 12e-06      #Specific fuel conspumtion [kg/N/s] from B737MAX 
 
 
 #------------------------------VERIFICATION DATA--------------------------------
@@ -48,7 +48,7 @@ V = 236. #m/s
 g = 9.81
 
 R_range = 11000.  #range of x-axis
-R_design = 1400e03 #[m]
+R_des = 7000 #[km]
 
 
 
@@ -64,7 +64,7 @@ def Wf_Wto():              #find V for which Wf/W_TO can be minimised
     V = []
     for i in range(200,600):
         V.append(i)
-        Wf_Wto = 1. - e**((-R_design)/((i/Ct)*(CL_CD(A,e,CD0))))
+        Wf_Wto = 1. - e**((-R_des*1000)/((i/Ct)*(CL_CD(A,e,CD0))))
         Wf_Wto_opt.append(Wf_Wto)
         
     plt.plot(V,Wf_Wto_opt)
@@ -95,6 +95,7 @@ def payload_range():
     plt.vlines(R_harmonic,OEW,MTOW,"m","--",label="Harmonic Range")
     plt.vlines(R_max, OEW,MTOW,"crimson","--",label="Maximum Range")
     plt.vlines(R_ferry,OEW,MTOW,"gray","--",label="Ferry Range")
+    plt.vlines(R_des,OEW,MTOW,"orange","--",label="Design Range")
     
     """Take-off weight line"""    
     #TO line up to MTOW and R_harmonic 

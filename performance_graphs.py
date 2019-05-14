@@ -90,7 +90,7 @@ def drag_plot(h,S,A,e,Wcr):         #Drag VS velocity graph
     return V[k] ,D                    #speed at which the minimum drag is experienced
     
 
-def power_plot(h,Wcr,S,Tcr):        #input weight in Newtons!!!
+def power_plot(h,Wcr,S,Tcr,CD0):     #input weight in Newtons!!!
     V = np.linspace(200,1200,800)   #V range in km/h
     Pr_list = []                    #power required list in kW
     Pa_list = []                    #Power available list in kW
@@ -140,17 +140,11 @@ def opt_alt(Wcr,h,S,A,e):
         M = np.sqrt((2.*Wcr)/(CL*ISA_density(h)*gamma*R*S*ISA_temp(h)))
         M_list.append(M)
         
-    plt.plot(M_list,H)
-    plt.xlabel("Mach number")
-    plt.ylabel("Altitude [m]")
-    plt.show()
-        
-
-
+    return M_list, H
 
 
 #----------------------------MAIN PROGRAM-----------------------------------
-"""Required power wrt altitud and speed at min Drag"""
+"""Required power wrt altitude and speed at min Drag"""
 dh = 100                #step size in altitude
 H = range(7000,12000,dh)#altitude range
 
@@ -166,8 +160,8 @@ plt.ylabel("Airspeed at D_min [km/h]")
 
 
 for h in H:
-    Pr = power_plot(h,Wcr,S,Tcr)[2]
-    V = power_plot(h,Wcr,S,Tcr)[4]
+    Pr = power_plot(h,Wcr,S,Tcr,CD0)[2]
+    V = power_plot(h,Wcr,S,Tcr,CD0)[4]
     
     
     plt.subplot(212)
@@ -190,7 +184,7 @@ H = range(7000,12000,dh)#altitude range
 #RC max with respect to altitude
 for h in H:
     Wi = Wcr - Wfi          #take into account the weight variation due to fuel
-    RC_maxi = power_plot(h,Wi,S,Tcr)[1]
+    RC_maxi = power_plot(h,Wi,S,Tcr,CD0)[1]
     
     RC_max.append(RC_maxi)
 
@@ -201,11 +195,11 @@ for h in H:
 Wfi = 0                     #fuel consumption
 for h in H:
     Wi = Wcr - Wfi          #take into account the weight variation due to fuel
-    V_RCi = power_plot(h,Wi,S,Tcr)[0]
+    V_RCi = power_plot(h,Wi,S,Tcr,CD0)[0]
 
     V_RCmax.append(V_RCi)
     
-    RC_maxi = power_plot(h,Wi,S,Tcr)[1]
+    RC_maxi = power_plot(h,Wi,S,Tcr,CD0)[1]
     Wfi +=  F*g*(dh/RC_maxi)
 
 
@@ -213,13 +207,20 @@ for h in H:
 Wfi = 0                     #fuel consumption
 for h in H:
     Wi = Wcr - Wfi          #take into account the weight variation due to fuel
-    RCi = power_plot(h,Wi,S,Tcr)[1]
-    RCii = power_plot(h+dh,Wi,S,Tcr)[1]
+    RCi = power_plot(h,Wi,S,Tcr,CD0)[1]
+    RCii = power_plot(h+dh,Wi,S,Tcr,CD0)[1]
     RC_ave = (RCi+RCii)/2.
     
     tmin.append(tmin[-1]+(dh/RC_ave))
 
     Wfi +=  F*g*(dh/RC_ave)
+    
+#Optimum Mach number at different altitudes
+M_list = opt_alt(Wcr,h,S,A,e)[0]
+
+
+
+
 
 
 tmin.remove(0)
@@ -239,14 +240,20 @@ plt.ylabel("V at RC_max [km/s]")
 plt.xlabel("Altitude [m]")
 
 plt.subplot(224)
-plt.plot(H,W_fuel,"purple")
-plt.xlabel("Altitude [m]")
-plt.ylabel("Fuel consumption to climb to H [kg]")
+plt.plot(M_list,H,"orange")
+plt.xlabel("Mach number")
+plt.ylabel("Altitude [m]")
+
+
+#plt.subplot(224)
+#plt.plot(H,W_fuel,"purple")
+#plt.xlabel("Altitude [m]")
+#plt.ylabel("Fuel consumption to climb to H [kg]")
 
 
 plt.show()
 
-opt_alt(Wcr,h,S,A,e)
+
 
 
 
