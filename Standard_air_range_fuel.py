@@ -46,6 +46,8 @@ S = 124.5
 R_range = 11000.  #range of x-axis
 R_des = 7000 #[km]
 Wcr = MLW #assumption for now
+pax_max = 450
+n = 0.8 #load factor of numbe rof passengers
 
 #-----------------------------DEFINITIONS-------------------------------------
 #Standard air range (SAR) = distances travelled per mass fuel burned
@@ -126,6 +128,22 @@ plt.legend()
 plt.show()
 
 
+#Fuel consumed per km per passenger/seat
+for h in H:   
+    pax = pax_max*n
+    SAR_list = (SAR(h,A,S,e,CD0,Ct,Wcr)[0])
+    V = SAR(h,A,S,e,CD0,Ct,Wcr)[1]
+
+    for i in range(len(SAR_list)):
+        SAR_list[i] = SAR_list[i]/pax 
+        
+    plt.plot(V,SAR_list,label='%s altitude [m]' % h)
+    plt.title('Fuel consumption per passenger w.r.t. airspeed')
+    plt.xlabel("Airspeed [km/s]")
+    plt.ylabel("Fuel consumption [kg/km/passenger]")
+
+plt.legend()
+plt.show()
 
 
 
