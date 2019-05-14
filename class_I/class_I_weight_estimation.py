@@ -1,7 +1,7 @@
 from constants_and_conversions import *
 import numpy as np
 # from inputs import *
-# import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 
 
 def calc_payload_weight(n_passengers, n_crew, w_person):
@@ -25,6 +25,7 @@ def calc_loiter_coefficient(aspect_ratio, oswald_factor, cd_0, e, c_j):
 def calc_fuel_fraction(coefficients):
     # calculate the total required fuel by multiplying all phases of the flight profile
     fraction = 1
+    print(coefficients)
     for number in coefficients:
         fraction = fraction * number
     return 1 - fraction
@@ -45,6 +46,7 @@ def class_I(cl, cd, r_cruise, r_res, v_cruise, cj_cruise, W_tfo_frac, W_e_frac, 
          fractions[6], fractions[7]])
 
     W_f_frac = calc_fuel_fraction(mission_frac)
+    print(W_e_frac, W_f_frac, W_tfo_frac)
     W_to_frac = 1 - W_f_frac - W_tfo_frac - W_e_frac
 
     W_P = calc_payload_weight(N_pas, N_crew, W_person)
@@ -55,11 +57,11 @@ def class_I(cl, cd, r_cruise, r_res, v_cruise, cj_cruise, W_tfo_frac, W_e_frac, 
     return np.array([W_TO, W_E, W_P, W_F])
 
 
-# r_cruise = np.array([1300000, 1500000, 1700000, 1900000])
+# r_cruise = np.array([1200000, 1400000, 1600000, 1800000])
 # results = np.zeros((4, len(r_cruise)))
 # percentages = np.zeros((3, len(r_cruise) - 1))
 # for i in range(len(r_cruise)):
-#     result = class_I(CL_cruise, CD_cruise, r_cruise[i], reserve_range, V_cruise, c_j_cruise, W_tfo_frac, W_e_frac,
+#     result = class_I(CL_cruise_input, CD_cruise_input, r_cruise[i], reserve_range, V_cruise, c_j_cruise, W_tfo_frac, W_e_frac_input,
 #                      fuel_fractions, N_pas, N_crew, W_person)
 #     for j in range(4):
 #         results[j][i] = result[j]
@@ -75,4 +77,4 @@ def class_I(cl, cd, r_cruise, r_res, v_cruise, cj_cruise, W_tfo_frac, W_e_frac, 
 # # plt.plot(r_cruise, results[1])
 # # plt.show()
 #
-# print(results[0], r_cruise)
+# print(results[3], r_cruise)

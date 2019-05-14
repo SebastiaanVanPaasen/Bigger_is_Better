@@ -21,7 +21,8 @@ mass_frac_fuse = 0.098
 mass_frac_nac = 0.018
 mass_frac_prop = 0.072
 mass_frac_fix = 0.118
-mass_fractions = [mass_frac_wing, mass_frac_emp, mass_frac_fuse, mass_frac_nac, mass_frac_prop, mass_frac_fix, 0, 0, 0]
+mass_fractions = [mass_frac_wing, mass_frac_emp, mass_frac_fuse, mass_frac_nac, mass_frac_prop, mass_frac_fix, 0,
+                  0, 0]
 
 # Passenger characteristics --------------------------------------------------------------------------------------------
 N_pas = 450.  # Requirement set by the exercise
@@ -32,7 +33,7 @@ W_person = 205.  # lbs   Based on statistics of Roskam
 # General aircraft input parameters ------------------------------------------------------------------------------------
 # General cruise parameters
 h_cruise = 7000.  # m based on the sustainability analysis so far
-M_cruise = 0.7  # Mach number decided to cruise on
+M_cruise = 0.65  # Mach number decided to cruise on
 Temp_cruise = Temp_0 + a * h_cruise  # K  based on the altitude you fly at
 a_cruise = np.sqrt(gamma * R_gas * Temp_cruise)  # m/s based on the temperature
 V_cruise = M_cruise * a_cruise  # m/s  based on the Mach number and speed of sound
@@ -50,7 +51,7 @@ xcg_oew_mac = 0.25  # m     initial cg location OEW w.r.t. MAC
 
 # engine characteristics -----------------------------------------------------------------------------------------------
 N_engines = 2.  #
-w_engine = 7000.   # kg   Obtained from Bram
+w_engine = 7000.  # kg   Obtained from Bram
 propeller_choice = 0
 
 # in case propellers are used
@@ -64,7 +65,7 @@ a_inlets = 3.
 n_fuel_tanks = 2.
 
 # main wing ------------------------------------------------------------------------------------------------------------
-A = 7.5  # based on the reference aircraft B747
+# A = 7.5  # based on the reference aircraft B747
 S_ratio = 6.3  # estimated from ADSEE-I L3
 wing_option = 0  # Depending on the type of wing configuration, 1 is high wing, 0 is low wing
 winglet_height = 0.  # Mostly important for boxed wing, else leave as 0
@@ -89,20 +90,16 @@ c_j_loiter = 0.5  # 1/hr
 Oswald = 0.9  # estimated from ADSEE-I L3
 CD_0 = C_fe * S_ratio
 CD_cruise = (4 / 3) * CD_0
-CL_cruise = np.sqrt((CD_0 * np.pi * A * Oswald) / 3)
+# CL_cruise = np.sqrt((CD_0 * np.pi * A * Oswald) / 3)
 
 # Ranges ---------------------------------------------------------------------------------------------------------------
-mission_range = 1800000.  # m     based on market analysis
+mission_range = 1400000.  # m     based on market analysis
 reserve_range = 250 * 1.852 * 1000  # m based on requirement for domestic flights of ADSEE-I L3
 maximum_range = 2000000.  # m    Guestimated
 
 # Fractions ------------------------------------------------------------------------------------------------------------
 W_tfo_frac = 0.003  # estimated from slides ADSEE-I, lecture 3
 W_e_frac = 0.525  # Based on average between wide and narrow body, from Ed Obert
-
-
-
-
 
 # T/W-W/S diagram inputs  ----------------------------------------------------------------------------------------------
 # Landing requirements -------------------------------------------------------------------------------------------------
@@ -114,13 +111,13 @@ TOP = 220. * lbft2_Nm2  # Guestimated from ADSEE-I L3
 Sigma_TO = Rho_TO / Rho_0  # Ratio of densities
 
 # Stall speeds ---------------------------------------------------------------------------------------------------------
-V_stall_Cruise = V_cruise / 1.3  # m/s   Guestimated from ADSEE-I L3 Take requirements
+# V_stall_Cruise = V_cruise / 1.3  # m/s   Guestimated from ADSEE-I L3 Take requirements
 V_stall_Landing = min(np.sqrt(Landing_runway / 0.5847), 65.)  # m/s     Guestimated from ADSEE-I L3
 
 # Lift and drag coefficients -------------------------------------------------------------------------------------------
-CL_Cruise_max = 1.7 # Guestimated from ADSEE-I L3
+CL_Cruise_max = 1.7  # Guestimated from ADSEE-I L3
 CL_Landing_max = 3.2  # From Obert
-CL_TO_max = 0.9* CL_Landing_max  # Guestimated from ADSEE-I L3
+CL_TO_max = 0.9 * CL_Landing_max  # Guestimated from ADSEE-I L3
 
 # Changes in coefficients due to landing or take-off -------------------------------------------------------------------
 Delta_CD0_TO_gear_up = 0.015  # Guestimated from ADSEE-I L3

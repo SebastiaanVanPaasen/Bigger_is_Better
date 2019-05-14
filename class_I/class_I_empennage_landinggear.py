@@ -5,7 +5,7 @@ Created on Mon May  6 13:32:31 2019
 @author: Hidde
 """
 
-from fuselage_cross_section import *
+from class_I.fuselage_cross_section import *
 
 
 # Inputs
