@@ -4,15 +4,11 @@ Created on Fri May 10 09:20:29 2019
 
 @author: mathi
 """
-import numpy as np
-import math
-import scipy as sp
-import matplotlib.pyplot as plt
 
-from control_curve import *
-from stability import *
+from Control_stability.control_curve import *
+from Control_stability.stability import *
 from loading_diagram import *
-from seats import *
+from class_I.seats import *
 
 qcsweep    =  0.5515 #quarter chord sweep [rad]
 hcsweepw    =  0.4869 #half chord sweep [rad]

@@ -4,7 +4,7 @@ Created on Thu May  9 13:38:52 2019
 
 @author: floyd
 """
-from drag_estimation import *
+from class_I.drag_estimation import *
 import subprocess
 import os
 from run_conditions import define_run_condition
