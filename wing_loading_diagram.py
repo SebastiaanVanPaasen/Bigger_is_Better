@@ -161,3 +161,5 @@ def final_diagram(cd0, os):
     labelling = [labels_climb_gradient, labels_climb_rate, labels_cruise, labels_to, labels_landing, labels_stall]
 
     plot_diagram(requirement, labelling, WS, TW)
+
+final_diagram(CD_0, Oswald)
