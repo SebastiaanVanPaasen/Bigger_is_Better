@@ -73,7 +73,7 @@ def ISA_density(h):      # enter height in m
 
 
 def SAR(h,A,S,e,CD0,Ct,Wcr):                 #enter V in m/s
-    V = np.linspace(200,1200,100)
+    V = np.linspace(400,1100,100)
     SAR = []
     
     for v in V:
@@ -108,21 +108,21 @@ for h in H:
     
     plt.subplot(211)
     plt.plot(V,SAR_list,label='%s altitude [m]' % h)
+    plt.title('Fuel consumption w.r.t. airspeed')
     plt.xlabel("Airspeed [km/s]")
     plt.ylabel("Fuel consumption [kg/km]")
 
- 
-
 plt.legend()
 
-for h in H:
-    for j 
+
+for j in range(len(min_SAR)):
     plt.subplot(212)
-    plt.plot(V_minSAR,min_SAR, 'o',label = '%s altitude [m]' % h)
     plt.xlabel("Airspeed at minimum SAR [km/s]")
     plt.ylabel("Minimum Fuel consumption [kg/km]")
+    plt.plot(V_minSAR[j],min_SAR[j],'o', label = '%s altitude [m]' % H[j])
+    plt.title('Minimum fuel consumption with corresponding airspeed and altitude')
+  
 plt.legend()
-
 plt.show()
 
 

@@ -18,6 +18,7 @@ import matplotlib.pyplot as plt
 #MWP        =       Maximum payload weight [N] (optional as fraction of W_TO)
 #MFW        =       Maximum fuel weight [N] (optional as fraction of W_TO)
 #W_fr        = 0.05*W_f      #Reserve fuel weight as percentage of fuel weight
+
 """Aicraft configuration"""
 #CD0        =       Zero lift drag coefficient
 #A          =       Aspect ratio
@@ -140,7 +141,7 @@ def payload_range():
 
     plt.plot(range_weight, weight, "gray",label = "With reserve fuel")    
     
-
+    plt.title('Payload - range diagram')
     plt.xlabel("Range [km]")
     plt.ylabel("Weight [N]")
     plt.legend()

@@ -145,7 +145,7 @@ def opt_alt(Wcr,h,S,A,e):
 
 #----------------------------MAIN PROGRAM-----------------------------------
 """Required power wrt altitude and speed at min Drag"""
-dh = 100                #step size in altitude
+dh = 500                #step size in altitude
 H = range(7000,12000,dh)#altitude range
 
 V_minD = []             #V at minimum drag
@@ -155,6 +155,7 @@ for h in H:
 
 plt.subplot(211)   
 plt.plot(H,V_minD)
+plt.title('Airspeed at minimum drag as a function of altitude')
 plt.xlabel("Altitude [m]")
 plt.ylabel("Airspeed at D_min [km/h]")
 
@@ -165,13 +166,15 @@ for h in H:
     
     
     plt.subplot(212)
-    plt.plot(V,Pr)
+    plt.plot(V,Pr,label='%s altitude [m]' % h)
+    plt.title('Power required at different altitudes as a function of V')
     plt.xlabel("Airspeed [km/h]")
     plt.ylabel("Power required [kW] at different H")
-
+    
+plt.legend(loc = 'upper center')
 plt.show()        
     
-"""RC max and corresponding airspeed and min time to climb to H wrt altitude"""
+"""RC max and corresponding airspeed and min time to climb to H w.r.t. altitude"""
 V_RCmax = []            #list with V at which RC is max at different altitudes
 RC_max = []             #list with RC max values at different altitudes
 tmin = [0]              #list with cummelative time to climb at RC max
@@ -204,8 +207,10 @@ for h in H:
 
 
 #Minimum time to climb with respect to altitude
+dh1 = 1000              #step size in altitude
+H1 = range(0,12000,dh)#altitude range
 Wfi = 0                     #fuel consumption
-for h in H:
+for h in H1:
     Wi = Wcr - Wfi          #take into account the weight variation due to fuel
     RCi = power_plot(h,Wi,S,Tcr,CD0)[1]
     RCii = power_plot(h+dh,Wi,S,Tcr,CD0)[1]
@@ -225,22 +230,26 @@ M_list = opt_alt(Wcr,h,S,A,e)[0]
 
 tmin.remove(0)
 plt.subplot(221)
-plt.plot(H,tmin,"r")
+plt.plot(H1,tmin,"r")
+plt.title('Minimum time to climb starting from sea level')
 plt.ylabel("T min to climb [s]")
 plt.xlabel("Altitude [m]")
 
 plt.subplot(222)
 plt.plot(H,RC_max,"b")
+plt.title('Maximum rate of climb (RC) w.r.t. altitude')
 plt.ylabel("RC_max [m/s]")
 plt.xlabel("Altitude [m]")
 
 plt.subplot(223)
 plt.plot(H,V_RCmax,"g")
+plt.title('Airspeed at which RC_max is obtained w.r.t. altitude')
 plt.ylabel("V at RC_max [km/s]")
 plt.xlabel("Altitude [m]")
 
 plt.subplot(224)
 plt.plot(M_list,H,"orange")
+plt.title("Mach number w.r.t. altitude")
 plt.xlabel("Mach number")
 plt.ylabel("Altitude [m]")
 
