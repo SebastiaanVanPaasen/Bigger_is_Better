@@ -18,7 +18,7 @@ import matplotlib.pyplot as plt
 #A          =       Aspect ratio
 #e          =       Oswald efficiency factor 
 #R_des      =       Design range [m]
-
+#S          =       Surface area m^2
 
 #------------------------STATISTICAL INPUTS----------------------------------
 
@@ -41,6 +41,7 @@ e = 0.85
 CD0 = 0.020
 V = 236. #m/s
 g = 9.81
+S = 124.5 
 
 R_range = 11000.  #range of x-axis
 R_des = 7000 #[km]
@@ -49,6 +50,7 @@ Wcr = MLW #assumption for now
 #-----------------------------DEFINITIONS-------------------------------------
 #Standard air range (SAR) = distances travelled per mass fuel burned
 #Fuel burn is related to speed, altitude, thrust (or drag in steady flight)
+#unit of SAR (m/s)/(kg/s)
 
 def ISA_density(h):      # enter height in m
     M = 0.0289644       #kg/mol molar mass of Earth's air
@@ -70,23 +72,58 @@ def ISA_density(h):      # enter height in m
     return rho
 
 
-def SAR(V,h,A,S,e,CD0,Ct):                 #enter V in m/s
-    k = 1./(np.pi*A*e)
-    q = 0.5*ISA_density(h)*V**2
-    SAR = V / ( (CD0 + k *(Wcr/(q*S))**2) *q*S*Ct )
-    return SAR
+def SAR(h,A,S,e,CD0,Ct,Wcr):                 #enter V in m/s
+    V = np.linspace(200,1200,100)
+    SAR = []
+    
+    for v in V:
+        k = 1./(np.pi*A*e)
+        q = 0.5*ISA_density(h)*(v/3.6)**2
+        SARi = 1./((v/3.6) / ( (CD0 + k *(Wcr/(q*S))**2) *q*S*Ct )) #in kg/m
+        SAR.append(SARi*1000.)   #in kg/km
+        
+    return SAR,V
+    
+
     
 #------------------------------MAIN PROGRAM------------------------------------
+
+dh = 500                #step size in altitude
+H = range(7000,12000,dh)#altitude range
+
+
+min_SAR = []
+V_minSAR = []
+
+
+#For a given altitude (in def) run it for different speeds
+for h in H:   
+    SAR_list = SAR(h,A,S,e,CD0,Ct,Wcr)[0]
+    V = SAR(h,A,S,e,CD0,Ct,Wcr)[1]
+
+    min_SAR.append(min(SAR_list))
+    i = SAR_list.index(min(SAR_list))
+    V_minSAR.append(V[i])    
     
     
+    plt.subplot(211)
+    plt.plot(V,SAR_list,label='%s altitude [m]' % h)
+    plt.xlabel("Airspeed [km/s]")
+    plt.ylabel("Fuel consumption [kg/km]")
 
+ 
 
+plt.legend()
 
+for h in H:
+    for j 
+    plt.subplot(212)
+    plt.plot(V_minSAR,min_SAR, 'o',label = '%s altitude [m]' % h)
+    plt.xlabel("Airspeed at minimum SAR [km/s]")
+    plt.ylabel("Minimum Fuel consumption [kg/km]")
+plt.legend()
 
-
-
-
-
+plt.show()
 
 
 
