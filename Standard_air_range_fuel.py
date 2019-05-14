@@ -27,7 +27,7 @@ Ct           = 12e-06      #Specific fuel conspumtion [kg/N/s] from B737MAX
 
 #------------------------------VERIFICATION DATA--------------------------------
 
-"""Inputs unit test based on B737 MAX-8"""
+"""Inputs unit test based on B737 MAX 8"""
 
 MTOW = 82190.*9.81
 OEW  = 45065*9.81
@@ -36,16 +36,30 @@ MZFW = 65952.* 9.81
 MFW  = 20826.*9.81          # Maximum fuel weight (including reserve fuel)
 W_fr = MFW/105. * 5.        #reserve fuel
 
-A = 8.45
+A = 9.
 e = 0.85
 CD0 = 0.020
-V = 236. #m/s
 g = 9.81
 S = 124.5 
 
 R_range = 11000.  #range of x-axis
 R_des = 7000 #[km]
-Wcr = MLW #assumption for now
+Wcr = MLW #63000*9.81#assumption for now
+pax_max = 200
+n = 1 #load factor of numbe rof passengers
+
+
+"""Create reference line of B737 8 Max"""
+MPW1 = 20882*g
+MTOW1 = 82191*g
+OEW1 = 45070*g
+MFW1 = 31594*g
+
+Mcr = 0.79
+H_cr = 12000 #(m)
+S = 127 #m^2
+b = 35.92 #m
+A = b**2 / S
 
 #-----------------------------DEFINITIONS-------------------------------------
 #Standard air range (SAR) = distances travelled per mass fuel burned
@@ -70,10 +84,36 @@ def ISA_density(h):      # enter height in m
         rho = rho0*np.e**((-g*M*(h-h0))/(R*T))
         
     return rho
+    
+def ISA_temp(h):
+    if h < 11000:
+        T = 288.15 - 0.0065*h   #in Kelvin
+        return T
+    if h >= 11000:
+        return 216.65    #in Kelvin
+        
+def Mach(V,h):
+    gamma = 1.4
+    R = 287 #J/kg/K
+    a = np.sqrt(gamma*R*ISA_temp(h))
+    M = (V/3.6)/a
+    return M 
 
 
 def SAR(h,A,S,e,CD0,Ct,Wcr):                 #enter V in m/s
-    V = np.linspace(400,1100,100)
+    V = np.linspace(600,1000,100)
+    SAR = []
+    
+    for v in V:
+        k = 1./(np.pi*A*e)
+        q = 0.5*ISA_density(h)*(v/3.6)**2
+        SARi = 1./((v/3.6) / ( (CD0 + k *(Wcr/(q*S))**2) *q*S*Ct )) #in kg/m
+        SAR.append(SARi*1000.)   #in kg/km
+        
+    return SAR,V
+
+def SAR_ref(h_cr,A,S,e,CD0,Ct,Wcr):                 #enter V in m/s
+    V = np.linspace(600,1000,100)
     SAR = []
     
     for v in V:
@@ -84,17 +124,14 @@ def SAR(h,A,S,e,CD0,Ct,Wcr):                 #enter V in m/s
         
     return SAR,V
     
-
-    
 #------------------------------MAIN PROGRAM------------------------------------
 
 dh = 500                #step size in altitude
-H = range(7000,12000,dh)#altitude range
+H = range(7000,12500,dh)#altitude range
 
 
 min_SAR = []
 V_minSAR = []
-
 
 #For a given altitude (in def) run it for different speeds
 for h in H:   
@@ -106,29 +143,61 @@ for h in H:
     V_minSAR.append(V[i])    
     
     
-    plt.subplot(211)
+    plt.subplot(221)
     plt.plot(V,SAR_list,label='%s altitude [m]' % h)
+    #plt.hlines()
     plt.title('Fuel consumption w.r.t. airspeed')
-    plt.xlabel("Airspeed [km/s]")
-    plt.ylabel("Fuel consumption [kg/km]")
+    plt.xlabel("Airspeed [km/h]")
+    plt.ylabel("Fuel consumption [kg/km]") 
 
 plt.legend()
 
 
 for j in range(len(min_SAR)):
-    plt.subplot(212)
-    plt.xlabel("Airspeed at minimum SAR [km/s]")
+    plt.subplot(222)
+    plt.xlabel("Airspeed at minimum SAR [km/h]")
     plt.ylabel("Minimum Fuel consumption [kg/km]")
     plt.plot(V_minSAR[j],min_SAR[j],'o', label = '%s altitude [m]' % H[j])
     plt.title('Minimum fuel consumption with corresponding airspeed and altitude')
   
 plt.legend()
+
+
+for j in range(len(min_SAR)):
+    V_minSAR[j] = Mach(V_minSAR[j],H[j])
+        
+    plt.subplot(224)
+    plt.xlabel("Mach at minimum SAR ")
+    plt.ylabel("Minimum Fuel consumption [kg/km]")
+    plt.plot(V_minSAR[j],min_SAR[j],'o', label = '%s altitude [m]' % H[j])
+    plt.title('Minimum fuel consumption with corresponding Mach and altitude')
+
+
+#Fuel consumed per km per passenger/seat
+for h in H:   
+    pax = pax_max*n
+    SAR_list = (SAR(h,A,S,e,CD0,Ct,Wcr)[0])
+    V = SAR(h,A,S,e,CD0,Ct,Wcr)[1]
+
+    for i in range(len(SAR_list)):
+        SAR_list[i] = SAR_list[i]/pax 
+    plt.subplot(223)
+    plt.plot(V,SAR_list)#,label='%s altitude [m]' % h)
+    plt.title('Fuel consumption per passenger w.r.t. airspeed')
+    plt.xlabel("Airspeed [km/h]")
+    plt.ylabel("Fuel consumption [kg/km/passenger]")
+
+#plt.legend()
 plt.show()
 
 
+"""Once speed and altitude are selected, more precies SAR can be made 
+by taking into account the weight reduction due to fuel consumption"""
 
-
-
+#--------------------------------SENSITIVITY ANALYSIS-------------------------
+print V_minSAR
+print min_SAR
+print H
 
 
 
