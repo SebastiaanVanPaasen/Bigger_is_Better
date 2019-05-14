@@ -54,24 +54,25 @@ def class_I(cl, cd, r_cruise, r_res, v_cruise, cj_cruise, W_tfo_frac, W_e_frac, 
 
     return np.array([W_TO, W_E, W_P, W_F])
 
-# r_cruise = np.arange(1000000, 2000000, 1000)
+
+# r_cruise = np.array([1300000, 1500000, 1700000, 1900000])
 # results = np.zeros((4, len(r_cruise)))
 # percentages = np.zeros((3, len(r_cruise) - 1))
 # for i in range(len(r_cruise)):
-#     result = class_I(CL_cruise, CD_cruise, r_cruise[i], reserve_range, V_cruise, c_j_cruise, W_tfo_frac, W_e_frac, fuel_fractions,
-#                      N_pas, N_crew, W_person)
+#     result = class_I(CL_cruise, CD_cruise, r_cruise[i], reserve_range, V_cruise, c_j_cruise, W_tfo_frac, W_e_frac,
+#                      fuel_fractions, N_pas, N_crew, W_person)
 #     for j in range(4):
 #         results[j][i] = result[j]
 #
 #     if i > 0:
-#         percentages[0][i - 1] = ((r_cruise[i] - r_cruise[i - 1])/r_cruise[i - 1]) * 100
-#         percentages[1][i - 1] = ((result[1] - results[1][i - 1])/results[1][i - 1]) * 100
-#         percentages[2][i - 1] = ((result[3] - results[3][i - 1])/results[3][i - 1]) * 100
-
-# plt.plot(percentages[0], percentages[1])
-# plt.plot(r_cruise, results[3])
-# plt.plot(r_cruise, results[2])
-# plt.plot(r_cruise, results[1])
-# plt.show()
+#         percentages[0][i - 1] = ((r_cruise[i] - r_cruise[i - 1]) / r_cruise[i - 1]) * 100
+#         percentages[1][i - 1] = ((result[1] - results[1][i - 1]) / results[1][i - 1]) * 100
+#         percentages[2][i - 1] = ((result[3] - results[3][i - 1]) / results[3][i - 1]) * 100
 #
-# print(percentages[1])
+# # plt.plot(percentages[0], percentages[1])
+# # plt.plot(r_cruise, results[3])
+# # plt.plot(r_cruise, results[2])
+# # plt.plot(r_cruise, results[1])
+# # plt.show()
+#
+# print(results[0], r_cruise)
