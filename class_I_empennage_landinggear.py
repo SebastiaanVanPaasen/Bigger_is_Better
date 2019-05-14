@@ -168,7 +168,7 @@ def class_I_empennage(MAC, l_fuselage, x_eng, l_n, xcg_OEW_MAC, mass_frac_OEW, x
 
     return cg_locations, S_h_frac_S, S_v_frac_S, X_LEMAC, x_h, x_v
 
-class_I_empennage(m_fracs, MAC, l_fuselage, x_eng, l_n, xcg_OEW_MAC, xcg_payload, xcg_fuel, D_fuse, b)
+#class_I_empennage(m_fracs, MAC, l_fuselage, x_eng, l_n, xcg_OEW_MAC, xcg_payload, xcg_fuel, D_fuse, b)
 
 # class_I_empennage(MAC, l_fuselage, x_eng, l_n, xcg_OEW_MAC, mass_frac_OEW, xcg_payload, mass_frac_payload, xcg_fuel,
 #                  mass_frac_fuel, D_fuse, b)
