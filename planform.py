@@ -1,7 +1,7 @@
 import numpy as np  # delete later should be loaded in the general program
 import matplotlib.pyplot as plt
 
-option = 0  # 0 for low wing 1 for high wing
+# option = 0  # 0 for low wing 1 for high wing
 
 
 def wing_parameters(m_cruise, cl_cruise, surface_area, aspect_ratio, option):
@@ -46,7 +46,7 @@ def wing_parameters(m_cruise, cl_cruise, surface_area, aspect_ratio, option):
 
     return (
         quarter_chord_sweep, leading_edge_sweep, span, chord_root, chord_tip, dihedral,
-        thickness_over_chord, mac)
+        thickness_over_chord, mac, taper_ratio)
 
 
 # inputs
@@ -84,8 +84,8 @@ def plot_planform(leading_edge_sweep, chord_root, chord_tip, span):
 
 
 def determine_half_chord_sweep(chord_tip, qc_sweep, chord_root, span):
-    hc_sweep = np.arctan(
-        ((chord_tip / 4 + span / 2 * np.tan(qc_sweep)) - (chord_root / 4)) / (span / 2))
+    hc_sweep = np.arctan(((chord_tip / 4 + span / 2 * np.tan(qc_sweep)) - (chord_root / 4)) / (span / 2))
+
     return hc_sweep
 
 # M_cruise = 0.7  # inputs from different part

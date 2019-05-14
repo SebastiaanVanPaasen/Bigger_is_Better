@@ -69,6 +69,7 @@ def empennage_weight(choice, surface, v_d, sweep, z_h, span_v):
 
 def fuselage_weight(choice, v_d, l_h, w_f, h_f, s_fgs):
     # v_d is the design dive speed
+    # l_h is the tailarm from c/4 wing to c/4 tail in ft^2
     # w_f is maximum width of the fuselage
     # f_h is maximum height of the fuselage
     # s_fgs = fuselage fross shell area in ft^2
