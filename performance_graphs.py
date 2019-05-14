@@ -141,6 +141,13 @@ def opt_alt(Wcr,h,S,A,e):
         M_list.append(M)
         
     return M_list, H
+    
+def Mach(V,h):           #enter V in km/h and h in meters
+    gamma = 1.4
+    R = 287 #J/kg/K
+    a = np.sqrt(gamma*R*ISA_temp(h))
+    M = (V/3.6)/a
+    return M 
 
 
 #----------------------------MAIN PROGRAM-----------------------------------
@@ -148,16 +155,16 @@ def opt_alt(Wcr,h,S,A,e):
 dh = 500                #step size in altitude
 H = range(7000,12000,dh)#altitude range
 
-V_minD = []             #V at minimum drag
+M_minD = []             #V at minimum drag
 for h in H:
     V_minDi = drag_plot(h,S,A,e,Wcr)[0]
-    V_minD.append(V_minDi)
+    M_minD.append(Mach((V_minDi),h))
 
 plt.subplot(211)   
-plt.plot(H,V_minD)
+plt.plot(H,M_minD)
 plt.title('Airspeed at minimum drag as a function of altitude')
 plt.xlabel("Altitude [m]")
-plt.ylabel("Airspeed at D_min [km/h]")
+plt.ylabel("Mach at D_min ")
 
 
 for h in H:

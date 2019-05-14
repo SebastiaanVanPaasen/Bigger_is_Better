@@ -27,7 +27,7 @@ Ct           = 12e-06      #Specific fuel conspumtion [kg/N/s] from B737MAX
 
 #------------------------------VERIFICATION DATA--------------------------------
 
-"""Inputs unit test based on B737 MAX-8"""
+"""Inputs unit test based on B737 MAX 8"""
 
 MTOW = 82190.*9.81
 OEW  = 45065*9.81
@@ -44,9 +44,22 @@ S = 124.5
 
 R_range = 11000.  #range of x-axis
 R_des = 7000 #[km]
-Wcr = 63000*9.81#assumption for now
+Wcr = MLW #63000*9.81#assumption for now
 pax_max = 200
 n = 1 #load factor of numbe rof passengers
+
+
+"""Create reference line of B737 8 Max"""
+MPW1 = 20882*g
+MTOW1 = 82191*g
+OEW1 = 45070*g
+MFW1 = 31594*g
+
+Mcr = 0.79
+H_cr = 12000 #(m)
+S = 127 #m^2
+b = 35.92 #m
+A = b**2 / S
 
 #-----------------------------DEFINITIONS-------------------------------------
 #Standard air range (SAR) = distances travelled per mass fuel burned
@@ -99,7 +112,17 @@ def SAR(h,A,S,e,CD0,Ct,Wcr):                 #enter V in m/s
         
     return SAR,V
 
-
+def SAR_ref(h_cr,A,S,e,CD0,Ct,Wcr):                 #enter V in m/s
+    V = np.linspace(600,1000,100)
+    SAR = []
+    
+    for v in V:
+        k = 1./(np.pi*A*e)
+        q = 0.5*ISA_density(h)*(v/3.6)**2
+        SARi = 1./((v/3.6) / ( (CD0 + k *(Wcr/(q*S))**2) *q*S*Ct )) #in kg/m
+        SAR.append(SARi*1000.)   #in kg/km
+        
+    return SAR,V
     
 #------------------------------MAIN PROGRAM------------------------------------
 
@@ -122,9 +145,10 @@ for h in H:
     
     plt.subplot(221)
     plt.plot(V,SAR_list,label='%s altitude [m]' % h)
+    #plt.hlines()
     plt.title('Fuel consumption w.r.t. airspeed')
     plt.xlabel("Airspeed [km/h]")
-    plt.ylabel("Fuel consumption [kg/km]")
+    plt.ylabel("Fuel consumption [kg/km]") 
 
 plt.legend()
 
@@ -137,10 +161,6 @@ for j in range(len(min_SAR)):
     plt.title('Minimum fuel consumption with corresponding airspeed and altitude')
   
 plt.legend()
-
-print V_minSAR
-print min_SAR
-print H
 
 
 for j in range(len(min_SAR)):
@@ -174,9 +194,10 @@ plt.show()
 """Once speed and altitude are selected, more precies SAR can be made 
 by taking into account the weight reduction due to fuel consumption"""
 
-
-
-
+#--------------------------------SENSITIVITY ANALYSIS-------------------------
+print V_minSAR
+print min_SAR
+print H
 
 
 
