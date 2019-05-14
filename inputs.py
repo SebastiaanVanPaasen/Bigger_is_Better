@@ -22,8 +22,8 @@ W_person = 205  # lbs   Based on statistics of Roskam
 
 # General aircraft input parameters ------------------------------------------------------------------------------------
 # General cruise parameters
-h_cruise = 7000  # m based on the sustainability analysis so far
-M_cruise = 0.7  # Mach number decided to cruise on
+h_cruise = 10000  # m based on the sustainability analysis so far
+M_cruise = 0.70  # Mach number decided to cruise on
 Temp_cruise = Temp_0 + a * h_cruise  # K  based on the altitude you fly at
 a_cruise = np.sqrt(gamma * R_gas * Temp_cruise)  # m/s based on the temperature
 V_cruise = M_cruise * a_cruise  # m/s  based on the Mach number and speed of sound
@@ -41,8 +41,8 @@ xcg_oew_mac = 0.25  # m     initial cg location OEW w.r.t. MAC
 
 # engine characteristics -----------------------------------------------------------------------------------------------
 N_engines = 2  #
-w_engine = 7000   # kg   Obtained from Bram
-propeller_choice = 0
+w_engine = 8500   # kg   Obtained from Bram
+propeller_choice = 0  
 
 # in case propellers are used
 prop_characteristics = [2, 50, 1.5, 0.8]  # Number of props, blades per prop, prop diameter and prop efficiency
@@ -55,14 +55,14 @@ a_inlets = 3
 n_fuel_tanks = 2
 
 # main wing ------------------------------------------------------------------------------------------------------------
-A = 6.96  # based on the reference aircraft B747
+A = 7.5  # based on the reference aircraft B747
 S_ratio = 6.3  # estimated from ADSEE-I L3
-wing_option = 1  # Depending on the type of wing configuration, 1 is high wing, 0 is low wing
+wing_option = 0  # Depending on the type of wing configuration, 1 is high wing, 0 is low wing
 winglet_height = 0.  # Mostly important for boxed wing, else leave as 0
 tail_type = 0  # Depending on the type of tail configuration, 1 is T-tail, 0 is conventional
 
 # horizontal tail ------------------------------------------------------------------------------------------------------
-QC_sweep_h = 32.7  # degrees    based on wide body statistics
+QC_sweep_h = 32.7  # degrees    based on wide body statistics, update based on wing sweep
 A_h = 4.61  # based on wide body statistics
 
 # vertical tail --------------------------------------------------------------------------------------------------------
@@ -73,13 +73,13 @@ A_v = 1.73  # based on wide body statistics
 C_fe = 0.003  # estimated from ADSEE-I L3
 c_j_cruise = 0.75  # 1/hr
 c_j_loiter = 0.5  # 1/hr
-Oswald = 0.8  # estimated from ADSEE-I L3
+Oswald = 0.9  # estimated from ADSEE-I L3
 CD_0 = C_fe * S_ratio
 CD_cruise = (4 / 3) * CD_0
 CL_cruise = np.sqrt((CD_0 * np.pi * A * Oswald) / 3)
 
 # Ranges ---------------------------------------------------------------------------------------------------------------
-mission_range = 1800000  # m     based on market analysis
+mission_range = 1400000  # m     based on market analysis
 reserve_range = 250 * 1.852 * 1000  # m based on requirement for domestic flights of ADSEE-I L3
 maximum_range = 2000000  # m    Guestimated
 
@@ -105,9 +105,9 @@ V_stall_Cruise = V_cruise / 1.3  # m/s   Guestimated from ADSEE-I L3 Take requir
 V_stall_Landing = min(np.sqrt(Landing_runway / 0.5847), 65)  # m/s     Guestimated from ADSEE-I L3
 
 # Lift and drag coefficients -------------------------------------------------------------------------------------------
-CL_Cruise_max = 1.7  # Guestimated from ADSEE-I L3
+CL_Cruise_max = 1.7 # Guestimated from ADSEE-I L3
 CL_Landing_max = 3.2  # From Obert
-CL_TO_max = 0.8 * CL_Landing_max  # Guestimated from ADSEE-I L3
+CL_TO_max = 0.9* CL_Landing_max  # Guestimated from ADSEE-I L3
 
 # Changes in coefficients due to landing or take-off -------------------------------------------------------------------
 Delta_CD0_TO_gear_up = 0.015  # Guestimated from ADSEE-I L3
