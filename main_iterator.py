@@ -8,7 +8,7 @@ from class_I.flight_envelope import manoeuvring_envelope, gust_envelope
 from avl.conv_wing_avl import make_avl_file, run_avl, find_clalpha
 from class_II_weight_estimation import *
 from input_files.conventional_double_decker import *
-from class_I.wing_loading_diagram import final_diagram
+# from class_I.wing_loading_diagram import final_diagram
 
 # M_cruise_list = np.arange(0.5, 0.8, 0.01)
 # h_cruise_list = np.arange(3000, 13000, 1000)
@@ -31,9 +31,6 @@ from class_I.wing_loading_diagram import final_diagram
 #         (1 + (a * h_cruise) / Temp_0) ** (-(g_0 / (R_gas * a))))  # kg/m^3   based on cruise altitude
 
 # V_cruise = M_cruise * a_cruise
-
-T_input = 0.27
-S_input = 6750
 
 # Starting the iteration process -----------------------------------------------------------------------------------
 i = 0
@@ -132,6 +129,7 @@ while i < maximum and percentage > 0.0005:
                   b_v, c_root_v, QC_sweep_v, tap_v, tail_type, 12, 5)
 
     new_Oswald, CD_cruise = run_avl(CL_cruise, M_cruise, CD_0)
+    D = 0.5 * Rho_Cruise * (V_cruise ** 2) * S
     CL_alpha = (find_clalpha(M_cruise, CD_0) * 180) / np.pi
 
     iteration["updated parameters"] = [CD_0, Oswald, CL_alpha]
@@ -241,22 +239,23 @@ while i < maximum and percentage > 0.0005:
     total[str(i)] = iteration
     i += 1
 
-print("The take-off weight equals: " + str(round(weights[0], 2)))
-print("The fuel weight equals: " + str(round(weights[3], 2)))
-print("The payload weight equals: " + str(round(weights[2], 2)))
-print("The empty weight equals: " + str(round(weights[1], 2)))
+print(round(weights[0], 2))
+print(round(weights[3], 2))
+print(round(weights[2], 2))
+print(round(weights[1], 2))
 
-print("The new approximated CL_cruise is: " + str(CL_cruise))
-print("The new approximated CD_0 is: " + str(CD_0))
-print("The new approximated Lift over drag is: " + str(CL_cruise/CD_cruise))
+print(round(CL_cruise, 3))
+print(round(CD_cruise, 3))
+print(round(CD_0, 4))
+print(round(CL_cruise / CD_cruise, 3))
 
-print("The span equals: " + str(b))
-print(("The surface area equals: " + str(S)))
-print("The oswald factor equals: " + str(Oswald))
+print(round(b, 2))
+print((round(S, 2)))
+print(round(Oswald, 2))
 
-print("The cruise speed equals: " + str(V_cruise))
+print(round(V_cruise, 2))
 
-final_diagram(CD_0, Oswald)
+# final_diagram(CD_0, Oswald)
 # print("The required thrust equals: " + str(T))
 # print("The calculated surface area equals: " + str(S))
 #

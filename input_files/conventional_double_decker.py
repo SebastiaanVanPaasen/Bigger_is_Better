@@ -59,6 +59,14 @@ oil_choice = 1
 # choice depends on engines, 1 is propellers
 hydro_choice = 0
 
+# Inputs that are often changed for the design -------------------------------------------------------------------------
+T_input = 0.24
+S_input = 5800
+Oswald = 0.9  # estimated from ADSEE-I L3
+A = 7  # based on the reference aircraft B747
+h_cruise = 6000.  # m based on the sustainability analysis so far
+M_cruise = 0.8  # Mach number decided to cruise on
+
 # Passenger characteristics --------------------------------------------------------------------------------------------
 N_pas = 450.  # Requirement set by the exercise
 N_pas_below = 242.  # Depends on if you want a double-decker 242 if you want a equally sized fuselage for double floor
@@ -67,8 +75,6 @@ W_person = 205.  # lbs   Based on statistics of Roskam
 
 # General aircraft input parameters ------------------------------------------------------------------------------------
 # General cruise parameters
-h_cruise = 10000.  # m based on the sustainability analysis so far
-M_cruise = 0.69  # Mach number decided to cruise on
 Temp_cruise = Temp_0 + a * h_cruise  # K  based on the altitude you fly at
 a_cruise = np.sqrt(gamma * R_gas * Temp_cruise)  # m/s based on the temperature
 V_cruise = M_cruise * a_cruise  # m/s  based on the Mach number and speed of sound
@@ -100,7 +106,6 @@ a_inlets = 3.
 n_fuel_tanks = 2.
 
 # main wing ------------------------------------------------------------------------------------------------------------
-A = 13  # based on the reference aircraft B747
 S_ratio = 6.3  # estimated from ADSEE-I L3
 wing_option = 0  # Depending on the type of wing configuration, 1 is high wing, 0 is low wing
 winglet_height = 0.  # Mostly important for boxed wing, else leave as 0
@@ -122,7 +127,6 @@ v_tail = np.array([A_v, tap_v, QC_sweep_v])
 C_fe = 0.0045  # estimated from ADSEE-I L3
 c_j_cruise = 0.75  # 1/hr
 c_j_loiter = 0.5  # 1/hr
-Oswald = 0.9  # estimated from ADSEE-I L3
 CD_0 = C_fe * S_ratio
 CD_cruise = (4 / 3) * CD_0
 CL_cruise = np.sqrt((CD_0 * np.pi * A * Oswald) / 3)
