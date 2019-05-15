@@ -21,10 +21,12 @@ import matplotlib.pyplot as plt
 #S          =       Surface area m^2
 
 #------------------------STATISTICAL INPUTS----------------------------------
-
-Ct           = 12e-06       #Thrust Specific fuel conspumtion [kg/N/s] from B737MAX 
-                            # for now assume it is constant with speed
-
+"""NOW THE SAME FOR REF. AND DESIGN AIRCRAFT, CHANGE WHEN ENGINE IS KNOWN"""
+Ct0           = 12e-06      #Thrust Specific fuel conspumtion [kg/N/s] from B737MAX 
+                            #proprtional to speed, divide by nominal conditions
+                            #aka cruise speed
+                            #12 future high bypass engines
+                            #13.5 for bigger normal engines
 #------------------------------VERIFICATION DATA--------------------------------
 
 """INPUTS: CHANGE ACCORDING TO DESIGN"""
@@ -86,13 +88,18 @@ def ISA_density(h):             # enter height in m
         
     return rho
     
+    
 def ISA_temp(h):
     if h < 11000:
         T = 288.15 - 0.0065*h   #in Kelvin
         return T
     if h >= 11000:
         return 216.65           #in Kelvin
-        
+ 
+H = np.arange(0,13000,1000)
+for j in H:
+    print "temp=", ISA_temp(j), "height =", j
+          
 def Mach(V,h):
     gamma = 1.4
     R = 287 #J/kg/K
@@ -101,11 +108,12 @@ def Mach(V,h):
     return M 
 
 
-def SAR(h,A,S,e,CD0,Ct,Wcr):   #enter V in m/s
+def SAR(h,A,S,e,CD0,Ct0,Wcr):   #enter V in m/s
     V = np.linspace(600,1000,100)
     SAR = []
     
     for v in V:
+        Ct = (Ct0/233.083)*(v/3.6)
         k = 1./(np.pi*A*e)
         q = 0.5*ISA_density(h)*(v/3.6)**2
         SARi = 1./((v/3.6) / ( (CD0 + k *(Wcr/(q*S))**2) *q*S*Ct )) #in kg/m
@@ -124,8 +132,8 @@ V_minSAR = []
 
 #For a given altitude (in def) run it for different speeds
 for h in H:   
-    SAR_list = SAR(h,A,S,e,CD0,Ct,Wcr)[0]
-    V = SAR(h,A,S,e,CD0,Ct,Wcr)[1]
+    SAR_list = SAR(h,A,S,e,CD0,Ct0,Wcr)[0]
+    V = SAR(h,A,S,e,CD0,Ct0,Wcr)[1]
     
 
     min_SAR.append(min(SAR_list))
@@ -143,13 +151,14 @@ for h in H:
 
 
 #For the reference case aim to stay below it:
-SAR_ref = SAR(hcr,A1,S1,e,CD0,Ct,Wcr1)[0]
-V_ref = SAR(hcr,A1,S1,e,CD0,Ct,Wcr1)[1]
+SAR_ref = SAR(hcr,A1,S1,e,CD0,Ct0,Wcr1)[0]
+V_ref = SAR(hcr,A1,S1,e,CD0,Ct0,Wcr1)[1]
 
 for i in range(len(V_ref)):
     V_ref[i] = Mach(V_ref[i],hcr)   
     if 0.997*Mcr <= V_ref[i] <= 1.003* Mcr:
         SAR_ref_point = SAR_ref[i]
+print SAR_ref_point
 
 #PLot the single point of the ref. aircraft
 plt.plot(Mcr,SAR_ref_point,"mo", label = "Ref. aircraft")
@@ -168,8 +177,22 @@ for j in range(len(min_SAR)):
     
 #Plot reference aircraft    
 plt.plot(Mcr,SAR_ref_point,"mo", label = "Ref. aircraft")
-plt.legend()
-plt.show()
+plt.legend(loc = "lower right")
+#plt.show()
+
+
+#--------------------------------SENSITIVITY ANALYSIS-------------------------
+#print V_minSAR
+#print min_SAR
+#print H
+
+
+
+
+
+
+
+
 
 #Other graphs
 #for j in range(len(min_SAR)):
@@ -196,15 +219,8 @@ plt.show()
 #    plt.ylabel("Fuel consumption [kg/km/passenger]")
 #plt.legend()
 
-
-
 """Once speed and altitude are selected, more precies SAR can be made 
 by taking into account the weight reduction due to fuel consumption"""
-
-#--------------------------------SENSITIVITY ANALYSIS-------------------------
-#print V_minSAR
-#print min_SAR
-#print H
 
 
 
