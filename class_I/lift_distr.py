@@ -33,7 +33,7 @@ def make_avl_file():
     z_loc_LE = [0, dz]
     
     Ainc = [0.0, 0.0]
-    spanwise_discretize_points = 20    #If you go too high then your computer is dead
+    spanwise_discretize_points = 50    #If you go too high then your computer is dead
     chordwise_discretize_point = 12     # " "
     
     with open("avl_testing.avl", "w") as text_file:

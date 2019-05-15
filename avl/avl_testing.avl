@@ -1,0 +1,25 @@
+Test Wing
+#Mach
+0.7
+#IYsym IZsym Zsym
+0  0  0
+#Sref  Cref  Bref
+427.8 8.75 60.9 
+#Xref Yref Zref
+0  0.0  0
+#CDcp
+0.015 
+
+SURFACE
+Wing 
+12 1.0 20 -2.0
+YDUPLICATE
+0.0 
+ANGLE
+0.0
+SECTION
+0 0 0 12.227 0.0
+SECTION
+21.334 30.45 0.0 1.822 0.0
+AFILE
+n2414.dat.txt

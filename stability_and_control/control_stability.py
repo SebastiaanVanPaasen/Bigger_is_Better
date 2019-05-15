@@ -5,8 +5,8 @@ Created on Fri May 10 09:20:29 2019
 @author: mathi
 """
 
-from Control_stability.control_curve import *
-from Control_stability.stability import *
+from stability_and_control.control_curve import *
+from stability_and_control.stability import *
 from loading_diagram import *
 from class_I.seats import *
 
