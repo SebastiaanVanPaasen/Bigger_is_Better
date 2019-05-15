@@ -139,9 +139,9 @@ def plot_diagram(all_requirements, labels, ws, tw):
 
 
 # Create ranges
-CL_TO = [(CL_TO_max / 1.21 - 0.2), CL_TO_max / 1.21, (CL_TO_max / 1.21 + 0.2)]  # Based on CL_max
-CL_Landing = [(CL_Landing_max - 0.2), CL_Landing_max, (CL_Landing_max + 0.2)]  # Based on CL_max
-AR = [A - 2, A, A + 2]  # Based on A in class I
+CL_TO = [CL_TO_max]  # / 1.21 - 0.2), CL_TO_max / 1.21, (CL_TO_max / 1.21 + 0.2)]  # Based on CL_max
+CL_Landing = [CL_Landing_max]  # - 0.2), CL_Landing_max, (CL_Landing_max + 0.2)]  # Based on CL_max
+AR = [A]  # - 2, A, A + 2]  # Based on A in class I
 WS = np.arange(0., 10250., 250)
 TW = np.arange(0., 0.45, 0.05)
 
@@ -162,4 +162,4 @@ def final_diagram(cd0, os):
 
     plot_diagram(requirement, labelling, WS, TW)
 
-final_diagram(CD_0, Oswald)
+# final_diagram(CD_0, Oswald)

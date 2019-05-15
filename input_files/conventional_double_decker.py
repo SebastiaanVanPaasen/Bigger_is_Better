@@ -31,7 +31,7 @@ mass_fractions = [mass_frac_wing, mass_frac_emp, mass_frac_fuse, mass_frac_nac, 
 # fourth is if landing gear is not wing mounted
 # fifth is for strutted wings
 # sixth is for fowler flaps
-wing_choice = [1, 1, 0, 0, 0, 0]
+wing_choice = [1, 1, 0, 1, 0, 0]
 # choose 1 if you have variable incidence stabilizers
 # choose 1 if the horizontal tails are fin mounted
 empennage_choice = [0, 0]
@@ -61,14 +61,14 @@ hydro_choice = 0
 
 # Passenger characteristics --------------------------------------------------------------------------------------------
 N_pas = 450.  # Requirement set by the exercise
-N_pas_below = 450.  # Depends on if you want a double-decker 242 if you want a equally sized fuselage for double floor
+N_pas_below = 242.  # Depends on if you want a double-decker 242 if you want a equally sized fuselage for double floor
 N_crew = 11.  # Based on the amount of passengers
 W_person = 205.  # lbs   Based on statistics of Roskam
 
 # General aircraft input parameters ------------------------------------------------------------------------------------
 # General cruise parameters
-h_cruise = 11000.  # m based on the sustainability analysis so far
-M_cruise = 0.65  # Mach number decided to cruise on
+h_cruise = 10000.  # m based on the sustainability analysis so far
+M_cruise = 0.69  # Mach number decided to cruise on
 Temp_cruise = Temp_0 + a * h_cruise  # K  based on the altitude you fly at
 a_cruise = np.sqrt(gamma * R_gas * Temp_cruise)  # m/s based on the temperature
 V_cruise = M_cruise * a_cruise  # m/s  based on the Mach number and speed of sound
@@ -100,7 +100,7 @@ a_inlets = 3.
 n_fuel_tanks = 2.
 
 # main wing ------------------------------------------------------------------------------------------------------------
-A = 7.5  # based on the reference aircraft B747
+A = 13  # based on the reference aircraft B747
 S_ratio = 6.3  # estimated from ADSEE-I L3
 wing_option = 0  # Depending on the type of wing configuration, 1 is high wing, 0 is low wing
 winglet_height = 0.  # Mostly important for boxed wing, else leave as 0
@@ -119,13 +119,13 @@ tap_v = 0.5  # based on statistics from slides ADSEE-I L7
 v_tail = np.array([A_v, tap_v, QC_sweep_v])
 
 # Coefficients ---------------------------------------------------------------------------------------------------------
-C_fe = 0.003  # estimated from ADSEE-I L3
+C_fe = 0.0045  # estimated from ADSEE-I L3
 c_j_cruise = 0.75  # 1/hr
 c_j_loiter = 0.5  # 1/hr
 Oswald = 0.9  # estimated from ADSEE-I L3
 CD_0 = C_fe * S_ratio
 CD_cruise = (4 / 3) * CD_0
-# CL_cruise = np.sqrt((CD_0 * np.pi * A * Oswald) / 3)
+CL_cruise = np.sqrt((CD_0 * np.pi * A * Oswald) / 3)
 
 # Ranges ---------------------------------------------------------------------------------------------------------------
 mission_range = 1400000.  # m     based on market analysis
