@@ -19,21 +19,9 @@ import matplotlib.pyplot as plt
 #------------------------------VERIFICATION DATA--------------------------------
 
 """Create reference line of B737 8 Max"""
-g = 9.81
-MPW1 = 20882*g
-MTOW1 = 82191*g
-OEW1 = 45070*g
-MFW1 = 31594*g
-
-Wcr1 = 0.8*MTOW1             #ASSUMPTION!!! WHAT IS W_Cr ACTUALLY
-Mcr = 0.79
-hcr = 12000                 #(m)
-S1 = 127                    #m^2
-b1 = 35.92                  #m
-A1 = b1**2 / S1
-
-pax_ref = 200.
-n_ref = 1.
+#Obatined from old SAR code
+SAR_ref = 1.84236002771
+M_ref = 0.79
 
 #-----------------------------DEFINITIONS-------------------------------------
 #Standard air range (SAR) = distances travelled per mass fuel burned
@@ -76,8 +64,6 @@ def Mach(V,h):                  #enter V in km/h
     return M 
 
 
-SAR_ref = 1.84236002771
-M_ref = 0.79
 
 def SAR(V,h,A,S,e,CD0,Ct0,Wcr):   #enter h in m, V in m/s
     SAR = []
