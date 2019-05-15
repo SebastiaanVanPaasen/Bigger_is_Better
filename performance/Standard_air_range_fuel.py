@@ -200,7 +200,9 @@ for h in H:
     plt.xlabel("Mach number]")
     plt.ylabel("Fuel consumption [kg/km/passenger]")
 
-plt.plot(Mcr,SAR_ref_point/pax_ref,"mo", label = "Ref. aircraft")    
+plt.plot(Mcr,SAR_ref_point/pax_ref,"mo", label = "Ref. aircraft")   
+plt.hlines(0.9*SAR_ref_point/pax_ref,0.5,1.,"gray",'--') 
+plt.xlim(0.5,0.95)
 plt.legend()
 
 plt.show()
