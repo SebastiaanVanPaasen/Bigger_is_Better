@@ -154,20 +154,7 @@ def external_loads(CN,CT,c,rho,dx,V,x_pos,x_eng,F_eng,angle,x_fuelstart,x_fuelen
     x_total = x_l_wing + x_wing
     Fy_tot = Fy_left + Fy_right
     Fz_tot = Fz_left + Fz_right
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+
     plt.subplot(2,1,1)
     plt.plot(x_total, Fy_tot)
     plt.subplot(2,1,2)

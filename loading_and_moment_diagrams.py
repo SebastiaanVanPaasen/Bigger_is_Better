@@ -18,12 +18,12 @@ from lift_distr import *
 
 ### Move the geometry definition to over here
 CD0 = 0.02
-S = 579.  # m^2
-AR = 10.
-taper = 0.31
+S = 427.80  # m^2
+AR = 8.67
+taper = 0.149
 Sweep0 = 0.558505  # rad
 by = 20.  # m
-b = np.sqrt(AR * S)
+b = 60.90
 Cr = (S + np.tan(Sweep0) * by * (b / 4)) / (by + (b - by) * ((1 + taper) / 2))
 Ct = Cr * taper
 Cy = Cr - np.tan(Sweep0) * (by / 2)
@@ -55,33 +55,37 @@ def input_CL(n,S,V,rho,W):
     return input_CL
 ## Import File List:
 output_avl = lift_distribution(input_CL(n,S,V,rho,W))
-x_total = get_correct_data(output_avl,c)[0]
+x_pos = get_correct_data(output_avl,c)[0]
+x_total = x_pos[int((len(x_pos)/2)):][::-1] + x_pos[0:int((len(x_pos)/2))]
 
 ##Lift Code:
-cl_total = get_correct_data(output_avl,c)[1]
+cl = get_correct_data(output_avl,c)[1]
+cl_total = cl[int((len(x_pos)/2)):][::-1] + cl[0:int((len(x_pos)/2))]
 PolyFitCurveCl = sp.interpolate.interp1d(x_total, cl_total, kind="cubic", fill_value="extrapolate")
 # print('Lift Coefficients (highest order first, ending with 0th order term) are: \n{}\n'.format(PolyFitCurveCl))
-print(PolyFitCurveCl)
-
+print(cl_total)
+print(PolyFitCurveCl(30))
 ##Drag Code:
-Induced_drag = get_correct_data(output_avl,c)[2]
-PolyFitCurveidrag = sp.interpolate.interp1d(x_total, Induced_drag, kind='cubic', fill_value='extrapolate')
+cdi = get_correct_data(output_avl,c)[1]
+cdi_total = cl[int((len(x_pos)/2)):][::-1] + cl[0:int((len(x_pos)/2))]
+PolyFitCurveidrag = sp.interpolate.interp1d(x_total, cdi_total , kind='cubic', fill_value='extrapolate')
 
 
 ### Define your functions at the beginning of the program
-def c(y):
-    if y < (by / 2):
-        c = Cr - 2 * y * ((Cr - Cy) / (by))
-    if y > (by / 2):
-        c = Cy - 2 * (y - (by / 2)) * ((Cy - Ct) / (b - by))
+def c(x):
+    
+    if x < (by / 2):
+        c = Cr - 2 * x * ((Cr - Cy) / (by))
+    if x > (by / 2):
+        c = Cy - 2 * (x - (by / 2)) * ((Cy - Ct) / (b - by))
     return c
 
 
-def S_cross_section(y):
-    return c(y) * c(y) * 0.1
+def S_cross_section(x):
+    return c(x) * c(x) * 0.1
 
 Vfuel = sp.integrate.quad(S_cross_section, x_fuel_begin, x_fuel_end)[0]
-print(Vfuel)
+#print(Vfuel)
 Fuel_W_tank = Fuel_W_tot/2
 specific_W_f = Fuel_W_tank/Vfuel
 
@@ -111,7 +115,8 @@ def Loadcalculator(x0,Ff):
         secondenginereachedyet = True
     else:
         secondenginereachedyet = False
-
+        
+    #print(xmiddlevalues)
     for i, x in enumerate(xmiddlevalues):
         ### Geometry calculations
         width = xrightvalues[i] - xleftvalues[i]
@@ -128,8 +133,9 @@ def Loadcalculator(x0,Ff):
 
         ### Lift calculations
         Cl = PolyFitCurveCl(x)
-        section_lift = 0.5 * Cl * rho * (V ** 2) * surfacearea * n * 1.5 # because it points in the (-)ive z-direction
+        section_lift = 0.5 * Cl * rho * (V ** 2) * surfacearea * n * 1.5* -1 # because it points in the (-)ive z-direction
         L = section_lift
+
         # print(surfacearea, Cl, section_lift)
 
         ###Fuel weight calculations
@@ -142,7 +148,7 @@ def Loadcalculator(x0,Ff):
 
         ###Drag Calculations
         Cd = CD0 + PolyFitCurveidrag(x)
-        section_drag = (0.5 * Cd * rho * (V ** 2) * surfacearea)
+        section_drag = (0.5 * Cd * rho * (V ** 2) * surfacearea)* -1
 #        print(section_drag)
 
         # (-) because it's in a direction opposite to thrust
@@ -151,19 +157,20 @@ def Loadcalculator(x0,Ff):
         section_thrust = 0
         section_engineweight = 0
         if x > start_eng_1 and firstenginereachedyet == False:
-            section_thrust = total_thrust / n_engines 
+            section_thrust = total_thrust / n_engines
             section_engineweight = engine_weight * n * 1.5
             Mz += -section_engineweight * (start_eng_1 - x0)
-            My += -section_thrust * (start_eng_1 - x0)
+            My += section_thrust * (start_eng_1 - x0)
             firstenginereachedyet = True
 
+            
         if x > start_eng_2 and secondenginereachedyet == False and n_engines!=2:
             section_thrust = total_thrust / n_engines 
             section_engineweight = engine_weight * n * 1.5
             Mz += -section_engineweight * (start_eng_2 - x0)
-            My += -section_thrust * (start_eng_2 - x0)
+            My += section_thrust * (start_eng_2 - x0)
             secondenginereachedyet = True
-
+        
         ###Torque Calculations
 
         lift_position = (1 / 4) * c(x) + np.tan(Sweep0) * x  # assumtion that the lift along the span acts at c_0.25
@@ -180,6 +187,7 @@ def Loadcalculator(x0,Ff):
         thrust_torque =  section_thrust * (y_shear_center - thrust_position)
         section_torque = lift_torque + weight_torque + engine_torque + fuel_torque + thrust_torque
 
+        
         ###Net force sums
         section_verticalforceminusengine = section_lift + section_weight + section_fuel_weight
         section_verticalforce = section_verticalforceminusengine + section_engineweight
@@ -202,7 +210,10 @@ def Loadcalculator(x0,Ff):
 
         ### Torque calculations
         T += section_torque
-
+    
+#    print("engine", section_engineweight)
+#    print('L',L)
+#    print('Cl',Cl)
     return Fy, Fz, Mz, My, L, W_f, D, Th, section_engineweight, T
 
 
@@ -234,12 +245,6 @@ for i, x in enumerate(HalfspanValues):
     Thrustdistributionvalues.append(Th)
     Engine_distribution.append(section_engineweight)
     Tdistributionvalues.append(T)
-
-print(HalfspanValues)
-print(Fzdistribution)
-print(Fydistribution)
-print(Mzdistribution)
-print(Mydistribution)
 
 HalfspanValues = np.linspace(0, b / 2 - 0.00001, N)
 Fydistribution2 = []
@@ -335,19 +340,23 @@ for i, x in enumerate(HalfspanValues):
 # plt.xlabel('Position Along Wing Span', fontsize=18)
 # plt.ylabel('Mx', fontsize=16)
 
-plt.subplot(4,1,4)
-plt.subplot(4,1,1)
+plt.subplot(2,3,5)
+plt.subplot(2,3,1)
 plt.gca().set_title('Mz distribution')
 plt.plot(HalfspanValues, Mzdistribution)
-plt.subplot(4,1,2)
+plt.subplot(2,3,2)
 plt.gca().set_title('Fz distribution')
 plt.plot(HalfspanValues, Fzdistribution)
-plt.subplot(4,1,3)
+plt.subplot(2,3,3)
 plt.gca().set_title('My distribution')
 plt.plot(HalfspanValues, Mydistribution)
-plt.subplot(4,1,4)
+plt.subplot(2,3,4)
 plt.gca().set_title('Fy distribution')
 plt.plot(HalfspanValues, Fydistribution)
+plt.subplot(2,3,5)
+plt.gca().set_title('T distribution')
+plt.plot(HalfspanValues, Tdistributionvalues)
+
 
 plt.show()
 
