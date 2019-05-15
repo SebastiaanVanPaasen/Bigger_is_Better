@@ -4,12 +4,11 @@ Created on Tue May 14 10:31:45 2019
 
 @author: floyd
 """
-import numpy as np
 import os
 import subprocess
 from run_conditions import define_run_condition
 from matplotlib import pyplot as plt
-from label_lines import *
+from avl.label_lines import *
 
 
 #S = 32.5
