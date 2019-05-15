@@ -35,6 +35,40 @@ F = Ct*Tcr*3600.*9.81 #N/hr
 #-----------------------------------DEFINITIONS-------------------------------
 """Block speed and transport productivity"""
 
+def ISA_density(h):      # enter height in m
+    M = 0.0289644       #kg/mol molar mass of Earth's air
+    R = 8.3144590       #universal gas constant Nm/MolK
+    
+    if h < 11000:
+        rho0 = 1.225   #kg/m^3
+        T = 288.15     #K
+        h0 = 0.         #m
+        a = -0.0065    #K/m
+        rho = rho0 * (T/(T + a*(h-h0)))**(1. + ((g*M)/(R*a)))
+        
+    if h >= 11000:
+        rho0 = 0.36391 #kg/m^3
+        T = 216.65     #K
+        h0 = 11000.    #m
+        rho = rho0*np.e**((-g*M*(h-h0))/(R*T))
+        
+    return rho
+    
+def ISA_temp(h):
+    if h < 11000:
+        T = 288.15 - 0.0065*h   #in Kelvin
+        return T
+    if h >= 11000:
+        return 216.65    #in Kelvin
+        
+def Mach(V,h):           #enter V in km/h and h in meters
+    gamma = 1.4
+    R = 287 #J/kg/K
+    a = np.sqrt(gamma*R*ISA_temp(h))
+    M = (V/3.6)/a
+    return M 
+
+
 def block_speed(Vcr):                 #enter in km/s
     R = range(500,10000,100)         #stage length
     dt = 50*60.                     #min (time between starting and shutting down engines, no ground operations)
@@ -54,7 +88,7 @@ def SER(CF,CT,F):
     SER = []
     for v in V:
         SER.append((v)/(CI+F))
-    
+
     return SER, V
     
     
@@ -74,11 +108,21 @@ for v in V:
 plt.legend(loc = 'upper left') 
 
 #SER diagram
-plt.subplot(212)
-plt.plot(SER(CF,CT,F)[1],SER(CF,CT,F)[0])
-plt.title("Economic specific range SER""")
-plt.xlabel("Cruise speed [km/h]")
-plt.ylabel("SER [km/N]""")
+dh = 500                #step size in altitude
+H = range(7000,12000,dh)#altitude range
+
+for h in H:   
+    SER_lst = SER(CF,CT,F)[0]
+    M = []
+    for i in range(len(SER(CF,CT,F)[1])):
+        Mi = Mach(SER(CF,CT,F)[1][i],h)
+        M.append(Mi)
+    
+    plt.subplot(212)
+    plt.plot(M,SER_lst,label='%s altitude [m]' % h)
+    plt.title("Economic specific range SER""")
+    plt.xlabel("Cruise Mach number")
+    plt.ylabel("SER [km/N]""")
 
 plt.show()
 
