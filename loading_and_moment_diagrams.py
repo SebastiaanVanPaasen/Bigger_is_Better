@@ -156,7 +156,7 @@ def Loadcalculator(x0,Ff):
         ###Thrust Calculations
         section_thrust = 0
         section_engineweight = 0
-        if x > start_eng_1 and firstenginereachedyet == False:
+        if x > start_eng_1 and firstenginereachedyet == False and n_engines!=0:
             section_thrust = total_thrust / n_engines
             section_engineweight = engine_weight * n * 1.5
             Mz += -section_engineweight * (start_eng_1 - x0)
@@ -164,7 +164,7 @@ def Loadcalculator(x0,Ff):
             firstenginereachedyet = True
 
             
-        if x > start_eng_2 and secondenginereachedyet == False and n_engines!=2:
+        if x > start_eng_2 and secondenginereachedyet == False and n_engines!=0 and n_engines!=2:
             section_thrust = total_thrust / n_engines 
             section_engineweight = engine_weight * n * 1.5
             Mz += -section_engineweight * (start_eng_2 - x0)
@@ -360,6 +360,7 @@ plt.plot(HalfspanValues, Tdistributionvalues)
 
 plt.show()
 
+print(max(Mzdistribution))
 
 
 
