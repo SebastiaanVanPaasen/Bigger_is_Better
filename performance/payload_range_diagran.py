@@ -148,7 +148,7 @@ def payload_range():
     plt.show()
     return weight, range_weight
 
-#a = (payload_range()[0][1]-payload())
+#a = (payload_range()[0][1]-p6ayload())
 payload_range()
     
     
