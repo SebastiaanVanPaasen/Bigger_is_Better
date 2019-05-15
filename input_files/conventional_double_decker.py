@@ -63,9 +63,9 @@ hydro_choice = 0
 T_input = 0.24
 S_input = 5800
 Oswald = 0.9  # estimated from ADSEE-I L3
-A = 7  # based on the reference aircraft B747
-h_cruise = 6000.  # m based on the sustainability analysis so far
-M_cruise = 0.8  # Mach number decided to cruise on
+A = 9  # based on the reference aircraft B747
+# h_cruise = 6000.  # m based on the sustainability analysis so far
+M_cruise = 0.55  # Mach number decided to cruise on
 
 # Passenger characteristics --------------------------------------------------------------------------------------------
 N_pas = 450.  # Requirement set by the exercise
@@ -75,13 +75,13 @@ W_person = 205.  # lbs   Based on statistics of Roskam
 
 # General aircraft input parameters ------------------------------------------------------------------------------------
 # General cruise parameters
-Temp_cruise = Temp_0 + a * h_cruise  # K  based on the altitude you fly at
-a_cruise = np.sqrt(gamma * R_gas * Temp_cruise)  # m/s based on the temperature
-V_cruise = M_cruise * a_cruise  # m/s  based on the Mach number and speed of sound
+# Temp_cruise = Temp_0 + a * h_cruise  # K  based on the altitude you fly at
+# a_cruise = np.sqrt(gamma * R_gas * Temp_cruise)  # m/s based on the temperature
+# V_cruise = M_cruise * a_cruise  # m/s  based on the Mach number and speed of sound
 
 # Densities ------------------------------------------------------------------------------------------------------------
 Rho_TO = Rho_0  # kg/m^3    standard sea-level density
-Rho_Cruise = Rho_0 * ((1 + (a * h_cruise) / Temp_0) ** (-(g_0 / (R_gas * a))))  # kg/m^3   based on cruise altitude
+# Rho_Cruise = Rho_0 * ((1 + (a * h_cruise) / Temp_0) ** (-(g_0 / (R_gas * a))))  # kg/m^3   based on cruise altitude
 Rho_Landing = Rho_0  # kg/m^3   standard sea-level density
 
 # aircraft cg-locations ------------------------------------------------------------------------------------------------
@@ -150,7 +150,7 @@ TOP = 220. * lbft2_Nm2  # Guestimated from ADSEE-I L3
 Sigma_TO = Rho_TO / Rho_0  # Ratio of densities
 
 # Stall speeds ---------------------------------------------------------------------------------------------------------
-V_stall_Cruise = V_cruise / 1.2  # m/s   Guestimated from ADSEE-I L3 Take requirements
+# V_stall_Cruise = V_cruise / 1.2  # m/s   Guestimated from ADSEE-I L3 Take requirements
 V_stall_Landing = min(np.sqrt(Landing_runway / 0.5847), 65.)  # m/s     Guestimated from ADSEE-I L3
 
 # Lift and drag coefficients -------------------------------------------------------------------------------------------

@@ -134,8 +134,8 @@ V_minSAR = []
 for h in H:   
     SAR_list = SAR(h,A,S,e,CD0,Ct0,Wcr)[0]
     V = SAR(h,A,S,e,CD0,Ct0,Wcr)[1]
-    print V
-    print SAR_list
+    # print V
+    # print SAR_list
 
     min_SAR.append(min(SAR_list))
     i = SAR_list.index(min(SAR_list))
@@ -206,7 +206,7 @@ plt.legend()
 
 plt.show()
 
-print SAR_ref_point
+# print SAR_ref_point
 
 #--------------------------------SENSITIVITY ANALYSIS-------------------------
 #To change W_cr, A, CD0, Ct0 analyse a certain altitude
