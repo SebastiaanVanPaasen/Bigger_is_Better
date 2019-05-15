@@ -45,8 +45,7 @@ CD0 = 0.020
 g = 9.81
 S = 127. 
 
-R_range = 11000.            #range of x-axis
-R_des = 7000                #[km]
+             #[km]
 Wcr = 0.8*MTOW              #63000*9.81#assumption for now
 pax_max = 450
 n = 1                       #load factor of number of passengers
@@ -148,7 +147,7 @@ for h in H:
     plt.subplot(211)
     plt.plot(V,SAR_list,label='%s altitude [m]' % h)
     plt.title('Fuel consumption w.r.t. airspeed')
-    plt.xlabel("Airspeed [km/h]")
+    plt.xlabel("Mach number")
     plt.ylabel("Fuel consumption [kg/km]") 
 
 
