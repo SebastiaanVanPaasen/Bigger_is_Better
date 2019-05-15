@@ -60,7 +60,7 @@ def Mach(V,h):                  #enter V in km/h
     gamma = 1.4                 #enter h in m
     R = 287 #J/kg/K
     a = np.sqrt(gamma*R*ISA_temp(h))
-    M = (V/3.6)/a
+    M = (V)/a
     return M 
 
 
@@ -86,7 +86,7 @@ def SAR(V,h,A,S,e,CD0,Ct0,Wcr):   #enter h in m, V in m/s
         plt.ylabel("Fuel consumption [kg/km]")     
       
         plt.subplot(212)
-        plt.plot(V[i],SAR[i]/pax_ref,'o', label = '%s Design' % i )
+        plt.plot(V[i],SAR[i]/450,'o', label = '%s Design' % i )
         plt.plot(M_ref,SAR_ref/200,'mo', label = "Ref. aircraft")
         plt.hlines(0.9*SAR_ref/200,.1,1,"gray","--")
         plt.title('Fuel consumption per passenger w.r.t. Mach number')
