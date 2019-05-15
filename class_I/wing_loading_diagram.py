@@ -1,4 +1,4 @@
-from inputs import *
+from input_files.conventional_double_decker import *
 import matplotlib.pyplot as plt
 
 
