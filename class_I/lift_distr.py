@@ -33,7 +33,7 @@ def make_avl_file():
     z_loc_LE = [0, dz]
     
     Ainc = [0.0, 0.0]
-    spanwise_discretize_points = 50    #If you go too high then your computer is dead
+    spanwise_discretize_points = 20    #If you go too high then your computer is dead
     chordwise_discretize_point = 12     # " "
     
     with open("avl_testing.avl", "w") as text_file:
@@ -63,7 +63,7 @@ def make_avl_file():
 make_avl_file()
 
 def lift_distribution(CL):        
-    p = subprocess.Popen(r"C:\Users\floyd\OneDrive\Documenten\GitHub\Bigger_is_Better\avl.exe", stdin=subprocess.PIPE, universal_newlines=True)
+    p = subprocess.Popen(r"C:\Users\mathi\Documents\DSE\Bigger_is_Better\avl.exe", stdin=subprocess.PIPE, universal_newlines=True)
     set_CL = "a c " + str(CL)
     p.communicate(os.linesep.join(["load", "avl_testing","case", "mach0.7", "oper", set_CL, "x","fs", "endresult"]))          
     lines = [line.rstrip('\n') for line in open('endresult')]
@@ -78,22 +78,23 @@ def lift_distribution(CL):
     elements = np.reshape(np.array(elements),(count,-1))
     os.remove("endresult")
     return(elements)
-output_avl = lift_distribution(2.5)
+output_avl = lift_distribution(0.8)
 
-mac = 8.67
-def get_correct_data(output_avl,mac):
-    y_pos = []
+c = 8.67
+def get_correct_data(output_avl,c):
+    x_pos = []
     cl = []
     cd = []
     for i in range(len(output_avl)):
-        y_pos.append(output_avl[i][1])
-        cl.append(output_avl[i][4]/mac)
+        x_pos.append(output_avl[i][1])
+        cl.append(output_avl[i][4]/c)
         cd.append(output_avl[i][8])
-    y_pos = y_pos[len(y_pos):int(len(y_pos)/2)-1:-1] + y_pos[0:int(len(y_pos)/2)]
-    cl = cl[len(y_pos):int(len(y_pos)/2)-1:-1] + cl[0:int(len(y_pos)/2)]
-    cd = cd[len(y_pos):int(len(y_pos)/2)-1:-1] + cd[0:int(len(y_pos)/2)]
-    plt.scatter(y_pos,cl)
+#    x_pos = x_pos[len(x_pos):int(len(x_pos)/2)-1:-1] + x_pos[0:int(len(x_pos)/2)]
+#    cl = cl[len(x_pos):int(len(x_pos)/2)-1:-1] + cl[0:int(len(x_pos)/2)]
+#    cd = cd[len(x_pos):int(len(x_pos)/2)-1:-1] + cd[0:int(len(x_pos)/2)]
+#    plt.scatter(x_pos,cl)
 #    plt.scatter(y_pos,cd)
-    plt.grid()
-    return(y_pos,cl, cd)
-x = get_correct_data(output_avl,mac)
+#    plt.grid()
+    return(x_pos,cl, cd)
+x = get_correct_data(output_avl,c)
+#print(x)
