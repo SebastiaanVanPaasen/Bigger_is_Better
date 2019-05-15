@@ -25,7 +25,6 @@ def calc_loiter_coefficient(aspect_ratio, oswald_factor, cd_0, e, c_j):
 def calc_fuel_fraction(coefficients):
     # calculate the total required fuel by multiplying all phases of the flight profile
     fraction = 1
-    print(coefficients)
     for number in coefficients:
         fraction = fraction * number
     return 1 - fraction
@@ -46,7 +45,6 @@ def class_I(cl, cd, r_cruise, r_res, v_cruise, cj_cruise, W_tfo_frac, W_e_frac, 
          fractions[6], fractions[7]])
 
     W_f_frac = calc_fuel_fraction(mission_frac)
-    print(W_e_frac, W_f_frac, W_tfo_frac)
     W_to_frac = 1 - W_f_frac - W_tfo_frac - W_e_frac
 
     W_P = calc_payload_weight(N_pas, N_crew, W_person)
