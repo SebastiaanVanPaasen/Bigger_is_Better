@@ -27,6 +27,7 @@ Ct0           = 12e-06      #Thrust Specific fuel conspumtion [kg/N/s] from B737
                             #aka cruise speed
                             #12 future high bypass engines
                             #13.5 for bigger normal engines
+
 #------------------------------VERIFICATION DATA--------------------------------
 
 """INPUTS: CHANGE ACCORDING TO DESIGN"""
@@ -47,7 +48,7 @@ S = 127.
 R_range = 11000.            #range of x-axis
 R_des = 7000                #[km]
 Wcr = 0.8*MTOW              #63000*9.81#assumption for now
-pax_max = 200
+pax_max = 450
 n = 1                       #load factor of number of passengers
 
 
@@ -63,6 +64,9 @@ hcr = 12000                 #(m)
 S1 = 127                    #m^2
 b1 = 35.92                  #m
 A1 = b1**2 / S1
+
+pax_ref = 200
+n_ref = 1.
 
 #-----------------------------DEFINITIONS-------------------------------------
 #Standard air range (SAR) = distances travelled per mass fuel burned
@@ -96,19 +100,16 @@ def ISA_temp(h):
     if h >= 11000:
         return 216.65           #in Kelvin
  
-H = np.arange(0,13000,1000)
-for j in H:
-    print "temp=", ISA_temp(j), "height =", j
           
-def Mach(V,h):
-    gamma = 1.4
+def Mach(V,h):                  #enter V in km/h
+    gamma = 1.4                 #enter h in m
     R = 287 #J/kg/K
     a = np.sqrt(gamma*R*ISA_temp(h))
     M = (V/3.6)/a
     return M 
 
 
-def SAR(h,A,S,e,CD0,Ct0,Wcr):   #enter V in m/s
+def SAR(h,A,S,e,CD0,Ct0,Wcr):   #enter h in m
     V = np.linspace(600,1000,100)
     SAR = []
     
@@ -158,18 +159,17 @@ for i in range(len(V_ref)):
     V_ref[i] = Mach(V_ref[i],hcr)   
     if 0.997*Mcr <= V_ref[i] <= 1.003* Mcr:
         SAR_ref_point = SAR_ref[i]
-print SAR_ref_point
 
 #PLot the single point of the ref. aircraft
 plt.plot(Mcr,SAR_ref_point,"mo", label = "Ref. aircraft")
-    
 plt.legend()
+
 
 #Plot with minimum SAR at different altitudes with corresponding Mach number
 for j in range(len(min_SAR)):
     V_minSAR[j] = Mach(V_minSAR[j],H[j])
         
-    plt.subplot(212)
+    plt.subplot(223)
     plt.xlabel("Mach at minimum SAR ")
     plt.ylabel("Minimum Fuel consumption [kg/km]")
     plt.plot(V_minSAR[j],min_SAR[j],'o', label = '%s altitude [m]' % H[j])
@@ -178,7 +178,30 @@ for j in range(len(min_SAR)):
 #Plot reference aircraft    
 plt.plot(Mcr,SAR_ref_point,"mo", label = "Ref. aircraft")
 plt.legend(loc = "lower right")
-#plt.show()
+
+
+#Fuel consumed per km per passenger/seat
+for h in H:   
+    pax = pax_max*n
+    SAR_list = (SAR(h,A,S,e,CD0,Ct0,Wcr)[0])
+    V = SAR(h,A,S,e,CD0,Ct0,Wcr)[1]
+
+    for i in range(len(SAR_list)):
+        SAR_list[i] = SAR_list[i]/pax 
+        
+    for i in range(len(V)):                     #Change velocity to Mach
+        V[i] = Mach(V[i],h)
+    
+    plt.subplot(224)
+    plt.plot(V,SAR_list)   #,label='%s altitude [m]' % h)
+    plt.title('Fuel consumption per passenger w.r.t. airspeed')
+    plt.xlabel("Mach number]")
+    plt.ylabel("Fuel consumption [kg/km/passenger]")
+    
+    
+plt.legend()
+plt.show()
+
 
 
 #--------------------------------SENSITIVITY ANALYSIS-------------------------
@@ -194,7 +217,7 @@ plt.legend(loc = "lower right")
 
 
 
-#Other graphs
+#Other graph
 #for j in range(len(min_SAR)):
 #    plt.subplot(222)
 #    plt.xlabel("Airspeed at minimum SAR [km/h]")
@@ -202,21 +225,6 @@ plt.legend(loc = "lower right")
 #    plt.plot(V_minSAR[j],min_SAR[j],'o', label = '%s altitude [m]' % H[j])
 #    plt.title('Minimum fuel consumption with corresponding airspeed and altitude')
 #  
-#plt.legend()
-
-#Fuel consumed per km per passenger/seat
-#for h in H:   
-#    pax = pax_max*n
-#    SAR_list = (SAR(h,A,S,e,CD0,Ct,Wcr)[0])
-#    V = SAR(h,A,S,e,CD0,Ct,Wcr)[1]
-#
-#    for i in range(len(SAR_list)):
-#        SAR_list[i] = SAR_list[i]/pax 
-#    plt.subplot(223)
-#    plt.plot(V,SAR_list)#,label='%s altitude [m]' % h)
-#    plt.title('Fuel consumption per passenger w.r.t. airspeed')
-#    plt.xlabel("Airspeed [km/h]")
-#    plt.ylabel("Fuel consumption [kg/km/passenger]")
 #plt.legend()
 
 """Once speed and altitude are selected, more precies SAR can be made 
