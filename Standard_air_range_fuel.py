@@ -22,7 +22,7 @@ import matplotlib.pyplot as plt
 
 #------------------------STATISTICAL INPUTS----------------------------------
 
-Ct           = 12e-06      #Thrust Specific fuel conspumtion [kg/N/s] from B737MAX 
+Ct           = 12e-06       #Thrust Specific fuel conspumtion [kg/N/s] from B737MAX 
                             # for now assume it is constant with speed
 
 #------------------------------VERIFICATION DATA--------------------------------
@@ -42,11 +42,11 @@ CD0 = 0.020
 g = 9.81
 S = 127. 
 
-R_range = 11000.  #range of x-axis
-R_des = 7000 #[km]
-Wcr = 0.8*MTOW #63000*9.81#assumption for now
+R_range = 11000.            #range of x-axis
+R_des = 7000                #[km]
+Wcr = 0.8*MTOW              #63000*9.81#assumption for now
 pax_max = 200
-n = 1 #load factor of numbe rof passengers
+n = 1                       #load factor of number of passengers
 
 
 """Create reference line of B737 8 Max"""
@@ -55,11 +55,11 @@ MTOW1 = 82191*g
 OEW1 = 45070*g
 MFW1 = 31594*g
 
-Wcr1 = 0.8*MTOW
+Wcr1 = 0.8*MTOW             #ASSUMPTION!!! WHAT IS W_Cr ACTUALLY
 Mcr = 0.79
-hcr = 12000 #(m)
-S1 = 127 #m^2
-b1 = 35.92 #m
+hcr = 12000                 #(m)
+S1 = 127                    #m^2
+b1 = 35.92                  #m
 A1 = b1**2 / S1
 
 #-----------------------------DEFINITIONS-------------------------------------
@@ -67,21 +67,21 @@ A1 = b1**2 / S1
 #Fuel burn is related to speed, altitude, thrust (or drag in steady flight)
 #unit of SAR (m/s)/(kg/s)
 
-def ISA_density(h):      # enter height in m
-    M = 0.0289644       #kg/mol molar mass of Earth's air
-    R = 8.3144590       #universal gas constant Nm/MolK
+def ISA_density(h):             # enter height in m
+    M = 0.0289644               #kg/mol molar mass of Earth's air
+    R = 8.3144590               #universal gas constant Nm/MolK
     
     if h < 11000:
-        rho0 = 1.225   #kg/m^3
-        T = 288.15     #K
-        h0 = 0.         #m
-        a = -0.0065    #K/m
+        rho0 = 1.225            #kg/m^3
+        T = 288.15              #K
+        h0 = 0.                 #m
+        a = -0.0065             #K/m
         rho = rho0 * (T/(T + a*(h-h0)))**(1. + ((g*M)/(R*a)))
         
     if h >= 11000:
-        rho0 = 0.36391 #kg/m^3
-        T = 216.65     #K
-        h0 = 11000.     #m
+        rho0 = 0.36391          #kg/m^3
+        T = 216.65              #K
+        h0 = 11000.             #m
         rho = rho0*np.e**((-g*M*(h-h0))/(R*T))
         
     return rho
@@ -91,7 +91,7 @@ def ISA_temp(h):
         T = 288.15 - 0.0065*h   #in Kelvin
         return T
     if h >= 11000:
-        return 216.65    #in Kelvin
+        return 216.65           #in Kelvin
         
 def Mach(V,h):
     gamma = 1.4
@@ -101,7 +101,7 @@ def Mach(V,h):
     return M 
 
 
-def SAR(h,A,S,e,CD0,Ct,Wcr):                 #enter V in m/s
+def SAR(h,A,S,e,CD0,Ct,Wcr):   #enter V in m/s
     V = np.linspace(600,1000,100)
     SAR = []
     
@@ -109,19 +109,19 @@ def SAR(h,A,S,e,CD0,Ct,Wcr):                 #enter V in m/s
         k = 1./(np.pi*A*e)
         q = 0.5*ISA_density(h)*(v/3.6)**2
         SARi = 1./((v/3.6) / ( (CD0 + k *(Wcr/(q*S))**2) *q*S*Ct )) #in kg/m
-        SAR.append(SARi*1000.)   #in kg/km
+        SAR.append(SARi*1000.)                                      #in kg/km
         
     return SAR,V
 
    
 #------------------------------MAIN PROGRAM------------------------------------
 
-dh = 500                #step size in altitude
-H = range(7000,12500,dh)#altitude range
-
+dh = 500                            #step size in altitude
+H = range(7000,12500,dh)            #altitude range
 
 min_SAR = []
 V_minSAR = []
+
 #For a given altitude (in def) run it for different speeds
 for h in H:   
     SAR_list = SAR(h,A,S,e,CD0,Ct,Wcr)[0]
@@ -132,7 +132,7 @@ for h in H:
     i = SAR_list.index(min(SAR_list))
     V_minSAR.append(V[i])    
     
-    for i in range(len(V)):
+    for i in range(len(V)):         #Change velocity to Mach
         V[i] = Mach(V[i],h)
         
     plt.subplot(211)
@@ -142,26 +142,21 @@ for h in H:
     plt.ylabel("Fuel consumption [kg/km]") 
 
 
-#For the reference case aim to sray below it:
+#For the reference case aim to stay below it:
 SAR_ref = SAR(hcr,A1,S1,e,CD0,Ct,Wcr1)[0]
 V_ref = SAR(hcr,A1,S1,e,CD0,Ct,Wcr1)[1]
+
 for i in range(len(V_ref)):
-    V_ref[i] = Mach(V_ref[i],hcr)
-plt.plot(V_ref,SAR_ref,"ro", label = "Ref. aircraft")
+    V_ref[i] = Mach(V_ref[i],hcr)   
+    if 0.997*Mcr <= V_ref[i] <= 1.003* Mcr:
+        SAR_ref_point = SAR_ref[i]
+
+#PLot the single point of the ref. aircraft
+plt.plot(Mcr,SAR_ref_point,"mo", label = "Ref. aircraft")
     
 plt.legend()
 
-
-#for j in range(len(min_SAR)):
-#    plt.subplot(222)
-#    plt.xlabel("Airspeed at minimum SAR [km/h]")
-#    plt.ylabel("Minimum Fuel consumption [kg/km]")
-#    plt.plot(V_minSAR[j],min_SAR[j],'o', label = '%s altitude [m]' % H[j])
-#    plt.title('Minimum fuel consumption with corresponding airspeed and altitude')
-#  
-#plt.legend()
-
-
+#Plot with minimum SAR at different altitudes with corresponding Mach number
 for j in range(len(min_SAR)):
     V_minSAR[j] = Mach(V_minSAR[j],H[j])
         
@@ -170,7 +165,21 @@ for j in range(len(min_SAR)):
     plt.ylabel("Minimum Fuel consumption [kg/km]")
     plt.plot(V_minSAR[j],min_SAR[j],'o', label = '%s altitude [m]' % H[j])
     plt.title('Minimum fuel consumption with corresponding Mach and altitude')
+    
+#Plot reference aircraft    
+plt.plot(Mcr,SAR_ref_point,"mo", label = "Ref. aircraft")
+plt.legend()
+plt.show()
 
+#Other graphs
+#for j in range(len(min_SAR)):
+#    plt.subplot(222)
+#    plt.xlabel("Airspeed at minimum SAR [km/h]")
+#    plt.ylabel("Minimum Fuel consumption [kg/km]")
+#    plt.plot(V_minSAR[j],min_SAR[j],'o', label = '%s altitude [m]' % H[j])
+#    plt.title('Minimum fuel consumption with corresponding airspeed and altitude')
+#  
+#plt.legend()
 
 #Fuel consumed per km per passenger/seat
 #for h in H:   
@@ -185,9 +194,8 @@ for j in range(len(min_SAR)):
 #    plt.title('Fuel consumption per passenger w.r.t. airspeed')
 #    plt.xlabel("Airspeed [km/h]")
 #    plt.ylabel("Fuel consumption [kg/km/passenger]")
-
 #plt.legend()
-plt.show()
+
 
 
 """Once speed and altitude are selected, more precies SAR can be made 

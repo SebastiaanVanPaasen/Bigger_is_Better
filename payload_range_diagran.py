@@ -146,7 +146,7 @@ def payload_range():
     plt.ylabel("Weight [N]")
     plt.legend()
     plt.show()
-    return weight, range_weight
+    #return weight, range_weight
 
 #a = (payload_range()[0][1]-payload())
 payload_range()
