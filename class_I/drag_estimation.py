@@ -47,6 +47,17 @@ def Wing_wetted_area(root_chord, tip_chord, D_fuselage, span, S,
     wetted_area = 1.07 * 2 * exposed_area  # wetted area approximation
     return wetted_area
 
+def Wing_wetted_area_boxed(root_chord, tip_chord, D_fuselage, span, S,
+                     winglet_height):  # set winglet area to zero if not needed, select correct input for boxed wing
+    root_chord_single = root_chord/2    
+    tip_chord_single = tip_chord/2              
+    fuselage_chord = root_chord_single * (1 - (D_fuselage / span))  # determine the cord at the outer fuselage
+    winglet_area = tip_chord_single * winglet_height
+    exposed_area = S - (0.5 * (
+            fuselage_chord + root_chord)) * D_fuselage + winglet_area  # calulate the exposed area, substracting the area inside the plane from the S
+    wetted_area = 1.07 * 2 * exposed_area  # wetted area approximation
+    return wetted_area
+
 
 # function to calulate horizontal tail wetted area using simple geometry same goes for the vertical tail
 def H_tail_wetted_area(root_chord_h, taper_ratio_h, span_h):
