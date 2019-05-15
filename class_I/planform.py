@@ -10,7 +10,7 @@ def wing_parameters(m_cruise, cl_cruise, surface_area, aspect_ratio, option):
     m_dd = m_cruise + 0.03  # drag divergence mach number
 
     # Torenbeek estimation for quarter chord sweep values are in radians
-    if m_cruise <= 0.69:
+    if m_cruise <= 0.7:
         quarter_chord_sweep = 0.
     else:
         quarter_chord_sweep = np.arccos(0.75 * (m_t / m_dd))
@@ -47,6 +47,12 @@ def wing_parameters(m_cruise, cl_cruise, surface_area, aspect_ratio, option):
     return (
         quarter_chord_sweep, leading_edge_sweep, span, chord_root, chord_tip, dihedral,
         thickness_over_chord, mac, taper_ratio)
+    
+# def wing_parameters_boxed(m_cruise, cl_cruise, surface_area, aspect_ratio):
+        
+    
+
+
 
 
 # inputs

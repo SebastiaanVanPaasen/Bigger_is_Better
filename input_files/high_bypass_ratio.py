@@ -3,6 +3,16 @@
 from constants_and_conversions import *
 import numpy as np
 
+N_engines = 2.  #
+w_engine = 8500.  # kg   Obtained from Bram
+A = 11  # based on the reference aircraft B747
+wing_option = 1  # Depending on the type of wing configuration, 1 is high wing, 0 is low wing
+tail_type = 1  # Depending on the type of tail configuration, 1 is T-tail, 0 is conventional
+h_cruise = 10000.  # m based on the sustainability analysis so far
+M_cruise = 0.75  # Mach number decided to cruise on
+
+
+
 # Define fuel fractions from statistics for the mission profile based on Roskam ----------------------------------------
 start = 0.99
 taxi = 0.99
@@ -67,8 +77,6 @@ W_person = 205.  # lbs   Based on statistics of Roskam
 
 # General aircraft input parameters ------------------------------------------------------------------------------------
 # General cruise parameters
-h_cruise = 11000.  # m based on the sustainability analysis so far
-M_cruise = 0.65  # Mach number decided to cruise on
 Temp_cruise = Temp_0 + a * h_cruise  # K  based on the altitude you fly at
 a_cruise = np.sqrt(gamma * R_gas * Temp_cruise)  # m/s based on the temperature
 V_cruise = M_cruise * a_cruise  # m/s  based on the Mach number and speed of sound
@@ -85,8 +93,7 @@ x_fuel = 22.  # m    cg-location fuel w.r.t nose
 xcg_oew_mac = 0.25  # m     initial cg location OEW w.r.t. MAC
 
 # engine characteristics -----------------------------------------------------------------------------------------------
-N_engines = 2.  #
-w_engine = 7000.  # kg   Obtained from Bram
+
 propeller_choice = 0
 
 # in case propellers are used
@@ -100,11 +107,10 @@ a_inlets = 3.
 n_fuel_tanks = 2.
 
 # main wing ------------------------------------------------------------------------------------------------------------
-A = 7.5  # based on the reference aircraft B747
 S_ratio = 6.3  # estimated from ADSEE-I L3
-wing_option = 0  # Depending on the type of wing configuration, 1 is high wing, 0 is low wing
+
 winglet_height = 0.  # Mostly important for boxed wing, else leave as 0
-tail_type = 0  # Depending on the type of tail configuration, 1 is T-tail, 0 is conventional
+
 
 # horizontal tail ------------------------------------------------------------------------------------------------------
 QC_sweep_h = np.radians(32.7)  # degrees    based on wide body statistics
