@@ -5,7 +5,7 @@ Created on Tue May 14 09:48:11 2019
 @author: Mathilde
 """
 import sys
-sys.path.append("C:/Users/mathi/Documents/DSE/Bigger_is_Better/class_I")
+sys.path.append("H:\DSE\Bigger_is_Better\Bigger_is_Better/class_I")
 import numpy as np  ### Never use * to import stuff, as it makes it difficult to retrace where functions come from
 import scipy as sp
 import math as m
@@ -80,7 +80,6 @@ def c(x):
         c = Cy - 2 * (x - (by / 2)) * ((Cy - Ct) / (b - by))
     return c
 
-
 def S_cross_section(x):
     return c(x) * c(x) * 0.1
 
@@ -106,7 +105,6 @@ def Loadcalculator(x0,Ff):
     D = 0
     L = 0
     Th = 0
-
     if x0 > start_eng_1:
         firstenginereachedyet = True
     else:
@@ -231,9 +229,11 @@ def load_diagrams(N):  ### 100 nodes, so 99 beam elements
     Thrustdistributionvalues = []
     Engine_distribution = []
     Tdistributionvalues = []
+    chord_section = []
     
     for i, x in enumerate(HalfspanValues):
         Fy, Fz, Mz, My, L, W_f, D, Th, section_engineweight, T = Loadcalculator(x,1)
+        chord = c(x)
         Fydistribution.append(Fy)
         Fzdistribution.append(Fz)
         Mzdistribution.append(Mz)
@@ -244,56 +244,64 @@ def load_diagrams(N):  ### 100 nodes, so 99 beam elements
         Thrustdistributionvalues.append(Th)
         Engine_distribution.append(section_engineweight)
         Tdistributionvalues.append(T)
-    
-    HalfspanValues = np.linspace(0, b / 2 - 0.00001, N)
-    Fydistribution2 = []
-    Mydistribution2 = []
-    Mzdistribution2 = []
-    Liftdistributionvalues2 = []
-    Fuelweightdistributionvalues2 = []
-    Dragdistributionvalues2 = []
-    Thrustdistributionvalues2 = []
-    Engine_distribution2 = []
-    Fzdistribution2 = []
-    Tdistributionvalues2 = []
-    
-    for i, x in enumerate(HalfspanValues):
-        Fy, Fz, Mz, My, L, W_f, D, Th, section_engineweight, T = Loadcalculator(x,0.6)
-        Fydistribution2.append(Fy)
-        Fzdistribution2.append(Fz)
-        Mzdistribution2.append(Mz)
-        Mydistribution2.append(My)
-        Liftdistributionvalues2.append(L)
-        Fuelweightdistributionvalues2.append(W_f)
-        Dragdistributionvalues2.append(D)
-        Thrustdistributionvalues2.append(Th)
-        Engine_distribution2.append(section_engineweight)
-        Tdistributionvalues2.append(T)
-    
-    HalfspanValues = np.linspace(0, b / 2 - 0.00001, N)
-    Fydistribution3 = []
-    Mydistribution3 = []
-    Mzdistribution3 = []
-    Liftdistributionvalues3 = []
-    Fuelweightdistributionvalues3 = []
-    Dragdistributionvalues3 = []
-    Thrustdistributionvalues3 = []
-    Engine_distribution3 = []
-    Fzdistribution3 = []
-    Tdistributionvalues3 = []
-    
-    for i, x in enumerate(HalfspanValues):
-        Fy, Fz, Mz, My, L, W_f, D, Th, section_engineweight, T = Loadcalculator(x,0)
-        Fydistribution3.append(Fy)
-        Fzdistribution3.append(Fz)
-        Mzdistribution3.append(Mz)
-        Mydistribution3.append(My)
-        Liftdistributionvalues3.append(L)
-        Fuelweightdistributionvalues3.append(W_f)
-        Dragdistributionvalues3.append(D)
-        Thrustdistributionvalues3.append(Th)
-        Engine_distribution3.append(section_engineweight)
-        Tdistributionvalues3.append(T)
+        chord_section.append(chord)
+
+   
+#    HalfspanValues = np.linspace(0, b / 2 - 0.00001, N)
+#    Fydistribution2 = []
+#    Mydistribution2 = []
+#    Mzdistribution2 = []
+#    Liftdistributionvalues2 = []
+#    Fuelweightdistributionvalues2 = []
+#    Dragdistributionvalues2 = []
+#    Thrustdistributionvalues2 = []
+#    Engine_distribution2 = []
+#    Fzdistribution2 = []
+#    Tdistributionvalues2 = []
+#    chord_section = []
+#    
+#    for i, x in enumerate(HalfspanValues):
+#        Fy, Fz, Mz, My, L, W_f, D, Th, section_engineweight, T = Loadcalculator(x,0.6)
+#        chord = c(x)
+#        Fydistribution2.append(Fy)
+#        Fzdistribution2.append(Fz)
+#        Mzdistribution2.append(Mz)
+#        Mydistribution2.append(My)
+#        Liftdistributionvalues2.append(L)
+#        Fuelweightdistributionvalues2.append(W_f)
+#        Dragdistributionvalues2.append(D)
+#        Thrustdistributionvalues2.append(Th)
+#        Engine_distribution2.append(section_engineweight)
+#        Tdistributionvalues2.append(T)
+##        chord_section.append(chord)
+#    
+#    HalfspanValues = np.linspace(0, b / 2 - 0.00001, N)
+#    Fydistribution3 = []
+#    Mydistribution3 = []
+#    Mzdistribution3 = []
+#    Liftdistributionvalues3 = []
+#    Fuelweightdistributionvalues3 = []
+#    Dragdistributionvalues3 = []
+#    Thrustdistributionvalues3 = []
+#    Engine_distribution3 = []
+#    Fzdistribution3 = []
+#    Tdistributionvalues3 = []
+#    chord_section = []
+#    
+#    for i, x in enumerate(HalfspanValues):
+#        Fy, Fz, Mz, My, L, W_f, D, Th, section_engineweight, T = Loadcalculator(x,0)
+##        chord = c(x)
+#        Fydistribution3.append(Fy)
+#        Fzdistribution3.append(Fz)
+#        Mzdistribution3.append(Mz)
+#        Mydistribution3.append(My)
+#        Liftdistributionvalues3.append(L)
+#        Fuelweightdistributionvalues3.append(W_f)
+#        Dragdistributionvalues3.append(D)
+#        Thrustdistributionvalues3.append(Th)
+#        Engine_distribution3.append(section_engineweight)
+#        Tdistributionvalues3.append(T)
+##        chord_section.append(chord)
         
     plt.subplot(2,3,5)
     plt.subplot(2,3,1)
@@ -312,10 +320,9 @@ def load_diagrams(N):  ### 100 nodes, so 99 beam elements
     plt.gca().set_title('T distribution')
     plt.plot(HalfspanValues, Tdistributionvalues)
     plt.show()
-    
-    return Fydistribution, Fzdistribution, Mydistribution, Mzdistribution, Tdistributionvalues
 
-
+    return Fydistribution, Fzdistribution, Mydistribution, Mzdistribution, Tdistributionvalues, chord_section
+Fydistribution, Fzdistribution, Mydistribution, Mzdistribution, Tdistributionvalues, chord_section = load_diagrams(100)
 # TORQUE DISTRIBUTION CALCULATION
 # M_max = max(Mydistribution)
 # V_max = max (Fxdistribution)
@@ -360,7 +367,7 @@ def load_diagrams(N):  ### 100 nodes, so 99 beam elements
 
 
 
-print(max(Mzdistribution))
+#print(max(Mzdistribution))
 
 
 
