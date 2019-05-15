@@ -211,12 +211,12 @@ plt.show()
 """Inputs sensitivity analysis"""
 
 #MTOW = 82190.*9.81
-#OEW  = 45065*9.81
-#MLW  = 69308.*9.81
-#MZFW = 65952.* 9.81
-#MFW  = 20826.*9.81          # Maximum fuel weight (including reserve fuel)
-#W_fr = MFW/105. * 5.        #reserve fuel
-#
+###OEW  = 45065*9.81
+###MLW  = 69308.*9.81
+###MZFW = 65952.* 9.81
+###MFW  = 20826.*9.81          # Maximum fuel weight (including reserve fuel)
+###W_fr = MFW/105. * 5.        #reserve fuel
+###
 #A =10.45
 #Ct0           = 12e-06   
 #e = 0.85
@@ -224,15 +224,16 @@ plt.show()
 #g = 9.81
 #S = 127. 
 #Wcr = 0.8*MTOW              #63000*9.81#assumption for now
-#
+###
 #dh = 500                            #step size in altitude
 #H = range(7000,12500,dh)            #altitude range
-#
-#
+
+
+"""Altitude Analysis"""
 #min_SAR = []
 #V_minSAR = []
-
-"""Altitude Sensitivity analysis"""
+#
+#"""Altitude Sensitivity analysis"""
 #for h in H:   
 #    SAR_list = SAR(h,A,S,e,CD0,Ct0,Wcr)[0]
 #    V = SAR(h,A,S,e,CD0,Ct0,Wcr)[1]
@@ -242,15 +243,17 @@ plt.show()
 #    V_minSAR.append(V[i])  
 #    	
 #diff_minSAR = []
-#diff_V_minSAR = []    
+#diff_V_minSAR = []  
+# 
 #for i in range(len(min_SAR)-1):
 #    diff_minSAR.append(((min_SAR[i+1]-min_SAR[i])/min_SAR[i])*100.)
 #    diff_V_minSAR.append(((V_minSAR[i+1]-V_minSAR[i])/V_minSAR[i])*100)
 #    
+#    
 #print diff_minSAR
 #print 
 #print diff_V_minSAR
-#    
+    
 
 
 """Variable Sensitivity analysis"""
@@ -274,8 +277,8 @@ plt.show()
 #        V_1[i] = Mach(V_1[i],h)    
 #    
 #    #calculate SAR for case 2 (Change parameters)
-#    SAR_list_2 = SAR(h,A,S,e,CD0,Ct02,Wcr)[0]
-#    V_2 = SAR(h,A,S,e,CD0,Ct02,Wcr)[1]
+#    SAR_list_2 = SAR(h,A,S,e,CD0,Ct0,Wcr)[0]
+#    V_2 = SAR(h,A,S,e,CD0,Ct0,Wcr)[1]
 #
 #    min_SAR_2.append(min(SAR_list_2))
 #    i = SAR_list_2.index(min(SAR_list_2))
@@ -288,8 +291,7 @@ plt.show()
 #    diff_SAR = []
 #    for j in range(len(SAR_list_1)):
 #        diff_SAR.append(((SAR_list_2[j]-SAR_list_1[j])/SAR_list_1[j])*100.)       #difference in percentage
-#  
-#  #find average difference on SAR
+#   #find average difference on SAR
 #    diff_SAR1 = sum(diff_SAR)/len(diff_SAR)  
 #    diff_SAR_min = (((min(SAR_list_2)-min(SAR_list_1))/min(SAR_list_1))*100.)
 #    
