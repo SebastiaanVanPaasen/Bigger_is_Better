@@ -65,7 +65,7 @@ S1 = 127                    #m^2
 b1 = 35.92                  #m
 A1 = b1**2 / S1
 
-pax_ref = 200
+pax_ref = 200.
 n_ref = 1.
 
 #-----------------------------DEFINITIONS-------------------------------------
@@ -109,18 +109,17 @@ def Mach(V,h):                  #enter V in km/h
     return M 
 
 
-def SAR(h,A,S,e,CD0,Ct0,Wcr):   #enter h in m
-    V = np.linspace(600,1000,100)
-    SAR = []
-    
-    for v in V:
-        Ct = (Ct0/233.083)*(v/3.6)
+def SAR(h,A,S,e,CD0,Ct0,Wcr):   #enter h in m, V in m/s
+     V_list = np.linspace(200,1000,500)
+     SAR = []
+     for V in V_list:
+        Ct = (Ct0/233.083)*(V/3.6)
         k = 1./(np.pi*A*e)
-        q = 0.5*ISA_density(h)*(v/3.6)**2
-        SARi = 1./((v/3.6) / ( (CD0 + k *(Wcr/(q*S))**2) *q*S*Ct )) #in kg/m
-        SAR.append(SARi*1000.)                                      #in kg/km
+        q = 0.5*ISA_density(h)*(V/3.6)**2
+        SARi = 1./((V/3.6) / ( (CD0 + k *(Wcr/(q*S))**2) *q*S*Ct ))     #in kg/m
+        SAR.append(SARi*1000 )
         
-    return SAR,V, (CD0 + k *(Wcr/(q*S))**2)
+     return SAR,V_list#in kg/km
 
    
 #------------------------------MAIN PROGRAM------------------------------------
@@ -135,7 +134,8 @@ V_minSAR = []
 for h in H:   
     SAR_list = SAR(h,A,S,e,CD0,Ct0,Wcr)[0]
     V = SAR(h,A,S,e,CD0,Ct0,Wcr)[1]
-    
+    print V
+    print SAR_list
 
     min_SAR.append(min(SAR_list))
     i = SAR_list.index(min(SAR_list))
@@ -206,6 +206,7 @@ plt.legend()
 
 plt.show()
 
+print SAR_ref_point
 
 #--------------------------------SENSITIVITY ANALYSIS-------------------------
 #To change W_cr, A, CD0, Ct0 analyse a certain altitude
