@@ -9,7 +9,7 @@ Created on Tue May 14 08:55:23 2019
 import numpy as np
 import matplotlib.pyplot as plt
 
-#-------------------------------INPUTS-----------------------------------------
+#-------------------------------DESIRED INPUTS-----------------------------------------
 """Weights"""
 #Wcr        =       Aircraft weight in N during Cruise
 
@@ -28,7 +28,7 @@ Ct0           = 12e-06      #Thrust Specific fuel conspumtion [kg/N/s] from B737
                             #12 future high bypass engines
                             #13.5 for bigger normal engines
 
-#------------------------------VERIFICATION DATA--------------------------------
+#------------------------------ARBITRARY INPUTS-------------------------------
 
 """INPUTS: CHANGE ACCORDING TO DESIGN"""
 
@@ -51,6 +51,7 @@ Wcr = 0.8*MTOW              #63000*9.81#assumption for now
 pax_max = 450
 n = 1                       #load factor of number of passengers
 
+#------------------------------VERIFICATION DATA--------------------------------
 
 """Create reference line of B737 8 Max"""
 MPW1 = 20882*g
@@ -120,7 +121,7 @@ def SAR(h,A,S,e,CD0,Ct0,Wcr):   #enter h in m
         SARi = 1./((v/3.6) / ( (CD0 + k *(Wcr/(q*S))**2) *q*S*Ct )) #in kg/m
         SAR.append(SARi*1000.)                                      #in kg/km
         
-    return SAR,V
+    return SAR,V, (CD0 + k *(Wcr/(q*S))**2)
 
    
 #------------------------------MAIN PROGRAM------------------------------------
@@ -154,6 +155,7 @@ for h in H:
 #For the reference case aim to stay below it:
 SAR_ref = SAR(hcr,A1,S1,e,CD0,Ct0,Wcr1)[0]
 V_ref = SAR(hcr,A1,S1,e,CD0,Ct0,Wcr1)[1]
+
 
 for i in range(len(V_ref)):
     V_ref[i] = Mach(V_ref[i],hcr)   
@@ -197,27 +199,118 @@ for h in H:
     plt.title('Fuel consumption per passenger w.r.t. airspeed')
     plt.xlabel("Mach number]")
     plt.ylabel("Fuel consumption [kg/km/passenger]")
-    
-    
+
+plt.plot(Mcr,SAR_ref_point/pax_ref,"mo", label = "Ref. aircraft")   
+plt.hlines(0.9*SAR_ref_point/pax_ref,0.5,1.,"gray",'--') 
+plt.xlim(0.5,0.95)
 plt.legend()
+
 plt.show()
 
 
-
 #--------------------------------SENSITIVITY ANALYSIS-------------------------
-#print V_minSAR
-#print min_SAR
-#print H
+#To change W_cr, A, CD0, Ct0 analyse a certain altitude
+"""Inputs sensitivity analysis"""
+
+#MTOW = 82190.*9.81
+###OEW  = 45065*9.81
+###MLW  = 69308.*9.81
+###MZFW = 65952.* 9.81
+###MFW  = 20826.*9.81          # Maximum fuel weight (including reserve fuel)
+###W_fr = MFW/105. * 5.        #reserve fuel
+###
+#A =10.45
+#Ct0           = 12e-06   
+#e = 0.85
+#CD0 = 0.020
+#g = 9.81
+#S = 127. 
+#Wcr = 0.8*MTOW              #63000*9.81#assumption for now
+###
+#dh = 500                            #step size in altitude
+#H = range(7000,12500,dh)            #altitude range
 
 
+"""Altitude Analysis"""
+#min_SAR = []
+#V_minSAR = []
+#
+#"""Altitude Sensitivity analysis"""
+#for h in H:   
+#    SAR_list = SAR(h,A,S,e,CD0,Ct0,Wcr)[0]
+#    V = SAR(h,A,S,e,CD0,Ct0,Wcr)[1]
+#
+#    min_SAR.append(min(SAR_list))
+#    i = SAR_list.index(min(SAR_list))
+#    V_minSAR.append(V[i])  
+#    	
+#diff_minSAR = []
+#diff_V_minSAR = []  
+# 
+#for i in range(len(min_SAR)-1):
+#    diff_minSAR.append(((min_SAR[i+1]-min_SAR[i])/min_SAR[i])*100.)
+#    diff_V_minSAR.append(((V_minSAR[i+1]-V_minSAR[i])/V_minSAR[i])*100)
+#    
+#    
+#print diff_minSAR
+#print 
+#print diff_V_minSAR
+    
 
 
-
-
-
-
-
-#Other graph
+"""Variable Sensitivity analysis"""
+#min_SAR_1 = []
+#min_SAR_2 = []
+#
+#diff_SAR_tot = []
+#diff_minSAR_tot = []
+#diff_V_minSAR_tot = []
+#
+#for h in H:   
+#    #calculate SAR for case 1 (base case)
+#    SAR_list_1 = SAR(h,A,S,e,CD0,Ct0,Wcr)[0]
+#    V_1 = SAR(h,A,S,e,CD0,Ct0,Wcr)[1]
+#
+#    min_SAR_1.append(min(SAR_list_1))
+#    i = SAR_list_1.index(min(SAR_list_1))
+#    V_minSAR_1 = (V[i])    
+#    
+#    for i in range(len(V)):         #Change velocity to Mach
+#        V_1[i] = Mach(V_1[i],h)    
+#    
+#    #calculate SAR for case 2 (Change parameters)
+#    SAR_list_2 = SAR(h,A,S,e,CD0,Ct0,Wcr)[0]
+#    V_2 = SAR(h,A,S,e,CD0,Ct0,Wcr)[1]
+#
+#    min_SAR_2.append(min(SAR_list_2))
+#    i = SAR_list_2.index(min(SAR_list_2))
+#    V_minSAR_2=(V[i])    
+#    
+#    for i in range(len(V)):         #Change velocity to Mach
+#        V_2[i] = Mach(V_2[i],h)
+#        
+#    #Compare the cases 
+#    diff_SAR = []
+#    for j in range(len(SAR_list_1)):
+#        diff_SAR.append(((SAR_list_2[j]-SAR_list_1[j])/SAR_list_1[j])*100.)       #difference in percentage
+#   #find average difference on SAR
+#    diff_SAR1 = sum(diff_SAR)/len(diff_SAR)  
+#    diff_SAR_min = (((min(SAR_list_2)-min(SAR_list_1))/min(SAR_list_1))*100.)
+#    
+#    diff_V_minSAR_tot.append(((V_minSAR_2-V_minSAR_1)/V_minSAR_1)*100)
+#    diff_minSAR_tot.append(diff_SAR_min)
+#    diff_SAR_tot.append(diff_SAR1)
+#        
+#print diff_minSAR_tot
+#print
+#print diff_V_minSAR_tot
+#print
+#print diff_SAR_tot
+#        
+    
+    
+#-------------------------------------------------------------------------------
+#Other graph: Min SAR with respect to airspeed [km/h]
 #for j in range(len(min_SAR)):
 #    plt.subplot(222)
 #    plt.xlabel("Airspeed at minimum SAR [km/h]")
