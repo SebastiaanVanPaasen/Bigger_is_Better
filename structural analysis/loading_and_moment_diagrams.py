@@ -4,7 +4,8 @@ Created on Tue May 14 09:48:11 2019
 
 @author: Mathilde
 """
-
+import sys
+sys.path.append("C:/Users/mathi/Documents/DSE/Bigger_is_Better/class_I")
 import numpy as np  ### Never use * to import stuff, as it makes it difficult to retrace where functions come from
 import scipy as sp
 import math as m
@@ -63,8 +64,7 @@ cl = get_correct_data(output_avl,c)[1]
 cl_total = cl[int((len(x_pos)/2)):][::-1] + cl[0:int((len(x_pos)/2))]
 PolyFitCurveCl = sp.interpolate.interp1d(x_total, cl_total, kind="cubic", fill_value="extrapolate")
 # print('Lift Coefficients (highest order first, ending with 0th order term) are: \n{}\n'.format(PolyFitCurveCl))
-print(cl_total)
-print(PolyFitCurveCl(30))
+
 ##Drag Code:
 cdi = get_correct_data(output_avl,c)[1]
 cdi_total = cl[int((len(x_pos)/2)):][::-1] + cl[0:int((len(x_pos)/2))]
@@ -218,84 +218,102 @@ def Loadcalculator(x0,Ff):
 
 
 
-
-N = 100  ### 100 nodes, so 99 beam elements
-
-HalfspanValues = np.linspace(0, b / 2 - 0.00001, N)
-Fydistribution = []
-Fzdistribution = []
-Mydistribution = []
-Mzdistribution = []
-Liftdistributionvalues = []
-Fuelweightdistributionvalues = []
-Dragdistributionvalues = []
-Thrustdistributionvalues = []
-Engine_distribution = []
-Tdistributionvalues = []
-
-for i, x in enumerate(HalfspanValues):
-    Fy, Fz, Mz, My, L, W_f, D, Th, section_engineweight, T = Loadcalculator(x,1)
-    Fydistribution.append(Fy)
-    Fzdistribution.append(Fz)
-    Mzdistribution.append(Mz)
-    Mydistribution.append(My)
-    Liftdistributionvalues.append(L)
-    Fuelweightdistributionvalues.append(W_f)
-    Dragdistributionvalues.append(D)
-    Thrustdistributionvalues.append(Th)
-    Engine_distribution.append(section_engineweight)
-    Tdistributionvalues.append(T)
-
-HalfspanValues = np.linspace(0, b / 2 - 0.00001, N)
-Fydistribution2 = []
-Mydistribution2 = []
-Mzdistribution2 = []
-Liftdistributionvalues2 = []
-Fuelweightdistributionvalues2 = []
-Dragdistributionvalues2 = []
-Thrustdistributionvalues2 = []
-Engine_distribution2 = []
-Fzdistribution2 = []
-Tdistributionvalues2 = []
-
-for i, x in enumerate(HalfspanValues):
-    Fy, Fz, Mz, My, L, W_f, D, Th, section_engineweight, T = Loadcalculator(x,0.6)
-    Fydistribution2.append(Fy)
-    Fzdistribution2.append(Fz)
-    Mzdistribution2.append(Mz)
-    Mydistribution2.append(My)
-    Liftdistributionvalues2.append(L)
-    Fuelweightdistributionvalues2.append(W_f)
-    Dragdistributionvalues2.append(D)
-    Thrustdistributionvalues2.append(Th)
-    Engine_distribution2.append(section_engineweight)
-    Tdistributionvalues2.append(T)
-
-HalfspanValues = np.linspace(0, b / 2 - 0.00001, N)
-Fydistribution3 = []
-Mydistribution3 = []
-Mzdistribution3 = []
-Liftdistributionvalues3 = []
-Fuelweightdistributionvalues3 = []
-Dragdistributionvalues3 = []
-Thrustdistributionvalues3 = []
-Engine_distribution3 = []
-Fzdistribution3 = []
-Tdistributionvalues3 = []
-
-for i, x in enumerate(HalfspanValues):
-    Fy, Fz, Mz, My, L, W_f, D, Th, section_engineweight, T = Loadcalculator(x,0)
-    Fydistribution3.append(Fy)
-    Fzdistribution3.append(Fz)
-    Mzdistribution3.append(Mz)
-    Mydistribution3.append(My)
-    Liftdistributionvalues3.append(L)
-    Fuelweightdistributionvalues3.append(W_f)
-    Dragdistributionvalues3.append(D)
-    Thrustdistributionvalues3.append(Th)
-    Engine_distribution3.append(section_engineweight)
-    Tdistributionvalues3.append(T)
-
+def load_diagrams(N):  ### 100 nodes, so 99 beam elements
+    
+    HalfspanValues = np.linspace(0, b / 2 - 0.00001, N)
+    Fydistribution = []
+    Fzdistribution = []
+    Mydistribution = []
+    Mzdistribution = []
+    Liftdistributionvalues = []
+    Fuelweightdistributionvalues = []
+    Dragdistributionvalues = []
+    Thrustdistributionvalues = []
+    Engine_distribution = []
+    Tdistributionvalues = []
+    
+    for i, x in enumerate(HalfspanValues):
+        Fy, Fz, Mz, My, L, W_f, D, Th, section_engineweight, T = Loadcalculator(x,1)
+        Fydistribution.append(Fy)
+        Fzdistribution.append(Fz)
+        Mzdistribution.append(Mz)
+        Mydistribution.append(My)
+        Liftdistributionvalues.append(L)
+        Fuelweightdistributionvalues.append(W_f)
+        Dragdistributionvalues.append(D)
+        Thrustdistributionvalues.append(Th)
+        Engine_distribution.append(section_engineweight)
+        Tdistributionvalues.append(T)
+    
+    HalfspanValues = np.linspace(0, b / 2 - 0.00001, N)
+    Fydistribution2 = []
+    Mydistribution2 = []
+    Mzdistribution2 = []
+    Liftdistributionvalues2 = []
+    Fuelweightdistributionvalues2 = []
+    Dragdistributionvalues2 = []
+    Thrustdistributionvalues2 = []
+    Engine_distribution2 = []
+    Fzdistribution2 = []
+    Tdistributionvalues2 = []
+    
+    for i, x in enumerate(HalfspanValues):
+        Fy, Fz, Mz, My, L, W_f, D, Th, section_engineweight, T = Loadcalculator(x,0.6)
+        Fydistribution2.append(Fy)
+        Fzdistribution2.append(Fz)
+        Mzdistribution2.append(Mz)
+        Mydistribution2.append(My)
+        Liftdistributionvalues2.append(L)
+        Fuelweightdistributionvalues2.append(W_f)
+        Dragdistributionvalues2.append(D)
+        Thrustdistributionvalues2.append(Th)
+        Engine_distribution2.append(section_engineweight)
+        Tdistributionvalues2.append(T)
+    
+    HalfspanValues = np.linspace(0, b / 2 - 0.00001, N)
+    Fydistribution3 = []
+    Mydistribution3 = []
+    Mzdistribution3 = []
+    Liftdistributionvalues3 = []
+    Fuelweightdistributionvalues3 = []
+    Dragdistributionvalues3 = []
+    Thrustdistributionvalues3 = []
+    Engine_distribution3 = []
+    Fzdistribution3 = []
+    Tdistributionvalues3 = []
+    
+    for i, x in enumerate(HalfspanValues):
+        Fy, Fz, Mz, My, L, W_f, D, Th, section_engineweight, T = Loadcalculator(x,0)
+        Fydistribution3.append(Fy)
+        Fzdistribution3.append(Fz)
+        Mzdistribution3.append(Mz)
+        Mydistribution3.append(My)
+        Liftdistributionvalues3.append(L)
+        Fuelweightdistributionvalues3.append(W_f)
+        Dragdistributionvalues3.append(D)
+        Thrustdistributionvalues3.append(Th)
+        Engine_distribution3.append(section_engineweight)
+        Tdistributionvalues3.append(T)
+        
+    plt.subplot(2,3,5)
+    plt.subplot(2,3,1)
+    plt.gca().set_title('Mz distribution')
+    plt.plot(HalfspanValues, Mzdistribution)
+    plt.subplot(2,3,2)
+    plt.gca().set_title('Fz distribution')
+    plt.plot(HalfspanValues, Fzdistribution)
+    plt.subplot(2,3,3)
+    plt.gca().set_title('My distribution')
+    plt.plot(HalfspanValues, Mydistribution)
+    plt.subplot(2,3,4)
+    plt.gca().set_title('Fy distribution')
+    plt.plot(HalfspanValues, Fydistribution)
+    plt.subplot(2,3,5)
+    plt.gca().set_title('T distribution')
+    plt.plot(HalfspanValues, Tdistributionvalues)
+    plt.show()
+    
+    return Fydistribution, Fzdistribution, Mydistribution, Mzdistribution, Tdistributionvalues
 
 
 # TORQUE DISTRIBUTION CALCULATION
@@ -340,25 +358,7 @@ for i, x in enumerate(HalfspanValues):
 # plt.xlabel('Position Along Wing Span', fontsize=18)
 # plt.ylabel('Mx', fontsize=16)
 
-plt.subplot(2,3,5)
-plt.subplot(2,3,1)
-plt.gca().set_title('Mz distribution')
-plt.plot(HalfspanValues, Mzdistribution)
-plt.subplot(2,3,2)
-plt.gca().set_title('Fz distribution')
-plt.plot(HalfspanValues, Fzdistribution)
-plt.subplot(2,3,3)
-plt.gca().set_title('My distribution')
-plt.plot(HalfspanValues, Mydistribution)
-plt.subplot(2,3,4)
-plt.gca().set_title('Fy distribution')
-plt.plot(HalfspanValues, Fydistribution)
-plt.subplot(2,3,5)
-plt.gca().set_title('T distribution')
-plt.plot(HalfspanValues, Tdistributionvalues)
 
-
-plt.show()
 
 print(max(Mzdistribution))
 

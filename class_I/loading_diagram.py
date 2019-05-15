@@ -1,9 +1,8 @@
 import matplotlib.pyplot as plt
 from class_I.class_I_empennage_landinggear import *
-from fuselage_cross_section import *
+from class_I.fuselage_cross_section import *
 from class_I.seats import *
-from inputs import *
-
+from input_files.conventional_double_decker import *
 # ---------------INPUTS--------------------------------------------------------
 
 W_payload = 450000  # [N]

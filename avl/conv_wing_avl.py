@@ -7,7 +7,7 @@ Created on Thu May  9 13:38:52 2019
 from class_I.drag_estimation import *
 import subprocess
 import os
-from run_conditions import define_run_condition
+from avl.run_conditions import define_run_condition
 
 """
 Comments about this file:
@@ -114,7 +114,8 @@ def make_avl_file(root_chord, tip_chord, span, LE_sweep, dihedral, S, CD_0, M_cr
 
 def run_avl(cl_cruise, M_cruise, CD_0):
     define_run_condition(M_cruise, CD_0)
-    p = subprocess.Popen(str(ROOT_dir) + "/avl.exe", stdin=subprocess.PIPE, stdout=subprocess.DEVNULL,
+    print(ROOT_dir)
+    p = subprocess.Popen(str(ROOT_dir) + "/avl/avl.exe", stdin=subprocess.PIPE, stdout=subprocess.DEVNULL,
                          universal_newlines=True)
     set_cl_cruise = "a c " + str(cl_cruise)
     p.communicate(os.linesep.join(
@@ -139,7 +140,7 @@ def find_clalpha(M_cruise, CD_0):
     alpha_range = [0, 5]
     CL_range = []
     for j in range(len(alpha_range)):
-        p = subprocess.Popen(str(ROOT_dir) + "/avl.exe", stdin=subprocess.PIPE, stdout=subprocess.DEVNULL,
+        p = subprocess.Popen(str(ROOT_dir) + "/avl/avl.exe", stdin=subprocess.PIPE, stdout=subprocess.DEVNULL,
                              universal_newlines=True)
         set_alpha = "a a " + str(alpha_range[j])
         p.communicate(os.linesep.join(

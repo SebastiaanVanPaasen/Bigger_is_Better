@@ -19,7 +19,6 @@ def make_avl_file():
     qc_sweep = np.radians(31.60)
     dihedral = 0
     Cr = (2*S)/((1+taper)*span)
-    print(Cr)
     Ct = Cr*taper
     chords = [Cr, Ct]
     CD_0 = 0.015
@@ -63,7 +62,7 @@ def make_avl_file():
 make_avl_file()
 
 def lift_distribution(CL):        
-    p = subprocess.Popen(r"H:\DSE\Bigger_is_Better\Bigger_is_Better\avl.exe", stdin=subprocess.PIPE, universal_newlines=True)
+    p = subprocess.Popen(r"C:\Users\mathi\Documents\DSE\Bigger_is_Better\class_I\avl.exe", stdin=subprocess.PIPE, universal_newlines=True)
     set_CL = "a c " + str(CL)
     p.communicate(os.linesep.join(["load", "avl_testing","case", "mach0.7", "oper", set_CL, "x","fs", "endresult"]))          
     lines = [line.rstrip('\n') for line in open('endresult')]
