@@ -99,6 +99,7 @@ def ISA_temp(h):
         return T
     if h >= 11000:
         return 216.65           #in Kelvin
+
  
           
 def Mach(V,h):                  #enter V in km/h
@@ -173,7 +174,7 @@ for j in range(len(min_SAR)):
     plt.subplot(223)
     plt.xlabel("Mach at minimum SAR ")
     plt.ylabel("Minimum Fuel consumption [kg/km]")
-    plt.plot(V_minSAR[j],min_SAR[j],'o', label = '%s altitude [m]' % H[j])
+    plt.plot(V_minSAR[j],min_SAR[j],'o', label = 'altitude [m] %s ' % H[j])
     plt.title('Minimum fuel consumption with corresponding Mach and altitude')
     
 #Plot reference aircraft    
