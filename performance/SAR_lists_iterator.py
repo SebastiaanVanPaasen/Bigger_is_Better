@@ -66,6 +66,14 @@ def Mach(V, h):  # enter V in km/h
     return M
 
 
+def Velocity(M, h):
+    gamma = 1.4
+    R = 287
+    a = np.sqrt(gamma * R * ISA_temp(h))
+    V = M * a
+    return V
+
+
 def SAR(V, h, A, S, e, CD0, Ct0, Wcr):  # enter h in m, V in m/s
     SAR = []
     for i in range(len(V)):

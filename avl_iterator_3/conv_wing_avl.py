@@ -50,7 +50,7 @@ def make_avl_file(root_chord, tip_chord, span, LE_sweep, dihedral, S, CD_0, M_cr
     z_loc_LE_v = [0, span_v / 2]
     chords_v = [root_chord_v, root_chord_v * taper_ratio_v]
     Angle_v = 0.0
-    with open("conv_wing.avl", "w") as text_file:
+    with open("conv_wing_3.avl", "w") as text_file:
         print("Wing" + "\n"
                        "#Mach" + "\n" +
               str(M_cruise) + "\n"
@@ -119,15 +119,15 @@ def run_avl(cl_cruise, M_cruise, CD_0):
                          universal_newlines=True)
     set_cl_cruise = "a c " + str(cl_cruise)
     p.communicate(os.linesep.join(
-        ["load", "conv_wing", "case", "mach" + str(M_cruise) + ".run", "oper", set_cl_cruise, "x", "ft", "endresult"]))
-    lines = [line.rstrip('\n') for line in open('endresult')]
+        ["load", "conv_wing_3", "case", "mach" + str(M_cruise) + ".run", "oper", set_cl_cruise, "x", "ft", "endresult3"]))
+    lines = [line.rstrip('\n') for line in open('endresult3')]
     alpha = float(lines[15].split()[2])
     CD = float(lines[24].split()[2])
     e = float(lines[27].split()[5])
     # print("Alpha is ", alpha)
     # print("CD is ", CD)
     # print("eff factor is ", e)
-    os.remove("endresult")
+    os.remove("endresult3")
     os.remove("mach" + str(M_cruise) + ".run")
     return e, CD
 
@@ -144,11 +144,11 @@ def find_clalpha(M_cruise, CD_0):
                              universal_newlines=True)
         set_alpha = "a a " + str(alpha_range[j])
         p.communicate(os.linesep.join(
-            ["load", "conv_wing", "case", "mach" + str(M_cruise) + ".run", "oper", set_alpha, "x", "ft", "endresult"]))
-        lines = [line.rstrip('\n') for line in open('endresult')]
+            ["load", "conv_wing_3", "case", "mach" + str(M_cruise) + ".run", "oper", set_alpha, "x", "ft", "endresult3"]))
+        lines = [line.rstrip('\n') for line in open('endresult3')]
         CL = float(lines[23].split()[2])
         CL_range.append(CL)
-        os.remove("endresult")
+        os.remove("endresult3")
     CL_alpha = round((CL_range[1] - CL_range[0]) / (alpha_range[1] - alpha_range[0]), 3)
     os.remove("mach" + str(M_cruise) + ".run")
     return CL_alpha
