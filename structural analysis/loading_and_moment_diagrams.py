@@ -21,13 +21,13 @@ from lift_distr import *
 CD0 = 0.02
 S = 427.80  # m^2
 AR = 8.67
-taper = 0.149
+taper = 0.4
 Sweep0 = 0.558505  # rad
 by = 20.  # m
 b = 60.90
-Cr = (S + np.tan(Sweep0) * by * (b / 4)) / (by + (b - by) * ((1 + taper) / 2))
+Cr = 6.#(S + np.tan(Sweep0) * by * (b / 4)) / (by + (b - by) * ((1 + taper) / 2))
 Ct = Cr * taper
-Cy = Cr - np.tan(Sweep0) * (by / 2)
+Cy = 0.#Cr - np.tan(Sweep0) * (by / 2)
 Volume = 489.8545093  # m^3
 Wing_W = 57461.507853787  # kg
 Wing_Wf = 57461.507853787 * 9.81
@@ -74,10 +74,11 @@ PolyFitCurveidrag = sp.interpolate.interp1d(x_total, cdi_total , kind='cubic', f
 ### Define your functions at the beginning of the program
 def c(x):
     
-    if x < (by / 2):
-        c = Cr - 2 * x * ((Cr - Cy) / (by))
-    if x > (by / 2):
-        c = Cy - 2 * (x - (by / 2)) * ((Cy - Ct) / (b - by))
+    c = Cr - ((Cr-Ct)/(b/2))*x 
+#    if x < (by / 2):
+#        c = Cr - 2 * x * ((Cr - Cy) / (by))
+#    if x > (by / 2):
+#        c = Cy - 2 * (x - (by / 2)) * ((Cy - Ct) / (b - by))
     return c
 
 
@@ -295,24 +296,24 @@ def load_diagrams(N):  ### 100 nodes, so 99 beam elements
         Engine_distribution3.append(section_engineweight)
         Tdistributionvalues3.append(T)
         
-    plt.subplot(2,3,5)
-    plt.subplot(2,3,1)
-    plt.gca().set_title('Mz distribution')
-    plt.plot(HalfspanValues, Mzdistribution)
-    plt.subplot(2,3,2)
-    plt.gca().set_title('Fz distribution')
-    plt.plot(HalfspanValues, Fzdistribution)
-    plt.subplot(2,3,3)
-    plt.gca().set_title('My distribution')
-    plt.plot(HalfspanValues, Mydistribution)
-    plt.subplot(2,3,4)
-    plt.gca().set_title('Fy distribution')
-    plt.plot(HalfspanValues, Fydistribution)
-    plt.subplot(2,3,5)
-    plt.gca().set_title('T distribution')
-    plt.plot(HalfspanValues, Tdistributionvalues)
-    plt.show()
-    
+#    plt.subplot(2,3,5)
+#    plt.subplot(2,3,1)
+#    plt.gca().set_title('Mz distribution')
+#    plt.plot(HalfspanValues, Mzdistribution)
+#    plt.subplot(2,3,2)
+#    plt.gca().set_title('Fz distribution')
+#    plt.plot(HalfspanValues, Fzdistribution)
+#    plt.subplot(2,3,3)
+#    plt.gca().set_title('My distribution')
+#    plt.plot(HalfspanValues, Mydistribution)
+#    plt.subplot(2,3,4)
+#    plt.gca().set_title('Fy distribution')
+#    plt.plot(HalfspanValues, Fydistribution)
+#    plt.subplot(2,3,5)
+#    plt.gca().set_title('T distribution')
+#    plt.plot(HalfspanValues, Tdistributionvalues)
+#    plt.show()
+#    
     return Fydistribution, Fzdistribution, Mydistribution, Mzdistribution, Tdistributionvalues
 
 
