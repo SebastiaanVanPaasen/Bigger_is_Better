@@ -63,8 +63,8 @@ S_ratio = 6.3  # estimated from ADSEE-I L3
 C_fe = 0.0045  # estimated from ADSEE-I L3
 
 Oswald = 0.9  # estimated from ADSEE-I L3
-T_input = 0.24
-S_input = 5800
+T_input = 0.3
+S_input = 7000
 A = 9
 CD_0 = C_fe * S_ratio
 
@@ -82,6 +82,7 @@ N_pas = 450.  # Requirement set by the exercise
 N_pas_below = 242.  # Depends on if you want a double-decker 242 if you want a equally sized fuselage for double floor
 N_crew = 11.  # Based on the amount of passengers
 W_person = 205.  # lbs   Based on statistics of Roskam
+W_carg = 20.  # kg Based on statistics
 
 # General aircraft input parameters ------------------------------------------------------------------------------------
 # General cruise parameters

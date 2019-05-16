@@ -4,8 +4,6 @@ import matplotlib.pyplot as plt
 # option = 0  # 0 for low wing 1 for high wing
 
 
-
-
 def wing_parameters(m_cruise, cl_cruise, surface_area, aspect_ratio, option):
     # Sweep calculation
     m_t = 0.935  # Technology factor for super critical airfoil
@@ -40,9 +38,20 @@ def wing_parameters(m_cruise, cl_cruise, surface_area, aspect_ratio, option):
 
     half_chord_sweep = np.arctan(
         ((chord_tip / 2 + span / 2 * np.tan(leading_edge_sweep)) - (chord_root / 2)) / (span / 2))
+
     thickness_over_chord = (np.cos(half_chord_sweep) ** 3 * (
             m_t - m_dd * np.cos(half_chord_sweep)) - 0.115 * cl_cruise ** 1.5) / (np.cos(half_chord_sweep) ** 2)
-    thickness_over_chord = min(thickness_over_chord, 0.18)
+    # print("here again")
+    # print(leading_edge_sweep)
+    # print(m_t - m_dd)
+    # print(half_chord_sweep)
+    # print(cl_cruise)
+    # print(thickness_over_chord)
+
+    if thickness_over_chord < 0.10:
+        thickness_over_chord = 0.10
+    else:
+        thickness_over_chord = min(thickness_over_chord, 0.18)
 
     mac = (2 / 3) * chord_root * ((1 + taper_ratio + (taper_ratio ** 2)) / (1 + taper_ratio))
 
@@ -50,7 +59,7 @@ def wing_parameters(m_cruise, cl_cruise, surface_area, aspect_ratio, option):
         quarter_chord_sweep, leading_edge_sweep, span, chord_root, chord_tip, dihedral,
         thickness_over_chord, mac, taper_ratio)
     
-def wing_parameters_boxed(m_cruise, cl_cruise, surface_area, aspect_ratio):
+# def wing_parameters_boxed(m_cruise, cl_cruise, surface_area, aspect_ratio):
         
     
 
