@@ -9,7 +9,6 @@ def wing_weight(w_to, w_f, b, semi_chord_sweep, n_ult, s, t_max, choice):
     # n_ult is the ultimate load factor
     # s is the surface area of the wing
     # t_max is the maximum thickness at the wing root
-
     w_mzf = ((w_to - w_f) / lbs_to_kg) / g_0
     b = b / ft_to_m
     t_max = t_max / ft_to_m

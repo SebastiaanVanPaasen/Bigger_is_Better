@@ -114,7 +114,7 @@ def make_avl_file(root_chord, tip_chord, span, LE_sweep, dihedral, S, CD_0, M_cr
 
 def run_avl(cl_cruise, M_cruise, CD_0):
     define_run_condition(M_cruise, CD_0)
-    print(ROOT_dir)
+    # print(ROOT_dir)
     p = subprocess.Popen(str(ROOT_dir) + "/avl/avl.exe", stdin=subprocess.PIPE, stdout=subprocess.DEVNULL,
                          universal_newlines=True)
     set_cl_cruise = "a c " + str(cl_cruise)

@@ -88,10 +88,10 @@ def SAR(V, h, A, S, e, CD0, Ct0, Wcr):  # enter h in m, V in m/s
         k = 1. / (np.pi * A[i] * e[i])
         q = 0.5 * ISA_density(h[i]) * (V[i]) ** 2
         SAR_i = (1. / ((V[i]) / ((CD0[i] + k * (Wcr[i] / (q * S[i])) ** 2) * q * S[i] * Ct))) * 1000.  # in kg/km
-        SAR.append(SAR_i)
+        SAR.append(SAR_i/450)
 
-    for i in range(len(V)):
-        V[i] = Mach(V[i], h[i])  # here you change V to mach number (still called V tho)
+    # for i in range(len(V)):
+    #     V[i] = Mach(V[i], h[i])  # here you change V to mach number (still called V tho)
 
         # plt.figure(1)
         # plt.plot(V[i], SAR[i], 'o', label='%s Design' % i)
@@ -101,16 +101,4 @@ def SAR(V, h, A, S, e, CD0, Ct0, Wcr):  # enter h in m, V in m/s
         # plt.xlabel("Mach number")
         # plt.ylabel("Fuel consumption [kg/km]")
         # plt.legend()
-
-        plt.figure(1)
-        plt.plot(V[i], SAR[i] / 450, 'o', label='%s altitude [m]' % h[i])
-    plt.plot(M_ref, SAR_ref / 200, 'mo', label="Ref. aircraft")
-    plt.hlines(0.9 * SAR_ref / 200, .1, 1, "gray", "--")
-    plt.legend()
-    plt.title('Fuel consumption per passenger w.r.t. Mach number')
-    plt.xlabel("Mach number")
-    plt.ylabel("Fuel consumption [kg/km/passenger]")
-
-    plt.show()
-
-    return
+    return h, SAR
