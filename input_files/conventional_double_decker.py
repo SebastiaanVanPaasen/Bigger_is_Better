@@ -31,14 +31,14 @@ mass_fractions_input = [mass_frac_wing, mass_frac_emp, mass_frac_fuse, mass_frac
 # fourth is if landing gear is not wing mounted
 # fifth is for strutted wings
 # sixth is for fowler flaps
-wing_choice = [1, 1, 0, 1, 0, 0]
+wing_choice = [1, 0, 1, 0, 0, 0]
 # choose 1 if you have variable incidence stabilizers
 # choose 1 if the horizontal tails are fin mounted
 empennage_choice = [0, 0]
 # choose 1 if your landing gear is attached to the fuselage
 fuselage_choice = 0
 # choose 1 if a turbojet or low bypass ratio turbofan is used
-nacelle_choice = 0
+nacelle_choice = 1
 # choose first if you have buried engine, 0 for no buried engines
 # choose secondly if the ducts have a flat cross section, in this case 1
 induction_choice = [0, 0]
@@ -49,7 +49,7 @@ fuel_sys_choice = 0
 # choice is the type of starting system, 1 for one or two jet engines with pneumatic starting system
 # 2 for four jet engines with pneumatic starting systems, 3 for jet engines using electric starting systems
 # 4 for turboprops with pneumatics, 5 for piston engines using electric systems
-start_up_choice = 1
+start_up_choice = 2
 # Choose 1 for fuselage mounted jet, 2 for wing mounted jet, 3 for wing mounted turboprops and 4 for wing mounted
 # piston engines the second choice should be 1 if an afterburner is present
 engine_choice = [2, 0]
@@ -62,13 +62,15 @@ hydro_choice = 0
 S_ratio = 6.3  # estimated from ADSEE-I L3
 C_fe = 0.0045  # estimated from ADSEE-I L3
 wing_option = 0  # Depending on the type of wing configuration, 1 is high wing, 0 is low wing
+tail_type = 0  # Depending on the type of tail configuration, 1 is T-tail, 0 is conventional
+
 Oswald = 0.9  # estimated from ADSEE-I L3
 T_input = 0.27
 S_input = 8100
 A = 11
 CD_0 = C_fe * S_ratio
-N_engines = 2.  #
-w_engine = 7000.  # kg   Obtained from Bram
+N_engines = 4.  #
+w_engine = 4000.  # kg   Obtained from Bram
 propeller_choice = 0
 
 W_e_frac_input = 0.525  # Based on average between wide and narrow body, from Ed Obert
@@ -121,7 +123,6 @@ n_fuel_tanks = 2.
 
 # main wing ------------------------------------------------------------------------------------------------------------
 winglet_height = 0.  # Mostly important for boxed wing, else leave as 0
-tail_type = 0  # Depending on the type of tail configuration, 1 is T-tail, 0 is conventional
 
 # horizontal tail ------------------------------------------------------------------------------------------------------
 QC_sweep_h = np.radians(32.7)  # degrees    based on wide body statistics

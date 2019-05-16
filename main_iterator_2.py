@@ -7,7 +7,7 @@ from class_I.class_I_empennage_landinggear import class_I_empennage
 from class_I.flight_envelope import manoeuvring_envelope, gust_envelope
 from avl_iterator_2.conv_wing_avl import make_avl_file, run_avl, find_clalpha
 from class_II_weight_estimation import *
-from input_files.high_bypass_ratio import *
+from input_files.aerodynamic_concept import *
 from performance.SAR_lists_iterator import SAR
 import matplotlib.pyplot as plt
 
@@ -52,7 +52,7 @@ for M_cruise in M_cruise_list:
                 (1 + (a * h_cruise) / Temp_0) ** (-(g_0 / (R_gas * a))))  # kg/m^3   based on cruise altitude
 
         V_cruise = M_cruise * a_cruise
-        Ct0_value = 9e-06
+        Ct0_value = 12e-06
         # print("vcruise" + str(V_cruise))
         # print("rho cruise" + str(Rho_Cruise))
         # print("a cruise" + str(a_cruise))

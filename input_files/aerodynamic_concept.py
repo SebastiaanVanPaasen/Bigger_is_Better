@@ -31,14 +31,14 @@ mass_fractions_input = [mass_frac_wing, mass_frac_emp, mass_frac_fuse, mass_frac
 # fourth is if landing gear is not wing mounted
 # fifth is for strutted wings
 # sixth is for fowler flaps
-wing_choice = [1, 1, 0, 1, 0, 0]
+wing_choice = [1, 1, 0, 0, 0, 0]
 # choose 1 if you have variable incidence stabilizers
 # choose 1 if the horizontal tails are fin mounted
 empennage_choice = [0, 0]
 # choose 1 if your landing gear is attached to the fuselage
 fuselage_choice = 0
 # choose 1 if a turbojet or low bypass ratio turbofan is used
-nacelle_choice = 0
+nacelle_choice = 1
 # choose first if you have buried engine, 0 for no buried engines
 # choose secondly if the ducts have a flat cross section, in this case 1
 induction_choice = [0, 0]
@@ -62,10 +62,12 @@ hydro_choice = 0
 S_ratio = 6.3  # estimated from ADSEE-I L3
 C_fe = 0.0045  # estimated from ADSEE-I L3
 wing_option = 0  # Depending on the type of wing configuration, 1 is high wing, 0 is low wing
+tail_type = 0  # Depending on the type of tail configuration, 1 is T-tail, 0 is conventional
+
 Oswald = 0.9  # estimated from ADSEE-I L3
-T_input = 0.27
-S_input = 8100
-A = 11
+T_input = 0.26
+S_input = 8200
+A = 14
 CD_0 = C_fe * S_ratio
 N_engines = 2.  #
 w_engine = 7000.  # kg   Obtained from Bram
@@ -82,7 +84,7 @@ CL_cruise_input = np.sqrt((CD_0 * np.pi * A * Oswald) / 3)
 
 # Passenger characteristics --------------------------------------------------------------------------------------------
 N_pas = 450.  # Requirement set by the exercise
-N_pas_below = 242.  # Depends on if you want a double-decker 242 if you want a equally sized fuselage for double floor
+N_pas_below = 450.  # Depends on if you want a double-decker 242 if you want a equally sized fuselage for double floor
 N_crew = 11.  # Based on the amount of passengers
 W_person = 205.  # lbs   Based on statistics of Roskam
 W_carg = 20.  # kg Based on statistics
@@ -108,7 +110,6 @@ xcg_oew_mac = 0.25  # m     initial cg location OEW w.r.t. MAC
 
 # engine characteristics -----------------------------------------------------------------------------------------------
 
-
 # in case propellers are used
 prop_characteristics = [2, 50, 1.5, 0.8]  # Number of props, blades per prop, prop diameter and prop efficiency
 l_nacelle = 2.  # m   length nacelle
@@ -121,7 +122,6 @@ n_fuel_tanks = 2.
 
 # main wing ------------------------------------------------------------------------------------------------------------
 winglet_height = 0.  # Mostly important for boxed wing, else leave as 0
-tail_type = 0  # Depending on the type of tail configuration, 1 is T-tail, 0 is conventional
 
 # horizontal tail ------------------------------------------------------------------------------------------------------
 QC_sweep_h = np.radians(32.7)  # degrees    based on wide body statistics

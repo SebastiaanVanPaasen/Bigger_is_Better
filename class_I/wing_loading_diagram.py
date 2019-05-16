@@ -1,4 +1,4 @@
-from input_files.high_bypass_ratio import *
+from input_files.aerodynamic_concept import *
 import matplotlib.pyplot as plt
 
 
