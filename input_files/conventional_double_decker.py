@@ -61,12 +61,15 @@ hydro_choice = 0
 
 S_ratio = 6.3  # estimated from ADSEE-I L3
 C_fe = 0.0045  # estimated from ADSEE-I L3
-
+wing_option = 0  # Depending on the type of wing configuration, 1 is high wing, 0 is low wing
 Oswald = 0.9  # estimated from ADSEE-I L3
-T_input = 0.24
-S_input = 7000
-A = 7
+T_input = 0.27
+S_input = 8100
+A = 11
 CD_0 = C_fe * S_ratio
+N_engines = 2.  #
+w_engine = 7000.  # kg   Obtained from Bram
+propeller_choice = 0
 
 W_e_frac_input = 0.525  # Based on average between wide and narrow body, from Ed Obert
 CD_cruise_input = (4 / 3) * CD_0
@@ -86,15 +89,15 @@ W_carg = 20.  # kg Based on statistics
 
 # General aircraft input parameters ------------------------------------------------------------------------------------
 # General cruise parameters
-h_cruise = 10000.  # m based on the sustainability analysis so far
-M_cruise = 0.69  # Mach number decided to cruise on
-Temp_cruise = Temp_0 + a * h_cruise  # K  based on the altitude you fly at
-a_cruise = np.sqrt(gamma * R_gas * Temp_cruise)  # m/s based on the temperature
-V_cruise = M_cruise * a_cruise  # m/s  based on the Mach number and speed of sound
+# h_cruise = 10000.  # m based on the sustainability analysis so far
+# M_cruise = 0.69  # Mach number decided to cruise on
+# Temp_cruise = Temp_0 + a * h_cruise  # K  based on the altitude you fly at
+# a_cruise = np.sqrt(gamma * R_gas * Temp_cruise)  # m/s based on the temperature
+# V_cruise = M_cruise * a_cruise  # m/s  based on the Mach number and speed of sound
 
 # Densities ------------------------------------------------------------------------------------------------------------
 Rho_TO = Rho_0  # kg/m^3    standard sea-level density
-Rho_Cruise = Rho_0 * ((1 + (a * h_cruise) / Temp_0) ** (-(g_0 / (R_gas * a))))  # kg/m^3   based on cruise altitude
+# Rho_Cruise = Rho_0 * ((1 + (a * h_cruise) / Temp_0) ** (-(g_0 / (R_gas * a))))  # kg/m^3   based on cruise altitude
 Rho_Landing = Rho_0  # kg/m^3   standard sea-level density
 
 # aircraft cg-locations ------------------------------------------------------------------------------------------------
@@ -104,9 +107,7 @@ x_fuel = 22.  # m    cg-location fuel w.r.t nose
 xcg_oew_mac = 0.25  # m     initial cg location OEW w.r.t. MAC
 
 # engine characteristics -----------------------------------------------------------------------------------------------
-N_engines = 2.  #
-w_engine = 7000.  # kg   Obtained from Bram
-propeller_choice = 0
+
 
 # in case propellers are used
 prop_characteristics = [2, 50, 1.5, 0.8]  # Number of props, blades per prop, prop diameter and prop efficiency
@@ -119,7 +120,6 @@ a_inlets = 3.
 n_fuel_tanks = 2.
 
 # main wing ------------------------------------------------------------------------------------------------------------
-wing_option = 0  # Depending on the type of wing configuration, 1 is high wing, 0 is low wing
 winglet_height = 0.  # Mostly important for boxed wing, else leave as 0
 tail_type = 0  # Depending on the type of tail configuration, 1 is T-tail, 0 is conventional
 
@@ -157,7 +157,7 @@ TOP = 220. * lbft2_Nm2  # Guestimated from ADSEE-I L3
 Sigma_TO = Rho_TO / Rho_0  # Ratio of densities
 
 # Stall speeds ---------------------------------------------------------------------------------------------------------
-V_stall_Cruise = V_cruise / 1.2  # m/s   Guestimated from ADSEE-I L3 Take requirements
+V_stall_Cruise = 200 / 1.2  # m/s   Guestimated from ADSEE-I L3 Take requirements
 V_stall_Landing = min(np.sqrt(Landing_runway / 0.5847), 65.)  # m/s     Guestimated from ADSEE-I L3
 
 # Lift and drag coefficients -------------------------------------------------------------------------------------------

@@ -7,7 +7,7 @@ from class_I.class_I_empennage_landinggear import class_I_empennage
 from class_I.flight_envelope import manoeuvring_envelope, gust_envelope
 from avl.conv_wing_avl import make_avl_file, run_avl, find_clalpha
 from class_II_weight_estimation import *
-from input_files.conventional_double_decker import *
+from input_files.high_bypass_ratio import *
 from performance.SAR_lists_iterator import SAR
 import matplotlib.pyplot as plt
 

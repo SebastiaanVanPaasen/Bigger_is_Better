@@ -34,7 +34,7 @@ def make_avl_file(root_chord, tip_chord, span, LE_sweep, dihedral, S, CD_0, M_cr
 
     dx = 0.25 * root_chord_h * (1 - taper_ratio_h) + span_h / 2 * np.tan(quarter_chord_sweep_h)
     y_loc_LE_h = [0, span_h / 2]
-    if wingtype == "T-tail":
+    if wingtype == 1:
         dx_sweep = 0.25 * root_chord_v * (1 - taper_ratio_v) + span_v / 2 * np.tan(quarter_chord_sweep_v)
         z_loc_LE_h = [span_v / 2, span_v / 2]
         x_loc_LE_h = [tailarm_v + dx_sweep, tailarm_v + dx + dx_sweep]
