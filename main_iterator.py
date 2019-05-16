@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 
 # from class_I.wing_loading_diagram import final_diagram
 
-M_cruise_list = np.arange(0.55, 0.9, 0.05)
+M_cruise_list = np.arange(0.55, 0.90, 0.05)
 h_cruise_list = np.arange(5000, 13000, 1000)
 # fuel_consumption = np.arange(0.4, 0.9, 0.1)
 # aspect_ratios = np.arange(5, 16, 0.5)
@@ -27,6 +27,7 @@ h_cruise_list = np.arange(5000, 13000, 1000)
 final_h = []
 final_SAR = []
 final_M = []
+final_v = []
 
 # CL_cruise = np.sqrt((CD_0 * np.pi * A * Oswald) / 3)
 for M_cruise in M_cruise_list:
@@ -69,7 +70,7 @@ for M_cruise in M_cruise_list:
             # Performing class I weight estimation -------------------------------------------------------------------------
             weights = class_I(CL_cruise, CD_cruise, mission_range, reserve_range, V_cruise, c_j_cruise, W_tfo_frac,
                               W_e_frac,
-                              fuel_fractions, N_crew, N_pas, W_person, W_carg)
+                              fuel_fractions, N_pas, N_crew, W_person, W_carg)
 
             W_TO, W_E_I, W_P, W_F = weights[0], weights[1], weights[2], weights[3]  # N
 
@@ -306,19 +307,32 @@ for M_cruise in M_cruise_list:
     final_h.append(h_list)
     final_SAR.append(SAR_list)
     final_M.append(M_cruise)
+    final_v.append(Velocity)
 
 SAR_ref = 1.84236002771
 M_ref = 0.79
 H_ref = 12000
 min_SAR = []
 min_h = []
+h_v = []
+sar_v = []
 
 for r in range(len(final_h)):
     plt.plot(final_h[r], final_SAR[r], label='Mach %s' % round(final_M[r], 2))
+
     # min_SAR.append(min(final_SAR[r]))
     # i = final_SAR[r].index(min(final_SAR[r]))
     # min_h.append(final_h[r][i])
 
+# for q in range(len(final_v)):
+#     for l in range(len(final_v[q])):
+#         if final_v[q][l] > 700.:
+#             ind = final_v[q].index(final_v[q][l])
+#             h_v.append(final_h[q][ind])
+#             sar_v.append(final_SAR[q][ind])
+#             break
+
+# plt.plot(h_v, sar_v, label="Minimum required speed for cost")
 plt.plot(H_ref, SAR_ref / 200, 'mo', label="Ref. aircraft")
 # plt.plot(min_h, min_SAR, label="Optimum line")
 plt.hlines(0.9 * SAR_ref / 200, 0, 13000, "gray", "--")

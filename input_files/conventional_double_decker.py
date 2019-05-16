@@ -63,8 +63,8 @@ S_ratio = 6.3  # estimated from ADSEE-I L3
 C_fe = 0.0045  # estimated from ADSEE-I L3
 
 Oswald = 0.9  # estimated from ADSEE-I L3
-T_input = 0.3
-S_input = 7000
+T_input = 0.27
+S_input = 8000
 A = 9
 CD_0 = C_fe * S_ratio
 

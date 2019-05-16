@@ -162,4 +162,5 @@ def final_diagram(cd0, os):
 
     plot_diagram(requirement, labelling, WS, TW)
 
-# final_diagram(CD_0, Oswald)
+
+final_diagram(CD_0, Oswald)
