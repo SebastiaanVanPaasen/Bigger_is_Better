@@ -63,9 +63,9 @@ S_ratio = 6.3  # estimated from ADSEE-I L3
 C_fe = 0.0045  # estimated from ADSEE-I L3
 
 Oswald = 0.9  # estimated from ADSEE-I L3
-T_input = 0.27
-S_input = 8000
-A = 9
+T_input = 0.24
+S_input = 7000
+A = 7
 CD_0 = C_fe * S_ratio
 
 W_e_frac_input = 0.525  # Based on average between wide and narrow body, from Ed Obert
