@@ -4,9 +4,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-def calc_payload_weight(n_passengers, n_crew, w_person):
+def calc_payload_weight(n_passengers, n_crew, w_person, w_cargo):
     # calculate the total payload weight, using the number of passengers, crew and the weight of a person
-    return (n_passengers * w_person + n_crew * w_person) * lbs_to_kg * g_0
+    return (n_passengers * w_person + n_crew * w_person) * lbs_to_kg * g_0 + w_cargo * n_passengers * g_0
 
 
 def calc_cruise_coefficient(cl, cd, r, velocity, c_j):
@@ -31,7 +31,7 @@ def calc_fuel_fraction(coefficients):
 
 
 def class_I(cl, cd, r_cruise, r_res, v_cruise, cj_cruise, W_tfo_frac, W_e_frac, fractions,
-            N_pas, N_crew, W_person):
+            N_pas, N_crew, W_person, W_cargo):
     cruise_1 = calc_cruise_coefficient(cl, cd, r_cruise, v_cruise, cj_cruise)
     # loiter = calc_loiter_coefficient(A, Oswald, S_ratio, C_fe, E, c_j_loiter)
     cruise_2 = calc_cruise_coefficient(cl, cd, r_res, v_cruise, cj_cruise)
@@ -47,13 +47,12 @@ def class_I(cl, cd, r_cruise, r_res, v_cruise, cj_cruise, W_tfo_frac, W_e_frac, 
     W_f_frac = calc_fuel_fraction(mission_frac)
     W_to_frac = 1 - W_f_frac - W_tfo_frac - W_e_frac
 
-    W_P = calc_payload_weight(N_pas, N_crew, W_person)
+    W_P = calc_payload_weight(N_pas, N_crew, W_person, W_cargo)
     W_TO = W_P / W_to_frac
     W_F = W_f_frac * W_TO
     W_E = W_e_frac * W_TO
 
     return np.array([W_TO, W_E, W_P, W_F])
-
 
 # r_cruise = np.array([1200000, 1400000, 1600000, 1800000])
 # results = np.zeros((4, len(r_cruise)))

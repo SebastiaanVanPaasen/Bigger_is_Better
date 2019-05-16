@@ -69,7 +69,7 @@ for M_cruise in M_cruise_list:
             # Performing class I weight estimation -------------------------------------------------------------------------
             weights = class_I(CL_cruise, CD_cruise, mission_range, reserve_range, V_cruise, c_j_cruise, W_tfo_frac,
                               W_e_frac,
-                              fuel_fractions, N_crew, N_pas, W_person)
+                              fuel_fractions, N_crew, N_pas, W_person, W_carg)
 
             W_TO, W_E_I, W_P, W_F = weights[0], weights[1], weights[2], weights[3]  # N
 
@@ -182,7 +182,9 @@ for M_cruise in M_cruise_list:
 
             # Start the class II weight estimation -------------------------------------------------------------------------
             # Determine the structural weight components -------------------------------------------------------------------
-
+            # print("here")
+            # print(t_over_c)
+            # print(c_root)
             t_max_root = t_over_c * c_root
             w_weight = wing_weight(W_TO, W_F, b, HC_sweep, n_ult, S, t_max_root, wing_choice)
             mass_fractions[0] = (w_weight * lbs_to_kg * g_0) / W_TO
