@@ -4,6 +4,8 @@ import matplotlib.pyplot as plt
 # option = 0  # 0 for low wing 1 for high wing
 
 
+
+
 def wing_parameters(m_cruise, cl_cruise, surface_area, aspect_ratio, option):
     # Sweep calculation
     m_t = 0.935  # Technology factor for super critical airfoil
@@ -48,7 +50,7 @@ def wing_parameters(m_cruise, cl_cruise, surface_area, aspect_ratio, option):
         quarter_chord_sweep, leading_edge_sweep, span, chord_root, chord_tip, dihedral,
         thickness_over_chord, mac, taper_ratio)
     
-# def wing_parameters_boxed(m_cruise, cl_cruise, surface_area, aspect_ratio):
+def wing_parameters_boxed(m_cruise, cl_cruise, surface_area, aspect_ratio):
         
     
 
