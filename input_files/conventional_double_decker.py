@@ -89,15 +89,15 @@ W_carg = 20.  # kg Based on statistics
 
 # General aircraft input parameters ------------------------------------------------------------------------------------
 # General cruise parameters
-# h_cruise = 10000.  # m based on the sustainability analysis so far
-# M_cruise = 0.69  # Mach number decided to cruise on
-# Temp_cruise = Temp_0 + a * h_cruise  # K  based on the altitude you fly at
-# a_cruise = np.sqrt(gamma * R_gas * Temp_cruise)  # m/s based on the temperature
-# V_cruise = M_cruise * a_cruise  # m/s  based on the Mach number and speed of sound
+h_cruise_input = 8000.  # m based on the sustainability analysis so far
+M_cruise_input = 0.7  # Mach number decided to cruise on
+Temp_cruise = Temp_0 + a * h_cruise_input  # K  based on the altitude you fly at
+a_cruise_input = np.sqrt(gamma * R_gas * Temp_cruise)  # m/s based on the temperature
+V_cruise_input = M_cruise_input * a_cruise_input  # m/s  based on the Mach number and speed of sound
 
 # Densities ------------------------------------------------------------------------------------------------------------
 Rho_TO = Rho_0  # kg/m^3    standard sea-level density
-# Rho_Cruise = Rho_0 * ((1 + (a * h_cruise) / Temp_0) ** (-(g_0 / (R_gas * a))))  # kg/m^3   based on cruise altitude
+Rho_Cruise_input = Rho_0 * ((1 + (a * h_cruise_input) / Temp_0) ** (-(g_0 / (R_gas * a))))  # kg/m^3   based on cruise altitude
 Rho_Landing = Rho_0  # kg/m^3   standard sea-level density
 
 # aircraft cg-locations ------------------------------------------------------------------------------------------------

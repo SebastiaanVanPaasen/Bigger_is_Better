@@ -5,7 +5,7 @@ from class_I.drag_estimation import Wing_wetted_area, H_tail_wetted_area, V_tail
     Zero_Lift_Drag_est
 from class_I.class_I_empennage_landinggear import class_I_empennage
 from class_I.flight_envelope import manoeuvring_envelope, gust_envelope
-from avl.conv_wing_avl import make_avl_file, run_avl, find_clalpha
+from avl_iterator_2.conv_wing_avl import make_avl_file, run_avl, find_clalpha
 from class_II_weight_estimation import *
 from input_files.high_bypass_ratio import *
 from performance.SAR_lists_iterator import SAR
