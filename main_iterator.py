@@ -7,13 +7,13 @@ from class_I.class_I_empennage_landinggear import class_I_empennage
 from class_I.flight_envelope import manoeuvring_envelope, gust_envelope
 from avl.conv_wing_avl import make_avl_file, run_avl, find_clalpha
 from class_II_weight_estimation import *
-from input_files.high_bypass_ratio import *
+from input_files.aerodynamic_concept import *
 from performance.SAR_lists_iterator import SAR
 import matplotlib.pyplot as plt
 
 # from class_I.wing_loading_diagram import final_diagram
 
-M_cruise_list = np.arange(0.55, 0.90, 0.05)
+M_cruise_list = np.arange(0.6, 0.90, 0.05)
 h_cruise_list = np.arange(5000, 13000, 1000)
 # fuel_consumption = np.arange(0.4, 0.9, 0.1)
 # aspect_ratios = np.arange(5, 16, 0.5)
@@ -52,7 +52,7 @@ for M_cruise in M_cruise_list:
                 (1 + (a * h_cruise) / Temp_0) ** (-(g_0 / (R_gas * a))))  # kg/m^3   based on cruise altitude
 
         V_cruise = M_cruise * a_cruise
-        Ct0_value = 9e-06
+        Ct0_value = 12e-06
         # print("vcruise" + str(V_cruise))
         # print("rho cruise" + str(Rho_Cruise))
         # print("a cruise" + str(a_cruise))
@@ -82,6 +82,9 @@ for M_cruise in M_cruise_list:
             # Choosing a design point based on the T/W-W/S diagram ---------------------------------------------------------
             T, S = W_TO * T_input, W_TO / S_input
             CL_cruise = W_TO / (0.5 * Rho_Cruise * (V_cruise ** 2) * S)
+            if CL_cruise > 1.:
+                CL_cruise = 1.
+
             # print(Rho_Cruise, V_cruise, S, CD_cruise)
             D = 0.5 * Rho_Cruise * (V_cruise ** 2) * S * CD_cruise
             iteration["thrust, area, cl"] = [T, S, CL_cruise]
