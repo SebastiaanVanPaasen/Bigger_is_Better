@@ -1,7 +1,21 @@
 # Put all the inputs that you use in other files in here, the file has been divided in different sections for constants
 # input parameters and conversion factors. Always write the units behind a parameter if they exist!
+import sys
+sys.path.append("C:/Users/floyd/OneDrive/Documenten/GitHub/Bigger_is_Better")
 from constants_and_conversions import *
+#from constants_and_conversions import *
 import numpy as np
+
+
+h_cruise = 10000.  # m based on the sustainability analysis so far
+M_cruise = 0.75  # Mach number decided to cruise on
+A = 14  # based on the reference aircraft B747
+Oswald = 0.9  # estimated from ADSEE-I L3
+N_engines = 2.  #
+w_engine = 7000.  # kg   Obtained from Bram
+
+
+
 
 # Define fuel fractions from statistics for the mission profile based on Roskam ----------------------------------------
 start = 0.99
@@ -67,8 +81,7 @@ W_person = 205.  # lbs   Based on statistics of Roskam
 
 # General aircraft input parameters ------------------------------------------------------------------------------------
 # General cruise parameters
-h_cruise = 11000.  # m based on the sustainability analysis so far
-M_cruise = 0.65  # Mach number decided to cruise on
+
 Temp_cruise = Temp_0 + a * h_cruise  # K  based on the altitude you fly at
 a_cruise = np.sqrt(gamma * R_gas * Temp_cruise)  # m/s based on the temperature
 V_cruise = M_cruise * a_cruise  # m/s  based on the Mach number and speed of sound
@@ -85,8 +98,7 @@ x_fuel = 22.  # m    cg-location fuel w.r.t nose
 xcg_oew_mac = 0.25  # m     initial cg location OEW w.r.t. MAC
 
 # engine characteristics -----------------------------------------------------------------------------------------------
-N_engines = 2.  #
-w_engine = 7000.  # kg   Obtained from Bram
+
 propeller_choice = 0
 
 # in case propellers are used
@@ -100,7 +112,7 @@ a_inlets = 3.
 n_fuel_tanks = 2.
 
 # main wing ------------------------------------------------------------------------------------------------------------
-A = 7.5  # based on the reference aircraft B747
+
 S_ratio = 6.3  # estimated from ADSEE-I L3
 wing_option = 0  # Depending on the type of wing configuration, 1 is high wing, 0 is low wing
 winglet_height = 0.  # Mostly important for boxed wing, else leave as 0
@@ -119,13 +131,13 @@ tap_v = 0.5  # based on statistics from slides ADSEE-I L7
 v_tail = np.array([A_v, tap_v, QC_sweep_v])
 
 # Coefficients ---------------------------------------------------------------------------------------------------------
-C_fe = 0.003  # estimated from ADSEE-I L3
+C_fe = 0.0045  # estimated from ADSEE-I L3
 c_j_cruise = 0.75  # 1/hr
 c_j_loiter = 0.5  # 1/hr
-Oswald = 0.9  # estimated from ADSEE-I L3
+
 CD_0 = C_fe * S_ratio
 CD_cruise = (4 / 3) * CD_0
-# CL_cruise = np.sqrt((CD_0 * np.pi * A * Oswald) / 3)
+CL_cruise = np.sqrt((CD_0 * np.pi * A * Oswald) / 3)
 
 # Ranges ---------------------------------------------------------------------------------------------------------------
 mission_range = 1400000.  # m     based on market analysis
@@ -165,3 +177,4 @@ Delta_oswald_Land = 0.1  # Guestimated from ADSEE-I L3
 # Estimated parameters -------------------------------------------------------------------------------------------------
 Climb_rate = 2000. * ftmin_to_ms  # m/s      set climb rate by CS25
 Climb_gradient = 0.024  # c/V set by CS25 in case 4 engines, should be 0.03
+
