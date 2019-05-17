@@ -37,32 +37,32 @@ Created on Thu May  9 14:08:37 2019
 #SM              =   stability margin
 
 import numpy as np
-from constants_and_conversions import *
-from scipy.interpolate import interp1d
-import scipy as sp
+#from constants_and_conversions import *
+#from scipy.interpolate import interp1d
+#import scipy as sp
 import matplotlib.pyplot as plt
 
 
-x_ac_wing = 0.4 #this value needs to be read of a graph which requires (M at max cruise speed, AR, taper, sweep)
-SM = 0.05
-x_cg = np.linspace(0,1,100)
+#x_ac_wing = 0.4 #this value needs to be read of a graph which requires (M at max cruise speed, AR, taper, sweep)
+#SM = 0.05
+#x_cg = np.linspace(0,1,100)
 
 def C_L_alpha_h(M_h_cruise, eta, hcsweeph, A_h):
     beta = np.sqrt(1-M_h_cruise**2)
-    C_L_alpha_h = 2*np.pi*A_h/(2 + np.sqrt(4 + (A_h*beta/eta)*(1+ np.tan(hcsweeph)**2/beta**2)))
+    C_L_alpha_h = 2*np.pi*A_h/(2 + np.sqrt(4 + ((A_h*beta/eta)**2)*(1+ np.tan(hcsweeph)**2/beta**2)))
     
     return C_L_alpha_h
 
 def C_L_alpha_w(M_w_cruise, eta, hcsweepw, A_w):
     beta = np.sqrt(1-M_w_cruise**2)
-    C_L_alpha_w = 2*np.pi*A_w/(2 + np.sqrt(4 + (A_w*beta/eta)*(1+ np.tan(hcsweepw)**2/beta**2)))
+    C_L_alpha_w = (2*np.pi*A_w)/(2 + np.sqrt(4 + ((A_w*beta/eta)**2)*(1+ ((np.tan(hcsweepw))**2)/(beta**2))))
     
     return C_L_alpha_w
 
 def C_L_alpha_Ah(M_w_cruise, eta, hcsweepw, A_w, b_f, b, S, c_r):
     S_net = S - (b_f*c_r)
     C_L_alpha_Ah = C_L_alpha_w(M_w_cruise, eta, hcsweepw, A_w) * (1 + 2.15*(b_f/b))*(S_net/S) + (np.pi/2)*(b_f**2/S)
-
+    
     return C_L_alpha_Ah
 
 def x_ac(b_n_1, b_n_2, b_n_3, b_n_4, l_n_1, l_n_2, l_n_3, l_n_4, x_ac_wing, M_w_cruise, eta, hcsweepw, A_w, b_f, b, c_r, S, h_f, l_fn, c, c_g, qcsweep, taper):
@@ -83,40 +83,42 @@ def x_ac(b_n_1, b_n_2, b_n_3, b_n_4, l_n_1, l_n_2, l_n_3, l_n_4, x_ac_wing, M_w_
     
     return x_ac
 
-def de_da(l_h, b, qcsweep, phi, h_wh, s_wTEh, A_w, M_w_cruise, eta, hcsweepw):
-    
+def de_da(l_h, b, qcsweep, m_tv, A_w, M_w_cruise, eta, hcsweepw):
+    m_tv = m_tv*(2/b)
     r = 2*l_h/b
-    w = h_wh**2 + s_wTEh**2
-    m_tv = (2/b) * w * np.sin(phi) #(zie plaatje vraag Mathilde)
+    #w = h_wh**2 + s_wTEh**2
+    #m_tv = (2/b) * w * np.sin(phi) #(zie plaatje vraag Mathilde)
     k_e_sweep = (0.1124+ 0.1265*qcsweep + 0.1766*qcsweep**2)/r**2 + 0.1024/r +2.
     k_e_sweep_0 = 0.1124/(r*r) + 0.1024/r +2. 
-    de_da = (k_e_sweep/k_e_sweep_0)*((r/(r**2+m_tv**2))*(0.4876/np.sqrt(r**2+0.6319 + m_tv**2))+(1+(r**2/(r**2 + 0.7915 + 5.0734*m_tv**2))**(0.3113))*(1 - np.sqrt(m_tv**2/(1+m_tv**2))))*(C_L_alpha_w(M_w_cruise, eta, hcsweepw, A_w))
+    de_da = (k_e_sweep/k_e_sweep_0)*((r/(r**2+m_tv**2))*(0.4876/np.sqrt(r**2 + 0.6319 + m_tv**2))+(1+(r**2/(r**2 + 0.7915 + 5.0734*m_tv**2))**(0.3113))*(1 - np.sqrt(m_tv**2/(1+m_tv**2))))*(C_L_alpha_w(M_w_cruise, eta, hcsweepw, A_w))/(np.pi*A_w)
+    #print(l_h, b, qcsweep, m_tv, A_w, M_w_cruise, eta, hcsweepw)
+    #print(de_da)
     
     #de_da_check = 4./(A +2.) #sanity check
     #print("Sanity check = ", de_da_check)
     
     return de_da
 
-def Sh_S_stability(x_cg, M_h_cruise, eta, hcsweeph, hcsweepw, A_w, A_h, M_w_cruise, b_f, b, S, l_h, qcsweep, phi, h_wh, s_wTEh, V_h_V,b_n_1, b_n_2, b_n_3, b_n_4, l_n_1, l_n_2, l_n_3, l_n_4, x_ac_wing, h_f, l_fn, c, c_r, c_g, taper, SM):
+def Sh_S_stability(x_cg, M_h_cruise, eta, hcsweeph, hcsweepw, A_w, A_h, M_w_cruise, b_f, b, S, l_h, qcsweep, m_tv, V_h_V,b_n_1, b_n_2, b_n_3, b_n_4, l_n_1, l_n_2, l_n_3, l_n_4, x_ac_wing, h_f, l_fn, c, c_r, c_g, taper, SM):
     
     S_net = S - (b_f*c_r)
     Sh_S_stability = [] #with SM
     Sh_S_stability_lessSM = []
     for i in range(len(x_cg)):
-        den = (C_L_alpha_h(M_h_cruise, eta, hcsweeph, A_h)/C_L_alpha_Ah(M_w_cruise, eta, hcsweepw, A_w, b_f, b, S, c_r))*(1-de_da(l_h, b, qcsweep, phi, h_wh, s_wTEh, A_w, M_w_cruise, eta, hcsweepw))*(l_h/c)*(V_h_V)
+        den = (C_L_alpha_h(M_h_cruise, eta, hcsweeph, A_h)/C_L_alpha_Ah(M_w_cruise, eta, hcsweepw, A_w, b_f, b, S, c_r))*(1-de_da(l_h, b, qcsweep, m_tv, A_w, M_w_cruise, eta, hcsweepw))*(l_h/c)*(V_h_V)
         Sh_S = (1/den)*x_cg[i] - (x_ac(b_n_1, b_n_2, b_n_3, b_n_4, l_n_1, l_n_2, l_n_3, l_n_4, x_ac_wing, M_w_cruise, eta, hcsweepw, A_w, b_f, b, c_r, S, h_f, l_fn, c, c_g, qcsweep, taper) - SM)/den
         Sh_S_stability.append(Sh_S)
-        den = (C_L_alpha_h(M_h_cruise, eta, hcsweeph, A_h)/C_L_alpha_Ah(M_w_cruise, eta, hcsweepw, A_w, b_f, b, S, c_r))*(1-de_da(l_h, b, qcsweep, phi, h_wh, s_wTEh, A_w, M_w_cruise, eta, hcsweepw))*(l_h/c)*(V_h_V)
+        den = (C_L_alpha_h(M_h_cruise, eta, hcsweeph, A_h)/C_L_alpha_Ah(M_w_cruise, eta, hcsweepw, A_w, b_f, b, S, c_r))*(1-de_da(l_h, b, qcsweep, m_tv, A_w, M_w_cruise, eta, hcsweepw))*(l_h/c)*(V_h_V)
         Sh_S_less = (1/den)*x_cg[i] - x_ac(b_n_1, b_n_2, b_n_3, b_n_4, l_n_1, l_n_2, l_n_3, l_n_4, x_ac_wing, M_w_cruise, eta, hcsweepw, A_w, b_f, b, c_r, S, h_f, l_fn, c, c_g, qcsweep, taper)/den
         Sh_S_stability_lessSM.append(Sh_S_less)
-    
+        #print(den)
     stability_trend = np.polyfit(x_cg, Sh_S_stability, 1)
-#    print(stability_trend[0])
-#    print(stability_trend[1])
+    #print(stability_trend[0])
+    #print(stability_trend[1])
 #    plt.plot(x_cg, Sh_S_stability, 'r')
 #    plt.plot(x_cg, Sh_S_stability_lessSM)
 #    plt.ylim(bottom=0)
 #    plt.show()
-#    
-    return Sh_S_stability
+  
+    return Sh_S_stability_lessSM, Sh_S_stability
 

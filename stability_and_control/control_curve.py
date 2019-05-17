@@ -6,7 +6,7 @@ Created on Thu May 09 14:36:48 2019
 """
 #-------------------------MODULES---------------------------
 import numpy as np
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 
 #--------------------------INPUTS---------------------------- 
 """Geometry"""
@@ -107,65 +107,65 @@ def dflap_Cm_ac(delta_flap,b,b_f0,b_fi,taper,c,c_f,dc_c_f,mu_2,mu_3,A,qcsweep,x_
     
   
 
-#-----------------------------Unit tests----------------------------------
-"""Geometry"""
-qcsweep    =  0.5515 #quarter chord sweep [rad]
-hcsweep    =  0.4869 #half chord sweep [rad]
-A          =  8.67 #aspect ratio
-S          =  427.8 #Wing surface
-c          =  8.75 #mean aerodynamic chord
-b          =  60.9 #wing span
-c_r        =   12. #root chord
-c_f        =   2.625 #flap chord
-taper      =   0.149 #taper ratio
-b_f0       =   15.6 #end of flap span
-b_fi       =   4.1 #begin of flap span
-l_f        =   56.4 #fuselage length
-b_f        =   6.2 #fuselage diameter
-h_f        =   6.2 #fuselage height
-l_h        =   24.71 #tailarm
-A_h        =   4.5 #aspect ratio horizontal tail
-S_net      =   75. #area in fuselage
+##-----------------------------Unit tests----------------------------------
+#"""Geometry"""
+#qcsweep    =  0.5515 #quarter chord sweep [rad]
+#hcsweep    =  0.4869 #half chord sweep [rad]
+#A          =  8.67 #aspect ratio
+#S          =  427.8 #Wing surface
+#c          =  8.75 #mean aerodynamic chord
+#b          =  60.9 #wing span
+#c_r        =   12. #root chord
+#c_f        =   2.625 #flap chord
+#taper      =   0.149 #taper ratio
+#b_f0       =   15.6 #end of flap span
+#b_fi       =   4.1 #begin of flap span
+#l_f        =   56.4 #fuselage length
+#b_f        =   6.2 #fuselage diameter
+#h_f        =   6.2 #fuselage height
+#l_h        =   24.71 #tailarm
+#A_h        =   4.5 #aspect ratio horizontal tail
+#S_net      =   75. #area in fuselage
+#
+#"""Coefficients"""
+#Cm_0       =   -0.1 #airfoil dependent moment coefficient 
+#CL_0       =   0.5 #CL of flapped wing at angle of attack of 0 deg 
+#CL_land    =   2.45 #CL during landing full flap configuration
+#
+#"""Others"""
+#T0         =   293. #Temperature during landing  [K]
+#V_app      =   75.   #approach speed [m/s]
+#delta_flap =  0.5235 #flap deflection [rad]
+#alpha_land =   0.1745 #angle of attach during approach [rad]
+#M_app      =   0.22 #approach speed in Mach
+#eta        =  0.95# airfoil efficiency = 0.95
+#
+#"""Retrieve from stability cruve program"""
+#x_ac       =  0.3   # aerodynamic centre location over the mac [n/m]
+#Vh_V      =  0.85    #(V_h/V) ratio  [m/s / m/s]
+#CL_alpha_AH =   4.788 # lif#t gradient of tailless aircraft [1/rad]
+#CL_AH       =  2. #3.25 #lift coefficient A-H
+#CL_H        = -0.8 #liftcoefficient tail
+#
+#
+#
+##-----------------------------------VALUES GRAPHS------------------------------
+#mu_2       = 1. #2D to 3D correction factor from graph  
+#mu_3       = 0.025#  correction factor for sweep from graph
+#dc_c_f     =  0.5 # flap geometry ratio, see torenbeek book
 
-"""Coefficients"""
-Cm_0       =   -0.1 #airfoil dependent moment coefficient 
-CL_0       =   0.5 #CL of flapped wing at angle of attack of 0 deg 
-CL_land    =   2.45 #CL during landing full flap configuration
+#x_cg = np.linspace(0.,1,100)
+#
+#Sh_S = Sh_S_control(CL_H,CL_AH,l_h,Vh_V,x_cg,Cm_0,A,qcsweep,delta_flap,b,b_f0,b_fi,taper,c,c_f,dc_c_f,mu_2,mu_3,x_ac,CL_land,b_f,h_f,l_f,S,S_net,hcsweep,M_app,eta,CL_0)
+#x_as = 0.*x_cg
 
-"""Others"""
-T0         =   293. #Temperature during landing  [K]
-V_app      =   75.   #approach speed [m/s]
-delta_flap =  0.5235 #flap deflection [rad]
-alpha_land =   0.1745 #angle of attach during approach [rad]
-M_app      =   0.22 #approach speed in Mach
-eta        =  0.95# airfoil efficiency = 0.95
-
-"""Retrieve from stability cruve program"""
-x_ac       =  0.3   # aerodynamic centre location over the mac [n/m]
-Vh_V      =  0.85    #(V_h/V) ratio  [m/s / m/s]
-CL_alpha_AH =   4.788 # lif#t gradient of tailless aircraft [1/rad]
-CL_AH       =  2. #3.25 #lift coefficient A-H
-CL_H        = -0.8 #liftcoefficient tail
+#print Sh_S
 
 
 
-#-----------------------------------VALUES GRAPHS------------------------------
-mu_2       = 1. #2D to 3D correction factor from graph  
-mu_3       = 0.025#  correction factor for sweep from graph
-dc_c_f     =  0.5 # flap geometry ratio, see torenbeek book
-
-x_cg = np.linspace(0.,1,100)
-
-Sh_S = Sh_S_control(CL_H,CL_AH,l_h,Vh_V,x_cg,Cm_0,A,qcsweep,delta_flap,b,b_f0,b_fi,taper,c,c_f,dc_c_f,mu_2,mu_3,x_ac,CL_land,b_f,h_f,l_f,S,S_net,hcsweep,M_app,eta,CL_0)
-x_as = 0.*x_cg
-
-print Sh_S
-
-
-
-plt.plot(x_cg,Sh_S,x_cg,x_as,"k")
-plt.ylim(0.,1.2)
-plt.show()
+#plt.plot(x_cg,Sh_S,x_cg,x_as,"k")
+#plt.ylim(0.,1.2)
+#plt.show()
 
 
 

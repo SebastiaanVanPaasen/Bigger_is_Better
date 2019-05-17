@@ -65,7 +65,7 @@ wing_option = 0  # Depending on the type of wing configuration, 1 is high wing, 
 Oswald = 0.9  # estimated from ADSEE-I L3
 T_input = 0.26
 S_input = 8200
-A = 18
+A = 16
 CD_0 = C_fe * S_ratio
 N_engines = 2.  #
 w_engine = 7000.  # kg   Obtained from Bram
@@ -89,7 +89,7 @@ W_carg = 20.  # kg Based on statistics
 
 # General aircraft input parameters ------------------------------------------------------------------------------------
 # General cruise parameters
-h_cruise_input = 8000.  # m based on the sustainability analysis so far
+h_cruise_input = 12000.  # m based on the sustainability analysis so far
 M_cruise_input = 0.7  # Mach number decided to cruise on
 Temp_cruise = Temp_0 + a * h_cruise_input  # K  based on the altitude you fly at
 a_cruise_input = np.sqrt(gamma * R_gas * Temp_cruise)  # m/s based on the temperature
