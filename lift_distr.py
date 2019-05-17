@@ -57,8 +57,7 @@ def make_avl_file():
             for i in range(2):
                 print("SECTION", file=text_file)            
                 print(round(x_loc_LE[i],3),round(y_loc_LE[i],3),round(z_loc_LE[i],3),round(chords[i],3),Ainc[i], file=text_file)        
-            print("AFILE" + "\n"
-                  "n2414.dat.txt", file=text_file)
+            print("AFILE" + "\n""n2414.dat.txt", file=text_file)
 make_avl_file()
 
 def lift_distribution(CL):        
