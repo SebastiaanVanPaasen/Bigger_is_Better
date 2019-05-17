@@ -91,8 +91,8 @@ W_carg = 20.  # kg Based on statistics
 
 # General aircraft input parameters ------------------------------------------------------------------------------------
 # General cruise parameters
-h_cruise_input = 8000.  # m based on the sustainability analysis so far
-M_cruise_input = 0.7  # Mach number decided to cruise on
+h_cruise_input = 12000.  # m based on the sustainability analysis so far
+M_cruise_input = 0.75  # Mach number decided to cruise on
 Temp_cruise = Temp_0 + a * h_cruise_input  # K  based on the altitude you fly at
 a_cruise_input = np.sqrt(gamma * R_gas * Temp_cruise)  # m/s based on the temperature
 V_cruise_input = M_cruise_input * a_cruise_input  # m/s  based on the Mach number and speed of sound

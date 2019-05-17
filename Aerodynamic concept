@@ -1,0 +1,24 @@
+Take-off weight in N: 1661457.22
+Empty weight in N: 815897.56
+Payload weight in N: 508587.17
+Fuel weight in N: 332068.7
+Thrust in N: 365520.59
+Cl_cruise: 0.738
+Cd cruise: 0.051
+Cruise density in kg/m^3: 0.3
+Cd zero: 0.0233
+Lift over drag: 14.424
+Cruise speed in m/s: 208.07
+Span in m: 45.93
+Surface area in m^2: 263.72
+Root chord in m: 8.2
+The leading edge sweep in degrees: 3.07
+The taper ratio: 0.4
+Aspect ratio: 8
+Oswald factor: 0.9
+Wing weight in N: 188950.47
+Number of engines: 2.0
+Engine weight in N: 78445.2
+Center of gravity locations in m: [26.85600603 60.42601356 26.85600603 -0.2        -0.2         2.4372303
+ 26.58566323 30.41750197  3.46764555]
+
