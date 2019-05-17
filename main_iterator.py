@@ -11,7 +11,6 @@ from input_files.high_bypass_ratio import *
 from performance.SAR_lists_iterator import SAR
 import matplotlib.pyplot as plt
 
-
 M_cruise_list = np.arange(0.7, 0.74, 0.05)
 h_cruise_list = np.arange(10000, 11000, 1000)
 # fuel_consumption = np.arange(0.4, 0.9, 0.1)
@@ -284,7 +283,7 @@ for M_cruise in M_cruise_list:
             total[str(i)] = iteration
             i += 1
 
-        file = open("Aerodynamic concept" + str(), "w")
+        file = open("High bypass ratio concept" + str(), "w")
         file.write("Take-off weight in N: " + str(round(W_TO, 2)) + '\n')
         file.write("Empty weight in N: " + str(round(W_E_II, 2)) + '\n')
         file.write("Payload weight in N: " + str(round(W_P, 2)) + '\n')
