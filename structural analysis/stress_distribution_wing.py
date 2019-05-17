@@ -5,7 +5,7 @@ Created on Wed May 15 09:51:57 2019
 @author: Mathilde
 
 """
-
+#
 import numpy as np  ### Never use * to import stuff, as it makes it difficult to retrace where functions come from
 import scipy as sp
 import math as m
@@ -13,7 +13,8 @@ from scipy import interpolate  ### Useful to interpolate stuff
 from scipy import integrate
 from matplotlib import pyplot as plt
 
-from loading_and_moment_diagrams import load_diagrams, Loadcalculator
+from loading_and_moment_diagrams import load_diagrams, Loadcalculator, c
+
 N = 100.
 Mydistribution = load_diagrams(N)[2]
 Mzdistribution = load_diagrams(N)[3]
@@ -53,8 +54,8 @@ def wing_stress(Mydistribution, Mzdistribution, Tdistribution):
     
     #loading the airfoil datapoints
     data = load_airfoil('NACA3414.txt') 
-    data_z = data[1]
-    data_y = data[2]
+    data_z = data[1] 
+    data_y = data[2] 
     b = 60.90
     alpha = 0.3
     N = 100 #discretization step in x direction
@@ -73,7 +74,7 @@ def wing_stress(Mydistribution, Mzdistribution, Tdistribution):
         My.append(M_y)
         Mz.append(M_z)
         for j in range(len(data_z)):
-            stressx = ((M_z*I_yy - M_y*I_zy)*data_y[j] + (M_y*I_zz - M_z*I_zy)*data_z[j])/(I_zz*I_yy - I_zy**2)
+            stressx = ((M_z*I_yy - M_y*I_zy)*data_y[j]*c(HalfspanValues[i])+ (M_y*I_zz - M_z*I_zy)*data_z[j]*c(HalfspanValues[i]))/(I_zz*I_yy - I_zy**2)
             stress_x.append(stressx)
     stress_x = np.asarray(stress_x)
     stress_x = np.reshape(stress_x, (len(HalfspanValues),len(data_z)))
@@ -82,8 +83,8 @@ def wing_stress(Mydistribution, Mzdistribution, Tdistribution):
         min_stress_x.append(min(stress_x[i]))
         max_stress_x.append(max(stress_x[i]))
         
-    print(min_stress_x[0])
-    print(max_stress_x[0])
+    print(stress_x[0], data_z[list(stress_x[0]).index(min(stress_x[0]))], data_y[list(stress_x[0]).index(min(stress_x[0]))])
+    #print(max_stress_x[0]), data_z[max_stress_x.index(max(max_stress_x))], data_y[max_stress_x.index(max(max_stress_x))])
     
     plt.subplot(2,1,2)
     plt.subplot(2,1,1)
@@ -91,9 +92,9 @@ def wing_stress(Mydistribution, Mzdistribution, Tdistribution):
     plt.subplot(2,1,2)
     plt.plot(data_y,stress_x[0], 'g')
     plt.show()
+    return     
         
-        
-print(wing_stress(Mydistribution, Mzdistribution, Tdistribution))    
+#print(wing_stress(Mydistribution, Mzdistribution, Tdistribution))    
     
     
     

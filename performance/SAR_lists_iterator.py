@@ -19,21 +19,10 @@ import matplotlib.pyplot as plt
 # ------------------------------VERIFICATION DATA--------------------------------
 
 """Create reference line of B737 8 Max"""
-g = 9.81
-MPW1 = 20882 * g
-MTOW1 = 82191 * g
-OEW1 = 45070 * g
-MFW1 = 31594 * g
-
-Wcr1 = 0.8 * MTOW1  # ASSUMPTION!!! WHAT IS W_Cr ACTUALLY
-Mcr = 0.79
-hcr = 12000  # (m)
-S1 = 127  # m^2
-b1 = 35.92  # m
-A1 = b1 ** 2 / S1
-
-pax_ref = 200.
-n_ref = 1.
+# Obatined from old SAR code
+SAR_ref = 1.84236002771
+M_ref = 0.79
+g = 9.80565
 
 
 # -----------------------------DEFINITIONS-------------------------------------
@@ -73,12 +62,16 @@ def Mach(V, h):  # enter V in km/h
     gamma = 1.4  # enter h in m
     R = 287  # J/kg/K
     a = np.sqrt(gamma * R * ISA_temp(h))
-    M = (V) / a
+    M = (V / 3.6) / a
     return M
 
 
-SAR_ref = 1.84236002771
-M_ref = 0.79
+def Velocity(M, h):
+    gamma = 1.4
+    R = 287
+    a = np.sqrt(gamma * R * ISA_temp(h))
+    V = M * a
+    return V
 
 
 def SAR(V, h, A, S, e, CD0, Ct0, Wcr):  # enter h in m, V in m/s
@@ -88,29 +81,17 @@ def SAR(V, h, A, S, e, CD0, Ct0, Wcr):  # enter h in m, V in m/s
         k = 1. / (np.pi * A[i] * e[i])
         q = 0.5 * ISA_density(h[i]) * (V[i]) ** 2
         SAR_i = (1. / ((V[i]) / ((CD0[i] + k * (Wcr[i] / (q * S[i])) ** 2) * q * S[i] * Ct))) * 1000.  # in kg/km
-        SAR.append(SAR_i)
+        SAR.append(SAR_i / 450)
 
-    for i in range(len(V)):
-        V[i] = Mach(V[i], h[i])  # here you change V to mach number (still called V tho)
+    # for i in range(len(V)):
+    #     V[i] = Mach(V[i], h[i])  # here you change V to mach number (still called V tho)
 
-        # plt.figure(1)
-        # plt.plot(V[i], SAR[i], 'o', label='%s Design' % i)
-        # plt.plot(M_ref, SAR_ref, 'mo', label="Ref. aircraft")
-        # plt.hlines(0.9 * SAR_ref, .1, 1, "gray", "--")
-        # plt.title('Fuel consumption w.r.t. Mach number')
-        # plt.xlabel("Mach number")
-        # plt.ylabel("Fuel consumption [kg/km]")
-        # plt.legend()
-
-        plt.figure(1)
-        plt.plot(V[i], SAR[i] / 450, 'o', label='%s altitude [m]' % h[i])
-    plt.plot(M_ref, SAR_ref / 200, 'mo', label="Ref. aircraft")
-    plt.hlines(0.9 * SAR_ref / 200, .1, 1, "gray", "--")
-    plt.legend()
-    plt.title('Fuel consumption per passenger w.r.t. Mach number')
-    plt.xlabel("Mach number")
-    plt.ylabel("Fuel consumption [kg/km/passenger]")
-
-    plt.show()
-
-    return
+    # plt.figure(1)
+    # plt.plot(V[i], SAR[i], 'o', label='%s Design' % i)
+    # plt.plot(M_ref, SAR_ref, 'mo', label="Ref. aircraft")
+    # plt.hlines(0.9 * SAR_ref, .1, 1, "gray", "--")
+    # plt.title('Fuel consumption w.r.t. Mach number')
+    # plt.xlabel("Mach number")
+    # plt.ylabel("Fuel consumption [kg/km]")
+    # plt.legend()
+    return h, SAR
