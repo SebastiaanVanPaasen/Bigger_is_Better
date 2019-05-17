@@ -7,12 +7,12 @@ from class_I.class_I_empennage_landinggear import class_I_empennage
 from class_I.flight_envelope import manoeuvring_envelope, gust_envelope
 from avl.conv_wing_avl import make_avl_file, run_avl, find_clalpha
 from class_II_weight_estimation import *
-from input_files.conventional_double_decker import *
+from input_files.strutted_wing import *
 from performance.SAR_lists_iterator import SAR
 import matplotlib.pyplot as plt
 
 M_cruise_list = np.arange(0.7, 0.74, 0.05)
-h_cruise_list = np.arange(8000, 8400, 1000)
+h_cruise_list = np.arange(12000, 12400, 1000)
 # fuel_consumption = np.arange(0.4, 0.9, 0.1)
 # aspect_ratios = np.arange(5, 16, 0.5)
 # result_wing = []
@@ -240,9 +240,7 @@ for M_cruise in M_cruise_list:
             # Choice is depending on type of engines
             w_osc = calc_w_osc(oil_choice, w_engine, N_engines)
 
-            prop_sys_weight = (
-                                      w_engine * N_engines) / lbs_to_kg + ai_weight + prop_weight + fuel_sys_weight + w_ec + w_ess \
-                              + w_pc + w_osc
+            prop_sys_weight = eng_weight + ai_weight + prop_weight + fuel_sys_weight + w_ec + w_ess + w_pc + w_osc
             mass_fractions[4] = (prop_sys_weight * lbs_to_kg * g_0) / W_TO
 
             # Determine fixed equipment weight components ------------------------------------------------------------------
@@ -284,9 +282,14 @@ for M_cruise in M_cruise_list:
         # pie_chart_fracs.append(W_E_II / W_TO)
         pie_chart_fracs.append((w_weight * lbs_to_kg * g_0) / W_TO)
         pie_chart_fracs.append((emp_weight * lbs_to_kg * g_0) / W_TO)
-        pie_chart_fracs.append((fus_weight*lbs_to_kg*g_0))
+        pie_chart_fracs.append((fus_weight * lbs_to_kg * g_0) / W_TO)
+        pie_chart_fracs.append((nac_weight * lbs_to_kg * g_0) / W_TO)
+        pie_chart_fracs.append((lg_weight * lbs_to_kg * g_0) / W_TO)
+        pie_chart_fracs.append((eng_weight * lbs_to_kg * g_0) / W_TO)
+        pie_chart_fracs.append(((prop_sys_weight - eng_weight) * lbs_to_kg * g_0) / W_TO)
+        pie_chart_fracs.append((fix_equip_weight * lbs_to_kg * g_0) / W_TO)
 
-        file = open("Double decker 2 engines 2 concept" + str(), "w")
+        file = open("Strutted wing concept" + str(), "w")
         file.write("The Mach number: " + str(M_cruise) + '\n')
         file.write("The cruise altitude in m: " + str(h_cruise) + '\n')
         file.write("Take-off weight in N: " + str(round(W_TO, 2)) + '\n')

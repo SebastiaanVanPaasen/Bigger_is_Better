@@ -1,4 +1,4 @@
-from input_files.conventional_double_decker import *
+from input_files.strutted_wing import *
 import matplotlib.pyplot as plt
 
 
