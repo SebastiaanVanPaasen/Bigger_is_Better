@@ -9,7 +9,7 @@ from class_I.fuselage_cross_section import *
 
 
 # Inputs
-# used for the iterator
+
 # MAC = 8.  # mean aerodynamic chord [m]
 # n_pax = 450  # Number of passengers
 # n_paxbelow = 450
@@ -88,20 +88,20 @@ def class_I_empennage(mass_frac, MAC, l_fuselage, x_eng, l_n, xcg_OEW_MAC, xcg_p
     A_h, taper_h, QC_sweep_h = h_tail[0], h_tail[1], h_tail[2]
     A_v, taper_v, QC_sweep_v = v_tail[0], v_tail[1], v_tail[2]
 
-    l_h, c_root_h, c_tip_h, b_h, S_h, x_le_h = _calc_h_tail(xcg_emp, xcg_aft, MAC, S, A_h, l_fuselage, taper_h,
+    l_h, c_root_h, c_tip_h, b_h, S_h, x_le_h, sweep_LE_h, MAC_h, y_MAC_h = _calc_h_tail(xcg_emp, xcg_aft, MAC, S, A_h, l_fuselage, taper_h,
                                                             V_h_norm,
                                                             QC_sweep_h)
-    l_v, c_root_v, c_tip_v, b_v, S_v, x_le_v = calc_v_tail(xcg_emp, xcg_aft, b, S, A_v, l_fuselage, taper_v, V_v_norm,
+    l_v, c_root_v, c_tip_v, b_v, S_v, x_le_v, sweep_LE_v, MAC_v, y_MAC_v = calc_v_tail(xcg_emp, xcg_aft, b, S, A_v, l_fuselage, taper_v, V_v_norm,
                                                            QC_sweep_v)
 
     cg_locations = np.array([xcg_fuse, xcg_emp, xcg_fix, xcg_nac, xcg_prop, xcg_wing, xcg_fwd, xcg_aft, zcg])
-    tail_h = np.array([l_h, c_root_h, c_tip_h, b_h, S_h])
-    tail_v = np.array([l_v, c_root_v, c_tip_v, b_v, S_v])
+    tail_h = np.array([l_h, c_root_h, c_tip_h, b_h, S_h, x_le_h, sweep_LE_h, MAC_h, y_MAC_h])
+    tail_v = np.array([l_v, c_root_v, c_tip_v, b_v, S_v, x_le_v, sweep_LE_v, MAC_v, y_MAC_v])
 
     X_LE_root = X_LEMAC - Y_MAC * np.tan(LE_sweep)
     alv_h, alv_v = x_le_h - X_LE_root, x_le_v - X_LE_root
-
-    return cg_locations, tail_h, tail_v, X_LEMAC, alv_h, alv_v
+    print('joe')
+    return X_LE_root, cg_locations, tail_h, tail_v, X_LEMAC, alv_h, alv_v, V_h_norm
 
 
 def _calc_h_tail(x_h, xcg_aft, MAC, S, A_h, l_fuselage, tap_h, V_h_norm, sweep_quartchord_h):
@@ -122,11 +122,11 @@ def _calc_h_tail(x_h, xcg_aft, MAC, S, A_h, l_fuselage, tap_h, V_h_norm, sweep_q
 
         n = abs((x_h - (l_fuselage - fuse_MAC_h)) / x_h)
         x_h = l_fuselage - fuse_MAC_h
-
+    
     x_le_h = l_fuselage - C_r_h
     l_h = x_h - xcg_aft
 
-    return l_h, C_r_h, C_t_h, b_h, S_h, x_le_h
+    return l_h, C_r_h, C_t_h, b_h, S_h, x_le_h, sweep_LE_h, MAC_h, y_MAC_h
 
 
 def calc_v_tail(x_v, xcg_aft, b, S, A_v, l_fuselage, tap_v, V_v_norm, sweep_quartchord_v):
@@ -156,7 +156,7 @@ def calc_v_tail(x_v, xcg_aft, b, S, A_v, l_fuselage, tap_v, V_v_norm, sweep_quar
     l_v = x_v - xcg_aft
     x_le_v = l_fuselage - C_r_v
 
-    return l_v, C_r_v, C_t_v, b_v, S_v, x_le_v
+    return l_v, C_r_v, C_t_v, b_v, S_v, x_le_v, sweep_LE_v, MAC_v, y_MAC_v
 
 # class_I_empennage(MAC, l_fuselage, x_eng, l_n, xcg_OEW_MAC, mass_frac_OEW, xcg_payload, mass_frac_payload, xcg_fuel,
 #                  mass_frac_fuel, D_fuse, b)

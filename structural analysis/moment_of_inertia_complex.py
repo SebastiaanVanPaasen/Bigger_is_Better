@@ -7,9 +7,6 @@ Created on Wed May 15 16:01:50 2019
 import numpy as np  ### Never use * to import stuff, as it makes it difficult to retrace where functions come from
 import scipy as sp
 import math as m
-from scipy import interpolate, misc ### Useful to interpolate stuff
-from scipy import integrate
-from matplotlib import pyplot as plt
 from stress_distribution_wing import load_airfoil
 from loading_and_moment_diagrams import c
 
