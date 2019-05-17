@@ -79,8 +79,8 @@ CL_cruise_input = np.sqrt((CD_0 * np.pi * A * Oswald) / 3)
 
 # Inputs that are often changed for the design -------------------------------------------------------------------------
 # based on the reference aircraft B747
-# h_cruise = 6000.  # m based on the sustainability analysis so far
-# M_cruise = 0.65  # Mach number decided to cruise on
+h_cruise = 12000.  # m based on the sustainability analysis so far
+M_cruise = 0.75  # Mach number decided to cruise on
 
 # Passenger characteristics --------------------------------------------------------------------------------------------
 N_pas = 450.  # Requirement set by the exercise
