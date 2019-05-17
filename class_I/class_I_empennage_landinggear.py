@@ -9,7 +9,7 @@ from class_I.fuselage_cross_section import *
 
 
 # Inputs
-
+# used for the iterator
 # MAC = 8.  # mean aerodynamic chord [m]
 # n_pax = 450  # Number of passengers
 # n_paxbelow = 450
