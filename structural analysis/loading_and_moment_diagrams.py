@@ -5,6 +5,7 @@ Created on Tue May 14 09:48:11 2019
 @author: Mathilde
 """
 
+sys.path.append("C:/Users/Mels/Desktop/3e jaar TUDelft/DSE/code/Bigger_is_Better/Class_I")
 import numpy as np  ### Never use * to import stuff, as it makes it difficult to retrace where functions come from
 import scipy as sp
 import math as m
