@@ -7,12 +7,12 @@ from class_I.class_I_empennage_landinggear import class_I_empennage
 from class_I.flight_envelope import manoeuvring_envelope, gust_envelope
 from avl.conv_wing_avl import make_avl_file, run_avl, find_clalpha
 from class_II_weight_estimation import *
-from input_files.high_bypass_ratio import *
+from input_files.aerodynamic_concept import *
 from performance.SAR_lists_iterator import SAR
 import matplotlib.pyplot as plt
 
-M_cruise_list = np.arange(0.7, 0.74, 0.05)
-h_cruise_list = np.arange(10000, 11000, 1000)
+M_cruise_list = np.arange(0.75, 0.77, 0.05)
+h_cruise_list = np.arange(12000, 12400, 1000)
 # fuel_consumption = np.arange(0.4, 0.9, 0.1)
 # aspect_ratios = np.arange(5, 16, 0.5)
 # result_wing = []
@@ -283,7 +283,9 @@ for M_cruise in M_cruise_list:
             total[str(i)] = iteration
             i += 1
 
-        file = open("High bypass ratio concept" + str(), "w")
+        file = open("Aerodynamic concept" + str(), "w")
+        file.write("The Mach number: " + str(M_cruise) + '\n')
+        file.write("The cruise altitude in m: " + str(h_cruise) + '\n')
         file.write("Take-off weight in N: " + str(round(W_TO, 2)) + '\n')
         file.write("Empty weight in N: " + str(round(W_E_II, 2)) + '\n')
         file.write("Payload weight in N: " + str(round(W_P, 2)) + '\n')
