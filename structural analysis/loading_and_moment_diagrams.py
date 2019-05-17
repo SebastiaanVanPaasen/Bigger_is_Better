@@ -25,7 +25,7 @@ taper = 0.4
 Sweep0 = 0.558505  # rad
 by = 20.  # m
 b = 60.90
-Cr = 6.#(S + np.tan(Sweep0) * by * (b / 4)) / (by + (b - by) * ((1 + taper) / 2))
+Cr = (2*S)/((1+taper)*b)
 Ct = Cr * taper
 Cy = 0.#Cr - np.tan(Sweep0) * (by / 2)
 Volume = 489.8545093  # m^3
@@ -231,10 +231,12 @@ def load_diagrams(N):  ### 100 nodes, so 99 beam elements
     Thrustdistributionvalues = []
     Engine_distribution = []
     Tdistributionvalues = []
-    
+    chord_section = []
     
     for i, x in enumerate(HalfspanValues):
         Fy, Fz, Mz, My, L, W_f, D, Th, section_engineweight, T = Loadcalculator(x,1)
+        chord = c(x)
+        chord_section.append(chord)
         Fydistribution.append(Fy)
         Fzdistribution.append(Fz)
         Mzdistribution.append(Mz)
@@ -314,10 +316,10 @@ def load_diagrams(N):  ### 100 nodes, so 99 beam elements
 #    plt.plot(HalfspanValues, Tdistributionvalues)
 #    plt.show()
 #    
-    return Fydistribution, Fzdistribution, Mydistribution, Mzdistribution, Tdistributionvalues
+    return Fydistribution, Fzdistribution, Mydistribution, Mzdistribution, Tdistributionvalues, chord_section, HalfspanValues
 
-    return Fydistribution, Fzdistribution, Mydistribution, Mzdistribution, Tdistributionvalues, chord_section
-Fydistribution, Fzdistribution, Mydistribution, Mzdistribution, Tdistributionvalues, chord_section = load_diagrams(100)
+    return Fydistribution, Fzdistribution, Mydistribution, Mzdistribution, Tdistributionvalues, chord_section, HalfspanValues
+Fydistribution, Fzdistribution, Mydistribution, Mzdistribution, Tdistributionvalues, chord_section, HalfspanValues = load_diagrams(100)
 # TORQUE DISTRIBUTION CALCULATION
 # M_max = max(Mydistribution)
 # V_max = max (Fxdistribution)
@@ -362,7 +364,7 @@ Fydistribution, Fzdistribution, Mydistribution, Mzdistribution, Tdistributionval
 
 
 
-print(max(Mzdistribution))
+#print(max(Mzdistribution))
 
 
 
