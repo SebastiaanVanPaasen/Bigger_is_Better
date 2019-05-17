@@ -91,6 +91,7 @@ def external_loads(CN,CT,c,rho,dx,V,x_pos,x_eng,F_eng,angle,x_fuelstart,x_fuelen
     Fy_right = []
     Fz_right = []
     x_wing = []
+<<<<<<< Updated upstream
     fuel_density = 0.8
     g = 9.81
     
@@ -101,6 +102,15 @@ def external_loads(CN,CT,c,rho,dx,V,x_pos,x_eng,F_eng,angle,x_fuelstart,x_fuelen
            x_fuel = x_pos[i] + 0.5*dx[i]
            F_y = -F_fuel*np.cos(angle) + 0.5*rho*dx[i]*c*CN[i]*V**2
            F_z = F_fuel*np.sin(angle) + 0.5*rho*dx[i]*c*CT[i]*V**2
+=======
+    for i in range(len(CN)):
+        
+       x_r_wing = x_pos[i]+dx[i]
+       
+       if x_pos[i]<x_eng and x_pos[i+1]>x_eng:
+           F_y = -F_eng*np.cos(angle)
+           F_z = F_eng*np.sin(angle)
+>>>>>>> Stashed changes
            Fy_right.append(F_y)
            Fz_right.append(F_z)
            x_wing.append(x_fuel)
@@ -156,6 +166,7 @@ def external_loads(CN,CT,c,rho,dx,V,x_pos,x_eng,F_eng,angle,x_fuelstart,x_fuelen
     Fz_tot = Fz_left + Fz_right
     
     
+    print(x_l_wing)
     
     
     
@@ -167,15 +178,18 @@ def external_loads(CN,CT,c,rho,dx,V,x_pos,x_eng,F_eng,angle,x_fuelstart,x_fuelen
     
     
     
-    
-    plt.subplot(2,1,1)
-    plt.plot(x_total, Fy_tot)
-    plt.subplot(2,1,2)
+#    plt.subplot(2,1,1)
+#    plt.plot(x_total, Fy_tot)
+#    plt.subplot(2,1,2)
 #    plt.plot(x_wing, Vy)
-    plt.plot(x_total, Fz_tot)
-    plt.show()
+#    plt.plot(x_total, Fz_tot)
+#    plt.show()
     
-    return
+    return(Fy_left,Fz_left,x_l_wing)
 
+
+<<<<<<< Updated upstream
 print(external_loads(CN,CT,c,rho,dx,V,x_pos,x_eng,F_eng, angle,x_fuelstart,x_fuelend))
+=======
+>>>>>>> Stashed changes
 
