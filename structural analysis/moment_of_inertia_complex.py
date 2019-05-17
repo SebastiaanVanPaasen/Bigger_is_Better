@@ -21,13 +21,12 @@ print(HalfspanValues[0])
 data_z_all_sec = []
 data_y_lower_all_sec = []
 data_y_upper_all_sec = []
+
 for i in range(len(HalfspanValues)):
     
     data_z, data_y = load_airfoil('NACA3414.txt')[1], load_airfoil('NACA3414.txt')[2] 
-#print(data_z, data_z[int(len(data_y)/2)])
     data_z_order =  np.array(data_z[0:int((len(data_y)/2))+1])*c(HalfspanValues[i])
     data_z_all_sec.append(data_z_order)
-#print(c(HalfspanValues))
     data_y_lower = np.array(data_y[(int((len(data_y)/2))):][::-1])*c(HalfspanValues[i])
     data_y_lower_all_sec.append(data_y_lower)
     data_y_upper = np.array(data_y[0:int((len(data_y)/2))+1])*c(HalfspanValues[i])

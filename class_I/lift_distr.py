@@ -8,14 +8,14 @@ import numpy as np
 import subprocess
 import os
 from matplotlib import pyplot as plt
-ROOT_DIR = os.path.dirname(os.path.abspath("structaral analysis"))
+#ROOT_DIR = os.path.dirname(os.path.abspath("structural analysis"))
 def make_avl_file():
     # B777 used as reference aircraft
-    S = 427.80
-    span = 60.90
+    S = 250
+    span = 62.30
     MAC = 8.75
-    AR = 8.67
-    taper = 0.149
+    AR = span**2/S
+    taper = 0.275
     qc_sweep = np.radians(31.60)
     dihedral = 0
     Cr = (2*S)/((1+taper)*span)
@@ -33,7 +33,7 @@ def make_avl_file():
     z_loc_LE = [0, dz]
     
     Ainc = [0.0, 0.0]
-    spanwise_discretize_points = 50    #If you go too high then your computer is dead
+    spanwise_discretize_points = 18   #If you go too high then your computer is dead
     chordwise_discretize_point = 12     # " "
     
     with open("avl_testing.avl", "w") as text_file:
@@ -63,7 +63,7 @@ def make_avl_file():
 make_avl_file()
 
 def lift_distribution(CL):        
-    p = subprocess.Popen(str(ROOT_DIR) + "/avl.exe", stdin=subprocess.PIPE, universal_newlines=True)
+    p = subprocess.Popen(r"C:\Users\mathi\Documents\DSE\Bigger_is_Better\class_I\avl.exe", stdin=subprocess.PIPE, universal_newlines=True)
     set_CL = "a c " + str(CL)
     p.communicate(os.linesep.join(["load", "avl_testing","case", "mach0.7", "oper", set_CL, "x","fs", "endresult"]))          
     lines = [line.rstrip('\n') for line in open('endresult')]
@@ -78,7 +78,8 @@ def lift_distribution(CL):
     elements = np.reshape(np.array(elements),(count,-1))
     os.remove("endresult")
     return(elements)
-output_avl = lift_distribution(0.8)
+    
+#output_avl = lift_distribution(0.8)
 
 c = 8.67
 def get_correct_data(output_avl,c):
@@ -96,5 +97,5 @@ def get_correct_data(output_avl,c):
 #    plt.scatter(y_pos,cd)
 #    plt.grid()
     return(x_pos,cl, cd)
-x = get_correct_data(output_avl,c)
+#x = get_correct_data(output_avl,c)
 #print(x)

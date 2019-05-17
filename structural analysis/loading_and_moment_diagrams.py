@@ -19,40 +19,40 @@ from lift_distr import *
 
 ### Move the geometry definition to over here
 CD0 = 0.02
-S = 427.80  # m^2
-AR = 8.67
-taper = 0.4
-Sweep0 = 0.558505  # rad
-by = 20.  # m
-b = 60.90
-Cr = 6.#(S + np.tan(Sweep0) * by * (b / 4)) / (by + (b - by) * ((1 + taper) / 2))
+S = 350.  # m^2
+b = 62.30
+AR = b**2/S
+taper = 0.275
+Sweep0 = (40/180) *np.pi  # rad
+#by = 20.  # m
+Cr = (2*S)/((1+taper)*b) #(S + np.tan(Sweep0) * by * (b / 4)) / (by + (b - by) * ((1 + taper) / 2))
 Ct = Cr * taper
-Cy = 0.#Cr - np.tan(Sweep0) * (by / 2)
+#Cy = 0.#Cr - np.tan(Sweep0) * (by / 2)
 Volume = 489.8545093  # m^3
-Wing_W = 57461.507853787  # kg
-Wing_Wf = 57461.507853787 * 9.81
+Wing_W = 44522. #57461.507853787  # kg
+Wing_Wf = Wing_W* 9.81 #57461.507853787 * 9.81
 specific_weight = Wing_Wf / Volume  # N/m^3
-Fuel_W_tot = 1517632
+Fuel_W_tot = 204350*0.8
 Sweepsc = m.atan(m.tan(Sweep0) - 4 / AR * (0.4 * (1 - taper) / (1 + taper))) #sweep shear center
 c_engine = 0 #position of start engine wrt chord
 y_shear_center = 0.2   #position of y position shear center wrt
 thrust_position = -1.5 # position of y of the thrust vector
 x_fuel_begin = 0
-x_fuel_end = 10.
-start_eng_1 = 5.
-start_eng_2 = 16.
+x_fuel_end = 0.7*(b/2)
+start_eng_1 = 0.376*(b/2)
+start_eng_2 = 0.667 *(b/2)
 n_engines = 4 
 total_thrust = 1183376.56
 engine_weight = 80067.989
 
 # input for each critical case; as the lift distribution varies for each case
-rho = 0.348331
-V = 253
+rho = 0.37
+V = 300
 n = 2.5
-W = 2000000.
+W = 300000*9.81
 
 def input_CL(n,S,V,rho,W):
-    input_CL = 2.5*W/(0.5*rho*V**2*S)
+    input_CL = W/(0.5*rho*V**2*S)
     return input_CL
 ## Import File List:
 output_avl = lift_distribution(input_CL(n,S,V,rho,W))
@@ -83,7 +83,7 @@ def c(x):
 
 
 def S_cross_section(x):
-    return c(x) * c(x) * 0.1
+    return c(x) * c(x) * 0.14
 
 Vfuel = sp.integrate.quad(S_cross_section, x_fuel_begin, x_fuel_end)[0]
 #print(Vfuel)
@@ -116,7 +116,7 @@ def Loadcalculator(x0,Ff):
         secondenginereachedyet = True
     else:
         secondenginereachedyet = False
-        
+
     #print(xmiddlevalues)
     for i, x in enumerate(xmiddlevalues):
         ### Geometry calculations
@@ -128,13 +128,13 @@ def Loadcalculator(x0,Ff):
         ###FINDING THE TOTAL FORCE DISTRIBUTION ALONG WING HALF SPAN
 
         ### Weight calculations
-        t = 0.10
+        t = 0.14
         section_volume = width * chord * t * chord
-        section_weight = section_volume * specific_weight
+        section_weight = section_volume * specific_weight *n * 1.5
 
         ### Lift calculations
         Cl = PolyFitCurveCl(x)
-        section_lift = 0.5 * Cl * rho * (V ** 2) * surfacearea * n * 1.5* -1 # because it points in the (-)ive z-direction
+        section_lift = 0.5 * Cl * rho * (V ** 2) * surfacearea * -1 * 1.5 * n# because it points in the (-)ive z-direction
         L = section_lift
 
         # print(surfacearea, Cl, section_lift)
@@ -143,13 +143,13 @@ def Loadcalculator(x0,Ff):
         # cruise_ff = 0.636572571
         # total_W_f = 0.5 * 1517632 * Ff * n * 1.5
         if x <= x_fuel_end:
-            section_fuel_weight = specific_W_f * section_volume * Ff
+            section_fuel_weight = specific_W_f * section_volume * Ff * n* 1.5
         else:
             section_fuel_weight = 0
 
         ###Drag Calculations
         Cd = CD0 + PolyFitCurveidrag(x)
-        section_drag = (0.5 * Cd * rho * (V ** 2) * surfacearea)* -1
+        section_drag = (0.5 * Cd * rho * (V ** 2) * surfacearea)* -1*n*1.5
 #        print(section_drag)
 
         # (-) because it's in a direction opposite to thrust
@@ -215,7 +215,7 @@ def Loadcalculator(x0,Ff):
 #    print("engine", section_engineweight)
 #    print('L',L)
 #    print('Cl',Cl)
-    return Fy, Fz, Mz, My, L, W_f, D, Th, section_engineweight, T
+    return Fy, Fz, Mz, My, L, W_f, D, Th, T
 
 
 
@@ -232,9 +232,10 @@ def load_diagrams(N):  ### 100 nodes, so 99 beam elements
     Thrustdistributionvalues = []
     Engine_distribution = []
     Tdistributionvalues = []
+    sectionvolume=[]
     
     for i, x in enumerate(HalfspanValues):
-        Fy, Fz, Mz, My, L, W_f, D, Th, section_engineweight, T = Loadcalculator(x,1)
+        Fy, Fz, Mz, My, L, W_f, D, Th, T = Loadcalculator(x,1)
         Fydistribution.append(Fy)
         Fzdistribution.append(Fz)
         Mzdistribution.append(Mz)
@@ -243,8 +244,10 @@ def load_diagrams(N):  ### 100 nodes, so 99 beam elements
         Fuelweightdistributionvalues.append(W_f)
         Dragdistributionvalues.append(D)
         Thrustdistributionvalues.append(Th)
-        Engine_distribution.append(section_engineweight)
+#        Engine_distribution.append(section_engineweight)
         Tdistributionvalues.append(T)
+#        sectionvolume.append(section_volume)
+        
     
     HalfspanValues = np.linspace(0, b / 2 - 0.00001, N)
     Fydistribution2 = []
@@ -257,9 +260,10 @@ def load_diagrams(N):  ### 100 nodes, so 99 beam elements
     Engine_distribution2 = []
     Fzdistribution2 = []
     Tdistributionvalues2 = []
+    sectionvolume2=[]
     
     for i, x in enumerate(HalfspanValues):
-        Fy, Fz, Mz, My, L, W_f, D, Th, section_engineweight, T = Loadcalculator(x,0.6)
+        Fy, Fz, Mz, My, L, W_f, D, Th,  T = Loadcalculator(x,0.6)
         Fydistribution2.append(Fy)
         Fzdistribution2.append(Fz)
         Mzdistribution2.append(Mz)
@@ -268,8 +272,9 @@ def load_diagrams(N):  ### 100 nodes, so 99 beam elements
         Fuelweightdistributionvalues2.append(W_f)
         Dragdistributionvalues2.append(D)
         Thrustdistributionvalues2.append(Th)
-        Engine_distribution2.append(section_engineweight)
+#        Engine_distribution2.append(section_engineweight)
         Tdistributionvalues2.append(T)
+#        sectionvolume2.append(section_volume)
     
     HalfspanValues = np.linspace(0, b / 2 - 0.00001, N)
     Fydistribution3 = []
@@ -282,9 +287,10 @@ def load_diagrams(N):  ### 100 nodes, so 99 beam elements
     Engine_distribution3 = []
     Fzdistribution3 = []
     Tdistributionvalues3 = []
+#    sectionvolume3=[]
     
     for i, x in enumerate(HalfspanValues):
-        Fy, Fz, Mz, My, L, W_f, D, Th, section_engineweight, T = Loadcalculator(x,0)
+        Fy, Fz, Mz, My, L, W_f, D, Th, T = Loadcalculator(x,0)
         Fydistribution3.append(Fy)
         Fzdistribution3.append(Fz)
         Mzdistribution3.append(Mz)
@@ -293,29 +299,61 @@ def load_diagrams(N):  ### 100 nodes, so 99 beam elements
         Fuelweightdistributionvalues3.append(W_f)
         Dragdistributionvalues3.append(D)
         Thrustdistributionvalues3.append(Th)
-        Engine_distribution3.append(section_engineweight)
+#        Engine_distribution3.append(section_engineweight)
         Tdistributionvalues3.append(T)
+#        sectionvolume3.append(section_volume)
         
-#    plt.subplot(2,3,5)
-#    plt.subplot(2,3,1)
-#    plt.gca().set_title('Mz distribution')
-#    plt.plot(HalfspanValues, Mzdistribution)
-#    plt.subplot(2,3,2)
-#    plt.gca().set_title('Fz distribution')
-#    plt.plot(HalfspanValues, Fzdistribution)
-#    plt.subplot(2,3,3)
-#    plt.gca().set_title('My distribution')
-#    plt.plot(HalfspanValues, Mydistribution)
-#    plt.subplot(2,3,4)
-#    plt.gca().set_title('Fy distribution')
-#    plt.plot(HalfspanValues, Fydistribution)
-#    plt.subplot(2,3,5)
-#    plt.gca().set_title('T distribution')
-#    plt.plot(HalfspanValues, Tdistributionvalues)
-#    plt.show()
-#    
-    return Fydistribution, Fzdistribution, Mydistribution, Mzdistribution, Tdistributionvalues
+    plt.subplot(2,3,5)
+    plt.subplot(2,3,1)
+    plt.gca().set_title('Mz distribution')
+    plt.plot(HalfspanValues, Mzdistribution)
+    plt.subplot(2,3,2)
+    plt.gca().set_title('Fz distribution')
+    plt.plot(HalfspanValues, Fzdistribution)
+    plt.subplot(2,3,3)
+    plt.gca().set_title('My distribution')
+    plt.plot(HalfspanValues, Mydistribution)
+    plt.subplot(2,3,4)
+    plt.gca().set_title('Fy distribution')
+    plt.plot(HalfspanValues, Fydistribution)
+    plt.subplot(2,3,5)
+    plt.gca().set_title('T distribution')
+    plt.plot(HalfspanValues, Tdistributionvalues)
+    plt.show()
+#    print(Mzdistribution[0])
+    maxMz = [max(Mzdistribution),  max(Mzdistribution2), max(Mzdistribution3)]
+    return maxMz, Fydistribution, Fzdistribution, Mydistribution, Mzdistribution, Tdistributionvalues, sectionvolume
 
+print(load_diagrams(100)[6])
+
+def wing_price_weight(N):
+    density_mat = 2801 #kg/m3
+    mat_cost = 6.6 #euro/kg
+    wing_volume = 0
+    wing_weight = wing_volume*density_mat
+    wing_price = wing_weight*mat_cost
+    
+    return wing_volume, wing_weight, wing_price
+
+print(wing_price_weight(100)[:])
+
+
+
+def required_Izz(Cr):
+    
+    M_max = max(load_diagrams(100)[0])
+    print(M_max)
+    y_max = 0.07*Cr
+    #print(y_max)
+    sigma_ult = 552*10**6
+    I_zz = M_max*y_max/sigma_ult
+    print(I_zz)
+    return I_zz
+
+#print(required_Izz(Cr))
+
+
+#print(load_diagrams(100))
 
 # TORQUE DISTRIBUTION CALCULATION
 # M_max = max(Mydistribution)
@@ -361,7 +399,7 @@ def load_diagrams(N):  ### 100 nodes, so 99 beam elements
 
 
 
-print(max(Mzdistribution))
+#print(max(Mzdistribution))
 
 
 
