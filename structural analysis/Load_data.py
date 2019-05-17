@@ -5,5 +5,39 @@ Created on Fri May 17 11:10:28 2019
 
 @author: Max
 """
+import os
 
-f = open("", 'r')
+def load(file_name):
+    script_dir = os.path.dirname(__file__) #<-- absolute dir the script is in
+#    rel_path = "design_results/"+str(file_name)
+    rel_path = str(file_name)
+    abs_file_path = os.path.join(script_dir, rel_path)
+
+
+    f = open(abs_file_path, 'r')
+    lines = f.readlines()
+
+    f.close
+    data = []
+    for line in lines:
+        x = line.split()
+        data.append(x)  
+    
+    inputs = []
+        
+    for i in range(len(data)-3):
+        inputs.append(float(data[i][-1]))
+        
+    return inputs
+    
+#inputs = load('aerodynamic_concept')
+#print (inputs)
+
+#file_name = 'aerodynamic_concept'
+#
+#rel_path = "design_results/"+str(file_name)
+#
+#
+#script_dir = os.path.dirname(__file__) #<-- absolute dir the script is in
+#abs_file_path = os.path.join(script_dir, rel_path)
+#print (rel_path,abs_file_path )

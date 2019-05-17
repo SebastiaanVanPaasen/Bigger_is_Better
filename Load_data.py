@@ -24,19 +24,10 @@ def load(file_name):
     
     inputs = []
         
-    for i in range(len(data)-1):
+    for i in range(len(data)-2):
         inputs.append(float(data[i][-1]))
         
     return inputs
     
 inputs = load('aerodynamic_concept')
 print (inputs)
-
-#file_name = 'aerodynamic_concept'
-#
-#rel_path = "design_results/"+str(file_name)
-#
-#
-#script_dir = os.path.dirname(__file__) #<-- absolute dir the script is in
-#abs_file_path = os.path.join(script_dir, rel_path)
-#print (rel_path,abs_file_path )
