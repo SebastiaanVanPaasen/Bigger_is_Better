@@ -1,4 +1,4 @@
-from input_files.high_bypass_ratio import *
+from input_files.strutted_wing import *
 import matplotlib.pyplot as plt
 
 
