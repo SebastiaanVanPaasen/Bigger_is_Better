@@ -89,3 +89,5 @@ def fuselage_diagrams(l_fus, F_wing, F_emp, x_wing_force, x_emp_force):
 
 fuselage_diagrams(l_fus, F_wing, F_emp, x_wing_force, x_emp_force)
 
+
+def fuselage_stress(d_fus, cruise_height, cabin height, yield_strength)
