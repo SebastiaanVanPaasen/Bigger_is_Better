@@ -133,17 +133,16 @@ SAR_W2 = [11.340741263150033, 12.353513977255927, 13.440985017850098, 14.6047134
 
 plt.subplot(121)
 plt.plot(H,minSAR_W1,"r",label = "%change in min SAR ")
-plt.plot(H,V_minSAR_W1,"b",label = "%change in V at min SAR")
+#plt.plot(H,V_minSAR_W1,"b",label = "%change in V at min SAR")
 plt.plot(H,SAR_W1,"g",label = "%average change in SAR")
 plt.title("Changes due to a 20% decrease in W")
 plt.xlabel("Altitude [m]")
 plt.ylabel("Change in %")
 plt.legend(loc = "upper right")
 
-
 plt.subplot(122)
 plt.plot(H,minSAR_W2,"r",label = "%change in min SAR ")
-plt.plot(H,V_minSAR_W2,"b",label = "%change in V at min SAR")
+#plt.plot(H,V_minSAR_W2,"b",label = "%change in V at min SAR")
 plt.plot(H,SAR_W2,"g",label = "%average change in SAR")
 plt.title("Changes due to a 20% increase in W")
 plt.xlabel("Altitude [m]")
