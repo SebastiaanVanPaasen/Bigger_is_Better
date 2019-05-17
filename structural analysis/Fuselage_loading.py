@@ -34,46 +34,58 @@ F_emp = 100000
 #L_h_tail = w_fus_group+w_wing_group+w_emp-L_wing
 
 #distributed load
-q_fus = w_fus_group/l_fus
 
-dx = 0.01
-x_range = np.arange(0,l_fus+dx,0.01)
 
-v_y = np.zeros(len(x_range))
-m_x = np.zeros(len(x_range))
-
-def step(x):
-    return 1 * (x > 0)
-
-for i in range(len(x_range)):
-    x = x_range[i]
-    v_y[i] = -q_fus*x +step(x - x_wing_force)*F_wing + step(x - x_emp_force)*F_emp
+def fuselage_diagrams(l_fus, F_wing, F_emp, x_wing_force, x_emp_force):
+    q_fus = w_fus_group/l_fus
     
-    m_x[i] = (+0.5*q_fus*x**2 - step(x - x_wing_force)*F_wing*x - step(x - x_emp_force)*F_emp*x)
+    dx = 0.01
+    x_range = np.arange(0,l_fus+dx,0.01)
     
-#    if x_range[i] >= x_ac_wing and x_range[i] <= x_cg_wing_group:
-#        v_y[i] = v_y[i] - L_wing
-#        
-#    elif x_range[i] >= x_cg_wing_group and x_range[i] <= x_ac_ht:   
-#        v_y[i] = v_y[i] - L_wing + w_wing_group 
-#    
-#    elif x_range[i] >= x_ac_ht and x_range[i] <= x_cg_emp :
-#        v_y[i] = v_y[i] -L_wing + w_wing_group - L_h_tail
-#    
-#    elif x_range[i] >= x_cg_emp:
-#        v_y[i] = v_y[i] -L_wing + w_wing_group - L_h_tail + w_emp
-#    
-#
-m_ac = m_x[-1]    
-for i in range(len(x_range)):
-    x = x_range[i]
-    m_x[i] = m_x[i] - step(x - x_ac_wing)*m_ac    
+    v_y = np.zeros(len(x_range))
+    m_x = np.zeros(len(x_range))
     
-plt.subplot(121) 
-plt.plot(x_range,v_y)
-plt.subplot(122)
-plt.plot(x_range,m_x)
-plt.show()    
+    def step(x):
+        return 1 * (x > 0)
+    
+    for i in range(len(x_range)):
+        x = x_range[i]
+        v_y[i] = -q_fus*x +step(x - x_wing_force)*F_wing + step(x - x_emp_force)*F_emp
+        
+        m_x[i] = (+0.5*q_fus*x**2 - step(x - x_wing_force)*F_wing*x - step(x - x_emp_force)*F_emp*x)
+        
+    #    if x_range[i] >= x_ac_wing and x_range[i] <= x_cg_wing_group:
+    #        v_y[i] = v_y[i] - L_wing
+    #        
+    #    elif x_range[i] >= x_cg_wing_group and x_range[i] <= x_ac_ht:   
+    #        v_y[i] = v_y[i] - L_wing + w_wing_group 
+    #    
+    #    elif x_range[i] >= x_ac_ht and x_range[i] <= x_cg_emp :
+    #        v_y[i] = v_y[i] -L_wing + w_wing_group - L_h_tail
+    #    
+    #    elif x_range[i] >= x_cg_emp:
+    #        v_y[i] = v_y[i] -L_wing + w_wing_group - L_h_tail + w_emp
+    #    
+    #
+    m_ac = m_x[-1]    
+    for i in range(len(x_range)):
+        x = x_range[i]
+        m_x[i] = m_x[i] - step(x - x_ac_wing)*m_ac    
+        
+    plt.subplot(121)
+    plt.title("y shear force diagram of the fuselage")
+    plt.grid()
+    plt.plot(x_range,v_y)
+    plt.xlabel('Fuselage length (m)')
+    plt.ylabel('Shear Force (N)')
+    plt.subplot(122)
+    plt.plot(x_range,m_x)
+    plt.grid()
+    plt.title("x moment diagram of the fuselage")
+    plt.xlabel('Fuselage length (m)')
+    plt.ylabel('Moment (Nm)')
+    plt.show()    
     
 
+fuselage_diagrams(l_fus, F_wing, F_emp, x_wing_force, x_emp_force)
 
