@@ -7,14 +7,14 @@ from class_I.class_I_empennage_landinggear import class_I_empennage
 from class_I.flight_envelope import manoeuvring_envelope, gust_envelope
 from avl_iterator_3.conv_wing_avl import make_avl_file, run_avl, find_clalpha
 from class_II_weight_estimation import *
-from input_files.aerodynamic_concept import *
+from input_files.strutted_wing import *
 from performance.SAR_lists_iterator import SAR
 import matplotlib.pyplot as plt
 
 # from class_I.wing_loading_diagram import final_diagram
 
-M_cruise_list = np.arange(0.55, 0.90, 0.05)
-h_cruise_list = np.arange(5000, 13000, 1000)
+M_cruise_list = np.arange(0.75, 0.80, 0.05)
+h_cruise_list = np.arange(12000, 13000, 1000)
 # fuel_consumption = np.arange(0.4, 0.9, 0.1)
 # aspect_ratios = np.arange(5, 16, 0.5)
 # result_wing = []
@@ -81,7 +81,9 @@ for M_cruise in M_cruise_list:
 
             # Choosing a design point based on the T/W-W/S diagram ---------------------------------------------------------
             T, S = W_TO * T_input, W_TO / S_input
-            CL_cruise = W_TO / (0.5 * Rho_Cruise * (V_cruise ** 2) * S)
+            CL_cruise = (0.75 * W_TO) / (0.5 * Rho_Cruise * (V_cruise ** 2) * S)
+            if CL_cruise > 1.:
+                CL_cruise = 1.
             # print(Rho_Cruise, V_cruise, S, CD_cruise)
             D = 0.5 * Rho_Cruise * (V_cruise ** 2) * S * CD_cruise
             iteration["thrust, area, cl"] = [T, S, CL_cruise]
@@ -318,8 +320,9 @@ h_v = []
 sar_v = []
 
 for r in range(len(final_h)):
-    plt.plot(final_h[r], final_SAR[r], label='Mach %s' % round(final_M[r], 2))
-
+    plt.plot(final_h[r], final_SAR[r], 'o', label='Mach %s' % round(final_M[r], 2))
+    print(final_h[r])
+    print(final_SAR)
     # min_SAR.append(min(final_SAR[r]))
     # i = final_SAR[r].index(min(final_SAR[r]))
     # min_h.append(final_h[r][i])
@@ -339,6 +342,7 @@ plt.hlines(0.9 * SAR_ref / 200, 0, 13000, "gray", "--")
 plt.legend()
 plt.title('Fuel consumption per passenger w.r.t. Mach number')
 plt.xlabel("Altitude [m]")
+plt.grid()
 # plt.ylim(0.006, 0.011)
 plt.ylabel("Fuel consumption [kg/km/passenger]")
 # plt.savefig("Design 1")

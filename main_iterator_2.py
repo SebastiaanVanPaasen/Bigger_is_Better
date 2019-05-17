@@ -7,7 +7,7 @@ from class_I.class_I_empennage_landinggear import class_I_empennage
 from class_I.flight_envelope import manoeuvring_envelope, gust_envelope
 from avl_iterator_2.conv_wing_avl import make_avl_file, run_avl, find_clalpha
 from class_II_weight_estimation import *
-from input_files.aerodynamic_concept import *
+from input_files.strutted_wing import *
 from performance.SAR_lists_iterator import SAR
 import matplotlib.pyplot as plt
 
@@ -81,7 +81,9 @@ for M_cruise in M_cruise_list:
 
             # Choosing a design point based on the T/W-W/S diagram ---------------------------------------------------------
             T, S = W_TO * T_input, W_TO / S_input
-            CL_cruise = W_TO / (0.5 * Rho_Cruise * (V_cruise ** 2) * S)
+            CL_cruise = (0.75 * W_TO) / (0.5 * Rho_Cruise * (V_cruise ** 2) * S)
+            if CL_cruise > 1.:
+                CL_cruise = 1.
             # print(Rho_Cruise, V_cruise, S, CD_cruise)
             D = 0.5 * Rho_Cruise * (V_cruise ** 2) * S * CD_cruise
             iteration["thrust, area, cl"] = [T, S, CL_cruise]
