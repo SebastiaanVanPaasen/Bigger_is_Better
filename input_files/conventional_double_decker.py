@@ -65,12 +65,12 @@ wing_option = 0  # Depending on the type of wing configuration, 1 is high wing, 
 tail_type = 0  # Depending on the type of tail configuration, 1 is T-tail, 0 is conventional
 
 Oswald = 0.9  # estimated from ADSEE-I L3
-T_input = 0.26
-S_input = 8200
-A = 8.5
+T_input = 0.27
+S_input = 8000
+A = 7
 CD_0 = C_fe * S_ratio
-N_engines = 4.  #
-w_engine = 4000.  # kg   Obtained from Bram
+N_engines = 2.  #
+w_engine = 8500.  # kg   Obtained from Bram
 propeller_choice = 0
 
 W_e_frac_input = 0.525  # Based on average between wide and narrow body, from Ed Obert

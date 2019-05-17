@@ -7,12 +7,12 @@ from class_I.class_I_empennage_landinggear import class_I_empennage
 from class_I.flight_envelope import manoeuvring_envelope, gust_envelope
 from avl.conv_wing_avl import make_avl_file, run_avl, find_clalpha
 from class_II_weight_estimation import *
-from input_files.aerodynamic_concept import *
+from input_files.conventional_double_decker import *
 from performance.SAR_lists_iterator import SAR
 import matplotlib.pyplot as plt
 
-M_cruise_list = np.arange(0.75, 0.77, 0.05)
-h_cruise_list = np.arange(12000, 12400, 1000)
+M_cruise_list = np.arange(0.7, 0.74, 0.05)
+h_cruise_list = np.arange(8000, 8400, 1000)
 # fuel_consumption = np.arange(0.4, 0.9, 0.1)
 # aspect_ratios = np.arange(5, 16, 0.5)
 # result_wing = []
@@ -80,11 +80,8 @@ for M_cruise in M_cruise_list:
             # print(W_tfo_frac)
             iteration["weights"] = [W_TO, W_E_I, W_P, W_F]
             mass_fractions[6] = (weights[1] / weights[0])  # empty mass fraction
-            pie_chart_fracs.append(weights[1] / weights[0])
             mass_fractions[7] = (weights[2] / weights[0])  # payload mass fraction
-            pie_chart_fracs.append(weights[2] / weights[0])
             mass_fractions[8] = (weights[3] / weights[0])  # fuel mass fraction
-            pie_chart_fracs.append(weights[3] / weights[0])
 
             # Choosing a design point based on the T/W-W/S diagram ---------------------------------------------------------
             T, S = W_TO * T_input, W_TO / S_input
@@ -282,8 +279,14 @@ for M_cruise in M_cruise_list:
             print("the percentage equals: " + str(percentage))
             total[str(i)] = iteration
             i += 1
+        pie_chart_fracs.append(W_P / W_TO)
+        pie_chart_fracs.append(W_F / W_TO)
+        # pie_chart_fracs.append(W_E_II / W_TO)
+        pie_chart_fracs.append((w_weight * lbs_to_kg * g_0) / W_TO)
+        pie_chart_fracs.append((emp_weight * lbs_to_kg * g_0) / W_TO)
+        pie_chart_fracs.append((fus_weight*lbs_to_kg*g_0))
 
-        file = open("Aerodynamic concept" + str(), "w")
+        file = open("Double decker 2 engines 2 concept" + str(), "w")
         file.write("The Mach number: " + str(M_cruise) + '\n')
         file.write("The cruise altitude in m: " + str(h_cruise) + '\n')
         file.write("Take-off weight in N: " + str(round(W_TO, 2)) + '\n')
@@ -370,7 +373,7 @@ plt.xlabel("Altitude [m]")
 # plt.ylim(0.006, 0.011)
 plt.ylabel("Fuel consumption [kg/km/passenger]")
 # plt.savefig("Design 1")
-plt.show()
+# plt.show()
 
 # final_diagram(CD_0, Oswald)
 # print("The required thrust equals: " + str(T))
