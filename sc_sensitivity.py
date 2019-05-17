@@ -4,7 +4,7 @@ Created on Thu May 16 08:51:34 2019
 
 @author: Hidde
 """
-from iterators.iterator_function import main_iterator
+from iterator_function import main_iterator
 from class_I.loading_diagram import potato
 from class_I.seats import *
 from stability_and_control.stability import C_L_alpha_Ah, Sh_S_stability

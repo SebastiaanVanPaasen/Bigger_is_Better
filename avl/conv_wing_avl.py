@@ -118,7 +118,7 @@ def run_avl(cl_cruise, M_cruise, CD_0):
     define_run_condition(M_cruise, CD_0)
     # print(ROOT_dir)
     p = subprocess.Popen(str(ROOT_dir) + "/avl/avl.exe", stdin=subprocess.PIPE, stdout=subprocess.DEVNULL,
-                         universal_newlines=True)
+                        universal_newlines=True)
     set_cl_cruise = "a c " + str(cl_cruise)
     p.communicate(os.linesep.join(
         ["load", "conv_wing", "case", "mach" + str(M_cruise) + ".run", "oper", set_cl_cruise, "x", "ft", "endresult"]))
