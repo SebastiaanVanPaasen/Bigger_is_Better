@@ -42,8 +42,8 @@ def wing_parameters(m_cruise, cl_cruise, surface_area, aspect_ratio, option):
     thickness_over_chord = (np.cos(half_chord_sweep) ** 3 * (
             m_t - m_dd * np.cos(half_chord_sweep)) - 0.115 * cl_cruise ** 1.5) / (np.cos(half_chord_sweep) ** 2)
 
-    if thickness_over_chord < 0.10:
-        thickness_over_chord = 0.10
+    if thickness_over_chord < 0.14:
+        thickness_over_chord = 0.14
     else:
         thickness_over_chord = min(thickness_over_chord, 0.18)
 
@@ -51,6 +51,7 @@ def wing_parameters(m_cruise, cl_cruise, surface_area, aspect_ratio, option):
 
     # print("here again")
     # print(leading_edge_sweep)
+    # print(surface_area)
     # print(m_t - m_dd)
     # print(half_chord_sweep)
     # print(cl_cruise)

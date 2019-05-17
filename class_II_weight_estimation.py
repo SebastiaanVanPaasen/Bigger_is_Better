@@ -23,7 +23,7 @@ def wing_weight(w_to, w_f, b, semi_chord_sweep, n_ult, s, t_max, choice):
     w_weight = 0.0017 * w_mzf * ((b / s_angle) ** 0.75) * (1 + np.sqrt(6.3 * s_angle / b)) * (n_ult ** 0.55) * (
             (b * s / (t_max * w_mzf * s_angle)) ** 0.30)
 
-    changes = [0.02, -0.05, -0.10, -0.05, -30., 0.02]
+    changes = [0.02, -0.05, -0.10, -0.05, -0.30, 0.02]
     # first is to include spoilers and speed brakes
     # second is with 2 wing mounted engines
     # third is with 4 wing mounted engines
