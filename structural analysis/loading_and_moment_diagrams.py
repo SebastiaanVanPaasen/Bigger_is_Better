@@ -333,29 +333,6 @@ def load_diagrams(N):  ### 100 nodes, so 99 beam elements
 print(load_diagrams(100)[6])
 
 
-def wing_price_weight(N):
-    density_mat = 2801  # kg/m3
-    mat_cost = 6.6  # euro/kg
-    wing_volume = 0
-    wing_weight = wing_volume * density_mat
-    wing_price = wing_weight * mat_cost
-
-    return wing_volume, wing_weight, wing_price
-
-
-print(wing_price_weight(100)[:])
-
-
-def required_Izz(Cr):
-    M_max = max(load_diagrams(100)[0])
-    print(M_max)
-    y_max = 0.07 * Cr
-    # print(y_max)
-    sigma_ult = 552 * 10 ** 6
-    I_zz = M_max * y_max / sigma_ult
-    print(I_zz)
-    return I_zz
-
 # print(required_Izz(Cr))
 
 

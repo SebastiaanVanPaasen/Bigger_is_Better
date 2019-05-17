@@ -1,6 +1,7 @@
 from loading_and_moment_diagrams import *
 from math import *
 from stress_distribution_wing import *
+from airfoil_geometry import airfoil_geometry
 
 E = 69*10**9
 I_yy = 0.026
@@ -11,27 +12,40 @@ t = 0.01
 Fydistribution, Fzdistribution, Mydistribution, Mzdistribution, Tdistributionvalues, chord_section, HalfspanValues = load_diagrams(100)
     
 airfoil = 'NACA3414.txt'
-def ds_airfoil(airfoil):
-    data = load_airfoil(airfoil)
-    data_z = data[1]
-    data_y = data[2]
-    ds = 0
-    for i in range(1,len(data_z)):
-        ds_point = sqrt((data_z[i]-data_z[i-1])**2+(data_y[i]-data_y[i-1])**2)
-        ds = ds + ds_point
-    return(ds)
 
-ds = ds_airfoil(airfoil)
+def s_airfoil(N,b):
+    
+    data_z_all_sec = airfoil_geometry(N,b)[0]
+    data_y_upper_all_sec = airfoil_geometry(N,b)[1]
+    data_y_lower_all_sec = airfoil_geometry(N,b)[2]
+    ds_sec_all = []
+    s_all_sec = []
+    
+    for i in range(len(data_z_all_sec)):
+        for j in range(len(data_z_all_sec[0])-1):
+            ds_sec = sqrt((data_z_all_sec[i][j+1]-data_z_all_sec[i][j])**2+(data_y_upper_all_sec[i][j+1]-data_y_upper_all_sec[i][j])**2) + sqrt((data_z_all_sec[i][j+1]-data_z_all_sec[i][j])**2+(data_y_lower_all_sec[i][j+1]-data_y_lower_all_sec[i][j])**2)
+            ds_sec_all.append(ds_sec)
+    
+    ds_sec_all = np.asarray(ds_sec_all)
+    ds_sec_all = np.reshape(ds_sec_all, (len(data_z_all_sec),len(data_z_all_sec[0])-1))
+    
+    for i in range(len(ds_sec_all)):
+        s_all_sec.append(sum(ds_sec_all[i]))
+        
+        
+    return(s_all_sec)
 
-def enclosed_properties(ds, chord_section, Am, t):
-    ds_chord = list(np.array(chord_section)*ds)
-    Am_chord = list(Am * (np.array(chord_section))*(np.array(chord_section)))
-    t_chord = list(t * np.array(chord_section))
-    shear_center_z = list(np.array(chord_section)*0.4)
-    return ds_chord, Am_chord, t_chord, shear_center_z
-
-ds_chord, Am_chord, t_chord, shear_center_z = enclosed_properties(ds, chord_section, Am, t)
+#print('s',s_airfoil(100,62.30))
 #
+#def enclosed_properties(ds, chord_section, Am, t):
+#    ds_chord = list(np.array(chord_section)*ds)
+#    Am_chord = list(Am * (np.array(chord_section))*(np.array(chord_section)))
+#    t_chord = list(t * np.array(chord_section))
+#    shear_center_z = list(np.array(chord_section)*0.4)
+#    return ds_chord, Am_chord, t_chord, shear_center_z
+#
+#ds_chord, Am_chord, t_chord, shear_center_z = enclosed_properties(ds, chord_section, Am, t)
+##
 #def deflection_bending(Mzdistribution,HalfspanValues):
 #    slope = 0.
 #    deflection = 0.

@@ -6,6 +6,7 @@ Created on Wed May 15 16:01:47 2019
 """
 import numpy as np
 import math as m
+import scipy as sp
 from stress_distribution_wing import load_airfoil
 from loading_and_moment_diagrams import c
 from airfoil_geometry import airfoil_geometry
@@ -113,7 +114,7 @@ print(sum_s_wingbox)
 #print(sum(I_xx_lower)+sum(I_xx_lower) + sum(I_xx_upper) + sum(I_xx_upper))
 
 
-def I_xx_spars(N,b,length,t):
+def I_zz_spars(N,b,length,t):
     
     dy_frontspar = inertia(N,b)[0][0] #upper_y[0] 
     dy_backspar = inertia(N,b)[0][-1] #upper_y[-1]
@@ -123,10 +124,14 @@ def I_xx_spars(N,b,length,t):
 #    length = 0.3
     area = t*length
     print('hoi',inertia(N,b)[0][0]-inertia(N,b)[1][0])
-    I_xx_front = ((1/12) * length*t**3 + area*dy_frontspar**2)*2 + (1/12)*t*(inertia(N,b)[0][0]-inertia(N,b)[1][0])**3
-    I_xx_back = ((1/12) * length*t**3 + area*dy_backspar**2)*2 + (1/12)*t*(inertia(N,b)[0][-1]-inertia(N,b)[1][-1])**3
-    I_xx = I_xx_front + I_xx_back
-    print(I_xx)
-    return #I_xx  
+
+    front_spar_area = t*length*2 + (inertia(N,b)[0][0]-inertia(N,b)[1][0])*t
+    back_spar_area = t*length*2 + (inertia(N,b)[0][-1]-inertia(N,b)[1][-1])*t
+    
+    I_zz_front = ((1/12) * length*t**3 + area*dy_frontspar**2)*2 + (1/12)*t*(inertia(N,b)[0][0]-inertia(N,b)[1][0])**3
+    I_zz_back = ((1/12) * length*t**3 + area*dy_backspar**2)*2 + (1/12)*t*(inertia(N,b)[0][-1]-inertia(N,b)[1][-1])**3
+    I_zz = I_zz_front + I_zz_back
+    print(I_zz)
+    return I_zz, front_spar_area, back_spar_area   
 
  
