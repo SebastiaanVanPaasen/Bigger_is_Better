@@ -29,10 +29,10 @@ def load(file_name):
         
     return inputs
     
-inputs = load('Aerodynamic_concept')
+inputs = load('aerodynamic_concept')
 print (inputs)
 
-#file_name = 'Aerodynamic_concept'
+#file_name = 'aerodynamic_concept'
 #
 #rel_path = "design_results/"+str(file_name)
 #
