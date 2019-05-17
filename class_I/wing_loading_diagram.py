@@ -1,4 +1,4 @@
-from input_files.high_bypass_ratio import *
+from input_files.strutted_wing import *
 import matplotlib.pyplot as plt
 
 
@@ -149,13 +149,13 @@ TW = np.arange(0., 0.45, 0.05)
 def final_diagram(cd0, os):
     diagram = TWdiagram(Sigma_TO, WS, TW, cd0, os, AR)
     take_off, labels_to = diagram.calc_take_off(CL_TO, TOP)
-    cruise, labels_cruise = diagram.calc_cruise(Rho_Cruise, V_cruise)
+    cruise, labels_cruise = diagram.calc_cruise(Rho_Cruise_input, V_cruise_input)
     climb_rate_performance, labels_climb_rate = diagram.calc_climb_rate(Climb_rate, Rho_TO)
     climb_gradient_performance, labels_climb_gradient = diagram.calc_climb_gradient(Delta_CD0_TO_gear_up, N_engines,
                                                                                     Climb_gradient, Delta_oswald_TO)
     landing, labels_landing = diagram.calc_landing(Landing_factor, Rho_Landing, V_stall_Landing, CL_Landing, )
     stall, labels_stall = diagram.calc_stall([V_stall_Cruise, V_stall_Landing], [CL_Cruise_max, CL_Landing_max],
-                                             [Rho_Cruise, Rho_Landing])
+                                             [Rho_Cruise_input, Rho_Landing])
 
     requirement = [climb_gradient_performance, climb_rate_performance, cruise, take_off, landing, stall]
     labelling = [labels_climb_gradient, labels_climb_rate, labels_cruise, labels_to, labels_landing, labels_stall]

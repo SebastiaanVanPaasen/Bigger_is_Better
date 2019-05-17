@@ -111,12 +111,12 @@ def Sh_S_stability(x_cg, M_h_cruise, eta, hcsweeph, hcsweepw, A_w, A_h, M_w_crui
         Sh_S_stability_lessSM.append(Sh_S_less)
     
     stability_trend = np.polyfit(x_cg, Sh_S_stability, 1)
-#    print(stability_trend[0])
-#    print(stability_trend[1])
-#    plt.plot(x_cg, Sh_S_stability, 'r')
-#    plt.plot(x_cg, Sh_S_stability_lessSM)
-#    plt.ylim(bottom=0)
-#    plt.show()
+    print(stability_trend[0])
+    print(stability_trend[1])
+    plt.plot(x_cg, Sh_S_stability, 'r')
+    plt.plot(x_cg, Sh_S_stability_lessSM)
+    plt.ylim(bottom=0)
+    plt.show()
 #    
     return Sh_S_stability
 

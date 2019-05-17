@@ -31,20 +31,20 @@ mass_fractions_input = [mass_frac_wing, mass_frac_emp, mass_frac_fuse, mass_frac
 # fourth is if landing gear is not wing mounted
 # fifth is for strutted wings
 # sixth is for fowler flaps
-wing_choice = [1, 1, 0, 1, 0, 0]
+wing_choice = [1, 1, 0, 0, 0, 0]
 # choose 1 if you have variable incidence stabilizers
 # choose 1 if the horizontal tails are fin mounted
 empennage_choice = [0, 0]
 # choose 1 if your landing gear is attached to the fuselage
 fuselage_choice = 0
 # choose 1 if a turbojet or low bypass ratio turbofan is used
-nacelle_choice = 0
+nacelle_choice = 1
 # choose first if you have buried engine, 0 for no buried engines
 # choose secondly if the ducts have a flat cross section, in this case 1
 induction_choice = [0, 0]
 # choose 1 if piston engines are used
 prop_choice = 1
-# choose 1 if you hae non self-sealing bladder tanks
+# choose 1 if you have non self-sealing bladder tanks
 fuel_sys_choice = 0
 # choice is the type of starting system, 1 for one or two jet engines with pneumatic starting system
 # 2 for four jet engines with pneumatic starting systems, 3 for jet engines using electric starting systems
@@ -62,13 +62,15 @@ hydro_choice = 0
 S_ratio = 6.3  # estimated from ADSEE-I L3
 C_fe = 0.0045  # estimated from ADSEE-I L3
 wing_option = 0  # Depending on the type of wing configuration, 1 is high wing, 0 is low wing
+tail_type = 0  # Depending on the type of tail configuration, 1 is T-tail, 0 is conventional
+
 Oswald = 0.9  # estimated from ADSEE-I L3
-T_input = 0.27
-S_input = 8100
-A = 11
+T_input = 0.21
+S_input = 6250
+A = 9
 CD_0 = C_fe * S_ratio
 N_engines = 2.  #
-w_engine = 7000.  # kg   Obtained from Bram
+w_engine = 8500.  # kg   Obtained from Bram
 propeller_choice = 0
 
 W_e_frac_input = 0.525  # Based on average between wide and narrow body, from Ed Obert
@@ -89,15 +91,15 @@ W_carg = 20.  # kg Based on statistics
 
 # General aircraft input parameters ------------------------------------------------------------------------------------
 # General cruise parameters
-# h_cruise = 10000.  # m based on the sustainability analysis so far
-# M_cruise = 0.69  # Mach number decided to cruise on
-# Temp_cruise = Temp_0 + a * h_cruise  # K  based on the altitude you fly at
-# a_cruise = np.sqrt(gamma * R_gas * Temp_cruise)  # m/s based on the temperature
-# V_cruise = M_cruise * a_cruise  # m/s  based on the Mach number and speed of sound
+h_cruise_input = 10000.  # m based on the sustainability analysis so far
+M_cruise_input = 0.75  # Mach number decided to cruise on
+Temp_cruise = Temp_0 + a * h_cruise_input  # K  based on the altitude you fly at
+a_cruise_input = np.sqrt(gamma * R_gas * Temp_cruise)  # m/s based on the temperature
+V_cruise_input = M_cruise_input * a_cruise_input  # m/s  based on the Mach number and speed of sound
 
 # Densities ------------------------------------------------------------------------------------------------------------
 Rho_TO = Rho_0  # kg/m^3    standard sea-level density
-# Rho_Cruise = Rho_0 * ((1 + (a * h_cruise) / Temp_0) ** (-(g_0 / (R_gas * a))))  # kg/m^3   based on cruise altitude
+Rho_Cruise_input = Rho_0 * ((1 + (a * h_cruise_input) / Temp_0) ** (-(g_0 / (R_gas * a))))  # kg/m^3   based on cruise altitude
 Rho_Landing = Rho_0  # kg/m^3   standard sea-level density
 
 # aircraft cg-locations ------------------------------------------------------------------------------------------------
@@ -121,7 +123,6 @@ n_fuel_tanks = 2.
 
 # main wing ------------------------------------------------------------------------------------------------------------
 winglet_height = 0.  # Mostly important for boxed wing, else leave as 0
-tail_type = 0  # Depending on the type of tail configuration, 1 is T-tail, 0 is conventional
 
 # horizontal tail ------------------------------------------------------------------------------------------------------
 QC_sweep_h = np.radians(32.7)  # degrees    based on wide body statistics
