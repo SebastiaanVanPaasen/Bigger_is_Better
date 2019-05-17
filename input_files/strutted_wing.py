@@ -63,9 +63,9 @@ S_ratio = 6.3  # estimated from ADSEE-I L3
 C_fe = 0.0045  # estimated from ADSEE-I L3
 wing_option = 0  # Depending on the type of wing configuration, 1 is high wing, 0 is low wing
 Oswald = 0.9  # estimated from ADSEE-I L3
-T_input = 0.26
-S_input = 8200
-A = 16
+T_input = 0.16
+S_input = 5000
+A = 18
 CD_0 = C_fe * S_ratio
 N_engines = 2.  #
 w_engine = 7000.  # kg   Obtained from Bram
@@ -77,8 +77,8 @@ CL_cruise_input = np.sqrt((CD_0 * np.pi * A * Oswald) / 3)
 
 # Inputs that are often changed for the design -------------------------------------------------------------------------
 # based on the reference aircraft B747
-# h_cruise = 6000.  # m based on the sustainability analysis so far
-# M_cruise = 0.65  # Mach number decided to cruise on
+h_cruise = 11000.  # m based on the sustainability analysis so far
+M_cruise = 0.7  # Mach number decided to cruise on
 
 # Passenger characteristics --------------------------------------------------------------------------------------------
 N_pas = 450.  # Requirement set by the exercise

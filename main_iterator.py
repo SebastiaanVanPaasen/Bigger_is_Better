@@ -303,7 +303,7 @@ for M_cruise in M_cruise_list:
         # print(emp_weight * lbs_to_kg)
         # print(prop_sys_weight*lbs_to_kg)
 
-        file = open("aero_concept" + str(), "w")
+        file = open("hbp_concept" + str(), "w")
         file.write("The Mach number: " + str(M_cruise) + '\n')
         file.write("The cruise altitude in m: " + str(h_cruise) + '\n')
 
