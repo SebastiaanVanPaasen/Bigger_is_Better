@@ -15,7 +15,7 @@ from matplotlib import pyplot as plt
 #inputs from wingplanform
 ##reference 777
 S = 427.80
-span = 60.90
+span = 60.900
 MAC = 8.750
 AR = 8.67
 taper = 0.149
