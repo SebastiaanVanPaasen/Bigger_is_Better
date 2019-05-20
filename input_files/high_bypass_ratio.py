@@ -79,8 +79,8 @@ CL_cruise_input = np.sqrt((CD_0 * np.pi * A * Oswald) / 3)
 
 # Inputs that are often changed for the design -------------------------------------------------------------------------
 # based on the reference aircraft B747
-# h_cruise = 6000.  # m based on the sustainability analysis so far
-# M_cruise = 0.65  # Mach number decided to cruise on
+h_cruise = 10000.  # m based on the sustainability analysis so far
+M_cruise = 0.7  # Mach number decided to cruise on
 
 # Passenger characteristics --------------------------------------------------------------------------------------------
 N_pas = 450.  # Requirement set by the exercise
@@ -91,7 +91,7 @@ W_carg = 20.  # kg Based on statistics
 
 # General aircraft input parameters ------------------------------------------------------------------------------------
 # General cruise parameters
-h_cruise_input = 8000.  # m based on the sustainability analysis so far
+h_cruise_input = 10000.  # m based on the sustainability analysis so far
 M_cruise_input = 0.7  # Mach number decided to cruise on
 Temp_cruise = Temp_0 + a * h_cruise_input  # K  based on the altitude you fly at
 a_cruise_input = np.sqrt(gamma * R_gas * Temp_cruise)  # m/s based on the temperature

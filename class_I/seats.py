@@ -43,8 +43,7 @@ def Seats(seats_ab):
     return (Window, Aisle, Middle)
 
 
-def cg_seats(Pseat, N_rows_above, N_rows_below, l_nosecone_range):
-    l_nosecone = (l_nosecone_range[0] + l_nosecone_range[1]) / 2.
+def cg_seats(Pseat, N_rows_above, N_rows_below, l_nosecone):
     xcg_seats = [l_nosecone]
     for i in range(max([N_rows_below, N_rows_above]) - 1):
         xcg_seats.append(xcg_seats[i] + Pseat)

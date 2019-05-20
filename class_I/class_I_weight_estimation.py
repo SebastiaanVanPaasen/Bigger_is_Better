@@ -43,7 +43,8 @@ def class_I(cl, cd, r_cruise, r_res, v_cruise, cj_cruise, W_tfo_frac, W_e_frac, 
     mission_frac = np.array(
         [fractions[0], fractions[1], fractions[2], fractions[3], cruise_1, fractions[4], fractions[5], cruise_2,
          fractions[6], fractions[7]])
-
+    # print("hoi")
+    # print(W_e_frac)
     W_f_frac = calc_fuel_fraction(mission_frac)
     W_to_frac = 1 - W_f_frac - W_tfo_frac - W_e_frac
 

@@ -19,7 +19,6 @@ def make_avl_file():
     qc_sweep = np.radians(31.60)
     dihedral = 0
     Cr = (2*S)/((1+taper)*span)
-    print(Cr)
     Ct = Cr*taper
     chords = [Cr, Ct]
     CD_0 = 0.015
@@ -77,23 +76,21 @@ def lift_distribution(CL):
     elements = np.reshape(np.array(elements),(count,-1))
     os.remove("endresult")
     return(elements)
-output_avl = lift_distribution(0.8)
+output_avl = lift_distribution(2.5)
 
-c = 8.67
-def get_correct_data(output_avl,c):
-    x_pos = []
+def get_correct_data(output_avl):
+    y_pos = []
     cl = []
     cd = []
     for i in range(len(output_avl)):
-        x_pos.append(output_avl[i][1])
-        cl.append(output_avl[i][4]/c)
+        y_pos.append(output_avl[i][1])
+        cl.append(output_avl[i][6])
         cd.append(output_avl[i][8])
-#    x_pos = x_pos[len(x_pos):int(len(x_pos)/2)-1:-1] + x_pos[0:int(len(x_pos)/2)]
-#    cl = cl[len(x_pos):int(len(x_pos)/2)-1:-1] + cl[0:int(len(x_pos)/2)]
-#    cd = cd[len(x_pos):int(len(x_pos)/2)-1:-1] + cd[0:int(len(x_pos)/2)]
-#    plt.scatter(x_pos,cl)
+    y_pos = y_pos[len(y_pos):int(len(y_pos)/2)-1:-1] + y_pos[0:int(len(y_pos)/2)]
+    cl = cl[len(y_pos):int(len(y_pos)/2)-1:-1] + cl[0:int(len(y_pos)/2)]
+    cd = cd[len(y_pos):int(len(y_pos)/2)-1:-1] + cd[0:int(len(y_pos)/2)]
+    plt.scatter(y_pos,cl)
 #    plt.scatter(y_pos,cd)
-#    plt.grid()
-    return(x_pos,cl, cd)
-x_pos,cl, cd = get_correct_data(output_avl,c)
-print(cl)
+    plt.grid()
+    return(y_pos,cl, cd)
+x = get_correct_data(output_avl)

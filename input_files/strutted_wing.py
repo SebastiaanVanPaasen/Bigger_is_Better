@@ -31,14 +31,14 @@ mass_fractions_input = [mass_frac_wing, mass_frac_emp, mass_frac_fuse, mass_frac
 # fourth is if landing gear is not wing mounted
 # fifth is for strutted wings
 # sixth is for fowler flaps
-wing_choice = [1, 1, 0, 1, 0, 0]
+wing_choice = [1, 0, 0, 0, 1, 0]
 # choose 1 if you have variable incidence stabilizers
 # choose 1 if the horizontal tails are fin mounted
-empennage_choice = [0, 0]
+empennage_choice = [0, 1]
 # choose 1 if your landing gear is attached to the fuselage
-fuselage_choice = 0
+fuselage_choice = 1
 # choose 1 if a turbojet or low bypass ratio turbofan is used
-nacelle_choice = 0
+nacelle_choice = 1
 # choose first if you have buried engine, 0 for no buried engines
 # choose secondly if the ducts have a flat cross section, in this case 1
 induction_choice = [0, 0]
@@ -52,7 +52,7 @@ fuel_sys_choice = 0
 start_up_choice = 1
 # Choose 1 for fuselage mounted jet, 2 for wing mounted jet, 3 for wing mounted turboprops and 4 for wing mounted
 # piston engines the second choice should be 1 if an afterburner is present
-engine_choice = [2, 0]
+engine_choice = [1, 0]
 # choice depends on engines, 1 for jet, 2 for turboprop, 3 for radial piston engines, 4 for horizontally opposed
 # piston engines
 oil_choice = 1
@@ -63,9 +63,9 @@ S_ratio = 6.3  # estimated from ADSEE-I L3
 C_fe = 0.0045  # estimated from ADSEE-I L3
 wing_option = 0  # Depending on the type of wing configuration, 1 is high wing, 0 is low wing
 Oswald = 0.9  # estimated from ADSEE-I L3
-T_input = 0.27
-S_input = 8100
-A = 11
+T_input = 0.16
+S_input = 5000
+A = 18
 CD_0 = C_fe * S_ratio
 N_engines = 2.  #
 w_engine = 7000.  # kg   Obtained from Bram
@@ -77,19 +77,19 @@ CL_cruise_input = np.sqrt((CD_0 * np.pi * A * Oswald) / 3)
 
 # Inputs that are often changed for the design -------------------------------------------------------------------------
 # based on the reference aircraft B747
-# h_cruise = 6000.  # m based on the sustainability analysis so far
-# M_cruise = 0.65  # Mach number decided to cruise on
+h_cruise = 11000.  # m based on the sustainability analysis so far
+M_cruise = 0.7  # Mach number decided to cruise on
 
 # Passenger characteristics --------------------------------------------------------------------------------------------
 N_pas = 450.  # Requirement set by the exercise
-N_pas_below = 242.  # Depends on if you want a double-decker 242 if you want a equally sized fuselage for double floor
+N_pas_below = 450.  # Depends on if you want a double-decker 242 if you want a equally sized fuselage for double floor
 N_crew = 11.  # Based on the amount of passengers
 W_person = 205.  # lbs   Based on statistics of Roskam
 W_carg = 20.  # kg Based on statistics
 
 # General aircraft input parameters ------------------------------------------------------------------------------------
 # General cruise parameters
-h_cruise_input = 8000.  # m based on the sustainability analysis so far
+h_cruise_input = 12000.  # m based on the sustainability analysis so far
 M_cruise_input = 0.7  # Mach number decided to cruise on
 Temp_cruise = Temp_0 + a * h_cruise_input  # K  based on the altitude you fly at
 a_cruise_input = np.sqrt(gamma * R_gas * Temp_cruise)  # m/s based on the temperature

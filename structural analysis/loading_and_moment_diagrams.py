@@ -4,8 +4,8 @@ Created on Tue May 14 09:48:11 2019
 
 @author: Mathilde
 """
-import sys
-sys.path.append("C:/Users/Mels/Desktop/3e jaar TUDelft/DSE/code/Bigger_is_Better")
+
+sys.path.append("C:/Users/Mels/Desktop/3e jaar TUDelft/DSE/code/Bigger_is_Better/Class_I")
 import numpy as np  ### Never use * to import stuff, as it makes it difficult to retrace where functions come from
 import scipy as sp
 import math as m
@@ -21,13 +21,13 @@ from lift_distr import *
 CD0 = 0.02
 S = 427.80  # m^2
 AR = 8.67
-taper = 0.4
+taper = 0.149
 Sweep0 = 0.558505  # rad
 by = 20.  # m
 b = 60.90
-Cr = 6.#(S + np.tan(Sweep0) * by * (b / 4)) / (by + (b - by) * ((1 + taper) / 2))
+Cr = (S + np.tan(Sweep0) * by * (b / 4)) / (by + (b - by) * ((1 + taper) / 2))
 Ct = Cr * taper
-Cy = 0.#Cr - np.tan(Sweep0) * (by / 2)
+Cy = Cr - np.tan(Sweep0) * (by / 2)
 Volume = 489.8545093  # m^3
 Wing_W = 57461.507853787  # kg
 Wing_Wf = 57461.507853787 * 9.81
@@ -41,7 +41,7 @@ x_fuel_begin = 0
 x_fuel_end = 10.
 start_eng_1 = 5.
 start_eng_2 = 16.
-n_engines = 2 
+n_engines = 4 
 total_thrust = 1183376.56
 engine_weight = 80067.989
 
@@ -64,7 +64,8 @@ cl = get_correct_data(output_avl,c)[1]
 cl_total = cl[int((len(x_pos)/2)):][::-1] + cl[0:int((len(x_pos)/2))]
 PolyFitCurveCl = sp.interpolate.interp1d(x_total, cl_total, kind="cubic", fill_value="extrapolate")
 # print('Lift Coefficients (highest order first, ending with 0th order term) are: \n{}\n'.format(PolyFitCurveCl))
-
+print(cl_total)
+print(PolyFitCurveCl(30))
 ##Drag Code:
 cdi = get_correct_data(output_avl,c)[1]
 cdi_total = cl[int((len(x_pos)/2)):][::-1] + cl[0:int((len(x_pos)/2))]
@@ -73,11 +74,11 @@ PolyFitCurveidrag = sp.interpolate.interp1d(x_total, cdi_total , kind='cubic', f
 
 ### Define your functions at the beginning of the program
 def c(x):
-    c = Cr - ((Cr-Ct)/(b/2))*x
-#    if x < (by / 2):
-#        c = Cr - 2 * x * ((Cr - Cy) / (by))
-#    if x > (by / 2):
-#        c = Cy - 2 * (x - (by / 2)) * ((Cy - Ct) / (b - by))
+    
+    if x < (by / 2):
+        c = Cr - 2 * x * ((Cr - Cy) / (by))
+    if x > (by / 2):
+        c = Cy - 2 * (x - (by / 2)) * ((Cy - Ct) / (b - by))
     return c
 
 
@@ -156,7 +157,7 @@ def Loadcalculator(x0,Ff):
         ###Thrust Calculations
         section_thrust = 0
         section_engineweight = 0
-        if x > start_eng_1 and firstenginereachedyet == False and n_engines!=0:
+        if x > start_eng_1 and firstenginereachedyet == False:
             section_thrust = total_thrust / n_engines
             section_engineweight = engine_weight * n * 1.5
             Mz += -section_engineweight * (start_eng_1 - x0)
@@ -164,7 +165,7 @@ def Loadcalculator(x0,Ff):
             firstenginereachedyet = True
 
             
-        if x > start_eng_2 and secondenginereachedyet == False and n_engines!=0 and n_engines!=2:
+        if x > start_eng_2 and secondenginereachedyet == False and n_engines!=2:
             section_thrust = total_thrust / n_engines 
             section_engineweight = engine_weight * n * 1.5
             Mz += -section_engineweight * (start_eng_2 - x0)
@@ -218,7 +219,8 @@ def Loadcalculator(x0,Ff):
 
 
 
-def load_diagrams(N):  ### 100 nodes, so 99 beam elements
+def load_diagrams():
+    N = 100  ### 100 nodes, so 99 beam elements
     
     HalfspanValues = np.linspace(0, b / 2 - 0.00001, N)
     Fydistribution = []
@@ -231,7 +233,6 @@ def load_diagrams(N):  ### 100 nodes, so 99 beam elements
     Thrustdistributionvalues = []
     Engine_distribution = []
     Tdistributionvalues = []
-    
     
     for i, x in enumerate(HalfspanValues):
         Fy, Fz, Mz, My, L, W_f, D, Th, section_engineweight, T = Loadcalculator(x,1)
@@ -296,28 +297,27 @@ def load_diagrams(N):  ### 100 nodes, so 99 beam elements
         Engine_distribution3.append(section_engineweight)
         Tdistributionvalues3.append(T)
         
-#    plt.subplot(2,3,5)
-#    plt.subplot(2,3,1)
-#    plt.gca().set_title('Mz distribution')
-#    plt.plot(HalfspanValues, Mzdistribution)
-#    plt.subplot(2,3,2)
-#    plt.gca().set_title('Fz distribution')
-#    plt.plot(HalfspanValues, Fzdistribution)
-#    plt.subplot(2,3,3)
-#    plt.gca().set_title('My distribution')
-#    plt.plot(HalfspanValues, Mydistribution)
-#    plt.subplot(2,3,4)
-#    plt.gca().set_title('Fy distribution')
-#    plt.plot(HalfspanValues, Fydistribution)
-#    plt.subplot(2,3,5)
-#    plt.gca().set_title('T distribution')
-#    plt.plot(HalfspanValues, Tdistributionvalues)
-#    plt.show()
-#    
+    plt.subplot(2,3,5)
+    plt.subplot(2,3,1)
+    plt.gca().set_title('Mz distribution')
+    plt.plot(HalfspanValues, Mzdistribution)
+    plt.subplot(2,3,2)
+    plt.gca().set_title('Fz distribution')
+    plt.plot(HalfspanValues, Fzdistribution)
+    plt.subplot(2,3,3)
+    plt.gca().set_title('My distribution')
+    plt.plot(HalfspanValues, Mydistribution)
+    plt.subplot(2,3,4)
+    plt.gca().set_title('Fy distribution')
+    plt.plot(HalfspanValues, Fydistribution)
+    plt.subplot(2,3,5)
+    plt.gca().set_title('T distribution')
+    plt.plot(HalfspanValues, Tdistributionvalues)
+    plt.show()
+    
     return Fydistribution, Fzdistribution, Mydistribution, Mzdistribution, Tdistributionvalues
 
-    return Fydistribution, Fzdistribution, Mydistribution, Mzdistribution, Tdistributionvalues, chord_section
-Fydistribution, Fzdistribution, Mydistribution, Mzdistribution, Tdistributionvalues, chord_section = load_diagrams(100)
+
 # TORQUE DISTRIBUTION CALCULATION
 # M_max = max(Mydistribution)
 # V_max = max (Fxdistribution)
@@ -362,7 +362,6 @@ Fydistribution, Fzdistribution, Mydistribution, Mzdistribution, Tdistributionval
 
 
 
-print(max(Mzdistribution))
 
 
 

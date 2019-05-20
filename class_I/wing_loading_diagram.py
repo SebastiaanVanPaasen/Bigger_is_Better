@@ -1,4 +1,4 @@
-from input_files.aerodynamic_concept import *
+from input_files.strutted_wing import *
 import matplotlib.pyplot as plt
 
 

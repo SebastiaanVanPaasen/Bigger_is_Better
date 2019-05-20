@@ -11,10 +11,8 @@ from input_files.aerodynamic_concept import *
 from performance.SAR_lists_iterator import SAR
 import matplotlib.pyplot as plt
 
-# from class_I.wing_loading_diagram import final_diagram
-
-M_cruise_list = np.arange(0.6, 0.90, 0.05)
-h_cruise_list = np.arange(5000, 13000, 1000)
+M_cruise_list = np.arange(0.7, 0.74, 0.05)
+h_cruise_list = np.arange(10000, 10400, 1000)
 # fuel_consumption = np.arange(0.4, 0.9, 0.1)
 # aspect_ratios = np.arange(5, 16, 0.5)
 # result_wing = []
@@ -28,6 +26,9 @@ final_h = []
 final_SAR = []
 final_M = []
 final_v = []
+pie_chart_fracs = []
+percentages = []
+empty_weight = []
 
 # CL_cruise = np.sqrt((CD_0 * np.pi * A * Oswald) / 3)
 for M_cruise in M_cruise_list:
@@ -59,13 +60,12 @@ for M_cruise in M_cruise_list:
 
         # Starting the iteration process -----------------------------------------------------------------------------------
         i = 0
-        maximum = 50
-        percentage = 10
-        empty_weight = np.array([])
+        maximum = 500
+        percentage = 1
         iteration = {}
         total = {}
         # final_diagram(CD_0, Oswald)
-        while i < maximum and percentage > 0.0005:
+        while i < maximum and percentage > 0.00001:
             print("Starting on iteration: " + str(i))
             # Performing class I weight estimation -------------------------------------------------------------------------
             weights = class_I(CL_cruise, CD_cruise, mission_range, reserve_range, V_cruise, c_j_cruise, W_tfo_frac,
@@ -73,7 +73,12 @@ for M_cruise in M_cruise_list:
                               fuel_fractions, N_pas, N_crew, W_person, W_carg)
 
             W_TO, W_E_I, W_P, W_F = weights[0], weights[1], weights[2], weights[3]  # N
-
+            # print(W_TO)
+            # print(CL_cruise)
+            # print(CD_cruise)
+            # print(mission_range)
+            # print(V_cruise)
+            # print(W_tfo_frac)
             iteration["weights"] = [W_TO, W_E_I, W_P, W_F]
             mass_fractions[6] = (weights[1] / weights[0])  # empty mass fraction
             mass_fractions[7] = (weights[2] / weights[0])  # payload mass fraction
@@ -81,7 +86,7 @@ for M_cruise in M_cruise_list:
 
             # Choosing a design point based on the T/W-W/S diagram ---------------------------------------------------------
             T, S = W_TO * T_input, W_TO / S_input
-            CL_cruise = W_TO / (0.5 * Rho_Cruise * (V_cruise ** 2) * S)
+            CL_cruise = (0.75 * W_TO) / (0.5 * Rho_Cruise * (V_cruise ** 2) * S)
             if CL_cruise > 1.:
                 CL_cruise = 1.
 
@@ -132,7 +137,6 @@ for M_cruise in M_cruise_list:
 
             l_h, c_root_h, c_tip_h, b_h, S_h = tail_h[0], tail_h[1], tail_h[2], tail_h[3], tail_h[4]
             l_v, c_root_v, c_tip_v, b_v, S_v = tail_v[0], tail_v[1], tail_v[2], tail_v[3], tail_v[4]
-
             iteration["cg's"] = [cg_locations, x_lemac]
 
             # Calculate the accompanying tail sizes ------------------------------------------------------------------------
@@ -174,9 +178,16 @@ for M_cruise in M_cruise_list:
             n_max_manoeuvring = max(manoeuvring_loads[1])
             n_max_gust = max(gust_loads[1])
 
-            n_ult = 1.5 * max(n_max_manoeuvring, n_max_gust)
+            if n_max_manoeuvring > n_max_gust:
+                n_ult = 1.5 * n_max_manoeuvring
+                v_ult = manoeuvring_loads[0][list(manoeuvring_loads[1]).index(n_max_manoeuvring)]
+            else:
+                n_ult = 1.5 * n_max_gust
+                v_ult = gust_loads[0][list(gust_loads[1]).index(n_max_gust)]
 
-            # Note that for a conventional tail the horizontal tail starts at the root of the vertical tail, thus z_h = 0
+            # print(v_ult)
+            # print(n_ult)
+            # Note that for a conventional tail the horizontal tail starts at the root of the vertical tail, thus z_h=0
             if tail_type == 0:
                 z_h = 0
             else:
@@ -192,7 +203,8 @@ for M_cruise in M_cruise_list:
             t_max_root = t_over_c * c_root
             w_weight = wing_weight(W_TO, W_F, b, HC_sweep, n_ult, S, t_max_root, wing_choice)
             mass_fractions[0] = (w_weight * lbs_to_kg * g_0) / W_TO
-
+            # print("wing weight")
+            # print(w_weight)
             emp_weight = empennage_weight(empennage_choice, np.array([S_h, S_v]), V_D,
                                           np.array([HC_sweep_h, HC_sweep_v]),
                                           z_h, b_v)
@@ -203,7 +215,7 @@ for M_cruise in M_cruise_list:
             mass_fractions[2] = (fus_weight * lbs_to_kg * g_0) / W_TO
 
             # Note that the choice includes the engine choice here
-            nac_weight = nacelle_weight(W_TO, nacelle_choice)
+            nac_weight = nacelle_weight(T, nacelle_choice)
             mass_fractions[3] = (nac_weight * lbs_to_kg * g_0) / W_TO
 
             lg_weight = landing_gear_weight(W_TO)
@@ -236,9 +248,7 @@ for M_cruise in M_cruise_list:
             # Choice is depending on type of engines
             w_osc = calc_w_osc(oil_choice, w_engine, N_engines)
 
-            prop_sys_weight = (
-                                      w_engine * N_engines) / lbs_to_kg + ai_weight + prop_weight + fuel_sys_weight + w_ec + w_ess \
-                              + w_pc + w_osc
+            prop_sys_weight = eng_weight + ai_weight + prop_weight + fuel_sys_weight + w_ec + w_ess + w_pc + w_osc
             mass_fractions[4] = (prop_sys_weight * lbs_to_kg * g_0) / W_TO
 
             # Determine fixed equipment weight components ------------------------------------------------------------------
@@ -263,31 +273,82 @@ for M_cruise in M_cruise_list:
 
             # Determine final operational empty weight ---------------------------------------------------------------------
             W_E_II = (structural_weight + prop_sys_weight + fix_equip_weight) * lbs_to_kg * g_0
-
+            # print("hallo")
+            # print(structural_weight)
+            # print(prop_sys_weight)
+            # print(fix_equip_weight)
             iteration["new empty weight"] = W_E_II
             W_e_frac = W_E_II / W_TO
 
             percentage = abs((W_E_II - W_E_I) / W_E_I)
 
             print("the percentage equals: " + str(percentage))
+            percentages.append(percentage)
+            empty_weight.append(W_E_II)
             total[str(i)] = iteration
             i += 1
+        # pie_chart_fracs.append(W_P / W_TO)
+        # pie_chart_fracs.append(W_F / W_TO)
+        # # pie_chart_fracs.append(W_E_II / W_TO)
+        # pie_chart_fracs.append((fus_weight * lbs_to_kg * g_0) / W_TO)
+        # pie_chart_fracs.append((emp_weight * lbs_to_kg * g_0) / W_TO)
+        # pie_chart_fracs.append((w_weight * lbs_to_kg * g_0) / W_TO)
+        # pie_chart_fracs.append((nac_weight * lbs_to_kg * g_0) / W_TO)
+        # pie_chart_fracs.append((lg_weight * lbs_to_kg * g_0) / W_TO)
+        # # pie_chart_fracs.append((eng_weight * lbs_to_kg * g_0) / W_TO)
+        # pie_chart_fracs.append((prop_sys_weight * lbs_to_kg * g_0) / W_TO)
+        # pie_chart_fracs.append((fix_equip_weight * lbs_to_kg * g_0) / W_TO)
 
-        print(round(weights[0], 2))
-        print(round(weights[3], 2))
-        print(round(weights[2], 2))
-        print(round(weights[1], 2))
+        # print(fus_weight * lbs_to_kg)
+        # print(emp_weight * lbs_to_kg)
+        # print(prop_sys_weight*lbs_to_kg)
 
-        print(round(CL_cruise, 3))
-        print(round(CD_cruise, 3))
-        print(round(CD_0, 4))
-        print(round(CL_cruise / CD_cruise, 3))
+        file = open("hbp_concept" + str(), "w")
+        file.write("The Mach number: " + str(M_cruise) + '\n')
+        file.write("The cruise altitude in m: " + str(h_cruise) + '\n')
 
-        print(round(b, 2))
-        print((round(S, 2)))
-        print(round(Oswald, 2))
+        file.write("Take-off weight in N: " + str(round(W_TO, 2)) + '\n')
+        file.write("Empty weight in N: " + str(round(W_E_II, 2)) + '\n')
+        file.write("Wing weight in N: " + str(round(((w_weight * lbs_to_kg * g_0)), 2)) + '\n')
+        file.write("Fuselage weight in N: " + str(round(((fus_weight * lbs_to_kg * g_0)), 2)) + '\n')
+        file.write("Empennage weight in N: " + str(round(((emp_weight * lbs_to_kg * g_0)), 2)) + '\n')
+        file.write("Nacelle weight in N: " + str(round(((nac_weight * lbs_to_kg * g_0)), 2)) + '\n')
+        file.write("Engine weight in N: " + str(round(((eng_weight * lbs_to_kg * g_0)), 2)) + '\n')
+        file.write("Landing gear weight in N: " + str(round(((lg_weight * lbs_to_kg * g_0)), 2)) + '\n')
+        file.write("Fixed equipmentweight in N: " + str(round(((fix_equip_weight * lbs_to_kg * g_0)), 2)) + '\n')
+        file.write(
+            "Propulsion system weight in N: " + str(round(((prop_sys_weight * lbs_to_kg * g_0)), 2)) + '\n')
+        file.write("Payload weight in N: " + str(round(W_P, 2)) + '\n')
+        file.write("Fuel weight in N: " + str(round(W_F, 2)) + '\n')
+        file.write("Thrust in N: " + str(round(T, 2)) + '\n')
 
-        print(round(V_cruise, 2))
+        file.write("Cl_cruise: " + str(round(CL_cruise, 3)) + '\n')
+        file.write("Cd cruise: " + str(round(CD_cruise, 3)) + '\n')
+        file.write("Cruise density in kg/m^3: " + str(round(Rho_Cruise, 2)) + '\n')
+        file.write("Cd zero: " + str(round(CD_0, 4)) + '\n')
+        file.write("Lift over drag: " + str(round(CL_cruise / CD_cruise, 3)) + '\n')
+        file.write("Cruise speed in m/s: " + str(round(V_cruise, 2)) + '\n')
+
+        file.write("The ultimate load factor: " + str(round(n_ult, 2)) + '\n')
+        file.write("The ultimate load factor speed in m/s: " + str(round(v_ult, 2)) + '\n')
+
+        file.write("Span in m: " + str(round(b, 2)) + '\n')
+        file.write("Surface area in m^2: " + str(round(S, 2)) + '\n')
+        file.write("The length of the fuselage in m: " + str(l_fuselage) + '\n')
+        file.write("Root chord in m: " + str(round(c_root, 2)) + '\n')
+        file.write("The leading edge sweep in degrees: " + str(round(np.degrees(LE_sweep), 2)) + "\n")
+        file.write("The taper ratio: " + str(round(taper, 2)) + "\n")
+
+        file.write("Aspect ratio: " + str(A) + '\n')
+        file.write("Oswald factor: " + str(round(Oswald, 2)) + '\n')
+        file.write("Wing weight in N: " + str(round(w_weight * lbs_to_kg * g_0, 2)) + '\n')
+        file.write("Number of engines: " + str(N_engines) + '\n')
+        file.write("Engine weight in N: " + str(w_engine * g_0) + "\n")
+
+        file.write("Center of gravity locations in m: " + str(cg_locations) + "\n")
+        file.write("The weight fractions as % of take-off weight: " + str(pie_chart_fracs) + '\n')
+        file.close()
+
         Velocity.append(V_cruise)
         h.append(h_cruise)
         AR.append(A)
@@ -306,46 +367,54 @@ for M_cruise in M_cruise_list:
     # print(Ct0)
     # print(Wcr)
 
-    h_list, SAR_list = SAR(Velocity, h, AR, Surface, eff, cd_0, Ct0, Wcr)
-    final_h.append(h_list)
-    final_SAR.append(SAR_list)
-    final_M.append(M_cruise)
-    final_v.append(Velocity)
+    # h_list, SAR_list = SAR(Velocity, h, AR, Surface, eff, cd_0, Ct0, Wcr)
+    # final_h.append(h_list)
+    # final_SAR.append(SAR_list)
+    # final_M.append(M_cruise)
+    # final_v.append(Velocity)
+#
+# pie_chart_labels = ["payload", "fuel", "fuselage", "empennage", "wing", "nacelle", "landing gear",
+#                     "propulsion system", "fixed equipment"]
+# print(len(pie_chart_labels))
+# print(len(pie_chart_fracs))
+# plt.pie(pie_chart_fracs, labels=pie_chart_labels, startangle=90, autopct='%.2f%%')
+# plt.legend()
+# plt.show()
 
-SAR_ref = 1.84236002771
-M_ref = 0.79
-H_ref = 12000
-min_SAR = []
-min_h = []
-h_v = []
-sar_v = []
-
-for r in range(len(final_h)):
-    plt.plot(final_h[r], final_SAR[r], label='Mach %s' % round(final_M[r], 2))
-
-    # min_SAR.append(min(final_SAR[r]))
-    # i = final_SAR[r].index(min(final_SAR[r]))
-    # min_h.append(final_h[r][i])
-
-# for q in range(len(final_v)):
-#     for l in range(len(final_v[q])):
-#         if final_v[q][l] > 700.:
-#             ind = final_v[q].index(final_v[q][l])
-#             h_v.append(final_h[q][ind])
-#             sar_v.append(final_SAR[q][ind])
-#             break
-
-# plt.plot(h_v, sar_v, label="Minimum required speed for cost")
-plt.plot(H_ref, SAR_ref / 200, 'mo', label="Ref. aircraft")
-# plt.plot(min_h, min_SAR, label="Optimum line")
-plt.hlines(0.9 * SAR_ref / 200, 0, 13000, "gray", "--")
-plt.legend()
-plt.title('Fuel consumption per passenger w.r.t. Mach number')
-plt.xlabel("Altitude [m]")
-# plt.ylim(0.006, 0.011)
-plt.ylabel("Fuel consumption [kg/km/passenger]")
-# plt.savefig("Design 1")
-plt.show()
+# SAR_ref = 1.84236002771
+# M_ref = 0.79
+# H_ref = 12000
+# min_SAR = []
+# min_h = []
+# h_v = []
+# sar_v = []
+#
+# for r in range(len(final_h)):
+#     plt.plot(final_h[r], final_SAR[r], label='Mach %s' % round(final_M[r], 2))
+#
+#     # min_SAR.append(min(final_SAR[r]))
+#     # i = final_SAR[r].index(min(final_SAR[r]))
+#     # min_h.append(final_h[r][i])
+#
+# # for q in range(len(final_v)):
+# #     for l in range(len(final_v[q])):
+# #         if final_v[q][l] > 700.:
+# #             ind = final_v[q].index(final_v[q][l])
+# #             h_v.append(final_h[q][ind])
+# #             sar_v.append(final_SAR[q][ind])
+# #             break
+#
+# # plt.plot(h_v, sar_v, label="Minimum required speed for cost")
+# plt.plot(H_ref, SAR_ref / 200, 'mo', label="Ref. aircraft")
+# # plt.plot(min_h, min_SAR, label="Optimum line")
+# plt.hlines(0.9 * SAR_ref / 200, 0, 13000, "gray", "--")
+# plt.legend()
+# plt.title('Fuel consumption per passenger w.r.t. Mach number')
+# plt.xlabel("Altitude [m]")
+# # plt.ylim(0.006, 0.011)
+# plt.ylabel("Fuel consumption [kg/km/passenger]")
+# # plt.savefig("Design 1")
+# plt.show()
 
 # final_diagram(CD_0, Oswald)
 # print("The required thrust equals: " + str(T))
@@ -359,10 +428,13 @@ plt.show()
 # print("The CL_alpha value equals: " + str(CL_alpha))
 # print("The new operating empty weight equals: " + str(W_E))
 
-# iterations = np.arange(0, len(empty_weight), 1)
+iterations = np.arange(0, len(percentages), 1)
 # final_diagram(CD_0, Oswald)
-# plt.plot(iterations, empty_weight)
-# plt.show()
+plt.figure(1)
+plt.plot(iterations, percentages)
+plt.figure(2)
+plt.plot(iterations, empty_weight)
+plt.show()
 
 # result_fuel.append(W_F)
 # result_wing.append(w_weight * lbs_to_kg * g_0)
