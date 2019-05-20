@@ -7,7 +7,7 @@ from class_I.class_I_empennage_landinggear import class_I_empennage
 from class_I.flight_envelope import manoeuvring_envelope, gust_envelope
 from avl_iterator_2.conv_wing_avl import make_avl_file, run_avl, find_clalpha
 from class_II_weight_estimation import *
-from input_files.conventional_double_decker import *
+from input_files.strutted_wing import *
 from performance.SAR_lists_iterator import SAR
 import matplotlib.pyplot as plt
 
@@ -28,6 +28,7 @@ final_h = []
 final_SAR = []
 final_M = []
 final_v = []
+fuselage = []
 pie_chart_fracs = []
 percentages = []
 empty_weight = []
@@ -62,7 +63,7 @@ percentage = 1
 iteration = {}
 total = {}
 # final_diagram(CD_0, Oswald)
-while i < maximum and percentage > 0.0001:
+while i < maximum and percentage > 0.0004:
     print("Starting on iteration: " + str(i))
     # Performing class I weight estimation -------------------------------------------------------------------------
     weights = class_I(CL_cruise, CD_cruise, mission_range, reserve_range, V_cruise, c_j_cruise, W_tfo_frac,
@@ -70,7 +71,8 @@ while i < maximum and percentage > 0.0001:
                       fuel_fractions, N_pas, N_crew, W_person, W_carg)
 
     W_TO, W_E_I, W_P, W_F = weights[0], weights[1], weights[2], weights[3]  # N
-    # print(W_TO)
+    print(W_TO)
+    print(W_e_frac)
     # print(CL_cruise)
     # print(CD_cruise)
     # print(mission_range)
@@ -83,6 +85,7 @@ while i < maximum and percentage > 0.0001:
 
     # Choosing a design point based on the T/W-W/S diagram ---------------------------------------------------------
     T, S = W_TO * T_input, W_TO / S_input
+    # print(S)
     CL_cruise = (0.75 * W_TO) / (0.5 * Rho_Cruise * (V_cruise ** 2) * S)
     if CL_cruise > 1.:
         CL_cruise = 1.
@@ -102,6 +105,10 @@ while i < maximum and percentage > 0.0001:
     l_tailcone = np.sum(fuselage_design[5]) / 2
     l_fuselage = fuselage_design[7]
 
+    fuselage.append(d_fuselage)
+    fuselage.append(l_nosecone)
+    fuselage.append(l_cabin)
+    fuselage.append(l_tailcone)
     # Define fineness ratio's based on the dimensions that came out of the fuselage design
     f = l_fuselage / d_fuselage
     f_tc = l_tailcone / d_fuselage
@@ -132,6 +139,7 @@ while i < maximum and percentage > 0.0001:
                                                                             d_fuselage, b, S, taper, v_tail,
                                                                             LE_sweep, h_tail)
 
+    # print(tail_h, tail_v)
     l_h, c_root_h, c_tip_h, b_h, S_h = tail_h[0], tail_h[1], tail_h[2], tail_h[3], tail_h[4]
     l_v, c_root_v, c_tip_v, b_v, S_v = tail_v[0], tail_v[1], tail_v[2], tail_v[3], tail_v[4]
     iteration["cg's"] = [cg_locations, x_lemac]
@@ -300,7 +308,7 @@ while i < maximum and percentage > 0.0001:
     # print(emp_weight * lbs_to_kg)
     # print(prop_sys_weight*lbs_to_kg)
 
-file = open("dd_4_concept" + str(), "w")
+file = open("strutted_concept" + str(), "w")
 file.write("The Mach number: " + str(M_cruise) + '\n')
 file.write("The cruise altitude in m: " + str(h_cruise) + '\n')
 
@@ -313,8 +321,7 @@ file.write("Nacelle weight in N: " + str(round(((nac_weight * lbs_to_kg * g_0)),
 file.write("Engine weight in N: " + str(round(((eng_weight * lbs_to_kg * g_0)), 2)) + '\n')
 file.write("Landing gear weight in N: " + str(round(((lg_weight * lbs_to_kg * g_0)), 2)) + '\n')
 file.write("Fixed equipmentweight in N: " + str(round(((fix_equip_weight * lbs_to_kg * g_0)), 2)) + '\n')
-file.write(
-    "Propulsion system weight in N: " + str(round(((prop_sys_weight * lbs_to_kg * g_0)), 2)) + '\n')
+file.write("Propulsion system weight in N: " + str(round(((prop_sys_weight * lbs_to_kg * g_0)), 2)) + '\n')
 file.write("Payload weight in N: " + str(round(W_P, 2)) + '\n')
 file.write("Fuel weight in N: " + str(round(W_F, 2)) + '\n')
 file.write("Thrust in N: " + str(round(T, 2)) + '\n')
@@ -333,17 +340,20 @@ file.write("Span in m: " + str(round(b, 2)) + '\n')
 file.write("Surface area in m^2: " + str(round(S, 2)) + '\n')
 file.write("The length of the fuselage in m: " + str(l_fuselage) + '\n')
 file.write("Root chord in m: " + str(round(c_root, 2)) + '\n')
+file.write("Tip chord in m: " + str(round(c_tip, 2)) + '\n')
 file.write("The leading edge sweep in degrees: " + str(round(np.degrees(LE_sweep), 2)) + "\n")
 file.write("The taper ratio: " + str(round(taper, 2)) + "\n")
+file.write("Dihedral angle: " + str(round(dihedral, 2)) + '\n')
+file.write("Fuselage dimensions: " + str(fuselage) + '\n')
+file.write("Thickness over chord: " + str(round(t_over_c, 2)) + '\n')
 
 file.write("Aspect ratio: " + str(A) + '\n')
 file.write("Oswald factor: " + str(round(Oswald, 2)) + '\n')
-file.write("Wing weight in N: " + str(round(w_weight * lbs_to_kg * g_0, 2)) + '\n')
 file.write("Number of engines: " + str(N_engines) + '\n')
-file.write("Engine weight in N: " + str(w_engine * g_0) + "\n")
+# file.write("Engine weight in N: " + str(w_engine * g_0) + "\n")
 
 file.write("Center of gravity locations in m: " + str(cg_locations) + "\n")
-file.write("The weight fractions as % of take-off weight: " + str(pie_chart_fracs) + '\n')
+# file.write("The weight fractions as % of take-off weight: " + str(pie_chart_fracs) + '\n')
 file.close()
 
 # Velocity.append(V_cruise)
