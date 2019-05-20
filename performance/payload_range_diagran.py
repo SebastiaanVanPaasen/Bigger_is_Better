@@ -28,31 +28,103 @@ import matplotlib.pyplot as plt
 
 #------------------------STATISTICAL INPUTS----------------------------------
 
-Ct           = 12e-06      #Specific fuel conspumtion [kg/N/s] from B737MAX 
-
-
+    #Specific fuel conspumtion [kg/N/s] from B737MAX 
+  
 #------------------------------VERIFICATION DATA--------------------------------
 
 """Inputs unit test based on B737 MAX-8"""
-#
-MTOW = 1806203.58
-OEW  = 994992.97
+"""STRW"""
+MTOW = 1712063.74
+OEW  =  900623.75
 
 #MLW  = MTOW - 0.3*OEW
 MZFW = OEW + 508587.17
-MFW  =  297271.17*1.1     # Maximum fuel weight (including reserve fuel)
+MFW  =  297908.01*1.4     # Maximum fuel weight (including reserve fuel)
 W_fr = MFW/105. * 5.        #reserve fuel
-
-A = 14.
-V = 221.281 #m/s
-CD0 = 0.0264
-
+A = 18.
+V = 206.53 #m/s
+CD0 = 0.0276
 g = 9.81
 e = 0.9
+R_range = 3200.  #range of x-axis
+R_des = 1600. #[km]
+Ct0 = 55e-06
 
-R_range = 3500.  #range of x-axis
-R_des = 1600 #[km]
 
+
+
+"""HPBE"""
+#MTOW = 1835973.64
+#OEW  =  959038.84
+#
+##MLW  = MTOW - 0.3*OEW
+#MZFW = OEW + 508587.17
+#MFW  =  363032.71*1.4     # Maximum fuel weight (including reserve fuel)
+#W_fr = MFW/105. * 5.        #reserve fuel
+#A = 8.
+#V = 209.6 #m/s
+#CD0 = 0.0219
+#g = 9.81
+#e = 0.9
+#R_range = 3200.  #range of x-axis
+#R_des = 1600. #[km]
+#Ct0 = 55e-06
+
+
+"""DD4E"""
+#MTOW = 1533186.85
+#OEW  =  741915.71
+#
+##MLW  = MTOW - 0.3*OEW
+#MZFW = OEW + 508587.17
+#MFW  =  277919.32*1.4     # Maximum fuel weight (including reserve fuel)
+#W_fr = MFW/105. * 5.        #reserve fuel
+#A = 8.5
+#V = 224.58 #m/s
+#CD0 = 0.0205
+#g = 9.81
+#e = 0.9
+#R_range = 3200.  #range of x-axis
+#R_des = 1600. #[km]
+#Ct0 = 55e-06
+
+
+
+"""DD2E"""
+#MTOW = 1545876.62
+#OEW  =  740611.66
+#
+##MLW  = MTOW - 0.3*OEW
+#MZFW = OEW + 508587.17
+#MFW  =  292191.26*1.4     # Maximum fuel weight (including reserve fuel)
+#W_fr = MFW/105. * 5.        #reserve fuel
+#A = 9.
+#V = 215.62 #m/s
+#CD0 = 0.0202
+#g = 9.81
+#e = 0.9
+#R_range = 3200.  #range of x-axis
+#R_des = 1600. #[km]
+#Ct0 = 55e-06
+
+
+"""Aerodynamic design"""
+#MTOW = 1828542.22
+#OEW  =  1000102.71
+##MLW  = MTOW - 0.3*OEW
+#MZFW = OEW + 508587.17
+#MFW  =  313967.31*1.4     # Maximum fuel weight (including reserve fuel)
+#W_fr = MFW/105. * 5.        #reserve fuel
+#A = 14.
+#V = 221.281 #m/s
+#CD0 = 0.0262
+#g = 9.81
+#e = 0.9
+#R_range = 3000.  #range of x-axis
+#R_des = 1600. #[km]
+#Ct0           = 55e-06  
+
+"""Ref aircraft B737-Max 8 """
 #MTOW = 82190*9.81
 #OEW = 45065*9.81
 #MLW = 69308*9.81
@@ -67,6 +139,7 @@ R_des = 1600 #[km]
 #
 #R_range = 11000
 #R_des = 7000.
+#Ct0 = 12e-06
 
 #------------------------------DEFINITIONS-----------------------------------
 
@@ -80,7 +153,7 @@ def Wf_Wto():              #find V for which Wf/W_TO can be minimised
     V = []
     for i in range(200,600):
         V.append(i)
-        Wf_Wto = 1. - e**((-R_des*1000)/((i/Ct)*(CL_CD(A,e,CD0))))
+        Wf_Wto = 1. - e**((-R_des*1000)/((i/Ct0)*(CL_CD(A,e,CD0))))
         Wf_Wto_opt.append(Wf_Wto)
         
     plt.plot(V,Wf_Wto_opt)
@@ -97,15 +170,16 @@ def payload_range():
     
     """Compute different ranges"""
     #Finding harmonic range (max. payload, with fuel up to MTOW)
-    Wf1 =  (MTOW-MZFW-W_fr)*0.2             #fuel weight at max. payload
+    Wf1 =  (MTOW-MZFW-W_fr)             #fuel weight at max. payload
+    Ct = (Ct0 / 233.083) * (V) 
     R_harmonic = ((V/(g*Ct))*CL_CD(A,e,CD0)*np.log(MTOW/(MTOW-Wf1)))/1000.
 
     #Max range line (increase fuel, decrease payload)
-    R_max = ((V/(g*Ct))*CL_CD(A,e,CD0)*np.log(MTOW/(MTOW-((MFW-W_fr)*0.4))))/1000.
-    
+    R_max = ((V/(g*Ct))*CL_CD(A,e,CD0)*np.log(MTOW/(MTOW-((MFW-W_fr)*1))))/1000.
+
     #Ferry range (no payload all fuel, no MTOW anymore)
     W_TO = OEW + MFW 
-    Wf2 =  (MFW - W_fr )*0.4
+    Wf2 =  (MFW - W_fr )#*0.4
     R_ferry = ((V/(g*Ct))*CL_CD(A,e,CD0)*np.log(W_TO/(W_TO - Wf2)))/1000.
     
     plt.vlines(R_harmonic,OEW,MTOW,"m","--",label="Harmonic Range")
@@ -159,9 +233,10 @@ def payload_range():
     #plt.title('Payload - range diagram')
     plt.xlabel("Range [km]")
     plt.ylabel("Weight [N]")
+    plt.ylim(0.95*OEW,1.05*MTOW)
     plt.legend()
     plt.show()
-    return R_max,R_ferry, R_harmonic, Wf1, W_fr, MFW-W_fr
+    return R_max,R_ferry, R_harmonic
 
 #a = (payload_range()[0][1]-p6ayload())
 print (payload_range())
