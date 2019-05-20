@@ -9,7 +9,11 @@ def wing_weight(w_to, w_f, b, semi_chord_sweep, n_ult, s, t_max, choice):
     # n_ult is the ultimate load factor
     # s is the surface area of the wing
     # t_max is the maximum thickness at the wing root
-
+    # print("the wmzf" + str((w_to - w_f)))
+    # print("span" + str(b))
+    # print((t_max))
+    # print(semi_chord_sweep)
+    # print(s)
     w_mzf = ((w_to - w_f) / lbs_to_kg) / g_0
     b = b / ft_to_m
     t_max = t_max / ft_to_m
@@ -17,9 +21,9 @@ def wing_weight(w_to, w_f, b, semi_chord_sweep, n_ult, s, t_max, choice):
     s = s / (ft_to_m ** 2)
 
     w_weight = 0.0017 * w_mzf * ((b / s_angle) ** 0.75) * (1 + np.sqrt(6.3 * s_angle / b)) * (n_ult ** 0.55) * (
-            (b * s / (t_max * w_mzf * s_angle)) ** 0.30)
+            ((b * s) / (t_max * w_mzf * s_angle)) ** 0.30)
 
-    changes = [0.02, -0.05, -0.10, -0.05, -30., 0.02]
+    changes = [0.02, -0.05, -0.10, -0.05, -0.30, 0.02]
     # first is to include spoilers and speed brakes
     # second is with 2 wing mounted engines
     # third is with 4 wing mounted engines
@@ -73,18 +77,28 @@ def fuselage_weight(choice, v_d, l_h, w_f, h_f, s_fgs):
     # w_f is maximum width of the fuselage
     # f_h is maximum height of the fuselage
     # s_fgs = fuselage fross shell area in ft^2
+    # print(s_fgs)
+    # print(v_d)
+    # print(w_f)
+    # print(h_f)
+    # print(l_h)
     v_d = v_d / kts_to_ms
     w_f = w_f / ft_to_m
     h_f = h_f / ft_to_m
     l_h = l_h / ft_to_m
     s_fgs = s_fgs / (ft_to_m ** 2)
+    # print(s_fgs)
+    # print(v_d)
+    # print(w_f)
+    # print(h_f)
+    # print(l_h)
 
     k_f = 1.08
     # choose 1 if the main landing gear is attached to the fuselage
     if choice == 1:
         k_f = k_f * 1.07
 
-    return 0.021 * k_f * (((v_d * l_h) / (w_f + h_f)) ** 0.5) * (s_fgs ** 0.5)
+    return 0.021 * k_f * (((v_d * l_h) / (w_f + h_f)) ** 0.5) * (s_fgs ** 1.1)
 
 
 def nacelle_weight(t_to, choice):

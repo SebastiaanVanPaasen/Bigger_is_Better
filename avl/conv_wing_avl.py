@@ -34,7 +34,7 @@ def make_avl_file(root_chord, tip_chord, span, LE_sweep, dihedral, S, CD_0, M_cr
 
     dx = 0.25 * root_chord_h * (1 - taper_ratio_h) + span_h / 2 * np.tan(quarter_chord_sweep_h)
     y_loc_LE_h = [0, span_h / 2]
-    if wingtype == "T-tail":
+    if wingtype == 1:
         dx_sweep = 0.25 * root_chord_v * (1 - taper_ratio_v) + span_v / 2 * np.tan(quarter_chord_sweep_v)
         z_loc_LE_h = [span_v / 2, span_v / 2]
         x_loc_LE_h = [tailarm_v + dx_sweep, tailarm_v + dx + dx_sweep]
@@ -73,6 +73,8 @@ def make_avl_file(root_chord, tip_chord, span, LE_sweep, dihedral, S, CD_0, M_cr
             print("SECTION", file=text_file)
             print(round(x_loc_LE[i], 3), round(y_loc_LE[i], 3), round(z_loc_LE[i], 3), round(chords[i], 3), Ainc[i],
                   Nspanwise[i], Sspace[i], file=text_file)
+            print("CDCL" + "\n"
+                  "-1.54 0.002 0.69 0.0054 1.8 0.002", file=text_file)
         print("AFILE" + "\n"
                         "n2414.dat.txt", file=text_file)
 
@@ -114,9 +116,9 @@ def make_avl_file(root_chord, tip_chord, span, LE_sweep, dihedral, S, CD_0, M_cr
 
 def run_avl(cl_cruise, M_cruise, CD_0):
     define_run_condition(M_cruise, CD_0)
-    print(ROOT_dir)
+    # print(ROOT_dir)
     p = subprocess.Popen(str(ROOT_dir) + "/avl/avl.exe", stdin=subprocess.PIPE, stdout=subprocess.DEVNULL,
-                         universal_newlines=True)
+                        universal_newlines=True)
     set_cl_cruise = "a c " + str(cl_cruise)
     p.communicate(os.linesep.join(
         ["load", "conv_wing", "case", "mach" + str(M_cruise) + ".run", "oper", set_cl_cruise, "x", "ft", "endresult"]))

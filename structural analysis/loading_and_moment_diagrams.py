@@ -4,8 +4,8 @@ Created on Tue May 14 09:48:11 2019
 
 @author: Mathilde
 """
-import sys
-sys.path.append("C:/Users/mathi/Documents/DSE/Bigger_is_Better/class_I")
+
+sys.path.append("C:/Users/Mels/Desktop/3e jaar TUDelft/DSE/code/Bigger_is_Better/Class_I")
 import numpy as np  ### Never use * to import stuff, as it makes it difficult to retrace where functions come from
 import scipy as sp
 import math as m
@@ -64,7 +64,8 @@ cl = get_correct_data(output_avl,c)[1]
 cl_total = cl[int((len(x_pos)/2)):][::-1] + cl[0:int((len(x_pos)/2))]
 PolyFitCurveCl = sp.interpolate.interp1d(x_total, cl_total, kind="cubic", fill_value="extrapolate")
 # print('Lift Coefficients (highest order first, ending with 0th order term) are: \n{}\n'.format(PolyFitCurveCl))
-
+print(cl_total)
+print(PolyFitCurveCl(30))
 ##Drag Code:
 cdi = get_correct_data(output_avl,c)[1]
 cdi_total = cl[int((len(x_pos)/2)):][::-1] + cl[0:int((len(x_pos)/2))]
@@ -156,7 +157,7 @@ def Loadcalculator(x0,Ff):
         ###Thrust Calculations
         section_thrust = 0
         section_engineweight = 0
-        if x > start_eng_1 and firstenginereachedyet == False and n_engines!=0:
+        if x > start_eng_1 and firstenginereachedyet == False:
             section_thrust = total_thrust / n_engines
             section_engineweight = engine_weight * n * 1.5
             Mz += -section_engineweight * (start_eng_1 - x0)
@@ -164,7 +165,7 @@ def Loadcalculator(x0,Ff):
             firstenginereachedyet = True
 
             
-        if x > start_eng_2 and secondenginereachedyet == False and n_engines!=0 and n_engines!=2:
+        if x > start_eng_2 and secondenginereachedyet == False and n_engines!=2:
             section_thrust = total_thrust / n_engines 
             section_engineweight = engine_weight * n * 1.5
             Mz += -section_engineweight * (start_eng_2 - x0)
@@ -218,7 +219,8 @@ def Loadcalculator(x0,Ff):
 
 
 
-def load_diagrams(N):  ### 100 nodes, so 99 beam elements
+def load_diagrams():
+    N = 100  ### 100 nodes, so 99 beam elements
     
     HalfspanValues = np.linspace(0, b / 2 - 0.00001, N)
     Fydistribution = []
@@ -360,7 +362,6 @@ def load_diagrams(N):  ### 100 nodes, so 99 beam elements
 
 
 
-print(max(Mzdistribution))
 
 
 
