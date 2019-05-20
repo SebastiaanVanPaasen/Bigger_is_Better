@@ -197,7 +197,7 @@ for h in H:
     #plt.subplot(122)
     plt.plot(V,SAR_list,label='%s altitude [m]' % h)
     #plt.title('Fuel consumption per passenger w.r.t. Mach number')
-    plt.xlabel("Mach number]")
+    plt.xlabel("Mach number")
     plt.ylabel("Fuel consumption [kg/km/passenger]")
 
 plt.plot(Mcr,SAR_ref_point/pax_ref,"mo", label = "Ref. aircraft")   
