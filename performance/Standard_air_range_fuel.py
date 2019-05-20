@@ -208,7 +208,7 @@ plt.legend(loc = "upper left")
 
 plt.show()
 
-print SAR_ref_point
+# print SAR_ref_point
 
 #--------------------------------SENSITIVITY ANALYSIS-------------------------
 #To change W_cr, A, CD0, Ct0 analyse a certain altitude
