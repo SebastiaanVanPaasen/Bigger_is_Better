@@ -16,7 +16,7 @@ from matplotlib import pyplot as plt
 ##reference 777
 S = 427.80
 span = 60.90
-MAC = 8.75
+MAC = 8.750
 AR = 8.67
 taper = 0.149
 qc_sweep = np.radians(31.60)
