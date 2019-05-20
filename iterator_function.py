@@ -15,7 +15,7 @@ from performance.SAR_lists_iterator import SAR
 # M_cruise_list = np.arange(0.5, 0.8, 0.01)
 #h_cruise_list = np.arange(3000, 13000, 1000)
 # fuel_consumption = np.arange(0.4, 0.9, 0.1)
-# aspect_ratios = np.arange(5, 16, 0.5)
+# aspect_ratios = np.arange(5, 16, 0.5)     
 # result_wing = []
 # result_empty = []
 # result_fuel = []
@@ -36,7 +36,7 @@ from performance.SAR_lists_iterator import SAR
 #
 #    V_cruise = M_cruise * a_cruise
 #    Ct0_value = 12e-06
-def main_iterator(CL_cruise, CD_cruise, W_e_frac, M_cruise):   
+def main_iterator(CL_cruise_input, CD_cruise_input, W_e_frac_input, fuel_fractions_input, mass_fractions_input, N_pas_below):   
     # Starting the iteration process -----------------------------------------------------------------------------------
     i = 0
     maximum = 50
@@ -45,13 +45,23 @@ def main_iterator(CL_cruise, CD_cruise, W_e_frac, M_cruise):
     iteration = {}
     total = {}
     # final_diagram(CD_0, Oswald)
+    CL_cruise = CL_cruise_input
+    CD_cruise = CD_cruise_input
+    W_e_frac = W_e_frac_input
+    fuel_fractions = fuel_fractions_input
+    mass_fractions = mass_fractions_input
+    V_cruise = V_cruise_input
+    Rho_Cruise = Rho_Cruise_input
+    M_cruise = M_cruise_input
+    h_cruise = h_cruise_input
+
     while i < maximum and percentage > 0.0005:
 
         print("Starting on iteration: " + str(i))
         # Performing class I weight estimation -------------------------------------------------------------------------
         weights = class_I(CL_cruise, CD_cruise, mission_range, reserve_range, V_cruise, c_j_cruise, W_tfo_frac,
                           W_e_frac,
-                          fuel_fractions, N_pas, N_crew, W_person, W_cargo)
+                          fuel_fractions, N_pas, N_crew, W_person, W_carg)
 
         W_TO, W_E_I, W_P, W_F = weights[0], weights[1], weights[2], weights[3]  # N
         iteration["weights"] = [W_TO, W_E_I, W_P, W_F]
@@ -241,7 +251,7 @@ def main_iterator(CL_cruise, CD_cruise, W_e_frac, M_cruise):
 
         percentage = abs((W_E_II - W_E_I) / W_E_I)
 
-        print("the percentage equals: " + str(percentage))
+        #print("the percentage equals: " + str(percentage))
         total[str(i)] = iteration
         i += 1
         

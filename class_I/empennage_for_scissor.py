@@ -100,7 +100,7 @@ def class_I_empennage(mass_frac, MAC, l_fuselage, x_eng, l_n, xcg_OEW_MAC, xcg_p
 
     X_LE_root = X_LEMAC - Y_MAC * np.tan(LE_sweep)
     alv_h, alv_v = x_le_h - X_LE_root, x_le_v - X_LE_root
-    print('joe')
+    
     return X_LE_root, cg_locations, tail_h, tail_v, X_LEMAC, alv_h, alv_v, V_h_norm
 
 
