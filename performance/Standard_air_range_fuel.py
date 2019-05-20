@@ -131,40 +131,40 @@ H = range(7000,12500,dh)            #altitude range
 min_SAR = []
 V_minSAR = []
 
-#For a given altitude (in def) run it for different speeds
-for h in H:   
-    SAR_list = SAR(h,A,S,e,CD0,Ct0,Wcr)[0]
-    V = SAR(h,A,S,e,CD0,Ct0,Wcr)[1]
-    print V
-    print SAR_list
-
-    min_SAR.append(min(SAR_list))
-    i = SAR_list.index(min(SAR_list))
-    V_minSAR.append(V[i])    
-    
-    for i in range(len(V)):         #Change velocity to Mach
-        V[i] = Mach(V[i],h)
-        
-    #plt.subplot(121)
-    plt.plot(V,SAR_list,label='%s altitude [m]' % h)
-    plt.title('Fuel consumption w.r.t. airspeed')
-    plt.xlabel("Mach number")
-    plt.ylabel("Fuel consumption [kg/km]") 
-
-
+##For a given altitude (in def) run it for different speeds
+#for h in H:   
+#    SAR_list = SAR(h,A,S,e,CD0,Ct0,Wcr)[0]
+#    V = SAR(h,A,S,e,CD0,Ct0,Wcr)[1]
+#    print V
+#    print SAR_list
+#
+#    min_SAR.append(min(SAR_list))
+#    i = SAR_list.index(min(SAR_list))
+#    V_minSAR.append(V[i])    
+#    
+#    for i in range(len(V)):         #Change velocity to Mach
+#        V[i] = Mach(V[i],h)
+#        
+#    #plt.subplot(121)
+#    plt.plot(V,SAR_list,label='%s altitude [m]' % h)
+#    plt.title('Fuel consumption w.r.t. airspeed')
+#    plt.xlabel("Mach number")
+#    plt.ylabel("Fuel consumption [kg/km]") 
+#
+#
 #For the reference case aim to stay below it:
 SAR_ref = SAR(hcr,A1,S1,e,CD0,Ct0,Wcr1)[0]
 V_ref = SAR(hcr,A1,S1,e,CD0,Ct0,Wcr1)[1]
-
-
+#
+#
 for i in range(len(V_ref)):
     V_ref[i] = Mach(V_ref[i],hcr)   
     if 0.997*Mcr <= V_ref[i] <= 1.003* Mcr:
         SAR_ref_point = SAR_ref[i]
-
-#PLot the single point of the ref. aircraft
-plt.plot(Mcr,SAR_ref_point,"mo", label = "Ref. aircraft")
-#plt.legend()
+#
+##PLot the single point of the ref. aircraft
+##plt.plot(Mcr,SAR_ref_point,"mo", label = "Ref. aircraft")
+##plt.legend()
 
 
 #Plot with minimum SAR at different altitudes with corresponding Mach number
