@@ -36,7 +36,7 @@ def make_avl_file():
     spanwise_discretize_points = 50  # If you go too high then your computer is dead
     chordwise_discretize_point = 12  # " "
 
-    with open("avl_testing.avl", "w") as text_file:
+    with open("avl_dd2.avl", "w") as text_file:
         print("Test Wing" + "\n"
                             "#Mach" + "\n" +
               str(0.7) + "\n"
