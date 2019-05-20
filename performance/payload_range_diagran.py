@@ -141,7 +141,7 @@ def payload_range():
 
     plt.plot(range_weight, weight, "gray",label = "With reserve fuel")    
     
-    plt.title('Payload - range diagram')
+    #plt.title('Payload - range diagram')
     plt.xlabel("Range [km]")
     plt.ylabel("Weight [N]")
     plt.legend()
