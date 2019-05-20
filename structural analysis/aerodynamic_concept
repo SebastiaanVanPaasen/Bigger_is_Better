@@ -1,0 +1,37 @@
+The Mach number: 0.75
+The cruise altitude in m: 12000
+Take-off weight in N: 1827601.37
+Empty weight in N: 999781.3
+Wing weight in N: 0.16
+Fuselage weight in N: 0.09
+Empennage weight in N: 0.01
+Nacelle weight in N: 0.01
+Engine weight in N: 0.08
+Landing gear weight in N: 0.02
+Fixed equipmentweight in N: 0.17
+Propulsion system weight in N: 0.08
+Payload weight in N: 508587.17
+Fuel weight in N: 313699.55
+Thrust in N: 475176.36
+Cl_cruise: 1.0
+Cd cruise: 0.054
+Cruise density in kg/m^3: 0.23
+Cd zero: 0.0262
+Lift over drag: 18.532
+Cruise speed in m/s: 221.28
+The ultimate load factor: 4.4
+The ultimate load factor speed in m/s: 301.61
+Span in m: 55.86
+Surface area in m^2: 222.88
+The length of the fuselage in m: 67.14001506766847
+Root chord in m: 6.09
+The leading edge sweep in degrees: 27.69
+The taper ratio: 0.31
+Aspect ratio: 14
+Oswald factor: 0.9
+Wing weight in N: 288420.71
+Number of engines: 2.0
+Engine weight in N: 68639.55
+Center of gravity locations in m: [26.85600603 60.42601356 26.85600603 -0.2        -0.2         1.74400318
+ 26.54533241 29.85908564  3.46764555]
+The weight fractions as % of take-off weight: [0.2782812355838581, 0.17164550176679616, 0.09143631495872169, 0.009549685073711314, 0.15781379463978554, 0.0143, 0.023749906593224884, 0.0780575662919426, 0.17213834059727431]

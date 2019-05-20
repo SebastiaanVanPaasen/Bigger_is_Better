@@ -9,11 +9,13 @@ import numpy as np
 from iterator_function import *
 from class_I.loading_diagram import potato
 from class_I.seats import *
-from stability_and_control.stability import C_L_alpha_h, C_L_alpha_w, C_L_alpha_Ah, x_ac, de_da, Sh_S_stability
-from stability_and_control.control_curve import Sh_S_control, Cm_ac, Cm_ac_w, dfus_Cm_ac, dflap_Cm_ac
+from stability_and_control.stability import C_L_alpha_Ah, Sh_S_stability
+from stability_and_control.control_curve import Sh_S_control
 from stability_and_control.control_stability import control_stability_plot
 #from input_files.aerodynamic_concept import *
 #------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------
 
 # Inputs
 
@@ -184,6 +186,7 @@ plt.show()
 
 
 
+W_personkg = W_person * lbs_to_kg * g_0
 
 
 
@@ -192,5 +195,9 @@ plt.show()
 
 
 
+# ------------------------------VALUES GRAPHS--------------------------
+mu_2 = 1.  # 2D to 3D correction factor from graph
+mu_3 = 0.025  # correction factor for sweep from graph
+dc_c_f = 0.5  # flap geometry ratio, see torenbeek book
 
 

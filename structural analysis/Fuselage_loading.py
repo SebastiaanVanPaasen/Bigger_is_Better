@@ -7,11 +7,19 @@ Created on Wed May 15 16:49:52 2019
 """
 import numpy as np
 import matplotlib.pyplot as plt
+import os
 #define forces on fuselage and its location of applocation
 #all the forces weights and locations need to be put in!!!!!!
 
-l_fus = 100
+from Load_data import load
 
+
+inputs = load('aerodynamic_concept')
+
+print (inputs)
+
+l_fus = inputs[25]
+print (l_fus)
 #weights from class 2
 w_fus_group = 900000
 w_wing_group = 500000
@@ -89,3 +97,5 @@ def fuselage_diagrams(l_fus, F_wing, F_emp, x_wing_force, x_emp_force):
 
 fuselage_diagrams(l_fus, F_wing, F_emp, x_wing_force, x_emp_force)
 
+
+#def fuselage_stress(d_fus, cruise_height, cabin height, yield_strength)

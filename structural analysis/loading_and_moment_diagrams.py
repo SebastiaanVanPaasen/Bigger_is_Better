@@ -4,9 +4,8 @@ Created on Tue May 14 09:48:11 2019
 
 @author: Mathilde
 """
-import sys
 
-sys.path.append("C:/Users/mathi/Documents/DSE/Bigger_is_Better/class_I")
+sys.path.append("C:/Users/Mels/Desktop/3e jaar TUDelft/DSE/code/Bigger_is_Better/Class_I")
 import numpy as np  ### Never use * to import stuff, as it makes it difficult to retrace where functions come from
 import scipy as sp
 import math as m
@@ -20,82 +19,78 @@ from lift_distr import *
 
 ### Move the geometry definition to over here
 CD0 = 0.02
-S = 350.  # m^2
-b = 62.30
-AR = b ** 2 / S
-taper = 0.275
-Sweep0 = (40 / 180) * np.pi  # rad
-# by = 20.  # m
-Cr = (2 * S) / ((1 + taper) * b)  # (S + np.tan(Sweep0) * by * (b / 4)) / (by + (b - by) * ((1 + taper) / 2))
+S = 427.80  # m^2
+AR = 8.67
+taper = 0.149
+Sweep0 = 0.558505  # rad
+by = 20.  # m
+b = 60.90
+Cr = (S + np.tan(Sweep0) * by * (b / 4)) / (by + (b - by) * ((1 + taper) / 2))
 Ct = Cr * taper
-# Cy = 0.#Cr - np.tan(Sweep0) * (by / 2)
+Cy = Cr - np.tan(Sweep0) * (by / 2)
 Volume = 489.8545093  # m^3
-Wing_W = 44522.  # 57461.507853787  # kg
-Wing_Wf = Wing_W * 9.81  # 57461.507853787 * 9.81
+Wing_W = 57461.507853787  # kg
+Wing_Wf = 57461.507853787 * 9.81
 specific_weight = Wing_Wf / Volume  # N/m^3
-Fuel_W_tot = 204350 * 0.8
-Sweepsc = m.atan(m.tan(Sweep0) - 4 / AR * (0.4 * (1 - taper) / (1 + taper)))  # sweep shear center
-c_engine = 0  # position of start engine wrt chord
-y_shear_center = 0.2  # position of y position shear center wrt
-thrust_position = -1.5  # position of y of the thrust vector
+Fuel_W_tot = 1517632
+Sweepsc = m.atan(m.tan(Sweep0) - 4 / AR * (0.4 * (1 - taper) / (1 + taper))) #sweep shear center
+c_engine = 0 #position of start engine wrt chord
+y_shear_center = 0.2   #position of y position shear center wrt
+thrust_position = -1.5 # position of y of the thrust vector
 x_fuel_begin = 0
-x_fuel_end = 0.7 * (b / 2)
-start_eng_1 = 0.376 * (b / 2)
-start_eng_2 = 0.667 * (b / 2)
-n_engines = 4
+x_fuel_end = 10.
+start_eng_1 = 5.
+start_eng_2 = 16.
+n_engines = 4 
 total_thrust = 1183376.56
 engine_weight = 80067.989
 
 # input for each critical case; as the lift distribution varies for each case
-rho = 0.37
-V = 300
+rho = 0.348331
+V = 253
 n = 2.5
-W = 300000 * 9.81
+W = 2000000.
 
-
-def input_CL(n, S, V, rho, W):
-    input_CL = W / (0.5 * rho * V ** 2 * S)
+def input_CL(n,S,V,rho,W):
+    input_CL = 2.5*W/(0.5*rho*V**2*S)
     return input_CL
-
-
 ## Import File List:
-output_avl = lift_distribution(input_CL(n, S, V, rho, W))
-x_pos = get_correct_data(output_avl, c)[0]
-x_total = x_pos[int((len(x_pos) / 2)):][::-1] + x_pos[0:int((len(x_pos) / 2))]
+output_avl = lift_distribution(input_CL(n,S,V,rho,W))
+x_pos = get_correct_data(output_avl,c)[0]
+x_total = x_pos[int((len(x_pos)/2)):][::-1] + x_pos[0:int((len(x_pos)/2))]
 
 ##Lift Code:
-cl = get_correct_data(output_avl, c)[1]
-cl_total = cl[int((len(x_pos) / 2)):][::-1] + cl[0:int((len(x_pos) / 2))]
+cl = get_correct_data(output_avl,c)[1]
+cl_total = cl[int((len(x_pos)/2)):][::-1] + cl[0:int((len(x_pos)/2))]
 PolyFitCurveCl = sp.interpolate.interp1d(x_total, cl_total, kind="cubic", fill_value="extrapolate")
 # print('Lift Coefficients (highest order first, ending with 0th order term) are: \n{}\n'.format(PolyFitCurveCl))
-
+print(cl_total)
+print(PolyFitCurveCl(30))
 ##Drag Code:
-cdi = get_correct_data(output_avl, c)[1]
-cdi_total = cl[int((len(x_pos) / 2)):][::-1] + cl[0:int((len(x_pos) / 2))]
-PolyFitCurveidrag = sp.interpolate.interp1d(x_total, cdi_total, kind='cubic', fill_value='extrapolate')
+cdi = get_correct_data(output_avl,c)[1]
+cdi_total = cl[int((len(x_pos)/2)):][::-1] + cl[0:int((len(x_pos)/2))]
+PolyFitCurveidrag = sp.interpolate.interp1d(x_total, cdi_total , kind='cubic', fill_value='extrapolate')
 
 
 ### Define your functions at the beginning of the program
 def c(x):
-    c = Cr - ((Cr - Ct) / (b / 2)) * x
-    #    if x < (by / 2):
-    #        c = Cr - 2 * x * ((Cr - Cy) / (by))
-    #    if x > (by / 2):
-    #        c = Cy - 2 * (x - (by / 2)) * ((Cy - Ct) / (b - by))
+    
+    if x < (by / 2):
+        c = Cr - 2 * x * ((Cr - Cy) / (by))
+    if x > (by / 2):
+        c = Cy - 2 * (x - (by / 2)) * ((Cy - Ct) / (b - by))
     return c
 
 
 def S_cross_section(x):
-    return c(x) * c(x) * 0.14
-
+    return c(x) * c(x) * 0.1
 
 Vfuel = sp.integrate.quad(S_cross_section, x_fuel_begin, x_fuel_end)[0]
-# print(Vfuel)
-Fuel_W_tank = Fuel_W_tot / 2
-specific_W_f = Fuel_W_tank / Vfuel
+#print(Vfuel)
+Fuel_W_tank = Fuel_W_tot/2
+specific_W_f = Fuel_W_tank/Vfuel
 
-
-def Loadcalculator(x0, Ff):
+def Loadcalculator(x0,Ff):
     Nloadcalculations = 100
     xnodevalues = np.linspace(x0, b / 2, Nloadcalculations)
     xleftvalues = xnodevalues[:-1]
@@ -121,27 +116,25 @@ def Loadcalculator(x0, Ff):
         secondenginereachedyet = True
     else:
         secondenginereachedyet = False
-
-    # print(xmiddlevalues)
+        
+    #print(xmiddlevalues)
     for i, x in enumerate(xmiddlevalues):
         ### Geometry calculations
         width = xrightvalues[i] - xleftvalues[i]
         chord = c(x)
         surfacearea = width * chord
-        shear_center = 0.4 * c(x) + np.tan(
-            Sweep0) * x  # assumption that the center of shear is at c/3 line down the wing span
+        shear_center = 0.4 * c(x) + np.tan(Sweep0) * x  # assumption that the center of shear is at c/3 line down the wing span
 
         ###FINDING THE TOTAL FORCE DISTRIBUTION ALONG WING HALF SPAN
 
         ### Weight calculations
-        t = 0.14
+        t = 0.10
         section_volume = width * chord * t * chord
-        section_weight = section_volume * specific_weight * n * 1.5
+        section_weight = section_volume * specific_weight
 
         ### Lift calculations
         Cl = PolyFitCurveCl(x)
-        section_lift = 0.5 * Cl * rho * (
-                    V ** 2) * surfacearea * -1 * 1.5 * n  # because it points in the (-)ive z-direction
+        section_lift = 0.5 * Cl * rho * (V ** 2) * surfacearea * n * 1.5* -1 # because it points in the (-)ive z-direction
         L = section_lift
 
         # print(surfacearea, Cl, section_lift)
@@ -150,52 +143,52 @@ def Loadcalculator(x0, Ff):
         # cruise_ff = 0.636572571
         # total_W_f = 0.5 * 1517632 * Ff * n * 1.5
         if x <= x_fuel_end:
-            section_fuel_weight = specific_W_f * section_volume * Ff * n * 1.5
+            section_fuel_weight = specific_W_f * section_volume * Ff
         else:
             section_fuel_weight = 0
 
         ###Drag Calculations
         Cd = CD0 + PolyFitCurveidrag(x)
-        section_drag = (0.5 * Cd * rho * (V ** 2) * surfacearea) * -1 * n * 1.5
-        #        print(section_drag)
+        section_drag = (0.5 * Cd * rho * (V ** 2) * surfacearea)* -1
+#        print(section_drag)
 
         # (-) because it's in a direction opposite to thrust
 
         ###Thrust Calculations
         section_thrust = 0
         section_engineweight = 0
-        if x > start_eng_1 and firstenginereachedyet == False and n_engines != 0:
+        if x > start_eng_1 and firstenginereachedyet == False:
             section_thrust = total_thrust / n_engines
             section_engineweight = engine_weight * n * 1.5
             Mz += -section_engineweight * (start_eng_1 - x0)
             My += section_thrust * (start_eng_1 - x0)
             firstenginereachedyet = True
 
-        if x > start_eng_2 and secondenginereachedyet == False and n_engines != 0 and n_engines != 2:
-            section_thrust = total_thrust / n_engines
+            
+        if x > start_eng_2 and secondenginereachedyet == False and n_engines!=2:
+            section_thrust = total_thrust / n_engines 
             section_engineweight = engine_weight * n * 1.5
             Mz += -section_engineweight * (start_eng_2 - x0)
             My += section_thrust * (start_eng_2 - x0)
             secondenginereachedyet = True
-
+        
         ###Torque Calculations
 
         lift_position = (1 / 4) * c(x) + np.tan(Sweep0) * x  # assumtion that the lift along the span acts at c_0.25
-        weight_position = (1 / 2) * c(x) + np.tan(
-            Sweep0) * x  # assumption that the weight acts along the span acts at c_0.5
-        fuel_position = (1 / 2) * c(x) + np.tan(
-            Sweep0) * x  # assumption that the fuel acts along the span acts at c_0.5
-        engine_position = c_engine * c(x) + np.tan(Sweep0) * x  # position of the engine
+        weight_position = (1 / 2) * c(x) + np.tan(Sweep0) * x  # assumption that the weight acts along the span acts at c_0.5
+        fuel_position = (1 / 2) * c(x) + np.tan(Sweep0) * x  # assumption that the fuel acts along the span acts at c_0.5
+        engine_position = c_engine * c(x) + np.tan(Sweep0) * x #position of the engine 
 
-        #        Cm = PolyFitCurveCm(x)
-        #        moment_aero = 0.5 * Cm * rho * (V ** 2) * (chord) * surfacearea * n * m.cos(Sweepsc)
+#        Cm = PolyFitCurveCm(x)
+#        moment_aero = 0.5 * Cm * rho * (V ** 2) * (chord) * surfacearea * n * m.cos(Sweepsc)
         lift_torque = section_lift * (lift_position - shear_center) * m.cos(Sweepsc)
         weight_torque = section_weight * (weight_position - shear_center) * m.cos(Sweepsc)
         engine_torque = section_engineweight * (engine_position - shear_center) * m.cos(Sweepsc)
         fuel_torque = section_fuel_weight * (fuel_position - shear_center) * m.cos(Sweepsc)
-        thrust_torque = section_thrust * (y_shear_center - thrust_position)
+        thrust_torque =  section_thrust * (y_shear_center - thrust_position)
         section_torque = lift_torque + weight_torque + engine_torque + fuel_torque + thrust_torque
 
+        
         ###Net force sums
         section_verticalforceminusengine = section_lift + section_weight + section_fuel_weight
         section_verticalforce = section_verticalforceminusengine + section_engineweight
@@ -218,15 +211,17 @@ def Loadcalculator(x0, Ff):
 
         ### Torque calculations
         T += section_torque
+    
+#    print("engine", section_engineweight)
+#    print('L',L)
+#    print('Cl',Cl)
+    return Fy, Fz, Mz, My, L, W_f, D, Th, section_engineweight, T
 
-    #    print("engine", section_engineweight)
-    #    print('L',L)
-    #    print('Cl',Cl)
-    return Fy, Fz, Mz, My, L, W_f, D, Th, T
 
 
-def load_diagrams(N):  ### 100 nodes, so 99 beam elements
-
+def load_diagrams():
+    N = 100  ### 100 nodes, so 99 beam elements
+    
     HalfspanValues = np.linspace(0, b / 2 - 0.00001, N)
     Fydistribution = []
     Fzdistribution = []
@@ -238,10 +233,9 @@ def load_diagrams(N):  ### 100 nodes, so 99 beam elements
     Thrustdistributionvalues = []
     Engine_distribution = []
     Tdistributionvalues = []
-    sectionvolume = []
-
+    
     for i, x in enumerate(HalfspanValues):
-        Fy, Fz, Mz, My, L, W_f, D, Th, T = Loadcalculator(x, 1)
+        Fy, Fz, Mz, My, L, W_f, D, Th, section_engineweight, T = Loadcalculator(x,1)
         Fydistribution.append(Fy)
         Fzdistribution.append(Fz)
         Mzdistribution.append(Mz)
@@ -250,10 +244,9 @@ def load_diagrams(N):  ### 100 nodes, so 99 beam elements
         Fuelweightdistributionvalues.append(W_f)
         Dragdistributionvalues.append(D)
         Thrustdistributionvalues.append(Th)
-        #        Engine_distribution.append(section_engineweight)
+        Engine_distribution.append(section_engineweight)
         Tdistributionvalues.append(T)
-    #        sectionvolume.append(section_volume)
-
+    
     HalfspanValues = np.linspace(0, b / 2 - 0.00001, N)
     Fydistribution2 = []
     Mydistribution2 = []
@@ -265,10 +258,9 @@ def load_diagrams(N):  ### 100 nodes, so 99 beam elements
     Engine_distribution2 = []
     Fzdistribution2 = []
     Tdistributionvalues2 = []
-    sectionvolume2 = []
-
+    
     for i, x in enumerate(HalfspanValues):
-        Fy, Fz, Mz, My, L, W_f, D, Th, T = Loadcalculator(x, 0.6)
+        Fy, Fz, Mz, My, L, W_f, D, Th, section_engineweight, T = Loadcalculator(x,0.6)
         Fydistribution2.append(Fy)
         Fzdistribution2.append(Fz)
         Mzdistribution2.append(Mz)
@@ -277,10 +269,9 @@ def load_diagrams(N):  ### 100 nodes, so 99 beam elements
         Fuelweightdistributionvalues2.append(W_f)
         Dragdistributionvalues2.append(D)
         Thrustdistributionvalues2.append(Th)
-        #        Engine_distribution2.append(section_engineweight)
+        Engine_distribution2.append(section_engineweight)
         Tdistributionvalues2.append(T)
-    #        sectionvolume2.append(section_volume)
-
+    
     HalfspanValues = np.linspace(0, b / 2 - 0.00001, N)
     Fydistribution3 = []
     Mydistribution3 = []
@@ -292,10 +283,9 @@ def load_diagrams(N):  ### 100 nodes, so 99 beam elements
     Engine_distribution3 = []
     Fzdistribution3 = []
     Tdistributionvalues3 = []
-    #    sectionvolume3=[]
-
+    
     for i, x in enumerate(HalfspanValues):
-        Fy, Fz, Mz, My, L, W_f, D, Th, T = Loadcalculator(x, 0)
+        Fy, Fz, Mz, My, L, W_f, D, Th, section_engineweight, T = Loadcalculator(x,0)
         Fydistribution3.append(Fy)
         Fzdistribution3.append(Fz)
         Mzdistribution3.append(Mz)
@@ -304,39 +294,29 @@ def load_diagrams(N):  ### 100 nodes, so 99 beam elements
         Fuelweightdistributionvalues3.append(W_f)
         Dragdistributionvalues3.append(D)
         Thrustdistributionvalues3.append(Th)
-        #        Engine_distribution3.append(section_engineweight)
+        Engine_distribution3.append(section_engineweight)
         Tdistributionvalues3.append(T)
-    #        sectionvolume3.append(section_volume)
-
-    plt.subplot(2, 3, 5)
-    plt.subplot(2, 3, 1)
+        
+    plt.subplot(2,3,5)
+    plt.subplot(2,3,1)
     plt.gca().set_title('Mz distribution')
     plt.plot(HalfspanValues, Mzdistribution)
-    plt.subplot(2, 3, 2)
+    plt.subplot(2,3,2)
     plt.gca().set_title('Fz distribution')
     plt.plot(HalfspanValues, Fzdistribution)
-    plt.subplot(2, 3, 3)
+    plt.subplot(2,3,3)
     plt.gca().set_title('My distribution')
     plt.plot(HalfspanValues, Mydistribution)
-    plt.subplot(2, 3, 4)
+    plt.subplot(2,3,4)
     plt.gca().set_title('Fy distribution')
     plt.plot(HalfspanValues, Fydistribution)
-    plt.subplot(2, 3, 5)
+    plt.subplot(2,3,5)
     plt.gca().set_title('T distribution')
     plt.plot(HalfspanValues, Tdistributionvalues)
     plt.show()
-    #    print(Mzdistribution[0])
-    maxMz = [max(Mzdistribution), max(Mzdistribution2), max(Mzdistribution3)]
-    return maxMz, Fydistribution, Fzdistribution, Mydistribution, Mzdistribution, Tdistributionvalues, sectionvolume
+    
+    return Fydistribution, Fzdistribution, Mydistribution, Mzdistribution, Tdistributionvalues
 
-
-print(load_diagrams(100)[6])
-
-
-# print(required_Izz(Cr))
-
-
-# print(load_diagrams(100))
 
 # TORQUE DISTRIBUTION CALCULATION
 # M_max = max(Mydistribution)
@@ -345,32 +325,32 @@ print(load_diagrams(100)[6])
 # print(M_max, V_max)
 
 
-# def DocumentAddition(Document,string1, string2):
+#def DocumentAddition(Document,string1, string2):
 #    Documentation = open(Document, 'a')
 #    Documentation.write(string1+"   "+string2+"\n")
 #    Documentation.close()
 #
 #    return
-# """"
-# DocumentAddition("Fz_data_2.5.txt", "Position Along Wing [m]", "Vertical Shear Force [N]")
+#""""
+#DocumentAddition("Fz_data_2.5.txt", "Position Along Wing [m]", "Vertical Shear Force [N]")
 #
-# for i in range(len(HalfspanValues)):
+#for i in range(len(HalfspanValues)):
 #    DocumentAddition("Fz_data_2.5.txt",str(HalfspanValues[i]),str(Fzdistribution[i]))
 #
 #
-# DocumentAddition("T_data_2.5.txt", "Position Along Wing [m]", "Torque [Nm]")
+#DocumentAddition("T_data_2.5.txt", "Position Along Wing [m]", "Torque [Nm]")
 #
-# for i in range(len(HalfspanValues)):
+#for i in range(len(HalfspanValues)):
 #    DocumentAddition("T_data_2.5.txt",str(HalfspanValues[i]),str(Tdistributionvalues[i]))
 #
 #
-# DocumentAddition("Mx_data_2.5.txt", "Position Along Wing [m]", "Internal Moment [Nm]")
+#DocumentAddition("Mx_data_2.5.txt", "Position Along Wing [m]", "Internal Moment [Nm]")
 #
-# for i in range(len(HalfspanValues)):
+#for i in range(len(HalfspanValues)):
 #    DocumentAddition("Mx_data_2.5.txt",str(HalfspanValues[i]),str(Mxdistribution[i]))
 #
 #
-# """
+#"""
 # plt.plot(HalfspanValues,Fxdistribution)
 # plt.plot(HalfspanValues, Tdistributionvalues)
 
@@ -381,7 +361,9 @@ print(load_diagrams(100)[6])
 # plt.ylabel('Mx', fontsize=16)
 
 
-# print(max(Mzdistribution))
+
+
+
 
 
 # plt.plot(HalfspanValues, Engine_distribution)
@@ -389,69 +371,69 @@ print(load_diagrams(100)[6])
 # plt.plot(HalfspanValues, Dragdistributionvalues)
 # plt.plot(HalfspanValues, Thrustdistributionvalues)
 # plt.plot(HalfspanValues,Fuelweightdistributionvalues)
-# plt.figure(figsize=(8,8))
-# plt.plot(HalfspanValues, Tdistributionvalues,label = 'Full fuel')
-# plt.plot(HalfspanValues, Tdistributionvalues2,label = '60% fuel')
-# plt.plot(HalfspanValues, Tdistributionvalues3,label = 'Zero fuel')
-# legend = plt.legend(loc='upper center', shadow=True, fontsize = 12)
-# plt.xlabel('$y_W [m]$', fontsize=12)
-# plt.ylabel('$T [Nm]$', fontsize=12)
+#plt.figure(figsize=(8,8))
+#plt.plot(HalfspanValues, Tdistributionvalues,label = 'Full fuel')
+#plt.plot(HalfspanValues, Tdistributionvalues2,label = '60% fuel')
+#plt.plot(HalfspanValues, Tdistributionvalues3,label = 'Zero fuel')
+#legend = plt.legend(loc='upper center', shadow=True, fontsize = 12)
+#plt.xlabel('$y_W [m]$', fontsize=12)
+#plt.ylabel('$T [Nm]$', fontsize=12)
 #
-# plt.show()
+#plt.show()
 #
-# plt.close()
-# plt.figure(figsize=(10,10))
+#plt.close()
+#plt.figure(figsize=(10,10))
 #
-# plt.plot(HalfspanValues, Mxdistribution,label = 'Full fuel')
-# plt.plot(HalfspanValues, Mxdistribution2,label = '60% fuel')
-# plt.plot(HalfspanValues, Mxdistribution3,label = 'Zero fuel')
-# legend = plt.legend(loc='upper center', shadow=True, fontsize = 12)
-# plt.xlabel('$y_W [m]$', fontsize=12)
-# plt.ylabel('$M_x [Nm]$', fontsize=12)
+#plt.plot(HalfspanValues, Mxdistribution,label = 'Full fuel')
+#plt.plot(HalfspanValues, Mxdistribution2,label = '60% fuel')
+#plt.plot(HalfspanValues, Mxdistribution3,label = 'Zero fuel')
+#legend = plt.legend(loc='upper center', shadow=True, fontsize = 12)
+#plt.xlabel('$y_W [m]$', fontsize=12)
+#plt.ylabel('$M_x [Nm]$', fontsize=12)
 #
-# plt.show()
+#plt.show()
 #
-# plt.close()
-# plt.figure(figsize=(10,10))
+#plt.close()
+#plt.figure(figsize=(10,10))
 #
-# plt.plot(HalfspanValues, Mzdistribution)
+#plt.plot(HalfspanValues, Mzdistribution)
 ## plt.plot(HalfspanValues, Mzdistribution2,label = '60% fuel')
 ## plt.plot(HalfspanValues, Mzdistribution3,label = 'Zero fuel')
 ##legend = plt.legend(loc='upper center', shadow=True, fontsize = 12)
-# plt.xlabel('$y_W [m]$', fontsize=12)
-# plt.ylabel('$M_z [Nm]$', fontsize=12)
+#plt.xlabel('$y_W [m]$', fontsize=12)
+#plt.ylabel('$M_z [Nm]$', fontsize=12)
 #
-# plt.show()
+#plt.show()
 #
-# plt.close()
-# plt.figure(figsize=(10,10))
+#plt.close()
+#plt.figure(figsize=(10,10))
 #
-# plt.plot(HalfspanValues, Fxdistribution)
-# plt.xlabel('$y_W [m]$', fontsize=12)
-# plt.ylabel('$F_x [N]$', fontsize=12)
+#plt.plot(HalfspanValues, Fxdistribution)
+#plt.xlabel('$y_W [m]$', fontsize=12)
+#plt.ylabel('$F_x [N]$', fontsize=12)
 #
-# plt.show()
+#plt.show()
 #
-# plt.close()
-# plt.figure(figsize=(10,10))
+#plt.close()
+#plt.figure(figsize=(10,10))
 #
-# plt.plot(HalfspanValues, Fzdistribution,label = 'Full fuel')
-# plt.plot(HalfspanValues, Fzdistribution2,label = '60% fuel')
-# plt.plot(HalfspanValues, Fzdistribution3,label = 'Zero fuel')
-# legend = plt.legend(loc='upper center', shadow=True, fontsize = 12)
-# plt.xlabel('$y_W [m]$', fontsize=12)
-# plt.ylabel('$F_z [N]$', fontsize=12)
+#plt.plot(HalfspanValues, Fzdistribution,label = 'Full fuel')
+#plt.plot(HalfspanValues, Fzdistribution2,label = '60% fuel')
+#plt.plot(HalfspanValues, Fzdistribution3,label = 'Zero fuel')
+#legend = plt.legend(loc='upper center', shadow=True, fontsize = 12)
+#plt.xlabel('$y_W [m]$', fontsize=12)
+#plt.ylabel('$F_z [N]$', fontsize=12)
 #
-# plt.show()
+#plt.show()
 #
-# plt.close()
+#plt.close()
 
-# print('in the order full fuel, 60%, emopty tank')
+#print('in the order full fuel, 60%, emopty tank')
 #
-# print('Mx', max(Mxdistribution), max(Mxdistribution2), max(Mxdistribution3))
-# print('Mz', max(Mzdistribution), max(Mzdistribution2), max(Mzdistribution3))
-# print('Fz', max(Fzdistribution), max(Fzdistribution2), max(Fzdistribution3))
-# print('Fx', max(Fxdistribution), max(Fxdistribution2), max(Fxdistribution3))
-# print('T', max(Tdistributionvalues), max(Tdistributionvalues2), max(Tdistributionvalues3))
+#print('Mx', max(Mxdistribution), max(Mxdistribution2), max(Mxdistribution3))
+#print('Mz', max(Mzdistribution), max(Mzdistribution2), max(Mzdistribution3))
+#print('Fz', max(Fzdistribution), max(Fzdistribution2), max(Fzdistribution3))
+#print('Fx', max(Fxdistribution), max(Fxdistribution2), max(Fxdistribution3))
+#print('T', max(Tdistributionvalues), max(Tdistributionvalues2), max(Tdistributionvalues3))
 
 
