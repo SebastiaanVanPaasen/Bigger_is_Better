@@ -1,6 +1,6 @@
 from constants_and_conversions import *
 import numpy as np
-# from inputs import *
+# from input_files.strutted_wing import *
 import matplotlib.pyplot as plt
 
 
@@ -11,7 +11,9 @@ def calc_payload_weight(n_passengers, n_crew, w_person, w_cargo):
 
 def calc_cruise_coefficient(cl, cd, r, velocity, c_j):
     # equations come from ADSEE-I lecture 2
-
+    # print(r)
+    # print(velocity)
+    # print(cl/cd)
     return 1 / (np.e ** (r / ((velocity / (c_j * per_hr_to_N * g_0)) * (cl / cd))))
 
 
@@ -31,7 +33,7 @@ def calc_fuel_fraction(coefficients):
 
 
 def class_I(cl, cd, r_cruise, r_res, v_cruise, cj_cruise, W_tfo_frac, W_e_frac, fractions,
-            N_pas, N_crew, W_person, W_cargo):
+            N_pas, N_crew, W_person, W_cargo):  # , w_pay):
     cruise_1 = calc_cruise_coefficient(cl, cd, r_cruise, v_cruise, cj_cruise)
     # loiter = calc_loiter_coefficient(A, Oswald, S_ratio, C_fe, E, c_j_loiter)
     cruise_2 = calc_cruise_coefficient(cl, cd, r_res, v_cruise, cj_cruise)
@@ -46,9 +48,12 @@ def class_I(cl, cd, r_cruise, r_res, v_cruise, cj_cruise, W_tfo_frac, W_e_frac, 
     # print("hoi")
     # print(W_e_frac)
     W_f_frac = calc_fuel_fraction(mission_frac)
+    # print(W_f_frac)
+    # print(W_e_frac)
     W_to_frac = 1 - W_f_frac - W_tfo_frac - W_e_frac
 
     W_P = calc_payload_weight(N_pas, N_crew, W_person, W_cargo)
+    # W_P = w_pay
     W_TO = W_P / W_to_frac
     W_F = W_f_frac * W_TO
     W_E = W_e_frac * W_TO
@@ -76,3 +81,10 @@ def class_I(cl, cd, r_cruise, r_res, v_cruise, cj_cruise, W_tfo_frac, W_e_frac, 
 # # plt.show()
 #
 # print(results[3], r_cruise)
+# narrow_body = class_I(15, 1, 3550 * nm_to_km * 1000, 250 * nm_to_km * 1000, 450 * kts_to_ms, 0.4, 0.003, 0.48,
+#                       fuel_fractions_input, 180, 5, W_person, W_carg, 20882*9.80565)
+# wide_body = class_I(17, 1, 4820 * nm_to_km * 1000, 250 * nm_to_km * 1000, 476 * kts_to_ms, 0.25, 0.003, 0.56,
+#                       fuel_fractions_input, 440, 11, W_person, W_carg, 54635*9.80565)
+#
+# print(narrow_body)
+# print(wide_body)
