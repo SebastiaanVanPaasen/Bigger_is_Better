@@ -36,7 +36,7 @@ wing_choice = [1, 1, 0, 1, 0, 0]
 # choose 1 if the horizontal tails are fin mounted
 empennage_choice = [0, 0]
 # choose 1 if your landing gear is attached to the fuselage
-fuselage_choice = 1
+fuselage_choice = 0
 # choose 1 if a turbojet or low bypass ratio turbofan is used
 nacelle_choice = 1
 # choose first if you have buried engine, 0 for no buried engines
@@ -63,27 +63,27 @@ S_ratio = 6.3  # estimated from ADSEE-I L3
 C_fe = 0.0045  # estimated from ADSEE-I L3
 wing_option = 0  # Depending on the type of wing configuration, 1 is high wing, 0 is low wing
 Oswald = 0.9  # estimated from ADSEE-I L3
-T_input = 0.2789
-S_input = 6166
-A = 9.44
+T_input = 0.2878
+S_input = 5565
+A = 8.67
 CD_0 = C_fe * S_ratio
 N_engines = 2.  #
 tail_type = 0  # Depending on the type of tail configuration, 1 is T-tail, 0 is conventional
-w_engine = 2270  # kg   Obtained from Bram
+w_engine = 7900  # kg   Obtained from Bram
 propeller_choice = 0
 
-W_e_frac_input = 0.53  # Based on average between wide and narrow body, from Ed Obert
+W_e_frac_input = 0.56  # Based on average between wide and narrow body, from Ed Obert
 CD_cruise_input = (4 / 3) * CD_0
 CL_cruise_input = np.sqrt((CD_0 * np.pi * A * Oswald) / 3)
 
 # Inputs that are often changed for the design -------------------------------------------------------------------------
 # based on the reference aircraft B747
 h_cruise = 11887.2  # m based on the sustainability analysis so far
-M_cruise = 0.7  # Mach number decided to cruise on
+M_cruise = 0.87  # Mach number decided to cruise on
 
 # Passenger characteristics --------------------------------------------------------------------------------------------
-N_pas = 189.  # Requirement set by the exercise
-N_pas_below = 189.  # Depends on if you want a double-decker 242 if you want a equally sized fuselage for double floor
+N_pas = 440.  # Requirement set by the exercise
+N_pas_below = 440.  # Depends on if you want a double-decker 242 if you want a equally sized fuselage for double floor
 N_crew = 11.  # Based on the amount of passengers
 W_person = 205.  # lbs   Based on statistics of Roskam
 W_carg = 20.  # kg Based on statistics
