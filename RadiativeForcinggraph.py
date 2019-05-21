@@ -83,10 +83,10 @@ def FuelVRFDOC(h,M,Fnew):
         Dif737 = trfiinc / trfiinc7
         #print TotalRFI * Fincini
         #print CO2RFI * Fincini
-        print NOXrfi * Fincini
-        print conrfi / conrfi7 * CONTRAILRFI * Fincini
+        #print NOXrfi * Fincini
+        #print conrfi / conrfi7 * CONTRAILRFI * Fincini
         #print h2rfi / h2rfi7 * H2ORFI * Fincini
-        #print OtherRFI * Fincini
+        print OtherRFI * Fincini
         #print Dif737 
         #print Fincini
         return Dif737

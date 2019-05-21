@@ -76,7 +76,7 @@ def potato(x_le_h, sweep_LE_h, y_MAC_h, MAC_h, x_le_v, sweep_LE_v, y_MAC_v, MAC_
     xcg_OEW_MAC = 0.25
     # print(X_LEMAC/l_fuselage)
     for j in np.arange((X_LEMAC / l_fuselage) - 0.2, (X_LEMAC / l_fuselage) + 0.2, 0.001):
-
+#    for j in np.arange(0.42105, 0.43, 100.):
         X_LEMAC_range.append(j)
         X_LEMAC = j * l_fuselage
 
