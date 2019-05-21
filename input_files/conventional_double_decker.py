@@ -31,7 +31,7 @@ mass_fractions_input = [mass_frac_wing, mass_frac_emp, mass_frac_fuse, mass_frac
 # fourth is if landing gear is not wing mounted
 # fifth is for strutted wings
 # sixth is for fowler flaps
-wing_choice = [1, 0, 1, 0, 0, 0]
+wing_choice = [1, 1, 0, 0, 0, 0]
 # choose 1 if you have variable incidence stabilizers
 # choose 1 if the horizontal tails are fin mounted
 empennage_choice = [0, 0]
@@ -69,8 +69,8 @@ T_input = 0.26
 S_input = 8200
 A = 8.5
 CD_0 = C_fe * S_ratio
-N_engines = 4.  #
-w_engine = 4000.  # kg   Obtained from Bram
+N_engines = 2.  #
+w_engine = 8500.  # kg   Obtained from Bram
 propeller_choice = 0
 
 W_e_frac_input = 0.525  # Based on average between wide and narrow body, from Ed Obert
