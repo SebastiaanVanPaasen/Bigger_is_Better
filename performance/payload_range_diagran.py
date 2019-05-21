@@ -46,10 +46,9 @@ V = 206.53 #m/s
 CD0 = 0.0276
 g = 9.81
 e = 0.9
-R_range = 3200.  #range of x-axis
-R_des = 1600. #[km]
-Ct0 = 55e-06
-
+R_range = 2500.  #range of x-axis
+R_des = 1400. #[km]
+Ct0 = 65e-06
 
 
 
@@ -59,7 +58,7 @@ Ct0 = 55e-06
 #
 ##MLW  = MTOW - 0.3*OEW
 #MZFW = OEW + 508587.17
-#MFW  =  363032.71*1.4     # Maximum fuel weight (including reserve fuel)
+#MFW  =  363032.71*1.3     # Maximum fuel weight (including reserve fuel)
 #W_fr = MFW/105. * 5.        #reserve fuel
 #A = 8.
 #V = 209.6 #m/s
@@ -87,7 +86,7 @@ Ct0 = 55e-06
 #R_range = 3200.  #range of x-axis
 #R_des = 1600. #[km]
 #Ct0 = 55e-06
-
+#
 
 
 """DD2E"""
@@ -138,8 +137,9 @@ Ct0 = 55e-06
 #g = 9.81
 #
 #R_range = 11000
-#R_des = 7000.
-#Ct0 = 12e-06
+#R_des = 6590.
+#Ct0 = 10.7e-06
+
 
 #------------------------------DEFINITIONS-----------------------------------
 
@@ -161,12 +161,6 @@ def Wf_Wto():              #find V for which Wf/W_TO can be minimised
  
     
 def payload_range():
-    """Standard weight lines"""
-    plt.hlines(MTOW,0.,R_range,"g","--",label = "MTOW")
-    plt.hlines(OEW,0.,R_range,"r","--",label = "OEW")
-    plt.hlines(MZFW,0.,R_range,"b","--", label = "MZFW")
-    #plt.hlines(MLW,0.,R_range,"y","--", label = "MLW")    
-    
     
     """Compute different ranges"""
     #Finding harmonic range (max. payload, with fuel up to MTOW)
@@ -185,8 +179,8 @@ def payload_range():
     plt.vlines(R_harmonic,OEW,MTOW,"m","--",label="Harmonic Range")
     plt.vlines(R_max, OEW,MTOW,"crimson","--",label="Maximum Range")
     plt.vlines(R_ferry,OEW,MTOW,"gray","--",label="Ferry Range")
-    plt.vlines(R_des,OEW,MTOW,"orange","--",label="Design Range")
-    
+    #plt.vlines(R_des,OEW,MTOW,"orange","--",label="Design Range")
+   
     """Take-off weight line"""    
     #TO line up to MTOW and R_harmonic 
     TO = [MZFW+W_fr,MTOW]                     #additional fuel up to MTOW
@@ -230,13 +224,19 @@ def payload_range():
     plt.figure(1)
     plt.plot(range_weight, weight, "gray",label = "With reserve fuel")    
     
+    """Standard weight lines"""
+    plt.hlines(MTOW,0.,R_ferry,"g","--",label = "MTOW")
+    plt.hlines(OEW,0.,R_ferry,"r","--",label = "OEW")
+    plt.hlines(MZFW,0.,R_ferry,"b","--", label = "MZFW")
+    #plt.hlines(MLW,0.,R_range,"y","--", label = "MLW")    
+    
     #plt.title('Payload - range diagram')
     plt.xlabel("Range [km]")
     plt.ylabel("Weight [N]")
     plt.ylim(0.95*OEW,1.05*MTOW)
     plt.legend()
     plt.show()
-    return R_max,R_ferry, R_harmonic
+    return R_harmonic,R_max, R_ferry
 
 #a = (payload_range()[0][1]-p6ayload())
 print (payload_range())
