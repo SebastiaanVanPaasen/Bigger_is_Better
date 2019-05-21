@@ -111,7 +111,9 @@ def class_I_empennage(mass_frac, MAC, l_fuselage, x_eng, l_n, xcg_OEW_MAC, xcg_p
 def _calc_h_tail(x_h, xcg_aft, MAC, S, A_h, l_fuselage, tap_h, V_h_norm, sweep_quartchord_h):
     n = 1.
     C_t_h, C_r_h, b_h, S_h = 0, 0, 0, 0
-
+    # print(A_h)
+    # print(S)
+    # print(V_h_norm)
     while n > 0.001:
         S_frac_h = (V_h_norm * MAC) / (x_h - xcg_aft)
         S_h = S_frac_h * S

@@ -73,6 +73,8 @@ def make_avl_file(root_chord, tip_chord, span, LE_sweep, dihedral, S, CD_0, M_cr
             print("SECTION", file=text_file)
             print(round(x_loc_LE[i], 3), round(y_loc_LE[i], 3), round(z_loc_LE[i], 3), round(chords[i], 3), Ainc[i],
                   Nspanwise[i], Sspace[i], file=text_file)
+            print("CDCL" + "\n"
+                  "-1.54 0.002 0.69 0.0054 1.8 0.002", file=text_file)
         print("AFILE" + "\n"
                         "n2414.dat.txt", file=text_file)
 
