@@ -49,7 +49,7 @@ fuel_sys_choice = 0
 # choice is the type of starting system, 1 for one or two jet engines with pneumatic starting system
 # 2 for four jet engines with pneumatic starting systems, 3 for jet engines using electric starting systems
 # 4 for turboprops with pneumatics, 5 for piston engines using electric systems
-start_up_choice = 2
+start_up_choice = 1
 # Choose 1 for fuselage mounted jet, 2 for wing mounted jet, 3 for wing mounted turboprops and 4 for wing mounted
 # piston engines the second choice should be 1 if an afterburner is present
 engine_choice = [2, 0]
