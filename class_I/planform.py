@@ -59,7 +59,7 @@ def wing_parameters(m_cruise, cl_cruise, surface_area, aspect_ratio, option):
 
     return (
         quarter_chord_sweep, leading_edge_sweep, span, chord_root, chord_tip, dihedral,
-        thickness_over_chord, mac, taper_ratio)
+        thickness_over_chord, mac, taper_ratio, half_chord_sweep)
     
 # def wing_parameters_boxed(m_cruise, cl_cruise, surface_area, aspect_ratio):
         
@@ -107,13 +107,14 @@ def determine_half_chord_sweep(chord_tip, qc_sweep, chord_root, span):
 
     return hc_sweep
 
-# M_cruise = 0.7  # inputs from different part
-# surface_area = 350  # inputs from different part
-# aspect_ratio = 15  # inputs from different part
-# CL_cruise = 0.7
+M_cruise = 0.87  # inputs from different part
+surface_area = 427.80 # inputs from different part
+aspect_ratio = 8.67  # inputs from different part
+CL_cruise = 0.763
 #
-# quarter_cord_sweep, leading_edge_sweep, taper_ratio, span, cord_root, cord_tip, dihedral, tickness_over_cord, mac = wing_parameters(
-#     M_cruise, CL_cruise, surface_area, aspect_ratio)
-##print(quarter_cord_sweep, leading_edge_sweep, taper_ratio, span, cord_root, cord_tip, dihedral, tickness_over_cord, mac)
-# x_dist_tails = tail_distance(surface_area, s_ratio, v_tail_aspect_ratio, v_tail_le_sweep,  h_tail_height)
-# print(x_dist_tails)
+quarter_chord_sweep, leading_edge_sweep, span, chord_root, chord_tip, dihedral, thickness_over_chord, mac, taper_ratio, half_chord_sweep = wing_parameters(M_cruise, CL_cruise, surface_area, aspect_ratio, 0)
+#print(quarter_cord_sweep, leading_edge_sweep, taper_ratio, span, cord_root, cord_tip, dihedral, tickness_over_cord, mac)
+#x_dist_tails = tail_distance(surface_area, s_ratio, v_tail_aspect_ratio, v_tail_le_sweep,  h_tail_height)
+print(quarter_chord_sweep, leading_edge_sweep, span, chord_root, chord_tip, dihedral, thickness_over_chord, mac, taper_ratio, half_chord_sweep)
+
+
