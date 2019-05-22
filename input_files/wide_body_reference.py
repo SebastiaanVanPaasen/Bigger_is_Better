@@ -85,7 +85,7 @@ M_cruise = 0.87  # Mach number decided to cruise on
 N_pas = 440.  # Requirement set by the exercise
 N_pas_below = 440.  # Depends on if you want a double-decker 242 if you want a equally sized fuselage for double floor
 N_crew = 11.  # Based on the amount of passengers
-W_person = 160.  # lbs   Based on statistics of Roskam
+W_person = 180.  # lbs   Based on statistics of Roskam
 W_carg = 20.  # kg Based on statistics
 
 # General aircraft input parameters ------------------------------------------------------------------------------------
@@ -140,7 +140,7 @@ c_j_cruise = 0.5  # 1/hr
 c_j_loiter = 0.5  # 1/hr
 
 # Ranges ---------------------------------------------------------------------------------------------------------------
-mission_range = 4820*nm_to_km*1000.  # m     based on market analysis
+mission_range = 4620*nm_to_km*1000.  # m     based on market analysis
 reserve_range = 250 * 1.852 * 1000  # m based on requirement for domestic flights of ADSEE-I L3
 maximum_range = 5000*nm_to_km*1000.  # m    Guestimated
 

@@ -85,7 +85,7 @@ M_cruise = 0.84  # Mach number decided to cruise on
 N_pas = 189.  # Requirement set by the exercise
 N_pas_below = 189.  # Depends on if you want a double-decker 242 if you want a equally sized fuselage for double floor
 N_crew = 6.  # Based on the amount of passengers
-W_person = 170.  # lbs   Based on statistics of Roskam
+W_person = 160.  # lbs   Based on statistics of Roskam
 W_carg = 20.  # kg Based on statistics
 
 # General aircraft input parameters ------------------------------------------------------------------------------------
@@ -136,11 +136,11 @@ tap_v = 0.5  # based on statistics from slides ADSEE-I L7
 v_tail = np.array([A_v, tap_v, QC_sweep_v])
 
 # Coefficients ---------------------------------------------------------------------------------------------------------
-c_j_cruise = 0.75  # 1/hr
+c_j_cruise = 0.5  # 1/hr
 c_j_loiter = 0.5  # 1/hr
 
 # Ranges ---------------------------------------------------------------------------------------------------------------
-mission_range = 2897*nm_to_km*1000  # m     based on market analysis
+mission_range = 2800*nm_to_km*1000  # m     based on market analysis
 reserve_range = 250 * 1.852 * 1000  # m based on requirement for domestic flights of ADSEE-I L3
 maximum_range = 4000*nm_to_km*1000.  # m    Guestimated
 
