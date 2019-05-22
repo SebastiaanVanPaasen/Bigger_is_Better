@@ -69,8 +69,8 @@ T_input = 0.26
 S_input = 8200
 A = 8.5
 CD_0 = 0.0205
-N_engines = 4.  #
-w_engine = 4000.  # kg   Obtained from Bram
+N_engines = 2.  #
+w_engine = 7000.  # kg   Obtained from Bram
 propeller_choice = 0
 
 W_e_frac_input = 0.525  # Based on average between wide and narrow body, from Ed Obert

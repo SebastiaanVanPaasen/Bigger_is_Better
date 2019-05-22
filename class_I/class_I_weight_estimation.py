@@ -48,12 +48,12 @@ def class_I(cl, cd, r_cruise, r_res, v_cruise, cj_cruise, W_tfo_frac, W_e_frac, 
     # print("hoi")
     # print(W_e_frac)
     W_f_frac = calc_fuel_fraction(mission_frac)
-    # print(W_f_frac)
-    # print(W_e_frac)
+    print(W_f_frac)
+    print(W_e_frac)
     W_to_frac = 1 - W_f_frac - W_tfo_frac - W_e_frac
 
     W_P = calc_payload_weight(N_pas, N_crew, W_person, W_cargo)
-    # W_P = w_pay
+    # W_P = 35625 * g_0
     W_TO = W_P / W_to_frac
     W_F = W_f_frac * W_TO
     W_E = W_e_frac * W_TO

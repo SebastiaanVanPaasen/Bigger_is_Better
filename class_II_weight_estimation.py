@@ -34,6 +34,7 @@ def wing_weight(w_to, w_f, b, semi_chord_sweep, n_ult, s, t_max, choice):
     for i in range(len(choice)):
         if choice[i] == 1:
             w_weight = w_weight + w_weight * changes[i]
+            # print(w_weight)
 
     return w_weight
 

@@ -85,7 +85,7 @@ M_cruise = 0.84  # Mach number decided to cruise on
 N_pas = 189.  # Requirement set by the exercise
 N_pas_below = 189.  # Depends on if you want a double-decker 242 if you want a equally sized fuselage for double floor
 N_crew = 6.  # Based on the amount of passengers
-W_person = 175.  # lbs   Based on statistics of Roskam
+W_person = 170.  # lbs   Based on statistics of Roskam
 W_carg = 20.  # kg Based on statistics
 
 # General aircraft input parameters ------------------------------------------------------------------------------------
@@ -103,7 +103,7 @@ Rho_Landing = Rho_0  # kg/m^3   standard sea-level density
 
 # aircraft cg-locations ------------------------------------------------------------------------------------------------
 x_engines = -1.  # m    x-location engines w.r.t. X_LEMAC
-x_fuel = 22.  # m    cg-location fuel w.r.t nose
+x_fuel_input = 22.  # m    cg-location fuel w.r.t nose
 
 xcg_oew_mac = 0.25  # m     initial cg location OEW w.r.t. MAC
 
