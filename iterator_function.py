@@ -7,7 +7,7 @@ from class_I.empennage_for_scissor import class_I_empennage
 from class_I.flight_envelope import manoeuvring_envelope, gust_envelope
 from avl.conv_wing_avl import make_avl_file, run_avl, find_clalpha
 from class_II_weight_estimation import *
-from input_files.conventional_double_decker_2_engines import *
+from input_files.conventional_double_decker_four_engines import *
 from performance.SAR_lists_iterator import SAR
 
 # from class_I.wing_loading_diagram import final_diagram
@@ -36,7 +36,7 @@ from performance.SAR_lists_iterator import SAR
 #
 #    V_cruise = M_cruise * a_cruise
 #    Ct0_value = 12e-06
-def main_iterator(CL_cruise_input, CD_cruise_input, W_e_frac_input, fuel_fractions_input, mass_fractions_input, N_pas_below):   
+def main_iterator(CL_cruise_input, CD_cruise_input, W_e_frac_input, fuel_fractions_input, mass_fractions_input):   
     # Starting the iteration process -----------------------------------------------------------------------------------
     i = 0
     maximum = 50
@@ -55,7 +55,7 @@ def main_iterator(CL_cruise_input, CD_cruise_input, W_e_frac_input, fuel_fractio
     M_cruise = M_cruise_input
     h_cruise = h_cruise_input
 
-    while i < maximum and percentage > 0.0005:
+    while i < maximum and percentage > 0.0001:
 
         print("Starting on iteration: " + str(i))
         # Performing class I weight estimation -------------------------------------------------------------------------

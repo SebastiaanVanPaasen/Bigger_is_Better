@@ -31,19 +31,19 @@ mass_fractions_input = [mass_frac_wing, mass_frac_emp, mass_frac_fuse, mass_frac
 # fourth is if landing gear is not wing mounted
 # fifth is for strutted wings
 # sixth is for fowler flaps
-wing_choice = [1, 1, 0, 1, 1, 0]
+wing_choice = [1, 1, 0, 1, 0, 0]
 # choose 1 if you have variable incidence stabilizers
 # choose 1 if the horizontal tails are fin mounted
-empennage_choice = [0, 1]
+empennage_choice = [0, 0]
 # choose 1 if your landing gear is attached to the fuselage
-fuselage_choice = 1
+fuselage_choice = 0
 # choose 1 if a turbojet or low bypass ratio turbofan is used
 nacelle_choice = 1
 # choose first if you have buried engine, 0 for no buried engines
 # choose secondly if the ducts have a flat cross section, in this case 1
 induction_choice = [0, 0]
 # choose 1 if piston engines are used
-prop_choice = 1
+prop_choice = 0
 # choose 1 if you hae non self-sealing bladder tanks
 fuel_sys_choice = 0
 # choice is the type of starting system, 1 for one or two jet engines with pneumatic starting system
@@ -61,49 +61,49 @@ hydro_choice = 0
 
 S_ratio = 6.3  # estimated from ADSEE-I L3
 C_fe = 0.0045  # estimated from ADSEE-I L3
-wing_option = 1  # Depending on the type of wing configuration, 1 is high wing, 0 is low wing
-Oswald = 0.9  # estimated from ADSEE-I L3
-T_input = 0.26
-S_input = 6000
-A = 16
-CD_0 = 0.0276
+wing_option = 0  # Depending on the type of wing configuration, 1 is high wing, 0 is low wing
+Oswald = 0.8  # estimated from ADSEE-I L3
+T_input = 0.2878
+S_input = 5565
+A = 8.67
+CD_0 = C_fe * S_ratio
 N_engines = 2.  #
-tail_type = 1  # Depending on the type of tail configuration, 1 is T-tail, 0 is conventional
-w_engine = 7000.  # kg   Obtained from Bram
+tail_type = 0  # Depending on the type of tail configuration, 1 is T-tail, 0 is conventional
+w_engine = 7900  # kg   Obtained from Bram
 propeller_choice = 0
 
-W_e_frac_input = 0.525  # Based on average between wide and narrow body, from Ed Obert
+W_e_frac_input = 0.56  # Based on average between wide and narrow body, from Ed Obert
 CD_cruise_input = (4 / 3) * CD_0
 CL_cruise_input = np.sqrt((CD_0 * np.pi * A * Oswald) / 3)
 
 # Inputs that are often changed for the design -------------------------------------------------------------------------
 # based on the reference aircraft B747
-h_cruise = 11000.  # m based on the sustainability analysis so far
-M_cruise = 0.7  # Mach number decided to cruise on
+h_cruise = 11887.2  # m based on the sustainability analysis so far
+M_cruise = 0.87  # Mach number decided to cruise on
 
 # Passenger characteristics --------------------------------------------------------------------------------------------
-N_pas = 450.  # Requirement set by the exercise
-N_pas_below = 450.  # Depends on if you want a double-decker 242 if you want a equally sized fuselage for double floor
+N_pas = 440.  # Requirement set by the exercise
+N_pas_below = 440.  # Depends on if you want a double-decker 242 if you want a equally sized fuselage for double floor
 N_crew = 11.  # Based on the amount of passengers
-W_person = 205.  # lbs   Based on statistics of Roskam
+W_person = 160.  # lbs   Based on statistics of Roskam
 W_carg = 20.  # kg Based on statistics
 
 # General aircraft input parameters ------------------------------------------------------------------------------------
 # General cruise parameters
-h_cruise_input = 11000.  # m based on the sustainability analysis so far
-M_cruise_input = 0.7  # Mach number decided to cruise on
-Temp_cruise = Temp_0 + a * h_cruise_input  # K  based on the altitude you fly at
-a_cruise_input = np.sqrt(gamma * R_gas * Temp_cruise)  # m/s based on the temperature
-V_cruise_input = M_cruise_input * a_cruise_input  # m/s  based on the Mach number and speed of sound
+# h_cruise_input = 12000.  # m based on the sustainability analysis so far
+# M_cruise_input = 0.7  # Mach number decided to cruise on
+# Temp_cruise = Temp_0 + a * h_cruise_input  # K  based on the altitude you fly at
+# a_cruise_input = np.sqrt(gamma * R_gas * Temp_cruise)  # m/s based on the temperature
+# V_cruise_input = M_cruise_input * a_cruise_input  # m/s  based on the Mach number and speed of sound
 
 # Densities ------------------------------------------------------------------------------------------------------------
 Rho_TO = Rho_0  # kg/m^3    standard sea-level density
-Rho_Cruise_input = Rho_0 * ((1 + (a * h_cruise_input) / Temp_0) ** (-(g_0 / (R_gas * a))))  # kg/m^3   based on cruise altitude
+# Rho_Cruise_input = Rho_0 * ((1 + (a * h_cruise_input) / Temp_0) ** (-(g_0 / (R_gas * a))))  # kg/m^3   based on cruise altitude
 Rho_Landing = Rho_0  # kg/m^3   standard sea-level density
 
 # aircraft cg-locations ------------------------------------------------------------------------------------------------
 x_engines = -1.  # m    x-location engines w.r.t. X_LEMAC
-x_fuel = 22.  # m    cg-location fuel w.r.t nose
+x_fuel_input = 22.  # m    cg-location fuel w.r.t nose
 
 xcg_oew_mac = 0.25  # m     initial cg location OEW w.r.t. MAC
 
@@ -136,13 +136,13 @@ tap_v = 0.5  # based on statistics from slides ADSEE-I L7
 v_tail = np.array([A_v, tap_v, QC_sweep_v])
 
 # Coefficients ---------------------------------------------------------------------------------------------------------
-c_j_cruise = 0.75  # 1/hr
+c_j_cruise = 0.5  # 1/hr
 c_j_loiter = 0.5  # 1/hr
 
 # Ranges ---------------------------------------------------------------------------------------------------------------
-mission_range = 1400000.  # m     based on market analysis
+mission_range = 4820*nm_to_km*1000.  # m     based on market analysis
 reserve_range = 250 * 1.852 * 1000  # m based on requirement for domestic flights of ADSEE-I L3
-maximum_range = 2000000.  # m    Guestimated
+maximum_range = 5000*nm_to_km*1000.  # m    Guestimated
 
 # Fractions ------------------------------------------------------------------------------------------------------------
 W_tfo_frac = 0.003  # estimated from slides ADSEE-I, lecture 3
@@ -157,7 +157,7 @@ TOP = 220. * lbft2_Nm2  # Guestimated from ADSEE-I L3
 Sigma_TO = Rho_TO / Rho_0  # Ratio of densities
 
 # Stall speeds ---------------------------------------------------------------------------------------------------------
-V_stall_Cruise = 230 / 1.2  # m/s   Guestimated from ADSEE-I L3 Take requirements
+V_stall_Cruise = 250 / 1.2  # m/s   Guestimated from ADSEE-I L3 Take requirements
 V_stall_Landing = min(np.sqrt(Landing_runway / 0.5847), 65.)  # m/s     Guestimated from ADSEE-I L3
 
 # Lift and drag coefficients -------------------------------------------------------------------------------------------
