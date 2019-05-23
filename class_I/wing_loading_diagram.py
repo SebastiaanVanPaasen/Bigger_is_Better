@@ -1,4 +1,4 @@
-from input_files.aerodynamic_concept import *
+from input_files.conventional_double_decker_four_engines import *
 import matplotlib.pyplot as plt
 
 
@@ -111,25 +111,25 @@ def plot_diagram(all_requirements, labels, ws, tw):
                     plt.plot(ws, all_requirements[p][q], label=labels[p][q], marker="o")
                 r += 1
 
-    plt.scatter(5860, 0.2819, label="Airbus A330-300 (wb)", c="r", marker="o")
-    plt.scatter(6940, 0.2205, label="Airbus A340-200 (wb)", c="g", marker="o")
-    plt.scatter(7318, 0.2272, label="Airbus A340-300 (wb)", c="b", marker="o")
-    plt.scatter(8184, 0.2634, label="Airbus A340-500 (wb)", c="y", marker="o")
-    plt.scatter(8184, 0.2783, label="Airbus A340-600 (wb)", c="k", marker="o")
-    plt.scatter(5562, 0.2878, label="Boeing 777-200 (wb)", c="m", marker="o")
-    plt.scatter(6576, 0.2655, label="Boeing 777-200IGW (wb)", c="c", marker="o")
-    plt.scatter(6861, 0.2818, label="Boeing 777-200XI (wb)", c="r", marker="^")
-    plt.scatter(7173, 0.2841, label="Boeing 777-200X2 (wb)", c="g", marker="^")
-    plt.scatter(5479, 0.322, label="Tupolev Tu-334 (nb)", c="b", marker="^")
-    plt.scatter(5178, 0.272, label="BAe RJ70 (nb)", c="y", marker="^")
-    plt.scatter(5351, 0.301, label="BAe RJ85 (nb)", c="k", marker="^")
-    plt.scatter(5610, 0.287, label="BAe RJ100 (nb)", c="m", marker="^")
-    plt.scatter(5840, 0.276, label="BAe RJ115 (nb)", c="c", marker="^")
-    plt.scatter(3678, 0.333, label="Embraer EMB-145 (nb)", c="r", marker="*")
-    plt.scatter(3853, 0.342, label="Fokker F70 (nb)", c="g", marker="*")
-    plt.scatter(4519, 0.291, label="Fokker F100 (nb)", c="b", marker="*")
-    plt.scatter(5100, 0.175, label="Design point minimum T/W", c="r", s=80, marker="v")
-    plt.scatter(8200, 0.275, label="Design point maximum W/S", c="b", s=80, marker="v")
+    plt.scatter(5860, 0.2819, label="Airbus A330-300 (wb)", c="r", marker="o", s=100)
+    plt.scatter(6940, 0.2205, label="Airbus A340-200 (wb)", c="g", marker="o", s=100)
+    plt.scatter(7318, 0.2272, label="Airbus A340-300 (wb)", c="b", marker="o", s=100)
+    plt.scatter(8184, 0.2634, label="Airbus A340-500 (wb)", c="y", marker="o", s=100)
+    plt.scatter(8184, 0.2783, label="Airbus A340-600 (wb)", c="k", marker="o", s=100)
+    plt.scatter(5562, 0.2878, label="Boeing 777-200 (wb)", c="m", marker="o", s=100)
+    plt.scatter(6576, 0.2655, label="Boeing 777-200IGW (wb)", c="c", marker="o", s=100)
+    plt.scatter(6861, 0.2818, label="Boeing 777-200XI (wb)", c="r", marker="^", s=100)
+    plt.scatter(7173, 0.2841, label="Boeing 777-200X2 (wb)", c="g", marker="^", s=100)
+    plt.scatter(5479, 0.322, label="Tupolev Tu-334 (nb)", c="b", marker="^", s=100)
+    plt.scatter(5178, 0.272, label="BAe RJ70 (nb)", c="y", marker="^", s=100)
+    plt.scatter(5351, 0.301, label="BAe RJ85 (nb)", c="k", marker="^", s=100)
+    plt.scatter(5610, 0.287, label="BAe RJ100 (nb)", c="m", marker="^", s=100)
+    plt.scatter(5840, 0.276, label="BAe RJ115 (nb)", c="c", marker="^", s=100)
+    plt.scatter(3678, 0.333, label="Embraer EMB-145 (nb)", c="r", marker="*", s=100)
+    plt.scatter(3853, 0.342, label="Fokker F70 (nb)", c="g", marker="*", s=100)
+    plt.scatter(4519, 0.291, label="Fokker F100 (nb)", c="b", marker="*", s=100)
+    plt.scatter(4800, 0.16, label="Design point minimum T/W", c="r", marker="v", s=100)
+    plt.scatter(8200, 0.275, label="Design point maximum W/S", c="b", marker="v", s=100)
 
     plt.legend(loc='center left', bbox_to_anchor=(1, 0.5))
     plt.xlabel(r"$\frac{W}{S}$ [$N/m^2$]")

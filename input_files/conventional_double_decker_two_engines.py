@@ -67,7 +67,7 @@ tail_type = 0  # Depending on the type of tail configuration, 1 is T-tail, 0 is 
 Oswald = 0.9  # estimated from ADSEE-I L3
 T_input = 0.26
 S_input = 8200
-A = 8.5
+A = 9
 CD_0 = 0.0205
 N_engines = 2.  #
 w_engine = 7000.  # kg   Obtained from Bram
@@ -104,7 +104,7 @@ Rho_Landing = Rho_0  # kg/m^3   standard sea-level density
 
 # aircraft cg-locations ------------------------------------------------------------------------------------------------
 x_engines = -1.  # m    x-location engines w.r.t. X_LEMAC
-x_fuel = 22.  # m    cg-location fuel w.r.t nose
+x_fuel_input = 22.  # m    cg-location fuel w.r.t nose
 
 xcg_oew_mac = 0.25  # m     initial cg location OEW w.r.t. MAC
 
