@@ -1,0 +1,34 @@
+parameter;Design 1;Design 2;Design 3
+CL cruise;0.6;0.6;0.6
+CD cruise;0.002;0.002;0.003
+Ct0;5;5;5
+e;0.95;0.95;0.95
+Thrust take off;2;2;2
+S;3;3;3
+A;4;4;4
+wing;5;5;5
+tail;6;6;6
+V ref;7;7;7
+H cruise;8;8;8
+cruise Mach nr;9;9;9
+Number of engines;10;10;10
+Engine mass;11;11;11
+engine length;12;12;12
+inlet area;13;13;13
+option 1;14;14;14
+option 2;15;15;15
+option 3;16;16;16
+option 4;17;17;17
+option 5;18;18;18
+option 6;19;19;19
+option 7;20;20;20
+option 8;21;21;21
+option 9;22;22;22
+option 10;23;23;23
+option 11;24;24;24
+tail 1;25;25;25
+tail 2;26;26;26
+tail 3;27;27;27
+tail 4;28;28;28
+tail 5;29;29;29
+tail 6;30;30;30
