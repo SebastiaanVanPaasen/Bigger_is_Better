@@ -95,7 +95,7 @@ M_cruise_input = 0.7  # Mach number decided to cruise on
 Temp_cruise = Temp_0 + a * h_cruise_input  # K  based on the altitude you fly at
 a_cruise_input = np.sqrt(gamma * R_gas * Temp_cruise)  # m/s based on the temperature
 V_cruise_input = M_cruise_input * a_cruise_input  # m/s  based on the Mach number and speed of sound
-
+C_t0_input = 12e-06
 # Densities ------------------------------------------------------------------------------------------------------------
 Rho_TO = Rho_0  # kg/m^3    standard sea-level density
 Rho_Cruise_input = Rho_0 * ((1 + (a * h_cruise_input) / Temp_0) ** (-(g_0 / (R_gas * a))))  # kg/m^3   based on cruise altitude

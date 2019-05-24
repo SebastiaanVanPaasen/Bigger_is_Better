@@ -5,11 +5,13 @@ Created on Thu May  9 13:38:52 2019
 @author: floyd
 """
 import sys
-sys.path.append("C:/Users/floyd/OneDrive/Documenten/GitHub/Bigger_is_Better/class_I")
+#sys.path.append("C:/Users/floyd/OneDrive/Documenten/GitHub/Bigger_is_Better/class_I")
+sys.path.append("C:/Users/sebas/OneDrive/Documents/DSE/Bigger_is_Better/class_I")
 from drag_estimation import *
 import subprocess
 import os
-from run_conditions import define_run_condition
+sys.path.append("C:/Users/sebas/OneDrive/Documents/DSE/Bigger_is_Better/class_I")
+from avl.run_conditions import define_run_condition
 import numpy as np
 
 
@@ -20,7 +22,7 @@ Comments about this file:
 
 """
 ROOT_dir = os.path.dirname(os.path.abspath("conv_wing_avl.py"))
-
+print(ROOT_dir)
 #cl_cruise = 1
 #M_cruise = 0.75
 #CD_0  = 0.0264
@@ -127,7 +129,7 @@ def run_avl(cl_cruise, M_cruise, CD_0):
     define_run_condition(M_cruise, CD_0)
     
 
-    p = subprocess.Popen(str(ROOT_dir) + "/avl.exe", stdin=subprocess.PIPE, stdout=subprocess.DEVNULL,
+    p = subprocess.Popen(str(ROOT_dir) + "/avl/avl.exe", stdin=subprocess.PIPE, stdout=subprocess.DEVNULL,
                         universal_newlines=True)
     set_cl_cruise = "a c " + str(cl_cruise)
     p.communicate(os.linesep.join(
@@ -154,7 +156,7 @@ def find_clalpha(M_cruise, CD_0, filename):
     alpha_range = [0, 5]
     CL_range = []
     for j in range(len(alpha_range)):
-        p = subprocess.Popen(str(ROOT_dir) + "/avl.exe", stdin=subprocess.PIPE, stdout=subprocess.DEVNULL,
+        p = subprocess.Popen(str(ROOT_dir) + "/avl/avl.exe", stdin=subprocess.PIPE, stdout=subprocess.DEVNULL,
                              universal_newlines=True)
         set_alpha = "a a " + str(alpha_range[j])
         p.communicate(os.linesep.join(["load", filename, "case", "mach" + str(M_cruise) + ".run", "oper", set_alpha, "x", "ft", "endresult"]))
