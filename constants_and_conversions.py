@@ -1,6 +1,7 @@
-# Add conversion factors or standard constants here if you need them. Make sure to add units behind the constanst!
+# Add conversion factors or standard constants here if you need them. 
+# Make sure to add units behind the constanst!
 
-# Standard constants ---------------------------------------------------------------------------------------------------
+# Standard constants ----------------------------------------------------------
 Rho_0 = 1.225  # kg/m^3
 a = -0.0065  # K/m up to 10 km
 g_0 = 9.80565  # m/s^2
@@ -8,7 +9,7 @@ Temp_0 = 288.15  # K
 R_gas = 287  # J/kg/K
 gamma = 1.4
 
-# Conversion factors ---------------------------------------------------------------------------------------------------
+# Conversion factors ----------------------------------------------------------
 ftmin_to_ms = 0.00508
 kts_to_ms = 0.51444444
 lbft2_Nm2 = 47.880172
@@ -20,7 +21,7 @@ hr_to_sec = 3600
 per_hr_to_N = 1 / (hr_to_sec * g_0)
 hp_to_N = 1/0.001341022
 
-# Constants for control and stability
+# Constants for control and stability -----------------------------------------
 k_n = -2.5   # -4 = nacelle in front of the LE of the wing or in fuselage nose
              # -2.5 = jet engine pods mounted to de sides of the rear fuselage
 V_h_V = 0.85 #  0.85 = fuselage mounted stabilizer

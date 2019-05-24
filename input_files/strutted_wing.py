@@ -64,9 +64,9 @@ C_fe = 0.0045  # estimated from ADSEE-I L3
 wing_option = 1  # Depending on the type of wing configuration, 1 is high wing, 0 is low wing
 Oswald = 0.9  # estimated from ADSEE-I L3
 T_input = 0.26
-S_input = 8200
-A = 18
-CD_0 = C_fe * S_ratio
+S_input = 6000
+A = 16
+CD_0 = 0.0276
 N_engines = 2.  #
 tail_type = 1  # Depending on the type of tail configuration, 1 is T-tail, 0 is conventional
 w_engine = 7000.  # kg   Obtained from Bram
@@ -90,15 +90,15 @@ W_carg = 20.  # kg Based on statistics
 
 # General aircraft input parameters ------------------------------------------------------------------------------------
 # General cruise parameters
-# h_cruise_input = 12000.  # m based on the sustainability analysis so far
-# M_cruise_input = 0.7  # Mach number decided to cruise on
-# Temp_cruise = Temp_0 + a * h_cruise_input  # K  based on the altitude you fly at
-# a_cruise_input = np.sqrt(gamma * R_gas * Temp_cruise)  # m/s based on the temperature
-# V_cruise_input = M_cruise_input * a_cruise_input  # m/s  based on the Mach number and speed of sound
-
+h_cruise_input = 11000.  # m based on the sustainability analysis so far
+M_cruise_input = 0.7  # Mach number decided to cruise on
+Temp_cruise = Temp_0 + a * h_cruise_input  # K  based on the altitude you fly at
+a_cruise_input = np.sqrt(gamma * R_gas * Temp_cruise)  # m/s based on the temperature
+V_cruise_input = M_cruise_input * a_cruise_input  # m/s  based on the Mach number and speed of sound
+C_t0_input = 12e-06
 # Densities ------------------------------------------------------------------------------------------------------------
 Rho_TO = Rho_0  # kg/m^3    standard sea-level density
-# Rho_Cruise_input = Rho_0 * ((1 + (a * h_cruise_input) / Temp_0) ** (-(g_0 / (R_gas * a))))  # kg/m^3   based on cruise altitude
+Rho_Cruise_input = Rho_0 * ((1 + (a * h_cruise_input) / Temp_0) ** (-(g_0 / (R_gas * a))))  # kg/m^3   based on cruise altitude
 Rho_Landing = Rho_0  # kg/m^3   standard sea-level density
 
 # aircraft cg-locations ------------------------------------------------------------------------------------------------
@@ -157,7 +157,7 @@ TOP = 220. * lbft2_Nm2  # Guestimated from ADSEE-I L3
 Sigma_TO = Rho_TO / Rho_0  # Ratio of densities
 
 # Stall speeds ---------------------------------------------------------------------------------------------------------
-V_stall_Cruise = 200 / 1.2  # m/s   Guestimated from ADSEE-I L3 Take requirements
+V_stall_Cruise = 230 / 1.2  # m/s   Guestimated from ADSEE-I L3 Take requirements
 V_stall_Landing = min(np.sqrt(Landing_runway / 0.5847), 65.)  # m/s     Guestimated from ADSEE-I L3
 
 # Lift and drag coefficients -------------------------------------------------------------------------------------------
