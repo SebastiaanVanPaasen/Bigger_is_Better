@@ -6,15 +6,17 @@ import csv
 #sys.path.append("C:/Users/sebas/OneDrive/Documents/DSE/Bigger_is_Better/class_I")
 
 from constants_and_conversions import Temp_0, g_0, gamma, a, R_gas, Rho_0, lbs_to_kg
+from class_I.seats import cg_seats, W_seats
 from class_II_weight_estimation import Class_II
 from class_I.class_I_weight_estimation import class_I
 from class_I.fuselage_cross_section import fuselage_cross_section
 from class_I.planform import wing_parameters, determine_half_chord_sweep
 from class_I.drag_estimation import Wing_wetted_area, H_tail_wetted_area, V_tail_wetted_area, Fus_wetted_area, \
     Zero_Lift_Drag_est
-from class_I.class_I_empennage_landinggear import class_I_empennage
+from class_I.class_I_empennage_landinggear import class_I_empennage, _calc_h_tail_II, _calc_v_tail_II
 from class_I.flight_envelope import manoeuvring_envelope, gust_envelope
 from avl.conv_wing_avl import make_avl_file, run_avl, find_clalpha
+from sc_sensitivity import class_II_empennage
 
 
 #        if h_cruise < 11000.:
@@ -49,6 +51,7 @@ def main_iterator(CL_cruise, CD_cruise, W_e_frac, fuel_frac, mass_frac, C_t0, V_
     
         fuselage_design = fuselage_cross_section(inputs.N_pas, inputs.N_pas_below)
         
+        
         # Define fuselage parameters out of the fuselage design
         d_fuselage = fuselage_design[1]
         l_nosecone = np.sum(fuselage_design[6]) / 2
@@ -57,6 +60,13 @@ def main_iterator(CL_cruise, CD_cruise, W_e_frac, fuel_frac, mass_frac, C_t0, V_
         l_fuselage = fuselage_design[7]
         V_pax = 0.25 * np.pi * (d_fuselage ** 2) * l_cabin  
         # m^3  Volume of the passenger cabin
+        
+        xcg_seats = cg_seats(fuselage_design[16], fuselage_design[11], fuselage_design[12],l_nosecone)
+    
+        W_window, W_aisle, W_middle = W_seats(fuselage_design[8], fuselage_design[11], fuselage_design[12], fuselage_design[15])
+
+
+        emp_constants = [inputs.N_cargo, l_fuselage, inputs.cargo_fwdfrac, xcg_seats, W_window, W_aisle, W_middle, inputs.N_pas, M_cr*0.99]
         writer.writerow(["fuselage diameter", d_fuselage])
         writeFile.close()
         # Define fineness ratio's based on the fuselage design
@@ -90,9 +100,9 @@ def main_iterator(CL_cruise, CD_cruise, W_e_frac, fuel_frac, mass_frac, C_t0, V_
             # print(W_tfo_frac)
             
             iteration["weights"] = [W_TO, W_E_I, W_P, W_F]
-            mass_fractions[6] = (weights[1] / weights[0])  # empty mass fraction
-            mass_fractions[7] = (weights[2] / weights[0])  # payload mass fraction
-            mass_fractions[8] = (weights[3] / weights[0])  # fuel mass fraction
+            mass_fractions[7] = (weights[1] / weights[0])  # empty mass fraction
+            mass_fractions[8] = (weights[2] / weights[0])  # payload mass fraction
+            mass_fractions[9] = (weights[3] / weights[0])  # fuel mass fraction
     
             # Choosing a design point based on the T/W-W/S diagram ---------------------------------------------------------
             T, S = W_TO * inputs.T_input, W_TO / inputs.S_input
@@ -121,12 +131,17 @@ def main_iterator(CL_cruise, CD_cruise, W_e_frac, fuel_frac, mass_frac, C_t0, V_
             # Perform first order cg-range estimation based on statistics --------------------------------------------------
             # Note that the cg-location estimates should be updated after the first iteration!
             x_payload = 0.5 * l_fuselage  # m     cg-location payload w.r.t. nose
-            cg_locations, tail_h, tail_v, x_lemac, avl_h, avl_v = class_I_empennage(mass_fractions, mac, l_fuselage,
-                                                                                    inputs.x_engines,
-                                                                                    inputs.l_nacelle, inputs.xcg_oew_mac, x_payload,
-                                                                                    inputs.x_fuel,
-                                                                                    d_fuselage, b, S, taper, inputs.v_tail,
-                                                                                    LE_sweep, inputs.h_tail)
+            if i == 0:
+                cg_locations, tail_h, tail_v, x_lemac, avl_h, avl_v, xcg_aft = class_I_empennage(mass_fractions, mac, l_fuselage,
+                                                                                        inputs.x_engines,
+                                                                                        inputs.l_nacelle, inputs.xcg_oew_mac, x_payload,
+                                                                                        d_fuselage, b, S, taper, inputs.v_tail,
+                                                                                        LE_sweep, inputs.h_tail)
+            
+            else:
+                tail_h = _calc_h_tail_II(xcg_aft, A_h, l_fuselage, tap_h, QC_sweep_h, S_h)
+                tail_v = _calc_v_tail_II(A_v, l_fuselage, tap_v, S_v, QC_sweep_v)
+                x_lemac,  = class_II_empennage(tail_h, tail_v, inputs.s_m, x_lemac, emp_constants, mac, )
     
             l_h, c_root_h, c_tip_h, b_h, S_h = tail_h[0], tail_h[1], tail_h[2], tail_h[3], tail_h[4]
             l_v, c_root_v, c_tip_v, b_v, S_v = tail_v[0], tail_v[1], tail_v[2], tail_v[3], tail_v[4]
@@ -214,6 +229,7 @@ def main_iterator(CL_cruise, CD_cruise, W_e_frac, fuel_frac, mass_frac, C_t0, V_
             mass_fractions[3] = (nac_weight * lbs_to_kg * g_0) / W_TO
     
             lg_weight = weight_II.landing_gear_weight()
+            mass_fractions[6] = (lg_weight * lbs_to_kg * g_0) / W_TO
             eng_weight = weight_II.engine_weight(inputs.w_engine)
     
             structural_weight = w_weight + emp_weight + fus_weight + nac_weight + lg_weight

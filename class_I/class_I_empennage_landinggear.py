@@ -5,7 +5,8 @@ Created on Mon May  6 13:32:31 2019
 @author: Hidde
 """
 
-from class_I.fuselage_cross_section import *
+#from class_I.fuselage_cross_section import *
+import numpy as np
 
 
 # Inputs
@@ -32,7 +33,7 @@ from class_I.fuselage_cross_section import *
 # xcg_payload = l_fuselage * 0.5  # cg-location payload w.r.t. nose [m]
 
 
-def class_I_empennage(mass_frac, MAC, l_fuselage, x_eng, l_n, xcg_OEW_MAC, xcg_payload, xcg_fuel, D_fuse, b, S, taper,
+def class_I_empennage(mass_frac, MAC, l_fuselage, x_eng, l_n, xcg_OEW_MAC, xcg_payload, D_fuse, b, S, taper,
                       LE_sweep, v_tail, h_tail):
     # xcg-locations for wing mounted engines aircraft
     # Wing group - in [m] w.r.t. X-LEMAC
@@ -44,6 +45,11 @@ def class_I_empennage(mass_frac, MAC, l_fuselage, x_eng, l_n, xcg_OEW_MAC, xcg_p
     xcg_fuse = 0.4 * l_fuselage
     xcg_fix = 0.4 * l_fuselage
     xcg_emp = 0.9 * l_fuselage
+    
+    xcg_nlg = 0.
+    xcg_mlg = 0.
+    
+    
 
     # Averaged mass fractions and cg locations
     # Wing group
@@ -67,11 +73,12 @@ def class_I_empennage(mass_frac, MAC, l_fuselage, x_eng, l_n, xcg_OEW_MAC, xcg_p
     # cg excursion
     xcglist = []
     xcg_OEW = xcg_OEW_MAC * MAC + X_LEMAC
+    xcg_fuel      = 0.55*MAC +X_LEMAC # %MAC
     xcglist.append(xcg_OEW)
-    xcglist.append((xcg_OEW * mass_frac[6] + xcg_payload * mass_frac[7]) / (mass_frac[6] + mass_frac[7]))
-    xcglist.append((xcg_OEW * mass_frac[6] + xcg_fuel * mass_frac[8]) / (mass_frac[6] + mass_frac[8]))
-    xcglist.append((xcg_OEW * mass_frac[6] + xcg_payload * mass_frac[7] + xcg_fuel * mass_frac[8]) / (
-            mass_frac[6] + mass_frac[7] + mass_frac[8]))
+    xcglist.append((xcg_OEW * mass_frac[7] + xcg_payload * mass_frac[8]) / (mass_frac[7] + mass_frac[8]))
+    xcglist.append((xcg_OEW * mass_frac[7] + xcg_fuel * mass_frac[9]) / (mass_frac[7] + mass_frac[9]))
+    xcglist.append((xcg_OEW * mass_frac[7] + xcg_payload * mass_frac[8] + xcg_fuel * mass_frac[9]) / (
+            mass_frac[7] + mass_frac[8] + mass_frac[9]))
 
     # Maximum and minimum cg locations w.r.t. nose [m]
     xcg_fwd = min(xcglist)
@@ -87,14 +94,16 @@ def class_I_empennage(mass_frac, MAC, l_fuselage, x_eng, l_n, xcg_OEW_MAC, xcg_p
     V_v_norm = 0.081
     A_h, taper_h, QC_sweep_h = h_tail[0], h_tail[1], h_tail[2]
     A_v, taper_v, QC_sweep_v = v_tail[0], v_tail[1], v_tail[2]
+    
+    S_frac_h = (V_h_norm * MAC) / (x_h - xcg_aft)
+    S_h = S_frac_h * S
 
-    l_h, c_root_h, c_tip_h, b_h, S_h, x_le_h = _calc_h_tail(xcg_emp, xcg_aft, MAC, S, A_h, l_fuselage, taper_h,
-                                                            V_h_norm,
-                                                            QC_sweep_h)
+    l_h, c_root_h, c_tip_h, b_h, S_h, x_le_h = _calc_h_tail_I(xcg_emp, xcg_aft, MAC, S, A_h, l_fuselage, taper_h,
+                                                            V_h_norm, QC_sweep_h)
     l_v, c_root_v, c_tip_v, b_v, S_v, x_le_v = calc_v_tail(xcg_emp, xcg_aft, b, S, A_v, l_fuselage, taper_v, V_v_norm,
                                                            QC_sweep_v)
 
-    cg_locations = np.array([xcg_fuse, xcg_emp, xcg_fix, xcg_nac, xcg_prop, xcg_wing, xcg_fwd, xcg_aft, zcg])
+    cg_locations = np.array([xcg_fuse, xcg_emp, xcg_fix, xcg_nac, xcg_prop, xcg_wing, xcg_fwd, xcg_aft, xcg_mlg, xcg_nlg, zcg])
     tail_h = np.array([l_h, c_root_h, c_tip_h, b_h, S_h])
     tail_v = np.array([l_v, c_root_v, c_tip_v, b_v, S_v])
 
@@ -105,15 +114,17 @@ def class_I_empennage(mass_frac, MAC, l_fuselage, x_eng, l_n, xcg_OEW_MAC, xcg_p
     # print("Horizontal tail surface fraction = ", (S_h/S))
     # print("Vertical tail surface fraction = ", (S_v/S))
     # print("Fuselage length = ", l_fuselage)
-    return cg_locations, tail_h, tail_v, X_LEMAC, alv_h, alv_v
+    return cg_locations, tail_h, tail_v, X_LEMAC, alv_h, alv_v, xcg_aft
 
 
-def _calc_h_tail(x_h, xcg_aft, MAC, S, A_h, l_fuselage, tap_h, V_h_norm, sweep_quartchord_h):
+def _calc_h_tail_I(x_h, xcg_aft, MAC, S, A_h, l_fuselage, tap_h, V_h_norm, sweep_quartchord_h):
     n = 1.
     C_t_h, C_r_h, b_h, S_h = 0, 0, 0, 0
+    
     # print(A_h)
     # print(S)
     # print(V_h_norm)
+    
     while n > 0.001:
         S_frac_h = (V_h_norm * MAC) / (x_h - xcg_aft)
         S_h = S_frac_h * S
@@ -133,6 +144,26 @@ def _calc_h_tail(x_h, xcg_aft, MAC, S, A_h, l_fuselage, tap_h, V_h_norm, sweep_q
     l_h = x_h - xcg_aft
     
     return l_h, C_r_h, C_t_h, b_h, S_h, x_le_h
+
+
+def _calc_h_tail_II(xcg_aft, A_h, l_fuselage, tap_h, sweep_quartchord_h, S_h):    
+    # print(A_h)
+    # print(V_h_norm)
+    
+    b_h = np.sqrt(A_h * S_h)
+    C_r_h = (2. * S_h) / (b_h * (1. + tap_h))
+    C_t_h = C_r_h * tap_h
+    MAC_h = (2. / 3.) * C_r_h * ((1. + tap_h + tap_h ** 2) / (1. + tap_h))
+    sweep_LE_h = np.arctan(np.tan(sweep_quartchord_h) - (C_r_h / (2. * b_h)) * (tap_h - 1))
+    sweep_TE_h = np.arctan((C_t_h - C_r_h) / (b_h / 2.) + np.tan(sweep_LE_h))
+    y_MAC_h = (b_h / 6.) * ((1. + 2. * tap_h) / (1. + tap_h))
+    fuse_MAC_h = MAC_h - 0.25 * MAC_h - y_MAC_h * np.tan(sweep_TE_h)
+
+    x_h = l_fuselage - fuse_MAC_h
+    x_le_h = l_fuselage - C_r_h
+    l_h = x_h - xcg_aft
+    
+    return x_le_h, sweep_LE_h, y_MAC_h, MAC_h, l_h
 
 
 def calc_v_tail(x_v, xcg_aft, b, S, A_v, l_fuselage, tap_v, V_v_norm, sweep_quartchord_v):
@@ -163,6 +194,23 @@ def calc_v_tail(x_v, xcg_aft, b, S, A_v, l_fuselage, tap_v, V_v_norm, sweep_quar
     x_le_v = l_fuselage - C_r_v
 
     return l_v, C_r_v, C_t_v, b_v, S_v, x_le_v
+
+
+def _calc_v_tail_II(A_v, l_fuselage, tap_v, S_v, sweep_quartchord_v):
+    
+    b_v = np.sqrt(A_v * S_v)
+
+    C_r_v = S_v / (b_v * (1. + tap_v))
+    C_t_v = C_r_v * tap_v
+
+    MAC_v = (2. / 3.) * C_r_v * ((1. + tap_v + tap_v ** 2) / (1. + tap_v))
+    sweep_LE_v = np.arctan(np.tan(sweep_quartchord_v) - (C_r_v / (2. * b_v)) * (tap_v - 1))
+    y_MAC_v = (b_v / 6.) * ((1. + 2. * tap_v) / (1. + tap_v))
+
+    sweep_TE_v = np.arctan((C_t_v - C_r_v) / b_v + np.tan(sweep_LE_v))
+    x_le_v = l_fuselage - C_r_v
+
+    return x_le_v, sweep_LE_v, y_MAC_v, MAC_v
 
 # class_I_empennage(MAC, l_fuselage, x_eng, l_n, xcg_OEW_MAC, mass_frac_OEW, xcg_payload, mass_frac_payload, xcg_fuel,
 #                  mass_frac_fuel, D_fuse, b)

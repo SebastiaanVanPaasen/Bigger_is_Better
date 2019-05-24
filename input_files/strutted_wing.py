@@ -21,7 +21,8 @@ mass_frac_fuse = 0.098
 mass_frac_nac = 0.018
 mass_frac_prop = 0.072
 mass_frac_fix = 0.118
-mass_fractions_input = [mass_frac_wing, mass_frac_emp, mass_frac_fuse, mass_frac_nac, mass_frac_prop, mass_frac_fix, 0,
+mass_frac_lg = 0.02
+mass_fractions_input = [mass_frac_wing, mass_frac_emp, mass_frac_fuse, mass_frac_nac, mass_frac_prop, mass_frac_fix, mass_frac_lg, 0,
                         0, 0]
 
 # Design choices required for the Roskam equations -----------------------------------------------------------------
@@ -103,7 +104,7 @@ Rho_Landing = Rho_0  # kg/m^3   standard sea-level density
 
 # aircraft cg-locations ------------------------------------------------------------------------------------------------
 x_engines = -1.  # m    x-location engines w.r.t. X_LEMAC
-x_fuel = 22.  # m    cg-location fuel w.r.t nose
+#x_fuel = 22.  # m    cg-location fuel w.r.t nose
 
 xcg_oew_mac = 0.25  # m     initial cg location OEW w.r.t. MAC
 
