@@ -247,8 +247,8 @@ def fuselage_cross_section(Npax, Npax_below):
 
     l_tailcone_range = np.array([2.6 * d_outer, 4 * d_outer])
     l_nosecone_range = np.array([1.2 * d_outer, 2.5 * d_outer])
-    print(W_cabin_below)
-    print(W_cabin_above)
+#    print(W_cabin_below)
+#    print(W_cabin_above)
     ##plot fuselage cross-section
 
     V_luggage = m_luggage / rho_luggage
@@ -335,6 +335,6 @@ def fuselage_cross_section(Npax, Npax_below):
             tot_seating_abreast, N_aisle_above, N_aisle_below,N_rows_above,N_rows_below,lpax_below,lpax_above,tot_seating_abreast_last_row,Pseat)
 
 
-d_inner, d_outer, lcabin, lcabin_below, lcabin_above, l_tailcone_range, l_nosecone_range, l_fuselage, tot_seating_abreast, N_aisle_above, N_aisle_below,N_rows_above,N_rows_below,lpax_below,lpax_above,tot_seating_abreast_last_row,Pseat=fuselage_cross_section(450, 242)
+#d_inner, d_outer, lcabin, lcabin_below, lcabin_above, l_tailcone_range, l_nosecone_range, l_fuselage, tot_seating_abreast, N_aisle_above, N_aisle_below,N_rows_above,N_rows_below,lpax_below,lpax_above,tot_seating_abreast_last_row,Pseat=fuselage_cross_section(450, 242)
 
 
