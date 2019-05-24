@@ -47,11 +47,11 @@ import numpy as np
 
 # Inputs from fuselage dimensions
 
-def potato(mass_fractions, tail_h, tail_v, Safety_margin, cg_locations, X_LEMAC, constants, MAC):
+def potato(l_nosecone, W_TO, x_eng, l_n, mass_fractions, tail_h, tail_v, Safety_margin, cg_locations, X_LEMAC, constants, MAC):
     
     N_cargo, l_fuselage, cargo_fwdfrac, xcg_seats, W_window, W_aisle, W_middle, n_pax, W_person = constants
     
-    x_le_h, sweep_LE_h, y_MAC_h, MAC_h = tail_h
+    x_le_h, sweep_LE_h, y_MAC_h, MAC_h, l_h = tail_h
     x_le_v, sweep_LE_v, y_MAC_v, MAC_v = tail_v
     
     W_wing = mass_fractions[0]*W_TO

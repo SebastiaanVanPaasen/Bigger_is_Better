@@ -16,7 +16,7 @@ def read_input(design):
 #    print(cruise_series)
     engine_series = df[design][12:16]
     opt_series = df[design][16:35]
-    tail_series = df[design][35:41]
+    tail_series = df[design][35:42]
     
     choices = [pandas.Series.tolist(opt_series[0:6]), pandas.Series.tolist(opt_series[6:8]),
                [opt_series[8]], [opt_series[9]], pandas.Series.tolist(opt_series[10:12]), [opt_series[12]], 

@@ -95,17 +95,19 @@ def class_I_empennage(mass_frac, MAC, l_fuselage, x_eng, l_n, xcg_OEW_MAC, xcg_p
     A_h, taper_h, QC_sweep_h = h_tail[0], h_tail[1], h_tail[2]
     A_v, taper_v, QC_sweep_v = v_tail[0], v_tail[1], v_tail[2]
     
+    x_h = 0.9* l_fuselage 
+    
     S_frac_h = (V_h_norm * MAC) / (x_h - xcg_aft)
     S_h = S_frac_h * S
 
     l_h, c_root_h, c_tip_h, b_h, S_h, x_le_h = _calc_h_tail_I(xcg_emp, xcg_aft, MAC, S, A_h, l_fuselage, taper_h,
                                                             V_h_norm, QC_sweep_h)
-    l_v, c_root_v, c_tip_v, b_v, S_v, x_le_v = calc_v_tail(xcg_emp, xcg_aft, b, S, A_v, l_fuselage, taper_v, V_v_norm,
+    c_root_v, c_tip_v, b_v, S_v, x_le_v = calc_v_tail(xcg_emp, xcg_aft, b, S, A_v, l_fuselage, taper_v, V_v_norm,
                                                            QC_sweep_v)
 
     cg_locations = np.array([xcg_fuse, xcg_emp, xcg_fix, xcg_nac, xcg_prop, xcg_wing, xcg_fwd, xcg_aft, xcg_mlg, xcg_nlg, zcg])
     tail_h = np.array([l_h, c_root_h, c_tip_h, b_h, S_h])
-    tail_v = np.array([l_v, c_root_v, c_tip_v, b_v, S_v])
+    tail_v = np.array([c_root_v, c_tip_v, b_v, S_v])
 
     X_LE_root = X_LEMAC - Y_MAC * np.tan(LE_sweep)
     alv_h, alv_v = x_le_h - X_LE_root, x_le_v - X_LE_root
@@ -181,19 +183,16 @@ def calc_v_tail(x_v, xcg_aft, b, S, A_v, l_fuselage, tap_v, V_v_norm, sweep_quar
         MAC_v = (2. / 3.) * C_r_v * ((1. + tap_v + tap_v ** 2) / (1. + tap_v))
         sweep_LE_v = np.arctan(np.tan(sweep_quartchord_v) - (C_r_v / (2. * b_v)) * (tap_v - 1))
         y_MAC_v = (b_v / 6.) * ((1. + 2. * tap_v) / (1. + tap_v))
-
-        fuse_MAC_y_new = l_fuselage - C_r_v + 0.25 * MAC_v + np.tan(sweep_LE_v) * y_MAC_v
-
+        
         sweep_TE_v = np.arctan((C_t_v - C_r_v) / b_v + np.tan(sweep_LE_v))
         fuse_MAC_v = MAC_v - 0.25 * MAC_v - y_MAC_v * np.tan(sweep_TE_v)
 
         n = abs((x_v - (l_fuselage - fuse_MAC_v)) / (x_v))
         x_v = l_fuselage - fuse_MAC_v
 
-    l_v = x_v - xcg_aft
     x_le_v = l_fuselage - C_r_v
 
-    return l_v, C_r_v, C_t_v, b_v, S_v, x_le_v
+    return C_r_v, C_t_v, b_v, S_v, x_le_v
 
 
 def _calc_v_tail_II(A_v, l_fuselage, tap_v, S_v, sweep_quartchord_v):
@@ -206,8 +205,7 @@ def _calc_v_tail_II(A_v, l_fuselage, tap_v, S_v, sweep_quartchord_v):
     MAC_v = (2. / 3.) * C_r_v * ((1. + tap_v + tap_v ** 2) / (1. + tap_v))
     sweep_LE_v = np.arctan(np.tan(sweep_quartchord_v) - (C_r_v / (2. * b_v)) * (tap_v - 1))
     y_MAC_v = (b_v / 6.) * ((1. + 2. * tap_v) / (1. + tap_v))
-
-    sweep_TE_v = np.arctan((C_t_v - C_r_v) / b_v + np.tan(sweep_LE_v))
+    
     x_le_v = l_fuselage - C_r_v
 
     return x_le_v, sweep_LE_v, y_MAC_v, MAC_v
