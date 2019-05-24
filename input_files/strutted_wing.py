@@ -31,7 +31,7 @@ mass_fractions_input = [mass_frac_wing, mass_frac_emp, mass_frac_fuse, mass_frac
 # fourth is if landing gear is not wing mounted
 # fifth is for strutted wings
 # sixth is for fowler flaps
-wing_choice = [1, 0, 0, 0, 1, 0]
+wing_choice = [1, 1, 0, 1, 1, 0]
 # choose 1 if you have variable incidence stabilizers
 # choose 1 if the horizontal tails are fin mounted
 empennage_choice = [0, 1]
@@ -52,7 +52,7 @@ fuel_sys_choice = 0
 start_up_choice = 1
 # Choose 1 for fuselage mounted jet, 2 for wing mounted jet, 3 for wing mounted turboprops and 4 for wing mounted
 # piston engines the second choice should be 1 if an afterburner is present
-engine_choice = [1, 0]
+engine_choice = [2, 0]
 # choice depends on engines, 1 for jet, 2 for turboprop, 3 for radial piston engines, 4 for horizontally opposed
 # piston engines
 oil_choice = 1
@@ -61,13 +61,14 @@ hydro_choice = 0
 
 S_ratio = 6.3  # estimated from ADSEE-I L3
 C_fe = 0.0045  # estimated from ADSEE-I L3
-wing_option = 0  # Depending on the type of wing configuration, 1 is high wing, 0 is low wing
+wing_option = 1  # Depending on the type of wing configuration, 1 is high wing, 0 is low wing
 Oswald = 0.9  # estimated from ADSEE-I L3
 T_input = 0.26
-S_input = 8200
+S_input = 6000
 A = 16
-CD_0 = C_fe * S_ratio
+CD_0 = 0.0276
 N_engines = 2.  #
+tail_type = 1  # Depending on the type of tail configuration, 1 is T-tail, 0 is conventional
 w_engine = 7000.  # kg   Obtained from Bram
 propeller_choice = 0
 
@@ -77,8 +78,8 @@ CL_cruise_input = np.sqrt((CD_0 * np.pi * A * Oswald) / 3)
 
 # Inputs that are often changed for the design -------------------------------------------------------------------------
 # based on the reference aircraft B747
-# h_cruise = 6000.  # m based on the sustainability analysis so far
-# M_cruise = 0.65  # Mach number decided to cruise on
+h_cruise = 11000.  # m based on the sustainability analysis so far
+M_cruise = 0.7  # Mach number decided to cruise on
 
 # Passenger characteristics --------------------------------------------------------------------------------------------
 N_pas = 450.  # Requirement set by the exercise
@@ -89,7 +90,7 @@ W_carg = 20.  # kg Based on statistics
 
 # General aircraft input parameters ------------------------------------------------------------------------------------
 # General cruise parameters
-h_cruise_input = 12000.  # m based on the sustainability analysis so far
+h_cruise_input = 11000.  # m based on the sustainability analysis so far
 M_cruise_input = 0.7  # Mach number decided to cruise on
 Temp_cruise = Temp_0 + a * h_cruise_input  # K  based on the altitude you fly at
 a_cruise_input = np.sqrt(gamma * R_gas * Temp_cruise)  # m/s based on the temperature
@@ -121,7 +122,6 @@ n_fuel_tanks = 2.
 
 # main wing ------------------------------------------------------------------------------------------------------------
 winglet_height = 0.  # Mostly important for boxed wing, else leave as 0
-tail_type = 0  # Depending on the type of tail configuration, 1 is T-tail, 0 is conventional
 
 # horizontal tail ------------------------------------------------------------------------------------------------------
 QC_sweep_h = np.radians(32.7)  # degrees    based on wide body statistics
@@ -157,7 +157,7 @@ TOP = 220. * lbft2_Nm2  # Guestimated from ADSEE-I L3
 Sigma_TO = Rho_TO / Rho_0  # Ratio of densities
 
 # Stall speeds ---------------------------------------------------------------------------------------------------------
-V_stall_Cruise = 200 / 1.2  # m/s   Guestimated from ADSEE-I L3 Take requirements
+V_stall_Cruise = 230 / 1.2  # m/s   Guestimated from ADSEE-I L3 Take requirements
 V_stall_Landing = min(np.sqrt(Landing_runway / 0.5847), 65.)  # m/s     Guestimated from ADSEE-I L3
 
 # Lift and drag coefficients -------------------------------------------------------------------------------------------

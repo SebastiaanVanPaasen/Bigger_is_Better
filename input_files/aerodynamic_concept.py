@@ -68,7 +68,7 @@ Oswald = 0.9  # estimated from ADSEE-I L3
 T_input = 0.26
 S_input = 8200
 A = 14
-CD_0 = C_fe * S_ratio
+CD_0 = 0.026
 N_engines = 2.  #
 w_engine = 7000.  # kg   Obtained from Bram
 propeller_choice = 0
@@ -79,8 +79,8 @@ CL_cruise_input = np.sqrt((CD_0 * np.pi * A * Oswald) / 3)
 
 # Inputs that are often changed for the design -------------------------------------------------------------------------
 # based on the reference aircraft B747
-# h_cruise = 6000.  # m based on the sustainability analysis so far
-# M_cruise = 0.65  # Mach number decided to cruise on
+h_cruise = 12000.  # m based on the sustainability analysis so far
+M_cruise = 0.75  # Mach number decided to cruise on
 
 # Passenger characteristics --------------------------------------------------------------------------------------------
 N_pas = 450.  # Requirement set by the exercise
@@ -104,7 +104,7 @@ Rho_Landing = Rho_0  # kg/m^3   standard sea-level density
 
 # aircraft cg-locations ------------------------------------------------------------------------------------------------
 x_engines = -1.  # m    x-location engines w.r.t. X_LEMAC
-x_fuel = 22.  # m    cg-location fuel w.r.t nose
+x_fuel_input= 22.  # m    cg-location fuel w.r.t nose
 
 xcg_oew_mac = 0.25  # m     initial cg location OEW w.r.t. MAC
 
@@ -157,7 +157,7 @@ TOP = 220. * lbft2_Nm2  # Guestimated from ADSEE-I L3
 Sigma_TO = Rho_TO / Rho_0  # Ratio of densities
 
 # Stall speeds ---------------------------------------------------------------------------------------------------------
-V_stall_Cruise = 200 / 1.2  # m/s   Guestimated from ADSEE-I L3 Take requirements
+V_stall_Cruise = 250 / 1.2  # m/s   Guestimated from ADSEE-I L3 Take requirements
 V_stall_Landing = min(np.sqrt(Landing_runway / 0.5847), 65.)  # m/s     Guestimated from ADSEE-I L3
 
 # Lift and drag coefficients -------------------------------------------------------------------------------------------
