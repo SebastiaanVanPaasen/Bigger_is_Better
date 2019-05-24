@@ -106,4 +106,4 @@ def construct_envelope():
     plt.show()
 
 
-construct_envelope()
+#construct_envelope()

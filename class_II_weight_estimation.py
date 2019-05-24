@@ -215,17 +215,19 @@ class Class_II:
         # 4 for turboprops with pneumatics, 5 for piston engines using electric systems
     
         if choice == 1:
-            return 9.33 * (self.m_eng / 1000) ** 1.078
+            return 9.33 * ((self.m_eng / 1000) ** 1.078)
+        
         elif choice == 2:
-            return 49.19 * (self.m_eng / 1000) ** 0.541
+            return 49.19 * ((self.m_eng / 1000) ** 0.541)
+        
         elif choice == 3:
-            return 38.93 * (self.m_eng / 1000) ** 0.918
+            return 38.93 * ((self.m_eng / 1000) ** 0.918)
     
         elif choice == 4:
-            return 12.05 * (self.m_eng / 1000) ** 1.458
+            return 12.05 * ((self.m_eng / 1000) ** 1.458)
     
         elif choice == 5:
-            return 50.38 * (self.m_eng / 1000) ** 0.459
+            return 50.38 * ((self.m_eng / 1000) ** 0.459)
     
     
     def calc_w_pc(self, n_bl, n_p, d_p, p_to, choice):
@@ -251,11 +253,11 @@ class Class_II:
         if choice == 1:
             return 0
         elif choice == 2:
-            return 0.07 * m_eng
+            return 0.07 * self.m_eng
         elif choice == 3:
-            return 0.08 * m_eng
+            return 0.08 * self.m_eng
         else:
-            return 0.03 * m_eng
+            return 0.03 * self.m_eng
     
     
     def calc_w_fc(self, q_d):

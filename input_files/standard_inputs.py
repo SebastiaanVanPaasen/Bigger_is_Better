@@ -40,6 +40,7 @@ m_carg = 20.  # kg  Based on statistics
 l_nac = 2.  # m     Based on ADSEE
 xcg_eng = -1.  # m    Defined w.r.t. LEMAC
 xcg_oew_mac = 0.25  #   Defined w.r.t. MAC
+x_fuel = 30
 
 N_tanks = 2
 

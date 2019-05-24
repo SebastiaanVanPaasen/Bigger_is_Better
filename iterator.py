@@ -14,12 +14,12 @@ from avl.conv_wing_avl import make_avl_file, run_avl, find_clalpha
 
 
 def main_iterator(cf, char, env, eng, opt, tails):
-    c_t0, CL_cr, CD_cr, Oswald = cf[0], cf[1], cf[2], cf[3], cf[4]
-    T_TO_ip, S_ip, A, wing, tail = char[0], char[1], char[2], char[3], char[4], char[5]
+    CL_cr, CD_cr, c_t0, Oswald = cf[0], cf[1], cf[2], cf[3]
+    T_TO_ip, S_ip, A, wing, tail = char[0], char[1], char[2], char[3], char[4]
     V_ref, H_cr, M_cr = env[0], env[1], env[2]
     N_eng, m_eng, l_inl, A_inl = eng[0], eng[1], eng[2], eng[3]
-    A_h, QC_sweep_h, tap_h = tail[0], tail[1], tail[2]
-    A_v, QC_sweep_v, tap_v = tail[3], tail[4], tail[5]
+    A_h, QC_sweep_h, tap_h = tails[0], tails[1], tails[2]
+    A_v, QC_sweep_v, tap_v = tails[3], tails[4], tails[5]
     
     if H_cr < 11000.:
         Temp_cr = Temp_0 + a * H_cr  # K  based on the altitude you fly at
@@ -62,7 +62,7 @@ def main_iterator(cf, char, env, eng, opt, tails):
     maximum = 500
     percentage = 1
     W_e_frac = ip.w_e
-    while i < maximum and percentage > 0.005:
+    while i < maximum and percentage > 0.01:
         print("Starting on iteration: " + str(i))
         # Performing class I weight estimation ----------------------------
         weights = class_I(CL_cr, CD_cr, ip.m_range, ip.r_range, V_cr, c_t, 
@@ -97,8 +97,9 @@ def main_iterator(cf, char, env, eng, opt, tails):
 
         # Perform first order cg-range estimation based on statistics -----
         x_payload = 0.5 * l_fuselage  # m     cg-location payload w.r.t. nose
+        
         cg_locations, tail_h, tail_v, x_lemac, avl_h, avl_v = class_I_empennage(mass_fractions, mac, l_fuselage,
-                                                                                ip.xcg_eng, ip.l_nacelle, 
+                                                                                ip.xcg_eng, ip.l_nac, 
                                                                                 ip.xcg_oew_mac, x_payload,
                                                                                 ip.x_fuel, d_fuselage, b, S, taper, 
                                                                                 LE_sweep, [A_v, tap_v, QC_sweep_v],
@@ -132,7 +133,7 @@ def main_iterator(cf, char, env, eng, opt, tails):
         CL_alpha = (find_clalpha(M_cr, CD_0, "conv_wing.avl") * 180) / np.pi
 
         # Determine maximum loads based on manoeuvring and gust envelope------------------------------------------------
-        manoeuvring_loads = manoeuvring_envelope(W_TO, H_cr, ip.CL_Cruise_max, S, V_cr)
+        manoeuvring_loads = manoeuvring_envelope(W_TO, H_cr, ip.CL_cr_max, S, V_cr)
         gust_loads = gust_envelope(W_TO, H_cr, CL_alpha, S, mac, V_cr, manoeuvring_loads[4])
 
         V_D = manoeuvring_loads[4][3]
@@ -183,7 +184,7 @@ def main_iterator(cf, char, env, eng, opt, tails):
         structural_weight = w_weight + emp_weight + fus_weight + nac_weight + lg_weight
 
         # Determine the propulsion system weight components ---------------
-        eng_weight = weight_II.engine_weight(m_eng) * lbs_to_kg * g_0
+        eng_weight = weight_II.engine_weight() * lbs_to_kg * g_0
                     
         ai_weight = weight_II.induction_weight(l_inl, N_eng, A_inl, opt[4]) * lbs_to_kg * g_0
 
@@ -201,13 +202,13 @@ def main_iterator(cf, char, env, eng, opt, tails):
             w_pc = 0
 
         # Note that choice is regarding type of fuel tanks
-        fuel_sys_weight = weight_II.fuel_system_weight(ip.N_fuel_tanks, W_F, opt[6]) * lbs_to_kg * g_0
+        fuel_sys_weight = weight_II.fuel_system_weight(ip.N_tanks, W_F, opt[6]) * lbs_to_kg * g_0
         # Choice is depending on type of engine controls and whether there is an afterburner
         w_ec = weight_II.calc_w_ec(l_fuselage, opt[6]) * lbs_to_kg * g_0
         # Choice is depending on type of starting system and type of engine
-        w_ess = weight_II.calc_w_ess(opt[5]) * lbs_to_kg * g_0
+        w_ess = weight_II.calc_w_ess(opt[7][0]) * lbs_to_kg * g_0
          # Choice is depending on type of engines
-        w_osc = weight_II.calc_w_osc(opt[6]) * lbs_to_kg * g_0
+        w_osc = weight_II.calc_w_osc(opt[8]) * lbs_to_kg * g_0
 
         prop_sys_weight = eng_weight + ai_weight + prop_weight + fuel_sys_weight + w_ec + w_ess + w_pc + w_osc
         mass_fractions[4] = prop_sys_weight / W_TO
@@ -218,7 +219,7 @@ def main_iterator(cf, char, env, eng, opt, tails):
         w_fc = weight_II.calc_w_fc(q_D) * lbs_to_kg * g_0
 
         # Choice depends on type of engines
-        w_hps_els = weight_II.calc_w_hps_els(W_E_I, opt[7], V_pax) * lbs_to_kg * g_0
+        w_hps_els = weight_II.calc_w_hps_els(W_E_I, opt[9], V_pax) * lbs_to_kg * g_0
 
         # Maximum range has still to be determined
         w_instr = weight_II.calc_w_instr(W_E_I, ip.max_range) * lbs_to_kg * g_0
@@ -240,13 +241,23 @@ def main_iterator(cf, char, env, eng, opt, tails):
 
         percentage = abs((W_E_II - W_E_I) / W_E_I)
 
-#            print("the percentage equals: " + str(percentage))
-#            print(iteration)
+#        print("the percentage equals: " + str(percentage))
+#        print(iteration)
         percentages.append(percentage)
         
         i += 1
-        
-        return W_TO, W_P, W_F, W_E_II, w_weight, emp_weight, fus_weight, nac_weight, prop_weight, fix_equip_weight, M_cr, V_cr, H_cr, A, S, T_TO, b, c_root, c_tip, QC_sweep, taper, CL_cr, CD_cr, CL_cr/CD_cr, c_t, Oswald, l_fuselage, d_fuselage, l_nosecone, l_tailcone, l_h, S_h, S_v 
+    
+    sar = ((((0.5 * Rho_cr * (V_cr ** 2) * S * CD_cr) * c_t) / V_cr) * 1000 )/ ip.N_pas  
+    # in kg/km/pas
+
+    weights = [W_TO, W_P, W_F, W_E_II, w_weight, emp_weight, fus_weight, nac_weight, prop_sys_weight, fix_equip_weight]
+    coefficients = [CL_cr, CD_cr, CL_cr/CD_cr, c_t, Oswald]
+    planform = [A, S, b, c_root, c_tip, QC_sweep, taper]
+    fus = [l_fuselage, d_fuselage, l_nosecone, l_tailcone, l_h]
+    tails = [S_h, S_v]
+    environment = [T_TO, M_cr, V_cr, H_cr, sar]
+    
+    return weights, coefficients, planform, fus, tails, environment
 
 
 #h_list, SAR_list = SAR(Velocity, h, AR, Surface, eff, cd_0, Ct0, Wcr)

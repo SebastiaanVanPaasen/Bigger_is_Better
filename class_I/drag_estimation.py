@@ -41,9 +41,9 @@ import numpy as np
 def Wing_wetted_area(root_chord, tip_chord, D_fuselage, span, S,):  
     # set winglet area to zero if not needed, select correct input for boxed wing
     fuselage_chord = root_chord * (1 - (D_fuselage / span))  # determine the cord at the outer fuselage
-    winglet_area = tip_chord * winglet_height
+
     exposed_area = S - (0.5 * (
-            fuselage_chord + root_chord)) * D_fuselage + winglet_area  # calulate the exposed area, substracting the area inside the plane from the S
+            fuselage_chord + root_chord)) * D_fuselage  # calulate the exposed area, substracting the area inside the plane from the S
     wetted_area = 1.07 * 2 * exposed_area  # wetted area approximation
     return wetted_area
 
