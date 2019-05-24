@@ -91,8 +91,8 @@ def control_stability_plot(x_cg, min_cg, max_cg, X_LEMAC_range, S_control, S_sta
     b_control = contr_trend[1]
     a_stability = stability_trend[0]
     b_stability = stability_trend[1]
-    print("Control curve", a_control,"x + ", b_control)
-    print("Stability curve", a_stability,"x + ", b_stability)
+    #print("Control curve", a_control,"x + ", b_control)
+    #print("Stability curve", a_stability,"x + ", b_stability)
     Sh_opt = []
     LEMAC_opt = []
     for i in range(len(X_LEMAC_range)):
@@ -104,6 +104,8 @@ def control_stability_plot(x_cg, min_cg, max_cg, X_LEMAC_range, S_control, S_sta
             if min_cg[i]>= x1 and max_cg[i]<x2:
                 Sh_opt.append(Sh_S[j])
                 LEMAC_opt.append(X_LEMAC_range[i])
+                print("Min cg = ", round(min_cg[i],2))
+                print("Max cg = ", round(max_cg[i],2))
                 break
             elif Sh_S[j] == Sh_S[-1]:
                 Sh_opt.append(0.)
@@ -122,25 +124,26 @@ def control_stability_plot(x_cg, min_cg, max_cg, X_LEMAC_range, S_control, S_sta
     opt_LEMAC = [LEMAC_opt[Sh_opt.index(min(Sh_opt))], LEMAC_opt[Sh_opt.index(min(Sh_opt))]]
     
     
-    fig, ax1 = plt.subplots()
-    
-    ax2 = ax1.twinx() 
-    ax1.set_xlabel("$x_{cg}$/$MAC$ [-]")
-    ax1.set_ylabel("$S_h$/$S$ [-]")
-    ax2.set_ylabel("$X_{LEMAC}$/$l_{fus}$ [-]")
-    ln1 = ax1.plot(x_cg, S_control, 'g-', label= "Control curve: "+str(round(a_control, 2))+"xcg + "+str(round(b_control, 2)))
-    ln2 = ax1.plot(x_cg, S_stability, 'r', label= "Stability curve: "+str(round(a_stability, 2))+"xcg + "+str(round(b_stability, 2)))
-    ln3 = ax2.plot(min_cg, X_LEMAC_range, 'b', label="Minimum cg") 
-    ln4 = ax2.plot(max_cg, X_LEMAC_range, 'y', label="Maximum cg")
-    ln5 = ax2.plot(opt_line, opt_LEMAC,  'k', label="Optimum cg range")
-    ax1.set_ylim((0., min(Sh_opt)+0.5))
-    ax2.set_ylim((LEMAC_opt[Sh_opt.index(min(Sh_opt))]- min(Sh_opt)*0.2, LEMAC_opt[Sh_opt.index(min(Sh_opt))] + 0.5*0.2))
-    lns = ln1+ln2+ln3+ln4+ln5
-    labs = [l.get_label() for l in lns]
-    ax1.legend(lns, labs, loc="lower right")
-# ax1.legend(loc="lower right")
-#    ax2.legend(loc="center right")
-    plt.show()
+#    fig, ax1 = plt.subplots()
+#    
+#    ax2 = ax1.twinx() 
+#    ax1.set_xlabel("$x_{cg}$/$MAC$ [-]")
+#    ax1.set_ylabel("$S_h$/$S$ [-]")
+#    ax2.set_ylabel("$X_{LEMAC}$/$l_{fus}$ [-]")
+#    ln1 = ax1.plot(x_cg, S_control, 'g-', label= "Control curve: "+str(round(a_control, 2))+"xcg + "+str(round(b_control, 2)))
+#    ln2 = ax1.plot(x_cg, S_stability, 'r', label= "Stability curve: "+str(round(a_stability, 2))+"xcg + "+str(round(b_stability, 2)))
+#    ln3 = ax2.plot(min_cg, X_LEMAC_range, 'b', label="Minimum cg") 
+#    ln4 = ax2.plot(max_cg, X_LEMAC_range, 'y', label="Maximum cg")
+#    ln5 = ax2.plot(opt_line, opt_LEMAC,  'k', label="Optimum cg range")
+#    ax1.set_ylim((0., min(Sh_opt)+0.5))
+#    ax2.set_ylim((LEMAC_opt[Sh_opt.index(min(Sh_opt))]- min(Sh_opt)*0.2, LEMAC_opt[Sh_opt.index(min(Sh_opt))] + 0.5*0.2))
+#    lns = ln1+ln2+ln3+ln4+ln5
+#    labs = [l.get_label() for l in lns]
+#    ax1.legend(lns, labs, loc="lower right", prop={'size': 7})
+#    ax1.grid(True)
+## ax1.legend(loc="lower right")
+##    ax2.legend(loc="center right")
+#    plt.show()
     
     return LEMAC_opt[Sh_opt.index(min(Sh_opt))], min(Sh_opt)
 

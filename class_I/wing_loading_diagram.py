@@ -1,4 +1,4 @@
-from input_files.conventional_double_decker_four_engines import *
+#from input_files.conventional_double_decker_four_engines import *
 import matplotlib.pyplot as plt
 
 
@@ -137,7 +137,7 @@ def plot_diagram(all_requirements, labels, ws, tw):
     plt.xlim(0, 10000)
     plt.ylim(0.0, 0.4)
     plt.show()
-    # plt.savefig("Wing_loading_diagram")
+#    plt.savefig("Wing_loading_diagram")
 
 
 # Create ranges

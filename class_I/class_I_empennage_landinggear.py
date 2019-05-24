@@ -33,7 +33,7 @@ from class_I.fuselage_cross_section import *
 
 
 def class_I_empennage(mass_frac, MAC, l_fuselage, x_eng, l_n, xcg_OEW_MAC, xcg_payload, xcg_fuel, D_fuse, b, S, taper,
-                      v_tail, LE_sweep, h_tail):
+                      LE_sweep, v_tail, h_tail):
     # xcg-locations for wing mounted engines aircraft
     # Wing group - in [m] w.r.t. X-LEMAC
     xcg_wing = 0.4 * MAC

@@ -1,62 +1,67 @@
-from constants_and_conversions import *
+from constants_and_conversions import g_0, per_hr_to_N
 import numpy as np
-# from input_files.strutted_wing import *
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 
 
-def calc_payload_weight(n_passengers, n_crew, w_person, w_cargo):
-    # calculate the total payload weight, using the number of passengers, crew and the weight of a person
-    return (n_passengers * w_person + n_crew * w_person) * lbs_to_kg * g_0 + w_cargo * n_passengers * g_0
+#   calculate the total payload weight
+def calc_payload_weight(n_passengers, n_crew, m_person, m_cargo):
+    w_people = (n_passengers + n_crew) * m_person * g_0
+    w_cargo = n_passengers * m_cargo * g_0
+    
+    return w_people + w_cargo
 
 
-def calc_cruise_coefficient(cl, cd, r, velocity, c_j):
-    # equations come from ADSEE-I lecture 2
-    # print(r)
-    # print(velocity)
-    # print(cl/cd)
-    return 1 / (np.e ** (r / ((velocity / (c_j * per_hr_to_N * g_0)) * (cl / cd))))
+#   calculate the cruise coefficent based on ADSEE
+def calc_cruise_coefficient(cl, cd, r, V, c_j):
+#    print("The range equals " + str(r))
+#    print("The V equals "+ str(V))
+#    print("The lift over drag ratio equals " + str(cl/cd))
+    
+    return 1 / (np.e ** (r / ((V / (c_j * per_hr_to_N * g_0)) * (cl / cd))))
 
 
-def calc_loiter_coefficient(aspect_ratio, oswald_factor, cd_0, e, c_j):
-    CD = 2 * cd_0
-    CL = np.sqrt((np.pi * aspect_ratio * oswald_factor * cd_0))
+#   calculate the loiter coefficient based on ADSEE
+def calc_loiter_coefficient(A, oswald_factor, cd_0, E, c_j):
+    cd = 2 * cd_0
+    cl = np.sqrt((np.pi * A * oswald_factor * cd_0))
 
-    return 1 / (np.e ** (e / ((1 / (c_j * g_0 * per_hr_to_N)) * (CL / CD))))
+    return 1 / (np.e ** (E / ((1 / (c_j * g_0 * per_hr_to_N)) * (cl / cd))))
 
 
+#   calculate the total required fuel by multiplying all phases of the flight profile
 def calc_fuel_fraction(coefficients):
-    # calculate the total required fuel by multiplying all phases of the flight profile
     fraction = 1
+    
     for number in coefficients:
         fraction = fraction * number
+        
     return 1 - fraction
 
 
-def class_I(cl, cd, r_cruise, r_res, v_cruise, cj_cruise, W_tfo_frac, W_e_frac, fractions,
-            N_pas, N_crew, W_person, W_cargo):  # , w_pay):
+#   final calculation of class I weight estimation
+def class_I(cl, cd, r_cruise, r_res, v_cruise, cj_cruise, W_tfo_frac, W_e_frac, 
+            fuel_fractions, N_pas, N_crew, M_person, M_cargo):  
+    
     cruise_1 = calc_cruise_coefficient(cl, cd, r_cruise, v_cruise, cj_cruise)
-    # loiter = calc_loiter_coefficient(A, Oswald, S_ratio, C_fe, E, c_j_loiter)
+#    loiter = calc_loiter_coefficient(A, Oswald, S_ratio, C_fe, E, c_j_loiter)
     cruise_2 = calc_cruise_coefficient(cl, cd, r_res, v_cruise, cj_cruise)
 
-    # print("The first cruise coefficient equals " + str(cruise_1))
-    # print("The loiter coefficient equals " + str(loiter))
-    # print("The second cruise coefficient equals " + str(cruise_2))
+#    print("The first cruise coefficient equals " + str(cruise_1))
+#    print("The loiter coefficient equals " + str(loiter))
+#    print("The second cruise coefficient equals " + str(cruise_2))
 
-    mission_frac = np.array(
-        [fractions[0], fractions[1], fractions[2], fractions[3], cruise_1, fractions[4], fractions[5], cruise_2,
-         fractions[6], fractions[7]])
-    # print("hoi")
-    # print(W_e_frac)
-    W_f_frac = calc_fuel_fraction(mission_frac)
-    print(W_f_frac)
-    print(W_e_frac)
+    np.append(fuel_fractions, [cruise_1, cruise_2])
+    
+    W_f_frac = calc_fuel_fraction(fuel_fractions)
     W_to_frac = 1 - W_f_frac - W_tfo_frac - W_e_frac
+    
+#    print(W_f_frac)
+#    print(W_e_frac)
 
-    W_P = calc_payload_weight(N_pas, N_crew, W_person, W_cargo)
-    # W_P = 35625 * g_0
+    W_P = calc_payload_weight(N_pas, N_crew, M_person, M_cargo)
     W_TO = W_P / W_to_frac
     W_F = W_f_frac * W_TO
-    W_E = W_e_frac * W_TO
+    W_E = W_e_frac * W_TO + W_tfo_frac * W_TO
 
     return np.array([W_TO, W_E, W_P, W_F])
 

@@ -25,7 +25,7 @@ y_MAC_h, y_MAC_v, MAC_h, MAC_v, taper, c_root, X_LE_root, b_v, QC_sweep, mass_fr
 N_cargo = 2
 cargo_fwdfrac = 0.6  # Fraction of the amount the front compartment holds, if N_cargo = 1 then the value is 1
 
-Safety_margin = 0.10
+Safety_margin = 0.10 # %MAC
 xcg_fuel      = 0.55 # %MAC
 l_nosecone = np.sum(fuselage_design[6]) / 2.
 xcg_nlg = l_nosecone  # assumption, use landing gear function !!!
@@ -143,8 +143,11 @@ else:
         m_tv = b_v - fuselage_design[1]/2.
         l_h = l_h + (x_le_h-x_le_v) + np.tan(sweep_LE_v)*b_v
         
-       
-
+print()
+print("***Stability values***")
+print("MAC = ", round(MAC,2))      
+print("l_h = ", round(l_h,2))
+print("V_h/V = ", round(V_h_norm,2))
 ## CHECK DOWNWASH AND CL ALPHA'S!!!!
 stability_lessmargin_list, stability_list = Sh_S_stability(x_cg, M_h_cruise, eta, HC_sweep_h, HC_sweep, A, A_h, M_cruise, fuselage_design[1], b, S,
                 l_h, QC_sweep, m_tv, V_h_norm, b_n_1, b_n_2, b_n_3, b_n_4, l_n_1, l_n_2, l_n_3, l_n_4, x_ac_wing, 
@@ -155,18 +158,27 @@ M_w_landing = V_stall_Landing/np.sqrt(gamma * R_gas * Temp_cruise)
 
 
 C_L_alpha_Ah_landing = C_L_alpha_Ah(M_w_landing, eta, HC_sweep, A, fuselage_design[1], b, S, c_root)  
+print()
+print("***Control values***")
 
 C_L_Ah_landing = C_L_alpha_Ah_landing*alpha_land
+print("C_L_h =", round(CL_H, 2))
+print("C_L_Ah = ", round(C_L_Ah_landing,2))
+
+
 S_netfus = S - (fuselage_design[1]*c_root)
 control_list = Sh_S_control(CL_H,C_L_Ah_landing,l_h,V_h_norm,x_cg,Cm_0,A,QC_sweep,
              delta_flap,b,b_f0,b_fi,taper, MAC, c_f,dc_c_f,mu_2,mu_3,x_ac,CL_Landing_max,
              fuselage_design[1], fuselage_design[1], fuselage_design[7],S,S_netfus,HC_sweep,M_w_landing,eta,CL_0)
 
+print()
+print("***Scissor plot***")
 
 opt_X_LEMAC, opt_Sh_S = control_stability_plot(x_cg, min_cg, max_cg, X_LEMAC_range, control_list, stability_list)
 
-print("Optimum wing postition = ", opt_X_LEMAC)
-print("Optimum tail surface ratio = ", opt_Sh_S)
+print("Optimum wing postition = ", round(opt_X_LEMAC, 2))
+print("Optimum tail surface ratio = ", round(opt_Sh_S,2))
+
 
 
 
