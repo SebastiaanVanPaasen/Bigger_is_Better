@@ -75,9 +75,9 @@ def potato(x_le_h, sweep_LE_h, y_MAC_h, MAC_h, x_le_v, sweep_LE_v, y_MAC_v, MAC_
     X_LEMAC_range = []
     xcg_OEW_MAC = 0.25
     # print(X_LEMAC/l_fuselage)
-    for j in np.arange((X_LEMAC / l_fuselage) - 0.2, (X_LEMAC / l_fuselage) + 0.2, 0.001):
-#    for j in np.arange(0.42105, 0.43, 100.):
-        X_LEMAC_range.append(j)
+#    for j in np.arange((X_LEMAC / l_fuselage) - 0.2, (X_LEMAC / l_fuselage) + 0.2, 0.001):
+    for j in np.arange(0.43039, 0.5, 100.):
+        X_LEMAC_range.append(j) 
         X_LEMAC = j * l_fuselage
 
         # Aircraft OEW weight and cg
@@ -142,18 +142,59 @@ def potato(x_le_h, sweep_LE_h, y_MAC_h, MAC_h, x_le_v, sweep_LE_v, y_MAC_v, MAC_
         for i in range(1, len(xcg_Orderfwd)):
             xcg_Fwdloading.append(
                 (xcg_Fwdloading[i - 1] * W_Fwdloading[i - 1] + xcg_Orderfwd[i] * W_Orderfwd[i]) / W_Fwdloading[i])
-
+        
+        W_fwd_cargo = W_Fwdloading[0:3]
+        W_fwd_window = W_Fwdloading[2:(3+len(xcg_seats))]
+        W_fwd_aisle = W_Fwdloading[(2+len(xcg_seats)):(3+2*len(xcg_seats))]
+        W_fwd_middle = W_Fwdloading[(2+2*len(xcg_seats)):(3+3*len(xcg_seats))]
+        W_fwd_fuel = W_Fwdloading[(2+3*len(xcg_seats)):(4+3*len(xcg_seats))]
+        
+        W_bwd_cargo = W_Backloading[0:3]
+        W_bwd_window = W_Backloading[2:(3+len(xcg_seats))]
+        W_bwd_aisle = W_Backloading[(2+len(xcg_seats)):(3+2*len(xcg_seats))]
+        W_bwd_middle = W_Backloading[(2+2*len(xcg_seats)):(3+3*len(xcg_seats))]
+        W_bwd_fuel = W_Backloading[(2+3*len(xcg_seats)):(4+3*len(xcg_seats))]
+        
+        xcg_fwd_cargo = xcg_Fwdloading[0:3]
+        xcg_fwd_window = xcg_Fwdloading[2:(3+len(xcg_seats))]
+        xcg_fwd_aisle = xcg_Fwdloading[(2+len(xcg_seats)):(3+2*len(xcg_seats))]
+        xcg_fwd_middle = xcg_Fwdloading[(2+2*len(xcg_seats)):(3+3*len(xcg_seats))]
+        xcg_fwd_fuel = xcg_Fwdloading[(2+3*len(xcg_seats)):(4+3*len(xcg_seats))]
+        
+        xcg_bwd_cargo = xcg_Backloading[0:3]
+        xcg_bwd_window = xcg_Backloading[2:(3+len(xcg_seats))]
+        xcg_bwd_aisle = xcg_Backloading[(2+len(xcg_seats)):(3+2*len(xcg_seats))]
+        xcg_bwd_middle = xcg_Backloading[(2+2*len(xcg_seats)):(3+3*len(xcg_seats))]
+        xcg_bwd_fuel = xcg_Backloading[(2+3*len(xcg_seats)):(4+3*len(xcg_seats))]
+        
+        minlist = [min(xcg_Fwdloading) - Safety_margin, min(xcg_Fwdloading) - Safety_margin]
+        maxlist = [max(xcg_Backloading) + Safety_margin, max(xcg_Backloading) + Safety_margin]
+        print((max(xcg_Backloading) + Safety_margin) - (min(xcg_Fwdloading) - Safety_margin))
+        W_range = [W_Fwdloading[0], W_Fwdloading[-1]]
+        
         min_cg.append(min(xcg_Fwdloading) - Safety_margin)
         max_cg.append(max(xcg_Backloading) + Safety_margin)
-
-#        plt.plot(xcg_Backloading, W_Backloading)
-#        plt.plot(xcg_Fwdloading, W_Fwdloading)
-#        plt.show()
+        plt.ylabel("$W$ [N]")
+        plt.xlabel("$x_{cg}$/$MAC$ [-]")
+        plt.plot(xcg_fwd_cargo, W_fwd_cargo, label="Cargo fwd")
+        plt.plot(xcg_fwd_window, W_fwd_window, label="Window fwd")
+        plt.plot(xcg_fwd_aisle, W_fwd_aisle, label="Aisle fwd")
+        plt.plot(xcg_fwd_middle, W_fwd_middle, label="Middle fwd")
+        plt.plot(xcg_bwd_cargo, W_bwd_cargo, label="Cargo bwd")
+        plt.plot(xcg_bwd_window, W_bwd_window, label="Window bwd")
+        plt.plot(xcg_bwd_aisle, W_bwd_aisle, label="Aisle bwd")
+        plt.plot(xcg_bwd_middle, W_bwd_middle, label="Middle bwd")
+        plt.plot(xcg_fwd_fuel, W_fwd_fuel, label = "Fuel")
+        plt.plot(minlist, W_range, "k")
+        plt.plot(maxlist, W_range, "k")
+        plt.legend(loc="upper left", prop={'size': 7}, bbox_to_anchor=(.05, .4))
+        plt.grid(True)
+        plt.show()
     difflist = []
     for j in range(len(min_cg)):
         difflist.append(abs(min_cg[j]-max_cg[j]))
     min_cg_range = min(difflist)
-         
+
 #    plt.plot(min_cg, X_LEMAC_range)
 #    plt.plot(max_cg, X_LEMAC_range)
 #    plt.show()
