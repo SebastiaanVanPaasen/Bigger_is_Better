@@ -33,7 +33,11 @@ import matplotlib.pyplot as plt
 #------------------------------VERIFICATION DATA--------------------------------
 
 """Inputs unit test based on B737 MAX-8"""
+<<<<<<< HEAD
+#"""STRW"""
+=======
 """STRW"""
+>>>>>>> master
 #MTOW = 1712063.74
 #OEW  =  900623.75
 #
@@ -48,7 +52,11 @@ import matplotlib.pyplot as plt
 #e = 0.9
 #R_range = 2500.  #range of x-axis
 #R_des = 1400. #[km]
+<<<<<<< HEAD
+#Ct0 = 65e-06
+=======
 #Ct0 = 55e-06
+>>>>>>> master
 
 
 
@@ -236,7 +244,7 @@ def payload_range():
     plt.ylim(0.95*OEW,1.05*MTOW)
     plt.legend()
     plt.show()
-    return R_harmonic,R_max, R_ferry
+    return 
 
 #a = (payload_range()[0][1]-p6ayload())
 print (payload_range())
