@@ -41,7 +41,7 @@ def manoeuvring_envelope(w_to, h, cl_max_pos, s, v_cruise):
     n_neg = np.append(n_neg, [n_neg[-1], 0])
 
     speeds = np.array([V_S, 0, V_C, V_D])
-    print(speeds)
+#    print(speeds)
     return v_pos, n_pos, v_neg, n_neg, speeds
 
 
@@ -75,7 +75,7 @@ def gust_envelope(w, h, cl_alpha, s, c, v_cruise, v):
     V_B = v[2] - 43 * kts_to_ms
     v[0] = 0
     v[1] = V_B
-    print(V_B)
+#    print(V_B)
     n_pos = np.zeros(len(v))
     n_neg = np.zeros(len(v))
     # print("the gust speeds are " + str(v_gusts))
@@ -106,4 +106,4 @@ def construct_envelope():
     plt.show()
 
 
-construct_envelope()
+#construct_envelope()

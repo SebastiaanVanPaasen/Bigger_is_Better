@@ -73,7 +73,7 @@ def Velocity(M, h):
     V = M * a
     return V
 
-print Velocity(0.75,12000)
+#print Velocity(0.75,12000)
 
 def SAR(V, h, A, S, e, CD0, Ct0, Wcr):  # enter h in m, V in m/s
     SAR = []

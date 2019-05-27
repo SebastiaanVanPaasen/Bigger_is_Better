@@ -1,3 +1,5 @@
+import matplotlib.pyplot as plt
+
 from class_I.class_I_weight_estimation import class_I
 from class_I.fuselage_cross_section import fuselage_cross_section
 from class_I.planform import wing_parameters, determine_half_chord_sweep
@@ -10,7 +12,6 @@ from class_II_weight_estimation import *
 from input_files.conventional_double_decker_two_engines import *
 
 # from performance.SAR_lists_iterator import SAR
-import matplotlib.pyplot as plt
 
 # from class_I.wing_loading_diagram import final_diagram
 

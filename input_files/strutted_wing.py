@@ -21,7 +21,8 @@ mass_frac_fuse = 0.098
 mass_frac_nac = 0.018
 mass_frac_prop = 0.072
 mass_frac_fix = 0.118
-mass_fractions_input = [mass_frac_wing, mass_frac_emp, mass_frac_fuse, mass_frac_nac, mass_frac_prop, mass_frac_fix, 0,
+mass_frac_lg = 0.02
+mass_fractions_input = [mass_frac_wing, mass_frac_emp, mass_frac_fuse, mass_frac_nac, mass_frac_prop, mass_frac_fix, mass_frac_lg, 0,
                         0, 0]
 
 # Design choices required for the Roskam equations -----------------------------------------------------------------
@@ -95,7 +96,7 @@ M_cruise_input = 0.7  # Mach number decided to cruise on
 Temp_cruise = Temp_0 + a * h_cruise_input  # K  based on the altitude you fly at
 a_cruise_input = np.sqrt(gamma * R_gas * Temp_cruise)  # m/s based on the temperature
 V_cruise_input = M_cruise_input * a_cruise_input  # m/s  based on the Mach number and speed of sound
-
+C_t0_input = 12e-06
 # Densities ------------------------------------------------------------------------------------------------------------
 Rho_TO = Rho_0  # kg/m^3    standard sea-level density
 Rho_Cruise_input = Rho_0 * ((1 + (a * h_cruise_input) / Temp_0) ** (-(g_0 / (R_gas * a))))  # kg/m^3   based on cruise altitude
@@ -103,7 +104,7 @@ Rho_Landing = Rho_0  # kg/m^3   standard sea-level density
 
 # aircraft cg-locations ------------------------------------------------------------------------------------------------
 x_engines = -1.  # m    x-location engines w.r.t. X_LEMAC
-x_fuel = 22.  # m    cg-location fuel w.r.t nose
+#x_fuel = 22.  # m    cg-location fuel w.r.t nose
 
 xcg_oew_mac = 0.25  # m     initial cg location OEW w.r.t. MAC
 

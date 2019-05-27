@@ -111,6 +111,11 @@ def Sh_S_stability(x_cg, M_h_cruise, eta, hcsweeph, hcsweepw, A_w, A_h, M_w_crui
         den = (C_L_alpha_h(M_h_cruise, eta, hcsweeph, A_h)/C_L_alpha_Ah(M_w_cruise, eta, hcsweepw, A_w, b_f, b, S, c_r))*(1-de_da(l_h, b, qcsweep, m_tv, A_w, M_w_cruise, eta, hcsweepw))*(l_h/c)*(V_h_V)
         Sh_S_less = (1/den)*x_cg[i] - x_ac(b_n_1, b_n_2, b_n_3, b_n_4, l_n_1, l_n_2, l_n_3, l_n_4, x_ac_wing, M_w_cruise, eta, hcsweepw, A_w, b_f, b, c_r, S, h_f, l_fn, c, c_g, qcsweep, taper)/den
         Sh_S_stability_lessSM.append(Sh_S_less)
+#    print("x_ac = ", round(x_ac(b_n_1, b_n_2, b_n_3, b_n_4, l_n_1, l_n_2, l_n_3, l_n_4, x_ac_wing, M_w_cruise, eta, hcsweepw, A_w, b_f, b, c_r, S, h_f, l_fn, c, c_g, qcsweep, taper),2))
+#    print("C_L_alpha_h = ", round(C_L_alpha_h(M_h_cruise, eta, hcsweeph, A_h),2))
+#    print("C_L_alpha_Ah = ", round(C_L_alpha_Ah(M_w_cruise, eta, hcsweepw, A_w, b_f, b, S, c_r),2))
+#    print("de_da = ", round(de_da(l_h, b, qcsweep, m_tv, A_w, M_w_cruise, eta, hcsweepw),2))
+    
         #print(den)
     stability_trend = np.polyfit(x_cg, Sh_S_stability, 1)
     #print(stability_trend[0])

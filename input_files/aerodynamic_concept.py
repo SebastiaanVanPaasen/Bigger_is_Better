@@ -21,9 +21,9 @@ mass_frac_fuse = 0.098
 mass_frac_nac = 0.018
 mass_frac_prop = 0.072
 mass_frac_fix = 0.118
-mass_fractions_input = [mass_frac_wing, mass_frac_emp, mass_frac_fuse, mass_frac_nac, mass_frac_prop, mass_frac_fix, 0,
-                        0, 0]
 
+mass_fracs_wing = np.array([mass_frac_wing, mass_frac_prop, mass_frac_nac])
+mass_fracs_fus = np.array([mass_frac_fus, mass_frac_fix, mass_frac_emp])
 # Design choices required for the Roskam equations -----------------------------------------------------------------
 # first is to include spoilers and speed brakes
 # second is with 2 wing mounted engines
