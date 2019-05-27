@@ -151,6 +151,7 @@ def _calc_h_tail_I(x_h, xcg_aft, MAC, S, A_h, l_fuselage, tap_h, V_h_norm, sweep
 def _calc_h_tail_II(xcg_aft, A_h, l_fuselage, tap_h, sweep_quartchord_h, S_h):    
     # print(A_h)
     # print(V_h_norm)
+#    print("the aft cg location " + str(xcg_aft))
     
     b_h = np.sqrt(A_h * S_h)
     C_r_h = (2. * S_h) / (b_h * (1. + tap_h))
@@ -160,8 +161,12 @@ def _calc_h_tail_II(xcg_aft, A_h, l_fuselage, tap_h, sweep_quartchord_h, S_h):
     sweep_TE_h = np.arctan((C_t_h - C_r_h) / (b_h / 2.) + np.tan(sweep_LE_h))
     y_MAC_h = (b_h / 6.) * ((1. + 2. * tap_h) / (1. + tap_h))
     fuse_MAC_h = MAC_h - 0.25 * MAC_h - y_MAC_h * np.tan(sweep_TE_h)
-
+    
+#    print("fuselage mac h" + str(fuse_MAC_h))
+#    print("the fuselage length" + str(l_fuselage))
     x_h = l_fuselage - fuse_MAC_h
+#    print("the x_h value " + str(x_h))
+    
     x_le_h = l_fuselage - C_r_h
     l_h = x_h - xcg_aft
     
@@ -207,7 +212,8 @@ def _calc_v_tail_II(A_v, l_fuselage, tap_v, S_v, sweep_quartchord_v):
     y_MAC_v = (b_v / 6.) * ((1. + 2. * tap_v) / (1. + tap_v))
     
     x_le_v = l_fuselage - C_r_v
-
+#    print("root chord vertical tail "+ str(C_r_v))
+#    print("span vertical tail " + str(b_v))
     return x_le_v, sweep_LE_v, y_MAC_v, MAC_v
 
 # class_I_empennage(MAC, l_fuselage, x_eng, l_n, xcg_OEW_MAC, mass_frac_OEW, xcg_payload, mass_frac_payload, xcg_fuel,

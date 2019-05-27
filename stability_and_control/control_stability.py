@@ -82,8 +82,8 @@ import matplotlib.pyplot as plt
 #S_control = Sh_S_control(CL_H,CL_AH,l_h,V_h_V,x_cg,Cm_0,A_w,qcsweep,delta_flap,b,b_f0,b_fi,taper,c,c_f,dc_c_f,mu_2,mu_3,x_ac,CL_land,b_f,h_f,l_f,S,S_net,hcsweepw,M_app,eta,CL_0)
 #S_stability = Sh_S_stability(x_cg, M_h_cruise, eta, hcsweeph, hcsweepw, A_w, A_h, M_w_cruise, b_f, b, S, l_h, qcsweep, phi, h_wh, s_wTEh, V_h_V, b_n_1, b_n_2, b_n_3, b_n_4, l_n_1, l_n_2, l_n_3, l_n_4, x_ac_wing, h_f, l_fn, c, c_r, c_g, taper, SM)
 
-def control_stability_plot(x_cg, min_cg, max_cg, X_LEMAC_range, S_control, S_stability):
-    
+def control_stability_plot(x_cg, min_cg, max_cg, X_LEMAC_range, S_control, S_stability, MAC, l_fuselage):
+#    print("the X_LEMAC range " + str(X_LEMAC_range))
     Sh_S = np.linspace(0,2,10000)
     contr_trend = np.polyfit(x_cg, S_control, 1)
     stability_trend = np.polyfit(x_cg, S_stability, 1)
@@ -120,7 +120,7 @@ def control_stability_plot(x_cg, min_cg, max_cg, X_LEMAC_range, S_control, S_sta
 #    print(max_cg[Sh_opt.index(min(Sh_opt))])
     
     X_LEMAC = list(np.array(X_LEMAC_range)+LEMAC_opt[Sh_opt.index(min(Sh_opt))])
-    opt_line = [min_cg[Sh_opt.index(min(Sh_opt))], max_cg[Sh_opt.index(min(Sh_opt))]]
+#    opt_line = [min_cg[Sh_opt.index(min(Sh_opt))], max_cg[Sh_opt.index(min(Sh_opt))]]
     opt_LEMAC = [LEMAC_opt[Sh_opt.index(min(Sh_opt))], LEMAC_opt[Sh_opt.index(min(Sh_opt))]]
     
     
@@ -144,8 +144,9 @@ def control_stability_plot(x_cg, min_cg, max_cg, X_LEMAC_range, S_control, S_sta
 ## ax1.legend(loc="lower right")
 ##    ax2.legend(loc="center right")
 #    plt.show()
-    
-    return LEMAC_opt[Sh_opt.index(min(Sh_opt))], min(Sh_opt)
+    print("the lemac "+ str(LEMAC_opt[Sh_opt.index(min(Sh_opt))]))
+    xcg_aft = max_cg[Sh_opt.index(min(Sh_opt))] * MAC + LEMAC_opt[Sh_opt.index(min(Sh_opt))] * l_fuselage
+    return LEMAC_opt[Sh_opt.index(min(Sh_opt))] * l_fuselage, min(Sh_opt), xcg_aft
 
 #print(control_stability_plot(min_cg, max_cg, X_LEMAC_range, S_control, S_stability))
 

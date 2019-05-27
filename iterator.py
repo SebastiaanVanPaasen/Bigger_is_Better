@@ -131,7 +131,10 @@ def main_iterator(cf, char, env, eng, opt, tails):
                                                                                 [A_h, tap_h, QC_sweep_h])
              
             l_h, c_root_h, c_tip_h, b_h, S_h = tail_h[0], tail_h[1], tail_h[2], tail_h[3], tail_h[4]
-            c_root_v, c_tip_v, b_v, S_v = tail_v[0], tail_v[1], tail_v[2], tail_v[3]                     
+            c_root_v, c_tip_v, b_v, S_v = tail_v[0], tail_v[1], tail_v[2], tail_v[3] 
+            opt_Sh_S = S_h / S
+            opt_X_LEMAC = x_lemac 
+                              
             
         else:
             
@@ -139,6 +142,12 @@ def main_iterator(cf, char, env, eng, opt, tails):
             b_f0 = 0.4 * b #end of flap span
             b_fi = 0.1 * b #begin of flap span
             
+#            old_S_h = S_h
+            S_h = opt_Sh_S * S
+#            S_v = S_h / old_S_h * S_v
+            
+            x_lemac = opt_X_LEMAC
+            print("The leading edge of mac " + str(x_lemac))
             tail_h = _calc_h_tail_II(xcg_aft, A_h, l_fuselage, tap_h, QC_sweep_h, S_h)
             tail_v = _calc_v_tail_II(A_v, l_fuselage, tap_v, S_v, QC_sweep_v)
             min_cg, max_cg, X_LEMAC_range, min_cg_range = potato(l_nosecone, W_TO, ip.xcg_eng, ip.l_nac, mass_fractions, tail_h, 
@@ -154,18 +163,33 @@ def main_iterator(cf, char, env, eng, opt, tails):
             
             if wing == 0: 
                 if tail == 0:
+                    
+                    print("vertical tail part " + str(np.tan(sweep_LE_v) * b_v))
                     m_tv = fuselage_design[1] / 2.
+                    print("the new tail arm " + str(l_h))
+    
                 else:
                     m_tv = fuselage_design[1] / 2. + b_v
+                    
+                    print("vertical tail part " + str(np.tan(sweep_LE_v) * b_v))
                     l_h = l_h + (x_le_h - x_le_v) + np.tan(sweep_LE_v) * b_v
+                    print("The new tail arm " + str(l_h))
+                    
+                    
                     
                 
             else:
                 if tail == 0:
-                    m_tv = - fuselage_design[1] / 2. 
+                    m_tv = - fuselage_design[1] / 2.
+                    print("the new tail arm " + str(l_h))
+                    print("vertical tail part " + str(np.tan(sweep_LE_v) * b_v))
                 else:
+                    print("the previous tail arm " + str(l_h))
+                    print("vertical tail part " + str(np.tan(sweep_LE_v) * b_v))
                     m_tv = b_v - fuselage_design[1] / 2.
                     l_h = l_h + (x_le_h - x_le_v) + np.tan(sweep_LE_v) * b_v
+                    print("The new tail arm " + str(l_h))
+
                     
             
             stability_lessmargin_list, stability_list = Sh_S_stability(x_cg, M_h_cr, ip.eta, HC_sweep_h, HC_sweep, A, A_h, M_cr, fuselage_design[1], b, S,
@@ -183,15 +207,16 @@ def main_iterator(cf, char, env, eng, opt, tails):
             
             
             
-            S_netfus = S - (fuselage_design[1]*c_root)
+            S_netfus = S - (fuselage_design[1] * c_root)
             control_list = Sh_S_control(ip.CL_H, C_L_Ah_landing, l_h, ip.V_h_norm, x_cg, ip.Cm_0, A, QC_sweep,
                          ip.delta_flap ,b ,b_f0 ,b_fi ,taper , mac, c_f, ip.dc_c_f, ip.mu_2, ip.mu_3, ip.x_ac, ip.CL_l_max,
                          fuselage_design[1], fuselage_design[1], fuselage_design[7],S,S_netfus,HC_sweep, M_w_landing, ip.eta, ip.CL_0)
             
             
             
-            opt_X_LEMAC, opt_Sh_S = control_stability_plot(x_cg, min_cg, max_cg, X_LEMAC_range, control_list, stability_list)
+            opt_X_LEMAC, opt_Sh_S, xcg_aft = control_stability_plot(x_cg, min_cg, max_cg, X_LEMAC_range, control_list, stability_list, mac, l_fuselage)
 
+        print("tail surface area " + str(S_h/S))
         # Calculate the accompanying tail sizes ---------------------------
         HC_sweep_h = determine_half_chord_sweep(c_tip_h, QC_sweep_h, c_root_h, b_h)
         HC_sweep_v = determine_half_chord_sweep(c_tip_v, QC_sweep_v, c_root_v, b_v)
