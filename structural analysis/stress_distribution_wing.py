@@ -8,11 +8,11 @@ Created on Wed May 15 09:51:57 2019
 
 import numpy as np  ### Never use * to import stuff, as it makes it difficult to retrace where functions come from
 
-from loading_and_moment_diagrams import load_diagrams
+#from loading_and_moment_diagrams import load_diagrams
 
-Mydistribution = load_diagrams()[2]
-Mzdistribution = load_diagrams()[3]
-Tdistribution = load_diagrams()[4]
+#Mydistribution = load_diagrams()[2]
+#Mzdistribution = load_diagrams()[3]
+#Tdistribution = load_diagrams()[4]
 
 
 
