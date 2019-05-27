@@ -1,97 +1,48 @@
 import numpy as np
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
+
 def FuelVRFDOC(h,M,Fnew):
-    def Machspeed(h,M):
-        def ISA_temp(h):
-            if h < 11000:
-                T = 288.15 - 0.0065 * h  # in Kelvin
-                return T
-            if h >= 11000:
-                return 216.65  # in Kelvin
-            
 
-        def Velocity(M, h):
-            gamma = 1.4
-            R = 287
-            a = np.sqrt(gamma * R * ISA_temp(h))
-            V = M * a
-            return V
-        return Velocity(M,h)
+    #Machspeed(h,M):
+    #Radiative(h,Fincini):
+    #Costs(Vini, Fincini)
+    F737 = 0.0094
 
-    def Radiative(h,Fincini):
-        H737 = 12000
-        Hini = 11000
-        h = h
-         
+    F_dif= ((Fnew - F737) / F737 ) 
+    
+    Vini = Machspeed(h,M)
+    
+    RFreduction = Radiative(h,F_dif)
+    DOCreduction = Costs(Vini, F_dif) - 100
+    
+    F_dif = F_dif * 100
+    #print Fincini
+    #print Vini
+    #print RFreduction
+    #print DOCreduction
+    
+    return F_dif, RFreduction, DOCreduction
+
+
+def Machspeed(h,M):
+    def ISA_temp(h):
+        if h < 11000:
+            T = 288.15 - 0.0065 * h  # in Kelvin
+            return T
+        if h >= 11000:
+            return 216.65  # in Kelvin
         
-        trfi = [0] * 1
-        for i in range(1):
+
+    def Velocity(M, h):
+        gamma = 1.4
+        R = 287
+        a = np.sqrt(gamma * R * ISA_temp(h))
+        V = M * a
+        return V
+    return Velocity(M,h)
 
 
-         TotalRFI = 100.
-         CO2RFI = 52.
-         NOXRFI = 23.4
-         CONTRAILRFI = 21.9
-         H2ORFI = 5.2
-         OtherRFI = -2.6
-
-         #Contrail reduction, starting at 11000km
-         Dif11km = Hini- h
-         #Effect of difference
-         
-         deltacontrail = 0.000246
-         if Dif11km <= 3000:
-          conrfi  =  (1-( deltacontrail * Dif11km)) * CONTRAILRFI
-          h2rfi =( 1 - (deltacontrail * Dif11km)) * H2ORFI
-          NOXrfi = 23.4
-         elif Dif11km <= 4064:
-          conrfi  =  (1-( deltacontrail * Dif11km)) * CONTRAILRFI
-          h2rfi =( 1 - (deltacontrail * Dif11km)) * H2ORFI
-          NOXrfi = 23.4 * 0.9
-         elif Dif11km <= 5000:
-          conrfi  =  0
-          h2rfi = 0
-          NOXrfi = 23.4 * 0.5
-         elif Dif11km <= 6000:
-          conrfi  =  0
-          h2rfi = 0
-          NOXrfi = 23.4 * 0.3
-         else :
-          conrfi  =  0
-          h2rfi = 0
-          NOXrfi = 23.4 * 0.2
-
-        
-         totrfi = CO2RFI + NOXrfi + conrfi + h2rfi + OtherRFI
-         trfi = totrfi * Fincini
-
-
-         Dif11km = Hini- H737
-         if Dif11km <= 3000:
-          conrfi7  =  (1-( deltacontrail * Dif11km)) * CONTRAILRFI
-          h2rfi7 =( 1 - (deltacontrail * Dif11km)) * H2ORFI
-          NOXrfi7 = 23.4
-        totrfi7 = CO2RFI + NOXrfi7 + conrfi7 + h2rfi7 + OtherRFI
-        
-        
-        trfiinc = trfi / 100
-        trfiinc7 = totrfi7 /100
-        #plt.plot( h, trfiinc)
-        #plt.plot( h, Finc) 
-        #plt.axis([0, 6, 0, 20])
-        #plt.show()
-        Dif737 = trfiinc / trfiinc7
-        #print TotalRFI * Fincini
-        #print CO2RFI * Fincini
-        #print NOXrfi * Fincini
-        #print conrfi / conrfi7 * CONTRAILRFI * Fincini
-        #print h2rfi / h2rfi7 * H2ORFI * Fincini
-        print OtherRFI * Fincini
-        #print Dif737 
-        #print Fincini
-        return Dif737
-        
-    def Costs(Vini, Fincini):
+def Costs(Vini, Fincini):
      V737 = 828.479
      Vini = Vini * 3.6
      
@@ -201,6 +152,7 @@ def FuelVRFDOC(h,M,Fnew):
      Vnews  = [x * Vini for x in Vincs]
      D737  = [x * Dif for x in NTOC]
      F100  = [x *100. for x in Fincs]
+     
      #gr1 = plt.plot( TOCres  , Vnews,label='TOC compared to 737' )
      #gr5 = plt.plot( TOCcor  , Vnews,label='TOC with correction' )
      #gr2 = plt.plot(TOCcor, Vnews, )
@@ -216,60 +168,112 @@ def FuelVRFDOC(h,M,Fnew):
      #plt.legend([gr1, gr2], ['TOC differnce', 'With time correction'])
      #plt.axis([0, 6, 0, 20])
      #plt.show()
+     
      pt90 = 745
      pt88 = 733
      pt85 = 715
-     return Doct[2]
      
+     return Doct[2]
+ 
+    
+def Radiative(h,Fincini):
+    H737 = 12000
+    Hini = 11000
+    h = h
+     
+    
+    trfi = [0] * 1
+    for i in range(1):
 
 
+     TotalRFI = 100.
+     CO2RFI = 52.
+     NOXRFI = 23.4
+     CONTRAILRFI = 21.9
+     H2ORFI = 5.2
+     OtherRFI = -2.6
+
+     #Contrail reduction, starting at 11000km
+     Dif11km = Hini- h
+     #Effect of difference
+     
+     deltacontrail = 0.000246
+     if Dif11km <= 3000:
+      conrfi  =  (1-( deltacontrail * Dif11km)) * CONTRAILRFI
+      h2rfi =( 1 - (deltacontrail * Dif11km)) * H2ORFI
+      NOXrfi = 23.4
+     elif Dif11km <= 4064:
+      conrfi  =  (1-( deltacontrail * Dif11km)) * CONTRAILRFI
+      h2rfi =( 1 - (deltacontrail * Dif11km)) * H2ORFI
+      NOXrfi = 23.4 * 0.9
+     elif Dif11km <= 5000:
+      conrfi  =  0
+      h2rfi = 0
+      NOXrfi = 23.4 * 0.5
+     elif Dif11km <= 6000:
+      conrfi  =  0
+      h2rfi = 0
+      NOXrfi = 23.4 * 0.3
+     else :
+      conrfi  =  0
+      h2rfi = 0
+      NOXrfi = 23.4 * 0.2
+
+    
+     totrfi = CO2RFI + NOXrfi + conrfi + h2rfi + OtherRFI
+     trfi = totrfi * (Fincini + 1)
 
 
-    #Machspeed(h,M):
-    #Radiative(h,Fincini):
-    #Costs(Vini, Fincini)
-
-
-   
-
-    F737 = 0.0094
-
-    Fincini= Fnew / F737
-    Vini = Machspeed(h,M)
-    RFreduction = Radiative(h,Fincini)
-    DOCreduction = Costs(Vini, Fincini)
+     Dif11km = Hini- H737
+     if Dif11km <= 3000:
+      conrfi7  =  (1-( deltacontrail * Dif11km)) * CONTRAILRFI
+      h2rfi7 =( 1 - (deltacontrail * Dif11km)) * H2ORFI
+      NOXrfi7 = 23.4
+    totrfi7 = CO2RFI + NOXrfi7 + conrfi7 + h2rfi7 + OtherRFI
+    
+    #plt.plot( h, trfiinc)
+    #plt.plot( h, Finc) 
+    #plt.axis([0, 6, 0, 20])
+    #plt.show()
+    Dif737 = ((totrfi - totrfi7) / totrfi7 ) * 100
+    #print TotalRFI * Fincini
+    #print CO2RFI * Fincini
+    #print NOXrfi * Fincini
+    #print conrfi / conrfi7 * CONTRAILRFI * Fincini
+    #print h2rfi / h2rfi7 * H2ORFI * Fincini
+#    print(OtherRFI * Fincini)
+    #print Dif737 
     #print Fincini
-    #print Vini
-    #print RFreduction
-    #print DOCreduction
-    return [Fincini,Vini,RFreduction,DOCreduction]
-
-hkm= [ 12.,11.,10.,9.,8.,7.,6.,5.,]
-h = [ x * 1000. for x in hkm]
-M10= [7.,7.,7.,7.,7.,7.,7.,7.]
-M = [ x / 10 for x in M10]
-F1000 = [80.,76.,75.,76.,78.,83.,88.,97.]
-Fnew = [ x / 10000 for x in F1000]
-values = [0] * len(h)
-RF = [0] * len(h)
-F = [0] * len(h)
-both = [0] * len(h)
-for i in range(len(h)):
-    values[i] = FuelVRFDOC(h[i],M[i],Fnew[i])
-    RF[i] = FuelVRFDOC(h[i],M[i],Fnew[i])[2] / 0.7 * 100 -100
-    F[i] = FuelVRFDOC(h[i],M[i],Fnew[i])[0] / 0.8 * 100 -100
-print values
-
-plt.xlabel('Altitude [km]')
-plt.ylabel('Difference [%]')
-show = plt.plot(hkm,RF, label='Radiative Forcing')
-show2 = plt.plot(hkm,F, label='Fuel Consumption')
-plt.grid('on')
-plt.legend()
-plt.show()
-
-result = [0] * len(h)
-for i in range(len(h)):
-    result[i] = values[i][0] * 2 + values[i][2] * 5 + values[i][3] * 5 /100
+    
+    return Dif737
+#
+#hkm= [ 12.,11.,10.,9.,8.,7.,6.,5.,]
+#h = [ x * 1000. for x in hkm]
+#M10= [7.,7.,7.,7.,7.,7.,7.,7.]
+#M = [ x / 10 for x in M10]
+#F1000 = [80.,76.,75.,76.,78.,83.,88.,97.]
+#Fnew = [ x / 10000 for x in F1000]
+#values = [0] * len(h)
+#RF = [0] * len(h)
+#F = [0] * len(h)
+#both = [0] * len(h)
+#
+#for i in range(len(h)):
+#    values[i] = FuelVRFDOC(h[i],M[i],Fnew[i])
+#    RF[i] = FuelVRFDOC(h[i],M[i],Fnew[i])[2] / 0.7 * 100 -100
+#    F[i] = FuelVRFDOC(h[i],M[i],Fnew[i])[0] / 0.8 * 100 -100
+#print(values)
+#
+#plt.xlabel('Altitude [km]')
+#plt.ylabel('Difference [%]')
+#show = plt.plot(hkm,RF, label='Radiative Forcing')
+#show2 = plt.plot(hkm,F, label='Fuel Consumption')
+#plt.grid('on')
+#plt.legend()
+#plt.show()
+#
+#result = [0] * len(h)
+#for i in range(len(h)):
+#    result[i] = values[i][0] * 2 + values[i][2] * 5 + values[i][3] * 5 /100
 
 #print result

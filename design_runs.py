@@ -22,13 +22,16 @@ def run_designs(design_names):
     T_TO, M_cr, V_cr, H_cr, sar = ["Take off thrust [N]"], ["Cruise Mach number [-]"], ["Cruise velocity [m/s]"], ["Cruise altitude [m]"], ["Specific fuel consumption [kg/km/pas]"]
     env_results = [T_TO, M_cr, V_cr, H_cr, sar]
     
+    F_decr, RF_decr, C_decr = ["Fuel consumption reduction [%]"], ["RF reduction [%]"], ["DOC reduction [%]"]
+    diff_results = [F_decr, RF_decr, C_decr]
+    
     names = [""] + design_names
     finals = []
     
     for i in range(len(design_names)): 
         print("Starting on design: " + str(design_names[i]))
         cf, char, env, eng, opti, tail = read_input(design_names[i])
-        weights, coefficients, planform, fus, tails, environment = main_iterator(cf, char, env, eng, opti, tail)
+        weights, coefficients, planform, fus, tails, environment, diff = main_iterator(cf, char, env, eng, opti, tail)
     
         for i in range(len(weights)):
             weight_results[i].append(weights[i])
@@ -54,6 +57,10 @@ def run_designs(design_names):
             env_results[i].append(environment[i])
         finals.append(env_results)
         
+        for i in range(len(diff)):
+            diff_results[i].append(diff[i])
+        finals.append(diff_results)
+        
     final_result = np.asarray(names)
     
 #    print(final_result)
@@ -65,7 +72,7 @@ def run_designs(design_names):
     np.savetxt("csv_results_LOW_2E_DD.csv", final_result, fmt= '%s', delimiter=";")
 
 designs = []
-for i in range(81):
+for i in range(108):
     designs.append("Design " + str(i+1))
     
 #print(designs)
