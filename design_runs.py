@@ -62,10 +62,10 @@ def run_designs(design_names):
         
     final_result = np.reshape(final_result, (-1, (len(design_names)+1)))
     
-    np.savetxt("results.csv", final_result, fmt= '%s', delimiter=";")
+    np.savetxt("csv_results_HIGH_2E.csv", final_result, fmt= '%s', delimiter=";")
 
 designs = []
-for i in range(27):
+for i in range(81):
     designs.append("Design " + str(i+1))
     
 #print(designs)
