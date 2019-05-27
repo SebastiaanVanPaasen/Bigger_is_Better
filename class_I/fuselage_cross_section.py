@@ -191,10 +191,10 @@ def fuselage_cross_section(Npax, Npax_below):
         V_os_below = (Nos_lat * Aos_lat + Nos_ce_below * Aos_ce) * lcabin_below * Kos
         V_os = V_os_above + V_os_below
         # cabin points below
-        W_cabin_left_below_x = -W_cabin_above / 2
-        W_headroom_left_below_x = -W_headroom_above / 2
-        W_cabin_right_below_x = W_cabin_above / 2
-        W_headroom_right_below_x = W_headroom_above / 2
+        W_cabin_left_below_x = -W_cabin_below / 2
+        W_headroom_left_below_x = -W_headroom_below / 2
+        W_cabin_right_below_x = W_cabin_below / 2
+        W_headroom_right_below_x = W_headroom_below / 2
         Waisle_left_below_x = -Waisle / 2
         Waisle_right_below_x = Waisle / 2
 
@@ -224,6 +224,12 @@ def fuselage_cross_section(Npax, Npax_below):
         aisle_right_point_above = (Waisle_right_above_x, Haisle + floor_height_above)
         shoulder_left_point_above = (W_cabin_left_above_x, H_shoulder + floor_height_above)
         shoulder_right_point_above = (W_cabin_right_above_x, H_shoulder + floor_height_above)
+        
+#        print(cabin_left_point_above, cabin_left_point_below, cabin_right_point_below, cabin_right_point_above,
+#             headroom_left_point_below, headroom_left_point_above, headroom_right_point_below,
+#             headroom_right_point_above, aisle_left_point_below, aisle_left_point_above, aisle_right_point_below,
+#             aisle_right_point_above, shoulder_left_point_below, shoulder_right_point_below, shoulder_left_point_above,
+#             shoulder_right_point_above)
         # function that creates the most inner circle
         r = make_circle(
             [cabin_left_point_above, cabin_left_point_below, cabin_right_point_below, cabin_right_point_above,
@@ -231,6 +237,7 @@ def fuselage_cross_section(Npax, Npax_below):
              headroom_right_point_above, aisle_left_point_below, aisle_left_point_above, aisle_right_point_below,
              aisle_right_point_above, shoulder_left_point_below, shoulder_right_point_below, shoulder_left_point_above,
              shoulder_right_point_above])
+#        print(r)
         d_inner = 2 * r[2]
         d_outer = 1.045 * d_inner + 0.084
         # other dimension of the total fuselage
@@ -240,7 +247,8 @@ def fuselage_cross_section(Npax, Npax_below):
 
     l_tailcone_range = np.array([2.6 * d_outer, 4 * d_outer])
     l_nosecone_range = np.array([1.2 * d_outer, 2.5 * d_outer])
-
+#    print(W_cabin_below)
+#    print(W_cabin_above)
     ##plot fuselage cross-section
 
     V_luggage = m_luggage / rho_luggage
@@ -304,7 +312,7 @@ def fuselage_cross_section(Npax, Npax_below):
             tot_seating_abreast_last_row[0, 0] = N_right
             tot_seating_abreast_last_row[0, 1] = N_middle
             tot_seating_abreast_last_row[0, 2] = N_left
-        
+    
     # return output function:
     # inner diameter         [0]
     # outer diameter         [1]
@@ -327,5 +335,6 @@ def fuselage_cross_section(Npax, Npax_below):
             tot_seating_abreast, N_aisle_above, N_aisle_below,N_rows_above,N_rows_below,lpax_below,lpax_above,tot_seating_abreast_last_row,Pseat)
 
 
+#d_inner, d_outer, lcabin, lcabin_below, lcabin_above, l_tailcone_range, l_nosecone_range, l_fuselage, tot_seating_abreast, N_aisle_above, N_aisle_below,N_rows_above,N_rows_below,lpax_below,lpax_above,tot_seating_abreast_last_row,Pseat=fuselage_cross_section(450, 242)
 
 

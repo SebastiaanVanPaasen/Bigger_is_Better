@@ -63,7 +63,7 @@ def Sh_S_control(CL_H,CL_AH,l_h,Vh_V,x_cg,Cm_0,A,qcsweep,delta_flap,b,b_f0,b_fi,
     for i in range(len(x_cg)):
         Sh_S_i = (1./den)*x_cg[i]  + (((Cm_ac(Cm_0,A,qcsweep,delta_flap,b,b_f0,b_fi,taper,c,c_f,dc_c_f,mu_2,mu_3,x_ac,CL_land,b_f,h_f,l_f,S,S_net,hcsweep,M_app,eta,CL_0)/CL_AH)-x_ac)/den)
         Sh_S.append(Sh_S_i)
-        
+#    print("C_m_ac = ", round(Cm_ac(Cm_0,A,qcsweep,delta_flap,b,b_f0,b_fi,taper,c,c_f,dc_c_f,mu_2,mu_3,x_ac,CL_land,b_f,h_f,l_f,S,S_net,hcsweep,M_app,eta,CL_0),2))
     return Sh_S
     
     

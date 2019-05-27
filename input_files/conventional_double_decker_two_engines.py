@@ -49,7 +49,7 @@ fuel_sys_choice = 0
 # choice is the type of starting system, 1 for one or two jet engines with pneumatic starting system
 # 2 for four jet engines with pneumatic starting systems, 3 for jet engines using electric starting systems
 # 4 for turboprops with pneumatics, 5 for piston engines using electric systems
-start_up_choice = 2
+start_up_choice = 1
 # Choose 1 for fuselage mounted jet, 2 for wing mounted jet, 3 for wing mounted turboprops and 4 for wing mounted
 # piston engines the second choice should be 1 if an afterburner is present
 engine_choice = [2, 0]
@@ -67,10 +67,10 @@ tail_type = 0  # Depending on the type of tail configuration, 1 is T-tail, 0 is 
 Oswald = 0.9  # estimated from ADSEE-I L3
 T_input = 0.26
 S_input = 8200
-A = 8.5
-CD_0 = C_fe * S_ratio
+A = 9
+CD_0 = 0.0205
 N_engines = 2.  #
-w_engine = 8500.  # kg   Obtained from Bram
+w_engine = 7000.  # kg   Obtained from Bram
 propeller_choice = 0
 
 W_e_frac_input = 0.525  # Based on average between wide and narrow body, from Ed Obert
@@ -104,7 +104,7 @@ Rho_Landing = Rho_0  # kg/m^3   standard sea-level density
 
 # aircraft cg-locations ------------------------------------------------------------------------------------------------
 x_engines = -1.  # m    x-location engines w.r.t. X_LEMAC
-x_fuel = 22.  # m    cg-location fuel w.r.t nose
+x_fuel_input = 22.  # m    cg-location fuel w.r.t nose
 
 xcg_oew_mac = 0.25  # m     initial cg location OEW w.r.t. MAC
 
@@ -158,7 +158,7 @@ TOP = 220. * lbft2_Nm2  # Guestimated from ADSEE-I L3
 Sigma_TO = Rho_TO / Rho_0  # Ratio of densities
 
 # Stall speeds ---------------------------------------------------------------------------------------------------------
-V_stall_Cruise = 200 / 1.2  # m/s   Guestimated from ADSEE-I L3 Take requirements
+V_stall_Cruise = 250 / 1.2  # m/s   Guestimated from ADSEE-I L3 Take requirements
 V_stall_Landing = min(np.sqrt(Landing_runway / 0.5847), 65.)  # m/s     Guestimated from ADSEE-I L3
 
 # Lift and drag coefficients -------------------------------------------------------------------------------------------
