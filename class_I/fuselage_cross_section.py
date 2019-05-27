@@ -225,11 +225,11 @@ def fuselage_cross_section(Npax, Npax_below):
         shoulder_left_point_above = (W_cabin_left_above_x, H_shoulder + floor_height_above)
         shoulder_right_point_above = (W_cabin_right_above_x, H_shoulder + floor_height_above)
         
-        print(cabin_left_point_above, cabin_left_point_below, cabin_right_point_below, cabin_right_point_above,
-             headroom_left_point_below, headroom_left_point_above, headroom_right_point_below,
-             headroom_right_point_above, aisle_left_point_below, aisle_left_point_above, aisle_right_point_below,
-             aisle_right_point_above, shoulder_left_point_below, shoulder_right_point_below, shoulder_left_point_above,
-             shoulder_right_point_above)
+#        print(cabin_left_point_above, cabin_left_point_below, cabin_right_point_below, cabin_right_point_above,
+#             headroom_left_point_below, headroom_left_point_above, headroom_right_point_below,
+#             headroom_right_point_above, aisle_left_point_below, aisle_left_point_above, aisle_right_point_below,
+#             aisle_right_point_above, shoulder_left_point_below, shoulder_right_point_below, shoulder_left_point_above,
+#             shoulder_right_point_above)
         # function that creates the most inner circle
         r = make_circle(
             [cabin_left_point_above, cabin_left_point_below, cabin_right_point_below, cabin_right_point_above,
@@ -237,7 +237,7 @@ def fuselage_cross_section(Npax, Npax_below):
              headroom_right_point_above, aisle_left_point_below, aisle_left_point_above, aisle_right_point_below,
              aisle_right_point_above, shoulder_left_point_below, shoulder_right_point_below, shoulder_left_point_above,
              shoulder_right_point_above])
-        print(r)
+#        print(r)
         d_inner = 2 * r[2]
         d_outer = 1.045 * d_inner + 0.084
         # other dimension of the total fuselage

@@ -84,7 +84,7 @@ def main_iterator(cf, char, env, eng, opt, tails):
     
     # Starting the iteration process --------------------------------------
     i = 0
-    maximum = 500
+    maximum = 20
     percentage = 1
     W_e_frac = ip.w_e
     while i < maximum and percentage > 0.01:
