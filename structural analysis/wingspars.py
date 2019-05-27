@@ -12,16 +12,16 @@ from loading_and_moment_diagrams import c
 from airfoil_geometry import airfoil_geometry
 
 N = 100 
-b = 62.30
+b = 60.#47.83#39.56#41.76
 HalfspanValues = np.linspace(0, b / 2 - 0.00001, N)
 
 
 def inertia(N,b):
     #loading the airfoil data
-    data = load_airfoil("naca3414.txt")
-    dataz = np.asarray(data[1])
-    datay = np.asarray(data[2])
-    #ordering the data
+#    data = load_airfoil("naca3414.txt")
+#    dataz = np.asarray(data[1])
+#    datay = np.asarray(data[2])
+#    #ordering the data
     x_position = 0
     data_z_all_sec = airfoil_geometry(N,b)[0]
     data_y_upper_all_sec = airfoil_geometry(N,b)[1]
@@ -108,30 +108,33 @@ def inertia(N,b):
     
     return upper_y, lower_y, upper_s, lower_s
 
-print(sum(inertia(N,b)[2]))
-sum_s_wingbox = sum(inertia(N,b)[2]) + sum(inertia(N,b)[3])
-print(sum_s_wingbox)
+#print(sum(inertia(N,b)[2]))
+#sum_s_wingbox = sum(inertia(N,b)[2]) + sum(inertia(N,b)[3])
+#print(sum_s_wingbox)
 #print(sum(I_xx_lower)+sum(I_xx_lower) + sum(I_xx_upper) + sum(I_xx_upper))
 
 
-def I_zz_spars(N,b,length,t):
+def I_zz_spars(N,b,length,t_spar):
     
     dy_frontspar = inertia(N,b)[0][0] #upper_y[0] 
     dy_backspar = inertia(N,b)[0][-1] #upper_y[-1]
-#    print(upper_y[0])
+#    print(dy_frontspar)
     
 #    t = 0.025
 #    length = 0.3
-    area = t*length
-    print('hoi',inertia(N,b)[0][0]-inertia(N,b)[1][0])
+    area = t_spar*length
+#    print('frontsparlength',inertia(N,b)[0][0]-inertia(N,b)[1][0])
+#    print('backsparlength',inertia(N,b)[0][-1]-inertia(N,b)[1][-1])
 
-    front_spar_area = t*length*2 + (inertia(N,b)[0][0]-inertia(N,b)[1][0])*t
-    back_spar_area = t*length*2 + (inertia(N,b)[0][-1]-inertia(N,b)[1][-1])*t
+    front_spar_area = t_spar*length*2 + (inertia(N,b)[0][0]-inertia(N,b)[1][0])*t_spar
+    back_spar_area = t_spar*length*2 + (inertia(N,b)[0][-1]-inertia(N,b)[1][-1])*t_spar
     
-    I_zz_front = ((1/12) * length*t**3 + area*dy_frontspar**2)*2 + (1/12)*t*(inertia(N,b)[0][0]-inertia(N,b)[1][0])**3
-    I_zz_back = ((1/12) * length*t**3 + area*dy_backspar**2)*2 + (1/12)*t*(inertia(N,b)[0][-1]-inertia(N,b)[1][-1])**3
+    I_zz_front = ((1/12) * length*t_spar**3 + area*dy_frontspar**2)*2 + (1/12)*t_spar*(inertia(N,b)[0][0]-inertia(N,b)[1][0])**3
+    I_zz_back = ((1/12) * length*t_spar**3 + area*dy_backspar**2)*2 + (1/12)*t_spar*(inertia(N,b)[0][-1]-inertia(N,b)[1][-1])**3
     I_zz = I_zz_front + I_zz_back
-    print(I_zz)
-    return I_zz, front_spar_area, back_spar_area   
 
- 
+    return 'I_zz_spars=', I_zz, front_spar_area, back_spar_area   
+
+length = 0.3
+t_spar = 0.06
+print(I_zz_spars(N,b,length,t_spar))
