@@ -33,22 +33,22 @@ import matplotlib.pyplot as plt
 #------------------------------VERIFICATION DATA--------------------------------
 
 """Inputs unit test based on B737 MAX-8"""
-"""STRW"""
-MTOW = 1712063.74
-OEW  =  900623.75
-
-#MLW  = MTOW - 0.3*OEW
-MZFW = OEW + 508587.17
-MFW  =  297908.01*1.4     # Maximum fuel weight (including reserve fuel)
-W_fr = MFW/105. * 5.        #reserve fuel
-A = 18.
-V = 206.53 #m/s
-CD0 = 0.0276
-g = 9.81
-e = 0.9
-R_range = 2500.  #range of x-axis
-R_des = 1400. #[km]
-Ct0 = 65e-06
+#"""STRW"""
+#MTOW = 1712063.74
+#OEW  =  900623.75
+#
+##MLW  = MTOW - 0.3*OEW
+#MZFW = OEW + 508587.17
+#MFW  =  297908.01*1.4     # Maximum fuel weight (including reserve fuel)
+#W_fr = MFW/105. * 5.        #reserve fuel
+#A = 18.
+#V = 206.53 #m/s
+#CD0 = 0.0276
+#g = 9.81
+#e = 0.9
+#R_range = 2500.  #range of x-axis
+#R_des = 1400. #[km]
+#Ct0 = 65e-06
 
 
 
@@ -124,21 +124,21 @@ Ct0 = 65e-06
 #Ct0           = 55e-06  
 
 """Ref aircraft B737-Max 8 """
-#MTOW = 82190*9.81
-#OEW = 45065*9.81
-#MLW = 69308*9.81
-#MZFW = 65952*9.81
-#MFW = 20826*9.81
-#W_fr = MFW/105 * 5.
-#A = 8.45
-#e = 0.85
-#CD0 = 0.020
-#V = 236.
-#g = 9.81
-#
-#R_range = 11000
-#R_des = 6590.
-#Ct0 = 10.7e-06
+MTOW = 82190*9.81
+OEW = 45065*9.81
+MLW = 69308*9.81
+MZFW = 65952*9.81
+MFW = 20826*9.81
+W_fr = MFW/105 * 5.
+A = 8.45
+e = 0.85
+CD0 = 0.020
+V = 236.
+g = 9.81
+
+R_range = 11000
+R_des = 6590.
+Ct0 = 10.7e-06
 
 
 #------------------------------DEFINITIONS-----------------------------------
@@ -236,7 +236,7 @@ def payload_range():
     plt.ylim(0.95*OEW,1.05*MTOW)
     plt.legend()
     plt.show()
-    return R_harmonic,R_max, R_ferry
+    return 
 
 #a = (payload_range()[0][1]-p6ayload())
 print (payload_range())
