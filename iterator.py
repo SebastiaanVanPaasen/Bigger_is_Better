@@ -147,11 +147,11 @@ def main_iterator(cf, char, env, eng, opt, tails):
 #            S_v = S_h / old_S_h * S_v
             
             x_lemac = opt_X_LEMAC
-            print("The leading edge of mac " + str(x_lemac))
+#            print("The leading edge of mac " + str(x_lemac))
             tail_h = _calc_h_tail_II(xcg_aft, A_h, l_fuselage, tap_h, QC_sweep_h, S_h)
             tail_v = _calc_v_tail_II(A_v, l_fuselage, tap_v, S_v, QC_sweep_v)
             min_cg, max_cg, X_LEMAC_range, min_cg_range = potato(l_nosecone, W_TO, ip.xcg_eng, ip.l_nac, mass_fractions, tail_h, 
-                                                         tail_v, ip.s_m,cg_locations, x_lemac, emp_constants, mac)
+                                                         tail_v, ip.s_m, cg_locations, x_lemac, emp_constants, mac)
             
             Y_MAC = (b / 6.) * ((1 + 2 * taper) / (1 + taper))
             
@@ -164,16 +164,16 @@ def main_iterator(cf, char, env, eng, opt, tails):
             if wing == 0: 
                 if tail == 0:
                     
-                    print("vertical tail part " + str(np.tan(sweep_LE_v) * b_v))
+#                    print("vertical tail part " + str(np.tan(sweep_LE_v) * b_v))
                     m_tv = fuselage_design[1] / 2.
-                    print("the new tail arm " + str(l_h))
+#                    print("the new tail arm " + str(l_h))
     
                 else:
                     m_tv = fuselage_design[1] / 2. + b_v
                     
-                    print("vertical tail part " + str(np.tan(sweep_LE_v) * b_v))
+#                    print("vertical tail part " + str(np.tan(sweep_LE_v) * b_v))
                     l_h = l_h + (x_le_h - x_le_v) + np.tan(sweep_LE_v) * b_v
-                    print("The new tail arm " + str(l_h))
+#                    print("The new tail arm " + str(l_h))
                     
                     
                     
@@ -181,14 +181,14 @@ def main_iterator(cf, char, env, eng, opt, tails):
             else:
                 if tail == 0:
                     m_tv = - fuselage_design[1] / 2.
-                    print("the new tail arm " + str(l_h))
-                    print("vertical tail part " + str(np.tan(sweep_LE_v) * b_v))
+#                    print("the new tail arm " + str(l_h))
+#                    print("vertical tail part " + str(np.tan(sweep_LE_v) * b_v))
                 else:
-                    print("the previous tail arm " + str(l_h))
-                    print("vertical tail part " + str(np.tan(sweep_LE_v) * b_v))
+#                    print("the previous tail arm " + str(l_h))
+#                    print("vertical tail part " + str(np.tan(sweep_LE_v) * b_v))
                     m_tv = b_v - fuselage_design[1] / 2.
                     l_h = l_h + (x_le_h - x_le_v) + np.tan(sweep_LE_v) * b_v
-                    print("The new tail arm " + str(l_h))
+#                    print("The new tail arm " + str(l_h))
 
                     
             
@@ -216,7 +216,7 @@ def main_iterator(cf, char, env, eng, opt, tails):
             
             opt_X_LEMAC, opt_Sh_S, xcg_aft = control_stability_plot(x_cg, min_cg, max_cg, X_LEMAC_range, control_list, stability_list, mac, l_fuselage)
 
-        print("tail surface area " + str(S_h/S))
+#        print("tail surface area " + str(S_h/S))
         # Calculate the accompanying tail sizes ---------------------------
         HC_sweep_h = determine_half_chord_sweep(c_tip_h, QC_sweep_h, c_root_h, b_h)
         HC_sweep_v = determine_half_chord_sweep(c_tip_v, QC_sweep_v, c_root_v, b_v)
