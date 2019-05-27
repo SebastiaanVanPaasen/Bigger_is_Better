@@ -104,8 +104,8 @@ def control_stability_plot(x_cg, min_cg, max_cg, X_LEMAC_range, S_control, S_sta
             if min_cg[i]>= x1 and max_cg[i]<x2:
                 Sh_opt.append(Sh_S[j])
                 LEMAC_opt.append(X_LEMAC_range[i])
-                print("Min cg = ", round(min_cg[i],2))
-                print("Max cg = ", round(max_cg[i],2))
+#                print("Min cg = ", round(min_cg[i],2))
+#                print("Max cg = ", round(max_cg[i],2))
                 break
             elif Sh_S[j] == Sh_S[-1]:
                 Sh_opt.append(0.)

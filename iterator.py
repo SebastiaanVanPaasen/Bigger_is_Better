@@ -8,9 +8,15 @@ from class_I.fuselage_cross_section import fuselage_cross_section
 from class_I.planform import wing_parameters, determine_half_chord_sweep
 from class_I.drag_estimation import Wing_wetted_area, H_tail_wetted_area, V_tail_wetted_area, Fus_wetted_area, \
     Zero_Lift_Drag_est
-from class_I.class_I_empennage_landinggear import class_I_empennage
+from class_I.class_I_empennage_landinggear import class_I_empennage, _calc_h_tail_II, _calc_v_tail_II
 from class_I.flight_envelope import manoeuvring_envelope, gust_envelope
 from avl.conv_wing_avl import make_avl_file, run_avl, find_clalpha
+from class_I.seats import cg_seats, W_seats
+from class_I.loading_diagram import potato
+#from sc_sensitivity import class_II_empennage
+from stability_and_control.stability import C_L_alpha_Ah, Sh_S_stability
+from stability_and_control.control_curve import Sh_S_control
+from stability_and_control.control_stability import control_stability_plot
 
 
 def main_iterator(cf, char, env, eng, opt, tails):
@@ -20,6 +26,7 @@ def main_iterator(cf, char, env, eng, opt, tails):
     N_eng, m_eng, l_inl, A_inl = eng[0], eng[1], eng[2], eng[3]
     A_h, QC_sweep_h, tap_h = tails[0], tails[1], tails[2]
     A_v, QC_sweep_v, tap_v = tails[3], tails[4], tails[5]
+    N_pas_below = tails[6]
     
     if H_cr < 11000.:
         Temp_cr = Temp_0 + a * H_cr  # K  based on the altitude you fly at
@@ -34,10 +41,18 @@ def main_iterator(cf, char, env, eng, opt, tails):
     
     c_t = (c_t0 / V_ref) * V_cr
     
+    if N_eng == 2:
+        b_n_1, b_n_2, b_n_3, b_n_4 = 3.2, 3.2, 0, 0
+        l_n_1, l_n_2, l_n_3, l_n_4 = -2, -2, 0, 0
+        
+    else:
+        b_n_1, b_n_2, b_n_3, b_n_4 = 3.2, 3.2, 3.2, 3.2
+        l_n_1, l_n_2, l_n_3, l_n_4 = -2, -2, -2, -2
+    
     mass_fractions = ip.mass_fractions
     percentages = []
 
-    fuselage_design = fuselage_cross_section(ip.N_pas, ip.N_pas_below)
+    fuselage_design = fuselage_cross_section(ip.N_pas, N_pas_below)
     
     # Define fuselage parameters out of the fuselage design
     d_fuselage = fuselage_design[1]
@@ -48,6 +63,15 @@ def main_iterator(cf, char, env, eng, opt, tails):
     V_pax = 0.25 * np.pi * (d_fuselage ** 2) * l_cabin  
     # m^3  Volume of the passenger cabin
 
+    xcg_seats = cg_seats(fuselage_design[16], fuselage_design[11], fuselage_design[12],l_nosecone)
+    
+    W_window, W_aisle, W_middle = W_seats(fuselage_design[8], fuselage_design[11], fuselage_design[12], fuselage_design[15])
+
+
+    emp_constants = [ip.N_cargo, l_fuselage, ip.cargo_fwdfrac, xcg_seats, W_window, W_aisle, W_middle, ip.N_pas, g_0*ip.m_person]
+    
+    M_h_cr = M_cr * ip.V_h_norm
+    M_w_landing = ip.V_stall_l / np.sqrt(gamma * R_gas * Temp_cr)
     
     # Define fineness ratio's based on the fuselage design
 #    f = l_fuselage / d_fuselage
@@ -75,9 +99,9 @@ def main_iterator(cf, char, env, eng, opt, tails):
         # print(V_cruise)
         # print(W_tfo_frac)
         
-        mass_fractions[6] = (weights[1] / weights[0])  # empty mass fraction
-        mass_fractions[7] = (weights[2] / weights[0])  # payload mass fraction
-        mass_fractions[8] = (weights[3] / weights[0])  # fuel mass fraction
+        mass_fractions[7] = (weights[1] / weights[0])  # empty mass fraction
+        mass_fractions[8] = (weights[2] / weights[0])  # payload mass fraction
+        mass_fractions[9] = (weights[3] / weights[0])  # fuel mass fraction
 
         # Choosing a design point based on the T/W-W/S diagram ------------
         T_TO, S = W_TO * T_TO_ip, W_TO / S_ip
@@ -98,15 +122,75 @@ def main_iterator(cf, char, env, eng, opt, tails):
         # Perform first order cg-range estimation based on statistics -----
         x_payload = 0.5 * l_fuselage  # m     cg-location payload w.r.t. nose
         
-        cg_locations, tail_h, tail_v, x_lemac, avl_h, avl_v = class_I_empennage(mass_fractions, mac, l_fuselage,
+        if i == 0:
+            cg_locations, tail_h, tail_v, x_lemac, avl_h, avl_v, xcg_aft = class_I_empennage(mass_fractions, mac, l_fuselage,
                                                                                 ip.xcg_eng, ip.l_nac, 
                                                                                 ip.xcg_oew_mac, x_payload,
-                                                                                ip.x_fuel, d_fuselage, b, S, taper, 
-                                                                                LE_sweep, [A_v, tap_v, QC_sweep_v],
+                                                                                d_fuselage, b, S, taper, 
+                                                                                LE_sweep, [A_v, tap_v, QC_sweep_v], 
                                                                                 [A_h, tap_h, QC_sweep_h])
-
-        l_h, c_root_h, c_tip_h, b_h, S_h = tail_h[0], tail_h[1], tail_h[2], tail_h[3], tail_h[4]
-        l_v, c_root_v, c_tip_v, b_v, S_v = tail_v[0], tail_v[1], tail_v[2], tail_v[3], tail_v[4]
+             
+            l_h, c_root_h, c_tip_h, b_h, S_h = tail_h[0], tail_h[1], tail_h[2], tail_h[3], tail_h[4]
+            c_root_v, c_tip_v, b_v, S_v = tail_v[0], tail_v[1], tail_v[2], tail_v[3]                     
+            
+        else:
+            
+            c_f = 0.25 * mac #flap chord
+            b_f0 = 0.4 * b #end of flap span
+            b_fi = 0.1 * b #begin of flap span
+            
+            tail_h = _calc_h_tail_II(xcg_aft, A_h, l_fuselage, tap_h, QC_sweep_h, S_h)
+            tail_v = _calc_v_tail_II(A_v, l_fuselage, tap_v, S_v, QC_sweep_v)
+            min_cg, max_cg, X_LEMAC_range, min_cg_range = potato(l_nosecone, W_TO, ip.xcg_eng, ip.l_nac, mass_fractions, tail_h, 
+                                                         tail_v, ip.s_m,cg_locations, x_lemac, emp_constants, mac)
+            
+            Y_MAC = (b / 6.) * ((1 + 2 * taper) / (1 + taper))
+            
+            x_cg = np.linspace(min(min_cg), max(max_cg))
+            x_le_h, sweep_LE_h, y_MAC_h, MAC_h, l_h = tail_h
+            x_le_v, sweep_LE_v, y_MAC_v, MAC_v = tail_v
+            HC_sweep_h = determine_half_chord_sweep(c_tip_h, QC_sweep_h, c_root_h, b_h)
+            x_LE_root = x_lemac - LE_sweep * Y_MAC
+            
+            if wing == 0: 
+                if tail == 0:
+                    m_tv = fuselage_design[1] / 2.
+                else:
+                    m_tv = fuselage_design[1] / 2. + b_v
+                    l_h = l_h + (x_le_h - x_le_v) + np.tan(sweep_LE_v) * b_v
+                    
+                
+            else:
+                if tail == 0:
+                    m_tv = - fuselage_design[1] / 2. 
+                else:
+                    m_tv = b_v - fuselage_design[1] / 2.
+                    l_h = l_h + (x_le_h - x_le_v) + np.tan(sweep_LE_v) * b_v
+                    
+            
+            stability_lessmargin_list, stability_list = Sh_S_stability(x_cg, M_h_cr, ip.eta, HC_sweep_h, HC_sweep, A, A_h, M_cr, fuselage_design[1], b, S,
+                            l_h, QC_sweep, m_tv, ip.V_h_norm, b_n_1, b_n_2, b_n_3, b_n_4, l_n_1, l_n_2, l_n_3, l_n_4, ip.x_ac_wing, 
+                            fuselage_design[1], x_LE_root, mac, c_root, mac, taper, ip.SM)
+            
+              
+        
+            
+            
+            C_L_alpha_Ah_landing = C_L_alpha_Ah(M_w_landing, ip.eta, HC_sweep, A, fuselage_design[1], b, S, c_root)  
+            
+            
+            C_L_Ah_landing = C_L_alpha_Ah_landing * ip.alpha_land
+            
+            
+            
+            S_netfus = S - (fuselage_design[1]*c_root)
+            control_list = Sh_S_control(ip.CL_H, C_L_Ah_landing, l_h, ip.V_h_norm, x_cg, ip.Cm_0, A, QC_sweep,
+                         ip.delta_flap ,b ,b_f0 ,b_fi ,taper , mac, c_f, ip.dc_c_f, ip.mu_2, ip.mu_3, ip.x_ac, ip.CL_l_max,
+                         fuselage_design[1], fuselage_design[1], fuselage_design[7],S,S_netfus,HC_sweep, M_w_landing, ip.eta, ip.CL_0)
+            
+            
+            
+            opt_X_LEMAC, opt_Sh_S = control_stability_plot(x_cg, min_cg, max_cg, X_LEMAC_range, control_list, stability_list)
 
         # Calculate the accompanying tail sizes ---------------------------
         HC_sweep_h = determine_half_chord_sweep(c_tip_h, QC_sweep_h, c_root_h, b_h)
@@ -180,6 +264,7 @@ def main_iterator(cf, char, env, eng, opt, tails):
         mass_fractions[3] = nac_weight / W_TO
 
         lg_weight = weight_II.landing_gear_weight() * lbs_to_kg * g_0
+        mass_fractions[6] = lg_weight / W_TO
 
         structural_weight = w_weight + emp_weight + fus_weight + nac_weight + lg_weight
 
