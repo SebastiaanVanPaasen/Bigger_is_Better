@@ -15,7 +15,8 @@ from stress_distribution_wing import load_airfoil
 from loading_and_moment_diagrams import c
 
 N = 100 
-b = 62.30
+b = 60.#39.56 #41.76
+
 
 def airfoil_geometry(N,b):
 
@@ -47,8 +48,10 @@ def airfoil_geometry(N,b):
 #    print(data_y_lower_all_sec[10])
     return data_z_all_sec, data_y_upper_all_sec, data_y_lower_all_sec
 
- 
-        #print(Polyfit_airfoil_upper(z))
 
-#print(airfoil_geometry())
+#data = load_airfoil('NACA3414.txt')
+#print(data)
+#        #print(Polyfit_airfoil_upper(z))
+#data_z_all_sec, data_y_upper_all_sec, data_y_lower_all_sec = airfoil_geometry(N,b)
+#print(data_z_all_sec, data_y_upper_all_sec, data_y_lower_all_sec)
         
