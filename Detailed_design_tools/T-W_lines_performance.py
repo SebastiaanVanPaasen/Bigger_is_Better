@@ -109,7 +109,7 @@ def TW_TO_jet():                                #T/W for TO of a jet aircraft
 #           =       1.0 for ring type inlet
 #           =       1.6 for scoop type inlet
    
-def TW_TO_prop():                               #T/W for TO for a propeller aircraft
+def PW_TO_prop():                               #T/W for TO for a propeller aircraft
     #Compute parameters in equation
     k_w = MTOW / W_TO
     
@@ -152,7 +152,19 @@ def TW_TO_prop():                               #T/W for TO for a propeller airc
 #a          =       Speed of sound [m/s]
 #p          =       Atmospheric static pressure [Pa]
 
+#C          =       Climb rate 
+#vg_dvdh    =       Constant for the climb rate
+#           =       0.5668*M**2 for const. EAS in troposphere
+#           =       -0.1332*M**2 for cons. M in troposphere
+#           =       0.7*M**2    for const. EAS in stratosphere
+#           =       0           for const. M in stratosphere
+
+def RC():
+    C = ((T-D)*V)/(W*(1. + vg_dvdh))
+    return C
+
 def TW_steady_climb_jet(): #Steady flight climb at LOW ALTITUDE
+
     #To simplify fraction and not have an incredibly long equation
     x1 = ((C/a)*np.sqrt(CD0))/(np.sqrt(W/(p*S)))
     x2 = np.sqrt(W/(p*S))/((C/a)*np.sqrt(CD0))
@@ -163,38 +175,39 @@ def TW_steady_climb_jet(): #Steady flight climb at LOW ALTITUDE
 #Additional inputs for service ceiling thrust
 #n          =       Load factor L/W
 #theta      =       T/T0 relative atmospheric pressure    
+
 def TW_ceiling_climb_jet():  #HIGH ALTITUDE indicates service ceiling thrust
-    T_W = 2.*n*np.sqrt(CD0/(np.pi*A*e)) + (0.00123/np.sqrt(theta))*(((CD0*np.pi*A*e)**0.25)/(np.sqrt((n*W)/(p*S))))
+    T_W = 2.*n*np.sqrt(CD0/(np.pi*A*e)) + \\
+    (0.00123/np.sqrt(theta))*(((CD0*np.pi*A*e)**0.25)/(np.sqrt((n*W)/(p*S))))
     return T_W
     
+#To fly at constant EAS instead of constant TAS add this term
+def dTW_constEAS_jet():
+    dT_W = 0.567*C/a*np.sqrt(((C/a)*(W/(p*S)))/(gamma*CD0))
+    return dT_W
+    
 
+#Inputs needed for propeller climb
+#W          =       Weight during climb, dependent on flight phase
+#CD0        =       Zero-lift drag
+#S          =       Wing surface area [m^2]
+#A          =       Aspect ratio [-]
+#e          =       Oswald efficiency factor [-]
 
+#gamma      =       Climb gradient in [rad]? or specific heats of 1.4
 
+#a          =       Speed of sound [m/s]
+#p          =       Atmospheric static pressure [Pa]
 
+#C          =       Climb rate 
+#r_n_prop   =       Correction factor for the engine if turboprop
+#           =       1.0 for ring type inlet
+#           =       1.6 for scoop type inlet
 
+#C/a0       =       0.00147 (a0 is speed of sounds at sea level)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
+def PW_climb_prop():
+    PW = (1./eta_prop)*((C/a) + 2.217*((CD0**0.25)/(np.pi*A*e)**0.75) * np.sqrt(W/(p*S)))
+    
+    
 
