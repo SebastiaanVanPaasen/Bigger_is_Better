@@ -13,27 +13,28 @@ from scipy import interpolate  ### Useful to interpolate stuff
 from scipy import integrate
 from matplotlib import pyplot as plt
 from class_I.lift_distr import *
+from load_data import *
 
-##Moment Code
 
+Mach,cruise_alt,W,OEW,Wing_W_frac,Fuselage_weight,Empennage_weight,Nacelle_weight ,Engine_weight,Landing_weight ,Fixed_equip_weight ,Prop_weight,Payload_weight,Fuel_W_tot,total_thrust,Cl_cruise,Cd_cruise,rho,CD0,Lift_over_Drag,V_cruise,n_ult,V,b,S,Fuselage_length,Cr,Sweep0,taper,AR,e,Wing_W,n_engines,engine_weigth = load('aerodynamic_concept') 
 
 ### Move the geometry definition to over here
-CD0 = 0.02#.0222#0.0207#0.0202 #0.0264
-S = 300.#286.02#184.16#193.72#220.27 # m^2
-b = 60.#86.83#47.83#39.56#41.76#55.53
-AR = 12.# 8.#8.5# 9 #14
-taper = 0.31#0.4#0.31#0.4#0.31
-Sweep0 = (25 / 180) * np.pi  # rad
+#CD0 = 0.02#.0222#0.0207#0.0202 #0.0264
+#S = 300.#286.02#184.16#193.72#220.27 # m^2
+#b = 60.#86.83#47.83#39.56#41.76#55.53
+#AR = 12.# 8.#8.5# 9 #14
+#taper = 0.31#0.4#0.31#0.4#0.31
+#Sweep0 = (25 / 180) * np.pi  # rad
 # by = 20.  # m
-Cr = 8. #8.54#7.11#6.63# 6.06(2 * S) / ((1 + taper) * b)  # (S + np.tan(Sweep0) * by * (b / 4)) / (by + (b - by) * ((1 + taper) / 2))
+#Cr = 8. #8.54#7.11#6.63# 6.06(2 * S) / ((1 + taper) * b)  # (S + np.tan(Sweep0) * by * (b / 4)) / (by + (b - by) * ((1 + taper) / 2))
 Ct = Cr * taper
 tc = 0.14
 # Cy = 0.#Cr - np.tan(Sweep0) * (by / 2)
 
-Wing_Wf = 300000.#212307.69#149254.55#161567.21# 285629.97
-Wing_W = Wing_Wf/9.81 # 57461.507853787  # kg
+#Wing_Wf = 300000.#212307.69#149254.55#161567.21# 285629.97
+#Wing_W = Wing_Wf/9.81 # 57461.507853787  # kg
 Volume = (0.5*(Cr**2*tc + Ct**2*tc)*(b/2))*2  # m^3
-specific_weight = Wing_Wf / Volume  # N/m^3
+specific_weight = Wing_W / Volume  # N/m^3
 Fuel_W_tot = 300000. #335313.11#259149.65#273118.03 # 297271.17in Newton
 Sweepsc = m.atan(m.tan(Sweep0) - 4 / AR * (0.4 * (1 - taper) / (1 + taper)))  # sweep shear center
 c_engine = 0  # position of start engine wrt chord
@@ -42,25 +43,25 @@ x_fuel_begin = 0
 x_fuel_end = 0.7 * (b / 2)
 start_eng_1 = 0.3 * (b / 2)
 start_eng_2 = 0.6 * (b / 2)
-n_engines = 2
-total_thrust = 500000.#396428.19#392632.62#418435.81 # 469612.93in Newton
-engine_weight = 250000.#137279.1+25828.71#156890.4+25767.83#156890.4+21594.79#166696.05 + 23013.97 #137279.1+25828.71 in Newton
-V_cruise = 221.28 #m/s
+#n_engines = 2
+#total_thrust = 500000.#396428.19#392632.62#418435.81 # 469612.93in Newton
+#engine_weight = 250000.#137279.1+25828.71#156890.4+25767.83#156890.4+21594.79#166696.05 + 23013.97 #137279.1+25828.71 in Newton
+#V_cruise = 221.28 #m/s
 
 # input for each critical case; as the lift distribution varies for each case
-rho = 0.35#0.32#0.32#0.43 #0.23
-V = 300#252.19#270.55#247.55#301.63
-n = 1/1.5#4.7/1.5#4.21/1.5#4.4/1.5#4.4/1.5
-W = 2200000.#1801946.31#1510125.47#1549762.26#1806203.58
+#rho = 0.35#0.32#0.32#0.43 #0.23
+#V = 300#252.19#270.55#247.55#301.63
+n = n_ult/1.5#4.7/1.5#4.21/1.5#4.4/1.5#4.4/1.5
+#W = 2200000.#1801946.31#1510125.47#1549762.26#1806203.58
 
-def input_CL(n,S,V,rho,W):
+def input_CL(S,V,rho,W):
     input_CL = W/(0.5*rho*V**2*S)
     return input_CL
 
 #print(input_CL(n, S, V, rho, W))
 
 ## Import File List:
-output_avl = lift_distribution(input_CL(n, S, V, rho, W))
+output_avl = lift_distribution(input_CL(S, V, rho, W))
 x_pos = get_correct_data(output_avl)[0]
 x_total = x_pos[int((len(x_pos) / 2)):][::-1] + x_pos[0:int((len(x_pos) / 2))]
 
@@ -183,7 +184,7 @@ def Loadcalculator(x0,Ff):
         weight_position = (1 / 2) * c(x) + np.tan(Sweep0) * x  # assumption that the weight acts along the span acts at c_0.5
         fuel_position = (1 / 2) * c(x) + np.tan(Sweep0) * x  # assumption that the fuel acts along the span acts at c_0.5
         engine_position = c_engine * c(x) + np.tan(Sweep0) * x  # position of the engine
-        y_shear_center = 0.5*0.112*c(x)
+        y_shear_center = 0.5*0.14*c(x)
         #        Cm = PolyFitCurveCm(x)
         #        moment_aero = 0.5 * Cm * rho * (V ** 2) * (chord) * surfacearea * n * m.cos(Sweepsc)
         lift_torque = -section_lift * (lift_position - shear_center) * m.cos(Sweepsc)
@@ -304,32 +305,35 @@ def load_diagrams(N):  ### 100 nodes, so 99 beam elements
         Engine_distribution3.append(section_engineweight)
         Tdistributionvalues3.append(T)
         
-    plt.subplot(2,3,5)
-    plt.subplot(2,3,1)
-    plt.gca().set_title('Mz distribution')
-    plt.plot(HalfspanValues, Mzdistribution)
-    plt.xlabel('Position Along Wing Span [$m$]')
-    plt.ylabel('Mz $[N/m^{2}]$')
-    plt.subplot(2,3,2)
-    plt.gca().set_title('Fz distribution')
-    plt.plot(HalfspanValues, Fzdistribution)
-    plt.xlabel('Position Along Wing Span [$m$]')
-    plt.ylabel('Fz [$N$]')
-    plt.subplot(2,3,3)
-    plt.gca().set_title('My distribution')
-    plt.plot(HalfspanValues, Mydistribution)
-    plt.xlabel('Position Along Wing Span [$m$]')
-    plt.ylabel('My $[N/m^{2}]$')
-    plt.subplot(2,3,4)
-    plt.gca().set_title('Fy distribution')
-    plt.plot(HalfspanValues, Fydistribution)
-    plt.xlabel('Position Along Wing Span [$m$]')
-    plt.ylabel('Fy [$N$]')
-    plt.subplot(2,3,5)
-    plt.gca().set_title('T distribution')
-    plt.plot(HalfspanValues, Tdistributionvalues)
-    plt.xlabel('Position Along Wing Span [$m$]')
-    plt.ylabel('T $[N/m^{2}]$')
+#    plt.subplot(2,3,5)
+#    plt.subplot(2,3,1)
+#    plt.gca().set_title('Mz distribution')
+#    plt.plot(HalfspanValues, Mzdistribution)
+#    plt.xlabel('Position Along Wing Span [$m$]')
+#    plt.ylabel('Mz $[N/m^{2}]$')
+#    plt.subplot(2,3,2)
+#    plt.gca().set_title('Fz distribution')
+#    plt.plot(HalfspanValues, Fzdistribution)
+#    plt.xlabel('Position Along Wing Span [$m$]')
+#    plt.ylabel('Fz [$N$]')
+#    plt.subplot(2,3,3)
+#    plt.gca().set_title('My distribution')
+#    plt.plot(HalfspanValues, Mydistribution)
+#    plt.xlabel('Position Along Wing Span [$m$]')
+#    plt.ylabel('My $[N/m^{2}]$')
+#    plt.subplot(2,3,4)
+#    plt.gca().set_title('Fy distribution')
+#    plt.plot(HalfspanValues, Fydistribution)
+#    plt.xlabel('Position Along Wing Span [$m$]')
+#    plt.ylabel('Fy [$N$]')
+#    plt.subplot(2,3,5)
+#    plt.gca().set_title('T distribution')
+#    plt.plot(HalfspanValues, Tdistributionvalues)
+#    plt.xlabel('Position Along Wing Span [$m$]')
+#    plt.ylabel('T $[N/m^{2}]$')
+#    plt.show()
+    
+    plt.plot(HalfspanValues,Liftdistributionvalues)
     plt.show()
     
 #    plt.subplot(1,3,3)
@@ -371,6 +375,6 @@ def load_diagrams(N):  ### 100 nodes, so 99 beam elements
     return maxMz, maxMy, maxT, maxFy, maxFz
 
 
-#print(load_diagrams(100))
+print(load_diagrams(100))
 
 
