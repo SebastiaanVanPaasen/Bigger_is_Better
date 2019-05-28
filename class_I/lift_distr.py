@@ -62,12 +62,11 @@ def make_avl_file():
             for i in range(2):
                 print("SECTION", file=text_file)            
                 print(round(x_loc_LE[i],3),round(y_loc_LE[i],3),round(z_loc_LE[i],3),round(chords[i],3),Ainc[i], file=text_file)        
-            print("AFILE" + "\n"
-                  "n2414.dat.txt", file=text_file)
+            print("AFILE" + "\n""n2414.dat.txt", file=text_file)
 make_avl_file()
 
 def lift_distribution(CL):        
-    p = subprocess.Popen(r"C:\Users\mathi\Documents\DSE\Bigger_is_Better\avl\avl.exe", stdin=subprocess.PIPE, universal_newlines=True)
+    p = subprocess.Popen(r"C:\Users\Mels\Desktop\3e jaar TUDelft\DSE\code\Bigger_is_Better\avl\avl.exe", stdin=subprocess.PIPE, universal_newlines=True)
     set_CL = "a c " + str(CL)
     p.communicate(os.linesep.join(["load", "avl_testing","case", "mach0.7", "oper", set_CL, "x","fs", "endresult"]))          
     lines = [line.rstrip('\n') for line in open('endresult')]

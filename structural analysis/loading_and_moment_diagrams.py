@@ -5,7 +5,7 @@ Created on Tue May 14 09:48:11 2019
 @author: Mathilde
 """
 import sys
-sys.path.append("C:/Users/mathi/Documents/DSE/Bigger_is_Better")
+sys.path.append("C:/Users/Mels/Desktop/3e jaar TUDelft/DSE/code/Bigger_is_Better")
 import numpy as np  ### Never use * to import stuff, as it makes it difficult to retrace where functions come from
 import scipy as sp
 import math as m
@@ -13,7 +13,7 @@ from scipy import interpolate  ### Useful to interpolate stuff
 from scipy import integrate
 from matplotlib import pyplot as plt
 from class_I.lift_distr import *
-from load_data import *
+from Load_data import *
 
 
 #Mach,cruise_alt,W,OEW,Wing_W_frac,Fuselage_weight,Empennage_weight,Nacelle_weight ,Engine_weight,Landing_weight ,Fixed_equip_weight ,Prop_weight,Payload_weight,Fuel_W_tot,total_thrust,Cl_cruise,Cd_cruise,rho,CD0,Lift_over_Drag,V_cruise,n_ult,V,b,S,Fuselage_length,Cr,Sweep0,taper,AR,e,Wing_W,n_engines,engine_weigth = load('aerodynamic_concept') 
@@ -374,6 +374,6 @@ def load_diagrams(N):  ### 100 nodes, so 99 beam elements
     return maxMz, maxMy, maxT, maxFy, maxFz
 
 
-print(load_diagrams(100))
+#print(load_diagrams(100))
 
 
