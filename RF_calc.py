@@ -58,7 +58,7 @@ def Radiative(h, Fnew):  #Fnew is the MTOW fuel fraction of our design
     totrfi7 = CO2RFI + NOXrfi7 + conrfi7 + h2rfi7 + OtherRFI #737 Radiative forces
     
     Dif737 = (1-(totrfi/totrfi7))*100
-    return Dif737
+    return Dif737, F_frac
 #print(Radiative(13000,0.0094))
     
 Vini = Velocity(.78,ISA_temp(12000))
