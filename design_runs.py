@@ -69,7 +69,7 @@ def run_designs(design_names):
         
     final_result = np.reshape(final_result, (-1, (len(design_names)+1)))
     
-    np.savetxt("csv_results_LOW_2E_SEMIDD2.csv", final_result, fmt= '%s', delimiter=";")
+    np.savetxt("csv_results_HIGH_2E_DD_2.csv", final_result, fmt= '%s', delimiter=";")
 
 designs = []
 for i in range(54):
