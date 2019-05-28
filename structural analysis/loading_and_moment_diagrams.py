@@ -22,8 +22,8 @@ from load_data import *
 CD0 = 0.02#.0222#0.0207#0.0202 #0.0264
 S = 300.#286.02#184.16#193.72#220.27 # m^2
 b = 60.#86.83#47.83#39.56#41.76#55.53
-AR = 12.# 8.#8.5# 9 #14
-taper = 0.31#0.4#0.31#0.4#0.31
+AR = 8.5# 8.#8.5# 9 #14
+taper = 0.4#0.31#0.4#0.31
 Sweep0 = (25 / 180) * np.pi  # rad
 
 Cr = 8. #8.54#7.11#6.63# 6.06(2 * S) / ((1 + taper) * b)  # (S + np.tan(Sweep0) * by * (b / 4)) / (by + (b - by) * ((1 + taper) / 2))
@@ -35,7 +35,7 @@ Wing_W = 300000.#212307.69#149254.55#161567.21# 285629.97
 #Wing_W = Wing_Wf/9.81 # 57461.507853787  # kg
 Volume = (0.5*(Cr**2*tc + Ct**2*tc)*(b/2))*2  # m^3
 specific_weight = Wing_W / Volume  # N/m^3
-Fuel_W_tot = 300000. #335313.11#259149.65#273118.03 # 297271.17in Newton
+Fuel_W_tot =300000. #335313.11#259149.65#273118.03 # 297271.17in Newton
 Sweepsc = m.atan(m.tan(Sweep0) - 4 / AR * (0.4 * (1 - taper) / (1 + taper)))  # sweep shear center
 c_engine = 0  # position of start engine wrt chord
 thrust_position = -1.5  # position of y of the thrust vector
@@ -50,8 +50,8 @@ V_cruise = 221.28 #m/s
 
 # input for each critical case; as the lift distribution varies for each case
 rho = 0.35#0.32#0.32#0.43 #0.23
-V = 300#252.19#270.55#247.55#301.63
-n_ult=1
+V = 280#252.19#270.55#247.55#301.63
+n_ult= 3.5
 n = n_ult/1.5#4.7/1.5#4.21/1.5#4.4/1.5#4.4/1.5
 W = 2200000.#1801946.31#1510125.47#1549762.26#1806203.58
 
@@ -68,20 +68,18 @@ x_pos = get_correct_data(output_avl)[0]
 ##Lift Code:
 cl = get_correct_data(output_avl)[1]
 PolyFitCurveCl = sp.interpolate.interp1d(x_pos, cl, kind="cubic", fill_value="extrapolate")
-# print('Lift Coefficients (highest order first, ending with 0th order term) are: \n{}\n'.format(PolyFitCurveCl))
-#print(cl_total)
-#print(PolyFitCurveCl(30))
+
 ##Drag Code:
 cdi = get_correct_data(output_avl)[1]
 PolyFitCurveidrag = sp.interpolate.interp1d(x_pos, cdi, kind='cubic', fill_value='extrapolate')
 
-plt.plot(x_pos, cdi)
-plt.show()
+
 ### Define your functions at the beginning of the program
 def c(z):
     c = Cr - ((Cr - Ct) / (b / 2)) * z
     return c
 
+print(c(5))
 
 def S_cross_section(x):
     return c(x) * c(x) * 0.14
@@ -304,33 +302,33 @@ def load_diagrams(N):  ### 100 nodes, so 99 beam elements
         Engine_distribution3.append(section_engineweight)
         Tdistributionvalues3.append(T)
         
-#    plt.subplot(2,3,5)
-#    plt.subplot(2,3,1)
-#    plt.gca().set_title('Mz distribution')
-#    plt.plot(HalfspanValues, Mzdistribution)
-#    plt.xlabel('Position Along Wing Span [$m$]')
-#    plt.ylabel('Mz $[N/m^{2}]$')
-#    plt.subplot(2,3,2)
-#    plt.gca().set_title('Fz distribution')
-#    plt.plot(HalfspanValues, Fzdistribution)
-#    plt.xlabel('Position Along Wing Span [$m$]')
-#    plt.ylabel('Fz [$N$]')
-#    plt.subplot(2,3,3)
-#    plt.gca().set_title('My distribution')
-#    plt.plot(HalfspanValues, Mydistribution)
-#    plt.xlabel('Position Along Wing Span [$m$]')
-#    plt.ylabel('My $[N/m^{2}]$')
-#    plt.subplot(2,3,4)
-#    plt.gca().set_title('Fy distribution')
-#    plt.plot(HalfspanValues, Fydistribution)
-#    plt.xlabel('Position Along Wing Span [$m$]')
-#    plt.ylabel('Fy [$N$]')
-#    plt.subplot(2,3,5)
-#    plt.gca().set_title('T distribution')
-#    plt.plot(HalfspanValues, Tdistributionvalues)
-#    plt.xlabel('Position Along Wing Span [$m$]')
-#    plt.ylabel('T $[N/m^{2}]$')
-#    plt.show()
+    plt.subplot(2,3,5)
+    plt.subplot(2,3,1)
+    plt.gca().set_title('Mz distribution')
+    plt.plot(HalfspanValues, Mzdistribution)
+    plt.xlabel('Position Along Wing Span [$m$]')
+    plt.ylabel('Mz $[Nm]$')
+    plt.subplot(2,3,2)
+    plt.gca().set_title('Fz distribution')
+    plt.plot(HalfspanValues, Fzdistribution)
+    plt.xlabel('Position Along Wing Span [$m$]')
+    plt.ylabel('Fz [$N$]')
+    plt.subplot(2,3,3)
+    plt.gca().set_title('My distribution')
+    plt.plot(HalfspanValues, Mydistribution)
+    plt.xlabel('Position Along Wing Span [$m$]')
+    plt.ylabel('My $[Nm]$')
+    plt.subplot(2,3,4)
+    plt.gca().set_title('Fy distribution')
+    plt.plot(HalfspanValues, Fydistribution)
+    plt.xlabel('Position Along Wing Span [$m$]')
+    plt.ylabel('Fy [$N$]')
+    plt.subplot(2,3,5)
+    plt.gca().set_title('T distribution')
+    plt.plot(HalfspanValues, Tdistributionvalues)
+    plt.xlabel('Position Along Wing Span [$m$]')
+    plt.ylabel('T $[Nm]$')
+    plt.show()
     
 #    plt.plot(HalfspanValues,Liftdistributionvalues)
 #    plt.show()
@@ -365,7 +363,7 @@ def load_diagrams(N):  ### 100 nodes, so 99 beam elements
 
 
 #    plt.show()
-    
+    print(Liftdistributionvalues[0])
     maxMz = [max(Mzdistribution), max(Mzdistribution2), max(Mzdistribution3)]
     maxMy = [max(Mydistribution), max(Mydistribution2), max(Mydistribution3)]
     maxT = [max(Tdistributionvalues), max(Tdistributionvalues2), max(Tdistributionvalues3)]
