@@ -51,7 +51,7 @@ V_cruise = 221.28 #m/s
 # input for each critical case; as the lift distribution varies for each case
 rho = 0.35#0.32#0.32#0.43 #0.23
 V = 300#252.19#270.55#247.55#301.63
-n = 3.75/1.5#4.7/1.5#4.21/1.5#4.4/1.5#4.4/1.5
+n = 1/1.5#4.7/1.5#4.21/1.5#4.4/1.5#4.4/1.5
 W = 2200000.#1801946.31#1510125.47#1549762.26#1806203.58
 
 def input_CL(n,S,V,rho,W):
@@ -136,7 +136,7 @@ def Loadcalculator(x0,Ff):
         t = 0.14
         
         section_volume = width * chord * t * chord
-        section_weight = section_volume * specific_weight * -1* n * 1.5 
+        section_weight = section_volume * specific_weight * -1 
 
         ### Lift calculations
         Cl = PolyFitCurveCl(x)
@@ -149,7 +149,7 @@ def Loadcalculator(x0,Ff):
         # cruise_ff = 0.636572571
         # total_W_f = 0.5 * 1517632 * Ff * n * 1.5
         if x <= x_fuel_end:
-            section_fuel_weight = specific_W_f * section_volume * Ff * -1* n * 1.5
+            section_fuel_weight = specific_W_f * section_volume * Ff * -1
         else:
             section_fuel_weight = 0
 
@@ -166,14 +166,14 @@ def Loadcalculator(x0,Ff):
         section_engineweight = 0
         if x > start_eng_1 and firstenginereachedyet == False:
             section_thrust = total_thrust / n_engines
-            section_engineweight = engine_weight * -1* n * 1.5
+            section_engineweight = engine_weight * -1
             Mz += section_engineweight * (start_eng_1 - x0)
             My += -section_thrust * (start_eng_1 - x0)
             firstenginereachedyet = True
 
         if x > start_eng_2 and secondenginereachedyet == False and n_engines != 0 and n_engines != 2:
             section_thrust = total_thrust / n_engines
-            section_engineweight = engine_weight * -1* n * 1.5
+            section_engineweight = engine_weight * -1
             Mz += section_engineweight * (start_eng_2 - x0)
             My += -section_thrust * (start_eng_2 - x0)
             secondenginereachedyet = True
@@ -305,61 +305,61 @@ def load_diagrams(N):  ### 100 nodes, so 99 beam elements
         Engine_distribution3.append(section_engineweight)
         Tdistributionvalues3.append(T)
         
-#    plt.subplot(2,3,5)
-#    plt.subplot(2,3,1)
-#    plt.gca().set_title('Mz distribution')
-#    plt.plot(HalfspanValues, Mzdistribution)
-#    plt.xlabel('Position Along Wing Span [$m$]')
-#    plt.ylabel('Mz $[N/m^{2}]$')
-#    plt.subplot(2,3,2)
-#    plt.gca().set_title('Fz distribution')
-#    plt.plot(HalfspanValues, Fzdistribution)
-#    plt.xlabel('Position Along Wing Span [$m$]')
-#    plt.ylabel('Fz [$N$]')
-#    plt.subplot(2,3,3)
-#    plt.gca().set_title('My distribution')
-#    plt.plot(HalfspanValues, Mydistribution)
-#    plt.xlabel('Position Along Wing Span [$m$]')
-#    plt.ylabel('My $[N/m^{2}]$')
-#    plt.subplot(2,3,4)
-#    plt.gca().set_title('Fy distribution')
-#    plt.plot(HalfspanValues, Fydistribution)
-#    plt.xlabel('Position Along Wing Span [$m$]')
-#    plt.ylabel('Fy [$N$]')
-#    plt.subplot(2,3,5)
-#    plt.gca().set_title('T distribution')
-#    plt.plot(HalfspanValues, Tdistributionvalues)
-#    plt.xlabel('Position Along Wing Span [$m$]')
-#    plt.ylabel('T $[N/m^{2}]$')
-#    plt.show()
+    plt.subplot(2,3,5)
+    plt.subplot(2,3,1)
+    plt.gca().set_title('Mz distribution')
+    plt.plot(HalfspanValues, Mzdistribution)
+    plt.xlabel('Position Along Wing Span [$m$]')
+    plt.ylabel('Mz $[N/m^{2}]$')
+    plt.subplot(2,3,2)
+    plt.gca().set_title('Fz distribution')
+    plt.plot(HalfspanValues, Fzdistribution)
+    plt.xlabel('Position Along Wing Span [$m$]')
+    plt.ylabel('Fz [$N$]')
+    plt.subplot(2,3,3)
+    plt.gca().set_title('My distribution')
+    plt.plot(HalfspanValues, Mydistribution)
+    plt.xlabel('Position Along Wing Span [$m$]')
+    plt.ylabel('My $[N/m^{2}]$')
+    plt.subplot(2,3,4)
+    plt.gca().set_title('Fy distribution')
+    plt.plot(HalfspanValues, Fydistribution)
+    plt.xlabel('Position Along Wing Span [$m$]')
+    plt.ylabel('Fy [$N$]')
+    plt.subplot(2,3,5)
+    plt.gca().set_title('T distribution')
+    plt.plot(HalfspanValues, Tdistributionvalues)
+    plt.xlabel('Position Along Wing Span [$m$]')
+    plt.ylabel('T $[N/m^{2}]$')
+    plt.show()
     
-    plt.subplot(1,3,3)
-    plt.subplot(1,3,1)
-#    plt.figure(figsize=(8,8))
-    plt.plot(HalfspanValues, Tdistributionvalues,label = 'Full fuel')
-    plt.plot(HalfspanValues, Tdistributionvalues2,label = '60% fuel')
-    plt.plot(HalfspanValues, Tdistributionvalues3,label = 'Zero fuel')
-    legend = plt.legend(loc='upper center', shadow=True, fontsize = 12)
-    plt.xlabel('Position Along Wing Span $[m]$', fontsize=12)
-    plt.ylabel('T $[Nm]$', fontsize=12)
-    
-    plt.subplot(1,3,2)
-#    plt.figure(figsize=(10,10))
-    plt.plot(HalfspanValues, Mydistribution,label = 'Full fuel')
-    plt.plot(HalfspanValues, Mydistribution2,label = '60% fuel')
-    plt.plot(HalfspanValues, Mydistribution3,label = 'Zero fuel')
-    legend = plt.legend(loc='upper center', shadow=True, fontsize = 12)
-    plt.xlabel('Position Along Wing Span [$m$]', fontsize=12)
-    plt.ylabel('M_y [$Nm$]', fontsize=12)
-    
-    plt.subplot(1,3,3)
-#    plt.figure(figsize=(10,10))
-    plt.plot(HalfspanValues, Mzdistribution, label = 'Full fuel')
-    plt.plot(HalfspanValues, Mzdistribution2,label = '60% fuel')
-    plt.plot(HalfspanValues, Mzdistribution3,label = 'Zero fuel')
-    legend = plt.legend(loc='upper center', shadow=True, fontsize = 12)
-    plt.xlabel('Position Along Wing Span [$m$]', fontsize=12)
-    plt.ylabel('M_z [$Nm$]', fontsize=12)
+#    plt.subplot(1,3,3)
+#    plt.subplot(1,3,1)
+##    plt.figure(figsize=(8,8))
+#    plt.plot(HalfspanValues, Tdistributionvalues,label = 'Full fuel')
+#    plt.plot(HalfspanValues, Tdistributionvalues2,label = '60% fuel')
+#    plt.plot(HalfspanValues, Tdistributionvalues3,label = 'Zero fuel')
+#    legend = plt.legend(loc='upper center', shadow=True, fontsize = 12)
+#    plt.xlabel('Position Along Wing Span $[m]$', fontsize=12)
+#    plt.ylabel('T $[Nm]$', fontsize=12)
+#    
+#    plt.subplot(1,3,2)
+##    plt.figure(figsize=(10,10))
+#    plt.plot(HalfspanValues, Mydistribution,label = 'Full fuel')
+#    plt.plot(HalfspanValues, Mydistribution2,label = '60% fuel')
+#    plt.plot(HalfspanValues, Mydistribution3,label = 'Zero fuel')
+#    legend = plt.legend(loc='upper center', shadow=True, fontsize = 12)
+#    plt.xlabel('Position Along Wing Span [$m$]', fontsize=12)
+#    plt.ylabel('M_y [$Nm$]', fontsize=12)
+#    
+#    plt.subplot(1,3,3)
+##    plt.figure(figsize=(10,10))
+#    plt.plot(HalfspanValues, Mzdistribution, label = 'Full fuel')
+#    plt.plot(HalfspanValues, Mzdistribution2,label = '60% fuel')
+#    plt.plot(HalfspanValues, Mzdistribution3,label = 'Zero fuel')
+#    legend = plt.legend(loc='upper center', shadow=True, fontsize = 12)
+#    plt.xlabel('Position Along Wing Span [$m$]', fontsize=12)
+#    plt.ylabel('M_z [$Nm$]', fontsize=12)
 
 
     plt.show()
