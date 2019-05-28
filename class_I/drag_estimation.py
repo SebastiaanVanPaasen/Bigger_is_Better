@@ -73,11 +73,9 @@ def V_tail_wetted_area(root_chord_v, taper_ratio_v, span_v):
 
 
 # using an adsee relation the fuselage wetted area is calculated
-def Fus_wetted_area(D_fuselage, L1, L2, L3):
-    wetted_area = np.pi * D_fuselage / 4 * (1 / (3 * L1 ** 2) * ((4 * L1 ** 2 + D_fuselage ** 2 / 4) ** 1.5) \
-                                            - D_fuselage + 4 * L2 + 2 * np.sqrt(L3 ** 2 + D_fuselage ** 2 / 4))
+def Fus_wetted_area(d, L1, L2, L3):
+    wetted_area = ((np.pi*d)/4)*((1/(3*L1**2))*(((4*L1**2 + (d**2)/4)**1.15) - (d**3)/8) - d + 4*L2 + 2*np.sqrt(L3**2 + (d**2)/4))
     return wetted_area
-
 
 # zero lift drag is estimated using wetted areas and factors from adsee, lift induced drag is done in AVL
 def Zero_Lift_Drag_est(S, wing_wetted_area, h_wetted_area, v_wetted_area, fus_wetted_area):
