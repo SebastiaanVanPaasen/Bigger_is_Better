@@ -83,7 +83,7 @@ def lift_distribution(CL):
     os.remove("endresult")
     return(elements)
     
-#output_avl = lift_distribution(0.8)
+output_avl = lift_distribution(0.8)
 
 def c(z):
     c = Cr - ((Cr - Ct) / (span / 2)) * z
@@ -93,6 +93,7 @@ def c(z):
     #        c = Cy - 2 * (x - (by / 2)) * ((Cy - Ct) / (b - by))
     return c
 
+
 def get_correct_data(output_avl):
     x_pos = []
     cl = []
@@ -100,18 +101,16 @@ def get_correct_data(output_avl):
     cd = []
     for i in range(len(output_avl)):
         x_pos.append(output_avl[i][1])
-        cl.append(output_avl[i][4]/c(output_avl[i][1]))
+        cl.append(output_avl[i][4])#/c(output_avl[i][1]))
         cl_2.append(output_avl[i][4]/MAC)
         cd.append(output_avl[i][8])
-#    x_pos = x_pos[len(x_pos):int(len(x_pos)/2)-1:-1] + x_pos[0:int(len(x_pos)/2)]
-#    cl = cl[len(x_pos):int(len(x_pos)/2)-1:-1] + cl[0:int(len(x_pos)/2)]
-#    cd = cd[len(x_pos):int(len(x_pos)/2)-1:-1] + cd[0:int(len(x_pos)/2)]
+    x_pos = x_pos[len(x_pos):int(len(x_pos)/2)-1:-1] + x_pos[0:int(len(x_pos)/2)]
+    cl_2 = cl_2[len(x_pos):int(len(x_pos)/2)-1:-1] + cl_2[0:int(len(x_pos)/2)]
+    cd = cd[len(x_pos):int(len(x_pos)/2)-1:-1] + cd[0:int(len(x_pos)/2)]
 #    plt.scatter(x_pos,cl)
 #    plt.scatter(y_pos,cd)
 #    plt.grid()
 #    print(cl, cl_2)
-    return(x_pos,cl, cd)
+    return(x_pos,cl_2, cd)
     
-#x = get_correct_data(output_avl)
-
-#print(x)
+x_pos,cl,cd = get_correct_data(output_avl)

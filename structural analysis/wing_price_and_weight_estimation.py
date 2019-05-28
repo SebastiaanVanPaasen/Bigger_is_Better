@@ -4,9 +4,9 @@ Created on Fri May 17 10:03:19 2019
 
 @author: mathi
 """
-from deflection import s_airfoil
+
 from loading_and_moment_diagrams import load_diagrams
-from Airfoil_inertia import inertia
+from Airfoil_inertia import *
 
 def wing_price_weight(N,t_skin,b,length,t_spar):
     density_mat_skin = 2801  # kg/m3
