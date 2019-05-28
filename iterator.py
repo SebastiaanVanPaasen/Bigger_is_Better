@@ -12,6 +12,7 @@ from class_I.class_I_empennage_landinggear import class_I_empennage
 #, _calc_h_tail_II, _calc_v_tail_II
 from class_I.flight_envelope import manoeuvring_envelope, gust_envelope
 from avl.conv_wing_avl import make_avl_file, run_avl, find_clalpha
+from RadiativeForcinggraph import FuelVRFDOC
 #from class_I.seats import cg_seats, W_seats
 #from class_I.loading_diagram import potato
 #from sc_sensitivity import class_II_empennage
@@ -360,15 +361,23 @@ def main_iterator(cf, char, env, eng, opt, tails):
     
     sar = ((((0.5 * Rho_cr * (V_cr ** 2) * S * CD_cr) * c_t) / V_cr) * 1000 )/ ip.N_pas  
     # in kg/km/pas
-
+#    f_decr, rf_decr, cost_decr
+    F_decr, RF_decr, C_decr = FuelVRFDOC(H_cr, M_cr, sar)
+#    print(values) 
+#    print(F_decr)
+#    print(C_decr)
+#    print(RF_decr)
+#    print(f_decr, rf_decr, cost_decr)
+    
     weights = [W_TO, W_P, W_F, W_E_II, w_weight, emp_weight, fus_weight, nac_weight, prop_sys_weight, fix_equip_weight]
     coefficients = [CL_cr, CD_cr, CL_cr/CD_cr, c_t, Oswald]
     planform = [A, S, b, c_root, c_tip, QC_sweep, taper]
     fus = [l_fuselage, d_fuselage, l_nosecone, l_tailcone, l_h]
     tails = [S_h, S_v]
     environment = [T_TO, M_cr, V_cr, H_cr, sar]
+    differences = [F_decr, RF_decr, C_decr]
     
-    return weights, coefficients, planform, fus, tails, environment
+    return weights, coefficients, planform, fus, tails, environment, differences
 
 
 #h_list, SAR_list = SAR(Velocity, h, AR, Surface, eff, cd_0, Ct0, Wcr)
