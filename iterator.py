@@ -12,7 +12,7 @@ from class_I.class_I_empennage_landinggear import class_I_empennage
 #, _calc_h_tail_II, _calc_v_tail_II
 from class_I.flight_envelope import manoeuvring_envelope, gust_envelope
 from avl.conv_wing_avl import make_avl_file, run_avl, find_clalpha
-from RadiativeForcinggraph import FuelVRFDOC
+from RF_calc import Radiative, Costs
 #from class_I.seats import cg_seats, W_seats
 #from class_I.loading_diagram import potato
 #from sc_sensitivity import class_II_empennage
@@ -361,8 +361,9 @@ def main_iterator(cf, char, env, eng, opt, tails):
     
     sar = ((((0.5 * Rho_cr * (V_cr ** 2) * S * CD_cr) * c_t) / V_cr) * 1000 )/ ip.N_pas  
     # in kg/km/pas
-#    f_decr, rf_decr, cost_decr
-    F_decr, RF_decr, C_decr = FuelVRFDOC(H_cr, M_cr, sar)
+#    f_decr, rf_decr, cost_decr 
+    RF_decr, F_decr = Radiative(H_cr, sar)
+    C_decr = Costs(V_cr, sar)
 #    print(values) 
 #    print(F_decr)
 #    print(C_decr)
