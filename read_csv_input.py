@@ -36,3 +36,22 @@ def read_input(design):
     return(coefficients, ac_characteristics,cruise_conditions, engine,choices,tail)  
 
 
+def read_output(design):
+    ROOT_DIR = os.path.dirname(os.path.abspath("excel_results.py"))
+    input_path = ROOT_DIR + '\excel_results'
+#    print(input_path)
+    
+    df = pandas.read_csv(input_path+'\combined_results_2.csv', delimiter=',', index_col="Parameter")
+#    print(df)
+    
+    weights = {"W_TO" : df[design][0], "W_F" : df[design][2], "W_W" : df[design][4], "W_N" : df[design][7], "W_E" : df[design][38]}
+#    print(weights)
+    
+    wing = {"A" : df[design][15], "S" : df[design][16], "b" : df[design][17], "C_root" : df[design][18], "C_tip" : df[design][19], "Taper" : df[design][21]}
+#    print(wing)
+    
+    cruise_conditions = {"T_TO" : df[design][29], "V_cr" : df[design][31], "H_cr" : df[design][32], "CD_0" : df[design][37]}
+#    print(cruise_conditions)
+
+    return weights, wing, cruise_conditions
+
