@@ -1,9 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Mon May 27 20:28:07 2019
-
-@author: floyd
-"""
 
 import numpy as np
 
@@ -93,7 +87,7 @@ def Costs(Vini, Fnew):
     DOC_reduction_crew = (1-DOC_frac_crew)
     total_DOC_reduction = (DOC_reduction_flighttime + DOC_reduction_fuel + DOC_reduction_crew)*100
     return(total_DOC_reduction)
-print(Costs(Vini,0.0094))
+#print(Costs(Vini,0.0094))
     
     
     
