@@ -50,8 +50,5 @@ def airfoil_geometry(N,b):
 
 
 #data = load_airfoil('NACA3414.txt')
-#print(data)
-#        #print(Polyfit_airfoil_upper(z))
-#data_z_all_sec, data_y_upper_all_sec, data_y_lower_all_sec = airfoil_geometry(N,b)
-#print(data_z_all_sec, data_y_upper_all_sec, data_y_lower_all_sec)
+data_z_all_sec, data_y_upper_all_sec, data_y_lower_all_sec = airfoil_geometry(N,b)
         
