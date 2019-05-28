@@ -43,6 +43,9 @@ def main_iterator(cf, char, env, eng, opt, tails):
     
     c_t = (c_t0 / V_ref) * V_cr
     
+    if N_eng == 4:
+        c_t = c_t * 2
+        
 #    if N_eng == 2:
 #        b_n_1, b_n_2, b_n_3, b_n_4 = 3.2, 3.2, 0, 0
 #        l_n_1, l_n_2, l_n_3, l_n_4 = -2, -2, 0, 0

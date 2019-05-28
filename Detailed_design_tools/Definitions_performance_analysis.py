@@ -378,3 +378,59 @@ def S_land():
     
     SL = S_air + S_run
     return SL
+
+"""ISA definitions"""
+
+ def ISA_density(h):             # enter height in m
+    M = 0.0289644               #kg/mol molar mass of Earth's air
+    R = 8.3144590               #universal gas constant Nm/MolK
+    
+    if h < 11000:
+        rho0 = 1.225            #kg/m^3
+        T = 288.15              #K
+        h0 = 0.                 #m
+        a = -0.0065             #K/m
+        rho = rho0 * (T/(T + a*(h-h0)))**(1. + ((g*M)/(R*a)))
+        
+    if h >= 11000:
+        rho0 = 0.36391          #kg/m^3
+        T = 216.65              #K
+        h0 = 11000.             #m
+        rho = rho0*np.e**((-g*M*(h-h0))/(R*T))
+        
+    return rho
+    
+    
+def ISA_temp(h):
+    if h < 11000:
+        T = 288.15 - 0.0065*h   #in Kelvin
+        return T
+    if h >= 11000:
+        return 216.65           #in Kelvin
+
+def ISA_press(h):
+    p0 = 101325.0
+    T0 = 293.15 #[K]
+    T = ISA_temp(h)
+    
+    if h <= 11000:
+        p = p0*(T/T0)**(-g/(a*R))
+    else:
+        p=p0*math.e**(((-g/(R*T))*(h)))
+        
+    return p
+ 
+          
+def Mach(V,h):                  #enter V in km/h
+    gamma = 1.4                 #enter h in m
+    R = 287 #J/kg/K
+    a = np.sqrt(gamma*R*ISA_temp(h))
+    M = (V/3.6)/a
+    return M 
+
+
+
+
+
+
+
