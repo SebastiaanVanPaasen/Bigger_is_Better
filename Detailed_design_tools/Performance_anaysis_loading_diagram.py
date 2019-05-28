@@ -18,11 +18,13 @@ W_TO       =       MTOW       #Weight at take-off [N]
 T_TO       =       107*1000   #Total static thrust of all engines at take-off [N]
 T          =       91.63*1000 #Take-off thrust
 CL_maxto   =        2.5
+CD0        =        0.02
  
 V          =       73.05      #Cruise velocity TAS [m/s]
 #M          =       0.788      #Cruise Mach number [-]
 A          =       9.44       #Aspect ratio [-]
 e          =       0.85       #Oswald efficiency factor [-]
+n          =        2.        #load factor L/W during cruise 
 
 t_c        =       0.125      #Thickness over chord ration airfoil
 qcsweep    =       0.4363     #Quater chord sweep in [rad]
@@ -61,32 +63,46 @@ def ISA_density(h):             # enter height in m
     
 def ISA_temp(h):
     if h < 11000:
-        T = 288.15 - 0.0065*h   #in Kelvin
+        T = 293.15 - 0.0065*h   #in Kelvin
         return T
     if h >= 11000:
         return 216.65           #in Kelvin
 
 def ISA_press(h):
     R = 8.3144590               #universal gas constant Nm/MolK
+    M = 0.0289644               #kg/mol molar mass of Earth's air
     g = 9.80665                 #gravitationa constant 
+    
     p0 = 101325.0
     T0 = 288.15 #[K]
     a = -0.0065 
-    T = ISA_temp(h)
+    T1 = ISA_temp(11000)
     
-    if h <= 11000:
-        p = p0*(T/T0)**(-g/(a*R))
+    if h == 0:
+        p = p0
+    elif h <= 11000:
+        p = p0*(T0/(T0 + a*h))**((g*M)/(R*a))
+        #p = p0*(T/T0)**(-g/(a*R))
     else:
-        p = p0*np.exp**(((-g/(R*T))*(h)))
+        p = 22632.10 *np.exp((-g*M*(h - 11000.))/(R*T1))
         
     return p
          
+
 def Mach(V,h):                  #enter V in m/s
     gamma = 1.4                 #enter h in m
     R = 287 #J/kg/K
     a = np.sqrt(gamma*R*ISA_temp(h))
     M = (V/a)
     return M 
+    
+def Sos(h):
+    R = 287.                    #universal gas constant J/K/kg
+    gamma = 1.4                 #Specific heat constant
+    T = ISA_temp(h)
+    a = np.sqrt(gamma*R*T)
+    return a,T
+    
 
 
 """Take-off T/W jet"""
@@ -178,7 +194,40 @@ def WS_TO(W_TO, S, rho, CL_maxto,bypass, T_TO,A,S_to,g):
     WS = a * (b/c)
     return WS
     
-   
+  
+  
+  
+"""Climb T/W: for specified Rate of Climb RC for DV/Dh = 0 and n = 1"""
+#C          =       Climb rate 
+#vg_dvdh    =       Constant for the climb rate
+#           =       0.5668*M**2 for const. EAS in troposphere
+#           =       -0.1332*M**2 for cons. M in troposphere
+#           =       0.7*M**2    for const. EAS in stratosphere
+#           =       0           for const. M in stratosphere
+
+def RC(T,D,V,W,vg_dvdh):
+    C = ((T-D)*V)/(W*(1. + vg_dvdh))
+    return C
+
+def TW_steady_climb_jet(C,a,CD0,W,p,S,A,e): #Steady flight climb at LOW ALTITUDE
+    gamma = 1.4
+    #To simplify fraction and not have an incredibly long equation
+    x1 = ((C/a)*np.sqrt(CD0))/(np.sqrt(W/(p*S)))
+    x2 = np.sqrt(W/(p*S))/((C/a)*np.sqrt(CD0))
+    T_W = (3./2.)*gamma**(1./3.)*x1**(2./3.) + (2./gamma**(1./3.))*(CD0/(np.pi*A*e))*x2**(2./3.)
+    
+    return T_W
+
+def TW_ceiling_climb_jet(n,CD0,A,e,theta,W,p,S):  #HIGH ALTITUDE indicates service ceiling thrust
+    T_W = 2.*n*np.sqrt(CD0/(np.pi*A*e)) + (0.00123/np.sqrt(theta))*(((CD0*np.pi*A*e)**0.25)/(np.sqrt((n*W)/(p*S))))
+    return T_W
+    
+#To fly at constant EAS instead of constant TAS add this term
+def dTW_constEAS_jet(C,a,W,p,S,CD0):
+    gamma = 1.4
+    dT_W = 0.567*C/a*np.sqrt(((C/a)*(W/(p*S)))/(gamma*CD0))
+    return dT_W
+      
     
 #------------------------------MAIN PROGRAM------------------------------------
 M = Mach(V,0)
@@ -186,13 +235,12 @@ rho = ISA_density(0)
 p0 = ISA_press(0)
 S_to = 2700.
 
+#Take-off wing loading diagram
 TW_TO = TW_TO_jet(T,T_TO,MTOW,W_TO,M,t_c,qcsweep,S,A,l_f,b_f,h_f,psi_TO,bypass,e,rho,p0)
-
 WS_TO = WS_TO(W_TO, S, rho, CL_maxto,bypass, T_TO,A,S_to,g)
+#print 'Take-off T/W and W/S: ', TW_TO, "and", WS_TO
 
-print TW_TO, WS_TO
-    
-    
+
     
     
     
