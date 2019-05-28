@@ -166,14 +166,14 @@ def Loadcalculator(x0,Ff):
         section_engineweight = 0
         if x > start_eng_1 and firstenginereachedyet == False:
             section_thrust = total_thrust / n_engines
-            section_engineweight = engine_weight * -1
+            section_engineweight = engine_weight/n_engines * -1
             Mz += section_engineweight * (start_eng_1 - x0)
             My += -section_thrust * (start_eng_1 - x0)
             firstenginereachedyet = True
 
         if x > start_eng_2 and secondenginereachedyet == False and n_engines != 0 and n_engines != 2:
             section_thrust = total_thrust / n_engines
-            section_engineweight = engine_weight * -1
+            section_engineweight = engine_weight/n_engines * -1
             Mz += section_engineweight * (start_eng_2 - x0)
             My += -section_thrust * (start_eng_2 - x0)
             secondenginereachedyet = True
