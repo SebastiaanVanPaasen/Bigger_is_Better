@@ -16,22 +16,22 @@ from class_I.lift_distr import *
 from load_data import *
 
 
-Mach,cruise_alt,W,OEW,Wing_W_frac,Fuselage_weight,Empennage_weight,Nacelle_weight ,Engine_weight,Landing_weight ,Fixed_equip_weight ,Prop_weight,Payload_weight,Fuel_W_tot,total_thrust,Cl_cruise,Cd_cruise,rho,CD0,Lift_over_Drag,V_cruise,n_ult,V,b,S,Fuselage_length,Cr,Sweep0,taper,AR,e,Wing_W,n_engines,engine_weigth = load('aerodynamic_concept') 
+#Mach,cruise_alt,W,OEW,Wing_W_frac,Fuselage_weight,Empennage_weight,Nacelle_weight ,Engine_weight,Landing_weight ,Fixed_equip_weight ,Prop_weight,Payload_weight,Fuel_W_tot,total_thrust,Cl_cruise,Cd_cruise,rho,CD0,Lift_over_Drag,V_cruise,n_ult,V,b,S,Fuselage_length,Cr,Sweep0,taper,AR,e,Wing_W,n_engines,engine_weigth = load('aerodynamic_concept') 
 
 ### Move the geometry definition to over here
-#CD0 = 0.02#.0222#0.0207#0.0202 #0.0264
-#S = 300.#286.02#184.16#193.72#220.27 # m^2
-#b = 60.#86.83#47.83#39.56#41.76#55.53
-#AR = 12.# 8.#8.5# 9 #14
-#taper = 0.31#0.4#0.31#0.4#0.31
-#Sweep0 = (25 / 180) * np.pi  # rad
-# by = 20.  # m
-#Cr = 8. #8.54#7.11#6.63# 6.06(2 * S) / ((1 + taper) * b)  # (S + np.tan(Sweep0) * by * (b / 4)) / (by + (b - by) * ((1 + taper) / 2))
+CD0 = 0.02#.0222#0.0207#0.0202 #0.0264
+S = 300.#286.02#184.16#193.72#220.27 # m^2
+b = 60.#86.83#47.83#39.56#41.76#55.53
+AR = 12.# 8.#8.5# 9 #14
+taper = 0.31#0.4#0.31#0.4#0.31
+Sweep0 = (25 / 180) * np.pi  # rad
+
+Cr = 8. #8.54#7.11#6.63# 6.06(2 * S) / ((1 + taper) * b)  # (S + np.tan(Sweep0) * by * (b / 4)) / (by + (b - by) * ((1 + taper) / 2))
 Ct = Cr * taper
 tc = 0.14
 # Cy = 0.#Cr - np.tan(Sweep0) * (by / 2)
 
-#Wing_Wf = 300000.#212307.69#149254.55#161567.21# 285629.97
+Wing_W = 300000.#212307.69#149254.55#161567.21# 285629.97
 #Wing_W = Wing_Wf/9.81 # 57461.507853787  # kg
 Volume = (0.5*(Cr**2*tc + Ct**2*tc)*(b/2))*2  # m^3
 specific_weight = Wing_W / Volume  # N/m^3
@@ -43,16 +43,17 @@ x_fuel_begin = 0
 x_fuel_end = 0.7 * (b / 2)
 start_eng_1 = 0.3 * (b / 2)
 start_eng_2 = 0.6 * (b / 2)
-#n_engines = 2
-#total_thrust = 500000.#396428.19#392632.62#418435.81 # 469612.93in Newton
-#engine_weight = 250000.#137279.1+25828.71#156890.4+25767.83#156890.4+21594.79#166696.05 + 23013.97 #137279.1+25828.71 in Newton
-#V_cruise = 221.28 #m/s
+n_engines = 2
+total_thrust = 500000.#396428.19#392632.62#418435.81 # 469612.93in Newton
+engine_weight = 250000.#137279.1+25828.71#156890.4+25767.83#156890.4+21594.79#166696.05 + 23013.97 #137279.1+25828.71 in Newton
+V_cruise = 221.28 #m/s
 
 # input for each critical case; as the lift distribution varies for each case
-#rho = 0.35#0.32#0.32#0.43 #0.23
-#V = 300#252.19#270.55#247.55#301.63
+rho = 0.35#0.32#0.32#0.43 #0.23
+V = 300#252.19#270.55#247.55#301.63
+n_ult=1
 n = n_ult/1.5#4.7/1.5#4.21/1.5#4.4/1.5#4.4/1.5
-#W = 2200000.#1801946.31#1510125.47#1549762.26#1806203.58
+W = 2200000.#1801946.31#1510125.47#1549762.26#1806203.58
 
 def input_CL(S,V,rho,W):
     input_CL = W/(0.5*rho*V**2*S)
@@ -63,21 +64,19 @@ def input_CL(S,V,rho,W):
 ## Import File List:
 output_avl = lift_distribution(input_CL(S, V, rho, W))
 x_pos = get_correct_data(output_avl)[0]
-x_total = x_pos[int((len(x_pos) / 2)):][::-1] + x_pos[0:int((len(x_pos) / 2))]
 
 ##Lift Code:
 cl = get_correct_data(output_avl)[1]
-cl_total = cl[int((len(x_pos) / 2)):][::-1] + cl[0:int((len(x_pos) / 2))]
-PolyFitCurveCl = sp.interpolate.interp1d(x_total, cl_total, kind="cubic", fill_value="extrapolate")
+PolyFitCurveCl = sp.interpolate.interp1d(x_pos, cl, kind="cubic", fill_value="extrapolate")
 # print('Lift Coefficients (highest order first, ending with 0th order term) are: \n{}\n'.format(PolyFitCurveCl))
 #print(cl_total)
 #print(PolyFitCurveCl(30))
 ##Drag Code:
 cdi = get_correct_data(output_avl)[1]
-cdi_total = cl[int((len(x_pos) / 2)):][::-1] + cl[0:int((len(x_pos) / 2))]
-PolyFitCurveidrag = sp.interpolate.interp1d(x_total, cdi_total, kind='cubic', fill_value='extrapolate')
+PolyFitCurveidrag = sp.interpolate.interp1d(x_pos, cdi, kind='cubic', fill_value='extrapolate')
 
-
+plt.plot(x_pos, cdi)
+plt.show()
 ### Define your functions at the beginning of the program
 def c(z):
     c = Cr - ((Cr - Ct) / (b / 2)) * z
@@ -333,9 +332,9 @@ def load_diagrams(N):  ### 100 nodes, so 99 beam elements
 #    plt.ylabel('T $[N/m^{2}]$')
 #    plt.show()
     
-    plt.plot(HalfspanValues,Liftdistributionvalues)
-    plt.show()
-    
+#    plt.plot(HalfspanValues,Liftdistributionvalues)
+#    plt.show()
+#    
 #    plt.subplot(1,3,3)
 #    plt.subplot(1,3,1)
 ##    plt.figure(figsize=(8,8))
@@ -365,7 +364,7 @@ def load_diagrams(N):  ### 100 nodes, so 99 beam elements
 #    plt.ylabel('M_z [$Nm$]', fontsize=12)
 
 
-    plt.show()
+#    plt.show()
     
     maxMz = [max(Mzdistribution), max(Mzdistribution2), max(Mzdistribution3)]
     maxMy = [max(Mydistribution), max(Mydistribution2), max(Mydistribution3)]

@@ -16,6 +16,30 @@ b = 60.#47.83#39.56#41.76
 HalfspanValues = np.linspace(0, b / 2 - 0.00001, N)
 
 
+def s_airfoil(N,b):
+    
+    data_z_all_sec = airfoil_geometry(N,b)[0]
+    data_y_upper_all_sec = airfoil_geometry(N,b)[1]
+    data_y_lower_all_sec = airfoil_geometry(N,b)[2]
+    ds_sec_all = []
+    s_all_sec = []
+    
+    for i in range(len(data_z_all_sec)):
+        for j in range(len(data_z_all_sec[0])-1):
+            ds_sec = np.sqrt((data_z_all_sec[i][j+1]-data_z_all_sec[i][j])**2+(data_y_upper_all_sec[i][j+1]-data_y_upper_all_sec[i][j])**2) + np.sqrt((data_z_all_sec[i][j+1]-data_z_all_sec[i][j])**2+(data_y_lower_all_sec[i][j+1]-data_y_lower_all_sec[i][j])**2)
+            ds_sec_all.append(ds_sec)
+    
+    ds_sec_all = np.asarray(ds_sec_all)
+    ds_sec_all = np.reshape(ds_sec_all, (len(data_z_all_sec),len(data_z_all_sec[0])-1))
+    
+    for i in range(len(ds_sec_all)):
+        s_all_sec.append(sum(ds_sec_all[i]))
+  
+    return(s_all_sec)
+    
+    
+
+
 def inertia(N,b):
     #loading the airfoil data
 #    data = load_airfoil("naca3414.txt")
@@ -29,14 +53,7 @@ def inertia(N,b):
     #defining the integrated function
     Polyfit_airfoil_upper = sp.interpolate.interp1d(data_z_all_sec[x_position], data_y_upper_all_sec[x_position], kind="cubic", fill_value="extrapolate")
     Polyfit_airfoil_lower = sp.interpolate.interp1d(data_z_all_sec[x_position], data_y_lower_all_sec[x_position], kind="cubic", fill_value="extrapolate")
-    #
-    #def y_upper(z):    
-    #    y_upper = Polyfit_airfoil_upper(z)  #put in right y function
-    #    return(y_upper)
-    #def y_lower(z):
-    #    y_lower = Polyfit_airfoil_lower(z) #put in right y function
-    #    return(y_lower)
-    
+
     spar_loc_sec = []
     for i in range(len(HalfspanValues)):
         nr_spars = 4
@@ -45,8 +62,7 @@ def inertia(N,b):
         delta_spar = (last_spar_location-first_spar_location)/(nr_spars)
         spar_loc = np.arange(first_spar_location,last_spar_location+delta_spar,delta_spar)
         spar_loc_sec.append(spar_loc)
-        
-    #    print(c(HalfspanValues[i]))
+
     print(spar_loc_sec)        
     
     upper_y = np.zeros(len(spar_loc))
@@ -89,8 +105,8 @@ def inertia(N,b):
     centroid_z = 0.4*c(HalfspanValues[0])
     
     for i in range(len(delta_z)):
-        s_upper = m.sqrt(delta_z[i]**2 + delta_y_upper[i]**2)
-        s_lower = m.sqrt(delta_z[i]**2 + delta_y_lower[i]**2)
+        s_upper = np.sqrt(delta_z[i]**2 + delta_y_upper[i]**2)
+        s_lower = np.sqrt(delta_z[i]**2 + delta_y_lower[i]**2)
         upper_s.append(s_upper)
         lower_s.append(s_lower)
         beta = m.atan(delta_y_upper[i]/delta_z[i])
@@ -109,7 +125,7 @@ def inertia(N,b):
     
     return upper_y, lower_y, upper_s, lower_s
 
-print(sum(inertia(N,b)[2]))
+#print(sum(inertia(N,b)[2]))
 #sum_s_wingbox = sum(inertia(N,b)[2]) + sum(inertia(N,b)[3])
 #print(sum_s_wingbox)
 #print(sum(I_xx_lower)+sum(I_xx_lower) + sum(I_xx_upper) + sum(I_xx_upper))
