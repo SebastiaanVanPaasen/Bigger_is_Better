@@ -5,14 +5,14 @@ Created on Tue May 14 09:48:11 2019
 @author: Mathilde
 """
 import sys
-sys.path.append("C:/Users/mathi/Documents/DSE/Bigger_is_Better/class_I")
+sys.path.append("C:/Users/mathi/Documents/DSE/Bigger_is_Better")
 import numpy as np  ### Never use * to import stuff, as it makes it difficult to retrace where functions come from
 import scipy as sp
 import math as m
 from scipy import interpolate  ### Useful to interpolate stuff
 from scipy import integrate
 from matplotlib import pyplot as plt
-from lift_distr import *
+from class_I.lift_distr import *
 
 ##Moment Code
 
