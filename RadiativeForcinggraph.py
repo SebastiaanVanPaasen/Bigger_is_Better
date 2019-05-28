@@ -13,14 +13,14 @@ def FuelVRFDOC(h,M,Fnew):
     Vini = Machspeed(h,M)
     
     RFreduction = Radiative(h,F_dif)
-    DOCreduction = Costs(Vini, F_dif) - 100
+    DOCreduction = Costs(Vini, F_dif)
     
     F_dif = F_dif * 100
     #print Fincini
     #print Vini
     #print RFreduction
     #print DOCreduction
-    
+    print(DOCreduction)
     return F_dif, RFreduction, DOCreduction
 
 
@@ -110,7 +110,7 @@ def Costs(Vini, Fincini):
      
      
       TOCsini[0] = TOChini[0] * Fltime # costs per hour per thing
-      TOCsini[0] = TOCsini[0] - (DOCsini[0]/ DOCini  * (1-Fincini)) # reduction of fuel consumption per km
+      TOCsini[0] = TOCsini[0] - (DOCsini[0]/ DOCini  * (1 - Fincini)) # reduction of fuel consumption per km
       TOCsini[1] = TOChini[1] * FTini[2]
       TOCsini[2] = TOChini[2] * TTini
       TOCini = sum(TOCsini)
@@ -125,7 +125,7 @@ def Costs(Vini, Fincini):
       Flt = FT[0] + FT[1]
 
      
-      DOCs[0] = DOCs[0] * Finc * Fincini
+      DOCs[0] = DOCs[0] * Finc * (Fincini + 1)
       #print DOCs[0]
 
       #for i in range(1,4):
@@ -133,7 +133,7 @@ def Costs(Vini, Fincini):
     
       TOCs = [0] * 3
       TOCs[0] = TOCh[0] * Flt
-      TOCs[0] = TOCs[0] - (DOCs[0]/ DOCini  * (1-(Finc*Fincini)))
+      TOCs[0] = TOCs[0] - (DOCs[0]/ DOCini  * (1-(Finc*(1 + Fincini))))
       TOCs[1] = TOCh[1] * FT[2]
       TOCs[2] = TOCh[2] * TT
      
@@ -143,7 +143,7 @@ def Costs(Vini, Fincini):
       Corf = TT/ TT737
       TOCcor[i] = TOCres[i] * Corf
       Doc[i] = DOC
-      Doct[i] = TOCs[0] / TOCs737[0] * 100
+      Doct[i] = ((TOCs[0] - TOCs737[0]) / TOCs737[0]) * 100 
 
      Dif = (TOCini / TOC737) /100
      #print Dif
@@ -235,7 +235,7 @@ def Radiative(h,Fincini):
     #plt.plot( h, Finc) 
     #plt.axis([0, 6, 0, 20])
     #plt.show()
-    Dif737 = ((totrfi - totrfi7) / totrfi7 ) * 100
+    Dif737 = ((trfi - totrfi7) / totrfi7 ) * 100
     #print TotalRFI * Fincini
     #print CO2RFI * Fincini
     #print NOXrfi * Fincini
