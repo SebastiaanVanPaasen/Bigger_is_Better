@@ -10,7 +10,6 @@ Created on Mon May 27 17:24:10 2019
 #----------------------------IMPORT MODULES-----------------------------------
 import numpy as np
 
-
 #------------------------------INPUTS------------------------------------------
 """Input values for the B737-800 aircraft"""
 MTOW       =       78220*9.81 #Maximum take-off weight [N]
@@ -292,7 +291,9 @@ WS_TO = WS_TO(W_TO, S, rho, CL_maxto,bypass, T_TO,A,S_to,g)
 
 print 'Take-off T/W and W/S: ', TW_TO, "and", WS_TO
     
-    
+
+
+  
     
     
 
