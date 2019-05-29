@@ -36,12 +36,14 @@ def read_input(design):
     return(coefficients, ac_characteristics,cruise_conditions, engine,choices,tail)  
 
 import sys
+
+
 def read_output(design):
     sys.path.append("C:/Users/mathi/Documents/DSE/Bigger_is_Better")
     
 #    ROOT_DIR = os.path.dirname(os.path.abspath("excel_results"))
     input_path = sys.path[-1] + '\excel_results'
-    print(input_path)
+#    print(input_path)
     
     df = pandas.read_csv(input_path+'\combined_results_2.csv', delimiter=',', index_col="Parameter")
 #    print(df)
