@@ -127,7 +127,7 @@ def Loadcalculator(x0,Ff):
         strutreachedyet = True
     else:
         strutreachedyet = False
-        
+#        
     #print(xmiddlevalues)
     for i, x in enumerate(xmiddlevalues):
         ### Geometry calculations
