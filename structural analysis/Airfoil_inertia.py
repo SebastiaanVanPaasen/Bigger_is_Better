@@ -81,10 +81,10 @@ def inertia(N,b):
             print(y_cen_inertia_below)
             ds_airfoil_upper_sec = np.sqrt(abs(data_z_all_sec[i][j]-data_z_all_sec[i][j-1])**2+ abs(data_y_upper_all_sec[i][j]-data_y_upper_all_sec[i][j-1])**2)
             ds_airfoil_lower_sec = np.sqrt(abs(data_z_all_sec[i][j]-data_z_all_sec[i][j-1])**2+ abs(data_y_lower_all_sec[i][j]-data_y_lower_all_sec[i][j-1])**2)
-            y_centroid_above_sec = ds_airfoil_upper_sec*t*y_cen_inertia_above
-            y_centroid_below_sec = ds_airfoil_lower_sec*t*y_cen_inertia_below
-            z_centroid_above_sec = ds_airfoil_upper_sec*t*z_cen_inertia
-            z_centroid_below_sec = ds_airfoil_lower_sec*t*z_cen_inertia
+            y_centroid_above_sec = (ds_airfoil_upper_sec*t)*y_cen_inertia_above
+            y_centroid_below_sec = (ds_airfoil_lower_sec*t)*y_cen_inertia_below
+            z_centroid_above_sec = (ds_airfoil_upper_sec*t)*z_cen_inertia
+            z_centroid_below_sec = (ds_airfoil_lower_sec*t)*z_cen_inertia
             y_centroid_point.append(y_centroid_above_sec)
             y_centroid_point.append(y_centroid_below_sec)
             z_centroid_point.append(z_centroid_above_sec)

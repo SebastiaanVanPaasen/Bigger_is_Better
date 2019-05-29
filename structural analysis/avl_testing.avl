@@ -4,7 +4,7 @@ Test Wing
 #IYsym IZsym Zsym
 0  0  0
 #Sref  Cref  Bref
-300.0 5.942857142857143 60.0 
+300.0 5.724580152671756 60.0 
 #Xref Yref Zref
 0  0.0  0
 #CDcp
@@ -20,6 +20,6 @@ ANGLE
 SECTION
 0 0 0 8.0 0.0
 SECTION
-12.769 30.0 0.0 3.2 0.0
+13.262 30.0 0.0 2.48 0.0
 AFILE
 n2414.dat.txt

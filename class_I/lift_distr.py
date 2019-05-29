@@ -14,8 +14,8 @@ import math as m
 
 S = 300.#286.02#184.16#193.72#220.27
 span = 60.#47.83#39.56#41.76#55.53
-AR = 8.5#.#8.#8.5#9.#14.
-taper = 0.4#0.31#0.4#0.31
+AR = 12.#8.#8.5#9.#14.
+taper = 0.31#0.4#0.31#0.4#0.31
 Sweep0 = (25/180)*np.pi
 qc_sweep = m.atan(m.tan(Sweep0) - 4 / AR * (0.4 * (1 - taper) / (1 + taper)))
 dihedral = 0
@@ -67,6 +67,7 @@ make_avl_file()
 
 def lift_distribution(CL):        
     p = subprocess.Popen(r"C:\Users\Mels\Desktop\3e jaar TUDelft\DSE\code\Bigger_is_Better\avl\avl.exe", stdin=subprocess.PIPE, universal_newlines=True)
+    #r"C:\Users\Mels\Desktop\3e jaar TUDelft\DSE\code\Bigger_is_Better\avl\avl.exe"
     set_CL = "a c " + str(CL)
     p.communicate(os.linesep.join(["load", "avl_testing","case", "mach0.7", "oper", set_CL, "x","fs", "endresult"]))          
     lines = [line.rstrip('\n') for line in open('endresult')]
