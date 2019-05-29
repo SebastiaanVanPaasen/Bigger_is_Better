@@ -38,8 +38,8 @@ N_crew = 11.  # Based on the amount of passengers
 m_person = 85.  # kg   Based on statistics of Roskam
 m_carg = 20.  # kg  Based on statistics
 
-l_nac = 2.  # m     Based on ADSEE
-xcg_eng = -1.  # m    Defined w.r.t. LEMAC
+l_nac = 5.  # m     Based on ADSEE
+xcg_eng = -4.  # m    Defined w.r.t. LEMAC
 xcg_oew_mac = 0.25  #   Defined w.r.t. MAC
 x_fuel = 30  # m    Defined w.r.t. nose
 
@@ -59,7 +59,7 @@ x_ac_wing = 0.3
 
 L_run = 2500  # m
 V_stall_l = min(np.sqrt(L_run / 0.5847), 65.)
-CL_l_max = 3.2
+CL_l_max = 3.2 
 
 N_cargo = 2     # number of cargo compartments
 cargo_fwdfrac = 0.6     # Fraction of the amount the front compartment holds, if N_cargo = 1 then the value is 1

@@ -5,7 +5,7 @@ def read_input(design):
     ROOT_DIR =os.path.dirname(os.path.abspath("read_csv_input.py"))
     input_path = ROOT_DIR + '/input_files'
 #    print(input_path)
-    df = pandas.read_csv(input_path+'/csv_input_HIGH_2E_DD_2.csv', delimiter=',', index_col="Parameter")
+    df = pandas.read_csv(input_path+'/csv_input_HIGH_2E_DD_STRUT_2.csv', delimiter=',', index_col="Parameter")
 #    print(df)
     
     coef_series = df[design][0:4]
@@ -39,7 +39,7 @@ import sys
 
 
 def read_output(design):
-    sys.path.append("C:/Users/mathi/Documents/DSE/Bigger_is_Better")
+    sys.path.append("C:/Users/Hidde/Documents/Aerospace Engineering Bachelor Year 3/Design Synthesis Exercise/Bigger_is_Better")
     
 #    ROOT_DIR = os.path.dirname(os.path.abspath("excel_results"))
     input_path = sys.path[-1] + '\excel_results'
