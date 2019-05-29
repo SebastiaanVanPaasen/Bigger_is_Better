@@ -37,9 +37,9 @@ def read_input(design):
 
 
 def read_output(design):
-    ROOT_DIR = os.path.dirname(os.path.abspath("excel_results.py"))
+    ROOT_DIR = os.path.dirname(os.path.abspath("excel_results"))
     input_path = ROOT_DIR + '\excel_results'
-#    print(input_path)
+    print(input_path)
     
     df = pandas.read_csv(input_path+'\combined_results_2.csv', delimiter=',', index_col="Parameter")
 #    print(df)
@@ -55,3 +55,7 @@ def read_output(design):
 
     return weights, wing, cruise_conditions
 
+w, s, c = read_output("Design 29 HIGH 2E SEMIDD STRUT")
+
+print(w)
+print(w["W_TO"])
