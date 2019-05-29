@@ -84,7 +84,7 @@ import matplotlib.pyplot as plt
 
 def control_stability_plot(x_cg, min_cg, max_cg, X_LEMAC_range, S_control, S_stability, MAC, l_fuselage):
 #    print("the X_LEMAC range " + str(X_LEMAC_range))
-    Sh_S = np.linspace(0,2,10000)
+    Sh_S = np.linspace(0,2,1000)
     contr_trend = np.polyfit(x_cg, S_control, 1)
     stability_trend = np.polyfit(x_cg, S_stability, 1)
     a_control = contr_trend[0]
@@ -121,9 +121,9 @@ def control_stability_plot(x_cg, min_cg, max_cg, X_LEMAC_range, S_control, S_sta
 #    print(min_cg[Sh_opt.index(min(Sh_opt))])
 #    print(max_cg[Sh_opt.index(min(Sh_opt))])
     
-    X_LEMAC = list(np.array(X_LEMAC_range)+LEMAC_opt[Sh_opt.index(min(Sh_opt))])
+    #X_LEMAC = list(np.array(X_LEMAC_range)+LEMAC_opt[Sh_opt.index(min(Sh_opt))])
 #    opt_line = [min_cg[Sh_opt.index(min(Sh_opt))], max_cg[Sh_opt.index(min(Sh_opt))]]
-    opt_LEMAC = [LEMAC_opt[Sh_opt.index(min(Sh_opt))], LEMAC_opt[Sh_opt.index(min(Sh_opt))]]
+    #opt_LEMAC = [LEMAC_opt[Sh_opt.index(min(Sh_opt))], LEMAC_opt[Sh_opt.index(min(Sh_opt))]]
     
     
 #    fig, ax1 = plt.subplots()
