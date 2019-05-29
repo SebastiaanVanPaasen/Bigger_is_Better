@@ -57,7 +57,3 @@ def read_output(design):
 
     return weights, wing, cruise_conditions
 
-#w, s, c = read_output("Design 29 HIGH 2E SEMIDD STRUT")
-#print(w)
-#print(w["W_TO"])
-
