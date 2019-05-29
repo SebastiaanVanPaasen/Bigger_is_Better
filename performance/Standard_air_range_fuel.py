@@ -59,11 +59,10 @@ MTOW1 = 82191*g
 OEW1 = 45070*g
 MFW1 = 31594*g
 
-<<<<<<< HEAD
+
 Wcr1 = 0.8*MTOW1             #ASSUMPTION!!! WHAT IS W_Cr ACTUALLY
-=======
-Wcr1 = 0.75*MTOW             #ASSUMPTION!!! WHAT IS W_Cr ACTUALLY
->>>>>>> master
+#Wcr1 = 0.75*MTOW             #ASSUMPTION!!! WHAT IS W_Cr ACTUALLY
+
 Mcr = 0.79
 hcr = 12000                 #(m)
 S1 = 124.5                    #m^2
@@ -169,7 +168,8 @@ for i in range(len(V_ref)):
     V_ref[i] = Mach(V_ref[i],hcr)   
     if 0.997*Mcr <= V_ref[i] <= 1.003* Mcr:
         SAR_ref_point = SAR_ref[i]
-print SAR_ref_point/200, "okkk"
+
+
 ##PLot the single point of the ref. aircraft
 ##plt.plot(Mcr,SAR_ref_point,"mo", label = "Ref. aircraft")
 ##plt.legend()
