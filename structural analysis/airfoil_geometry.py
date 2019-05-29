@@ -16,7 +16,7 @@ from loading_and_moment_diagrams import c
 import loading_and_moment_diagrams as lm
 
 N = 100 
-b = lm.b#39.56 #41.76
+b = 49.7473#lm.b#39.56 #41.76
 
 
 def airfoil_geometry(N,b):

@@ -13,7 +13,7 @@ import loading_and_moment_diagrams as lm
 from airfoil_geometry import airfoil_geometry
 
 N = 100 
-b = lm.b#60.#47.83#39.56#41.76
+b = 49.7473#lm.b#60.#47.83#39.56#41.76
 HalfspanValues = np.linspace(0, b / 2 - 0.00001, N)
 
 
