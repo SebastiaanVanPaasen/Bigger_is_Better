@@ -23,9 +23,8 @@ z = 0.
 y = 0.
 
     
-
+#Iteration 1 of the variable thickness
 alpha = np.arange(0,361,1) # angle between the z-axis and an point evaluated in circumference of cross-section
-
 #first approximation of the fuselage Izz, assuming circular with constant thickness 
 #I_zz = np.pi*R**3*t
 
@@ -36,11 +35,50 @@ for i in range(len(theta)):
         t = M * np.sin(alpha[j]*np.pi/180-theta[i])/(np.pi*R**2*sigma)
         t_circ.append(abs(t*1000))
         
-    print(max(t_circ))   
+    t_max = max(t_circ)   
     #stability_trend = np.polyfit(x_cg, Sh_S_stability, 1)
     plt.plot(alpha,t_circ)
     plt.show()
     
+#Iteration 2   
+    
+beta = 5
+n_segments = 360/beta
+segment_length = np.ones((1,int(n_segments)))*(beta/2*np.pi)*2*np.pi*R
+alpha_segment = np.arange(beta/2,360,beta)*np.pi/180
+
+print(alpha_segment)
+
+t_iter_1=[]
+for i in range(len(alpha_segment)):
+    if alpha_segment[i]>0 and alpha_segment[i]<(0.5*np.pi+min(theta)):
+        t = abs(t_max*np.sin(alpha_segment[i]+max(theta)))
+        t_iter_1.append(t)
+    if (0.5*np.pi+min(theta))< alpha_segment[i] and (0.5*np.pi+max(theta))>alpha_segment[i]:
+        t = t_max
+        t_iter_1.append(t)
+    if (0.5*np.pi+max(theta))< alpha_segment[i] and np.pi > alpha_segment[i]:
+        t = abs(t_max*np.sin(alpha_segment[i]+max(theta)))
+        t_iter_1.append(t)
+    if np.pi < alpha_segment[i] and (1.5*np.pi+min(theta))> alpha_segment[i]:
+        t = abs(t_max*np.sin(alpha_segment[i]+max(theta)))
+        t_iter_1.append(t)
+    if (1.5*np.pi+min(theta))< alpha_segment[i] and (1.5*np.pi+max(theta))> alpha_segment[i]:
+        t = t_max
+        t_iter_1.append(t)
+    if (1.5*np.pi+max(theta))< alpha_segment[i] and 2*np.pi> alpha_segment[i]:
+        t = abs(t_max*np.sin(alpha_segment[i]+max(theta)))
+        t_iter_1.append(t)       
+        
+print(t_iter_1)      
+plt.plot(alpha_segment,t_iter_1)
+plt.show()
+#Iteration 2 of variable thickness
+
+
+for i in range(int(n_segments)):
+    I_xx += t[i]*segment_length[i]*np.sin(alpha_segment[i]+0.5*np.pi)**2/12 + t[i]*segment_length[i]*R**2*np.sin(alpha_segment[i])**2
+    I_yy += t[i]*segment_length[i]*np.cos(alpha_segment[i]+0.5*np.pi)**2/12 + t[i]*segment_length[i]*R**2*np.cos(alpha_segment[i])**2
     
     
     
