@@ -7,6 +7,13 @@ Created on Fri May 17 10:03:19 2019
 
 from loading_and_moment_diagrams import load_diagrams
 from Airfoil_inertia import *
+import loading_and_moment_diagrams as lm
+
+t_skin = 0.002
+N = 100
+t_spar = 0.06
+b = lm.b #60.#47.83#39.56#41.76
+length = 0.3
 
 def wing_price_weight(N,t_skin,b,length,t_spar):
     density_mat_skin = 2801  # kg/m3
@@ -25,11 +32,6 @@ def wing_price_weight(N,t_skin,b,length,t_spar):
     total_mass = (skin_mass + spar_mass)*2
     return 'skin_mass', skin_mass, 'spar_mass', spar_mass, 'total_mass', total_mass,'total_price', total_price 
 
-t_skin = 0.002
-N = 100
-t_spar = 0.06
-b = 60.#47.83#39.56#41.76
-length = 0.3
 
 print(wing_price_weight(N,t_skin,b,length,t_spar)[:])
 
@@ -55,7 +57,7 @@ def I_zz_spars(N,b,length,t_spar):
 
     return 'I_zz_spars=', I_zz, front_spar_area, back_spar_area   
 
-length = 0.3
-t_spar = 0.06
+#length = 0.3
+#t_spar = 0.06
 print(I_zz_spars(N,b,length,t_spar))
 

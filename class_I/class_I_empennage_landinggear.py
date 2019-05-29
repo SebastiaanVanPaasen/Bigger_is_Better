@@ -42,8 +42,8 @@ def class_I_empennage(mass_frac, MAC, l_fuselage, x_eng, l_n, xcg_OEW_MAC, xcg_p
     xcg_nac = x_eng + 0.4 * l_n
 
     # Fuselage group - in [m] w.r.t. nose
-    xcg_fuse = 0.4 * l_fuselage
-    xcg_fix = 0.4 * l_fuselage
+    xcg_fuse = 0.5 * l_fuselage
+    xcg_fix = 0.5 * l_fuselage
     xcg_emp = 0.9 * l_fuselage
     
     xcg_nlg = 0.
