@@ -43,7 +43,7 @@ A = 10.45
 e = 0.85
 CD0 = 0.020
 g = 9.81
-S = 152.4  #127 
+S = 127.  #127 
 
              #[km]
 Wcr = 0.8*MTOW              #63000*9.81#assumption for now
@@ -205,14 +205,15 @@ for h in H:
     #plt.subplot(122)
     plt.plot(V,SAR_list,label='%s altitude [m]' % h)
     #plt.title('Fuel consumption per passenger w.r.t. Mach number')
-    plt.xlabel("Mach number")
-    plt.ylabel("Fuel consumption [kg/km/passenger]")
+
+plt.xlabel("Mach number",fontsize = 'xx-large')
+plt.ylabel("Fuel consumption [kg/km/passenger]",fontsize = 'xx-large')
 
 plt.plot(Mcr,SAR_ref_point/pax_ref,"mo", label = "Ref. aircraft")   
 #plt.hlines(0.9*SAR_ref_point/pax_ref,0.5,1.,"gray",'--') 
 plt.xlim(0.5,0.95)
 plt.ylim(0.007,0.015)
-plt.legend(loc = "upper left")
+plt.legend(loc = "upper left", fontsize = 'xx-large')
 
 plt.show()
 
