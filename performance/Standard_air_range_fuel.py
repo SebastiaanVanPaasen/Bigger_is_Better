@@ -39,11 +39,11 @@ MZFW = 65952.* 9.81
 MFW  = 20826.*9.81          # Maximum fuel weight (including reserve fuel)
 W_fr = MFW/105. * 5.        #reserve fuel
 
-A =10.45
+A = 10.45
 e = 0.85
 CD0 = 0.020
 g = 9.81
-S = 127. 
+S = 152.4  #127 
 
              #[km]
 Wcr = 0.8*MTOW              #63000*9.81#assumption for now
@@ -59,11 +59,10 @@ MTOW1 = 82191*g
 OEW1 = 45070*g
 MFW1 = 31594*g
 
-<<<<<<< HEAD
+
 Wcr1 = 0.8*MTOW1             #ASSUMPTION!!! WHAT IS W_Cr ACTUALLY
-=======
-Wcr1 = 0.75*MTOW             #ASSUMPTION!!! WHAT IS W_Cr ACTUALLY
->>>>>>> master
+#Wcr1 = 0.75*MTOW             #ASSUMPTION!!! WHAT IS W_Cr ACTUALLY
+
 Mcr = 0.79
 hcr = 12000                 #(m)
 S1 = 124.5                    #m^2
@@ -169,7 +168,8 @@ for i in range(len(V_ref)):
     V_ref[i] = Mach(V_ref[i],hcr)   
     if 0.997*Mcr <= V_ref[i] <= 1.003* Mcr:
         SAR_ref_point = SAR_ref[i]
-print SAR_ref_point/200, "okkk"
+
+
 ##PLot the single point of the ref. aircraft
 ##plt.plot(Mcr,SAR_ref_point,"mo", label = "Ref. aircraft")
 ##plt.legend()
@@ -211,7 +211,7 @@ for h in H:
 plt.plot(Mcr,SAR_ref_point/pax_ref,"mo", label = "Ref. aircraft")   
 #plt.hlines(0.9*SAR_ref_point/pax_ref,0.5,1.,"gray",'--') 
 plt.xlim(0.5,0.95)
-plt.ylim(0.008,0.015)
+plt.ylim(0.007,0.015)
 plt.legend(loc = "upper left")
 
 plt.show()
