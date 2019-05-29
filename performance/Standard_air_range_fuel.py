@@ -53,17 +53,23 @@ n = 1                       #load factor of number of passengers
 #------------------------------VERIFICATION DATA--------------------------------
 
 """Create reference line of B737 8 Max"""
+g = 9.81
 MPW1 = 20882*g
 MTOW1 = 82191*g
 OEW1 = 45070*g
 MFW1 = 31594*g
 
-Wcr1 = 0.8*MTOW             #ASSUMPTION!!! WHAT IS W_Cr ACTUALLY
+
+Wcr1 = 0.8*MTOW1             #ASSUMPTION!!! WHAT IS W_Cr ACTUALLY
+#Wcr1 = 0.75*MTOW             #ASSUMPTION!!! WHAT IS W_Cr ACTUALLY
+
 Mcr = 0.79
 hcr = 12000                 #(m)
 S1 = 124.5                    #m^2
 b1 = 35.92                  #m
 A1 = b1**2 / S1
+e = 0.85
+CD0 = 0.020
 
 pax_ref = 200.
 n_ref = 1.
@@ -155,13 +161,15 @@ V_minSAR = []
 #For the reference case aim to stay below it:
 SAR_ref = SAR(hcr,A1,S1,e,CD0,Ct0,Wcr1)[0]
 V_ref = SAR(hcr,A1,S1,e,CD0,Ct0,Wcr1)[1]
+
 #
 #
 for i in range(len(V_ref)):
     V_ref[i] = Mach(V_ref[i],hcr)   
     if 0.997*Mcr <= V_ref[i] <= 1.003* Mcr:
         SAR_ref_point = SAR_ref[i]
-#
+
+
 ##PLot the single point of the ref. aircraft
 ##plt.plot(Mcr,SAR_ref_point,"mo", label = "Ref. aircraft")
 ##plt.legend()

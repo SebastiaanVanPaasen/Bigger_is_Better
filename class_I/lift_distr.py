@@ -8,21 +8,29 @@ import numpy as np
 import subprocess
 import os
 from matplotlib import pyplot as plt
+import math as m
+from read_csv_input import read_output
+
+filename = 'Design 29 HIGH 2E SEMIDD STRUT'
+weights, wing, cruise_conditions = read_output(filename)
+#from loading_and_moment_diagrams import c
 #ROOT_DIR = os.path.dirname(os.path.abspath("structural analysis"))
+
+S = wing["S"]#300.#286.02#184.16#193.72#220.27
+span = wing["b"]#60.#47.83#39.56#41.76#55.53
+AR = wing["A"]#8.5#.#8.#8.5#9.#14.
+taper = wing["Taper"]#0.4#0.31#0.4#0.31
+#Sweep0 = m.atan(m.tan(wing["Sweep"]) - 4 / AR * (-0.25 * (1 - taper) / (1 + taper))) # rad
+qc_sweep = wing["Sweep"]
+dihedral = 0
+Cr = wing["C_root"]#8.#8.54#7.11#6.63#6.06(2*S)/((1+taper)*span)
+MAC = Cr*(2/3)*((1+taper+taper**2)/(1+taper))
+Ct = Cr*taper
+
 def make_avl_file():
     # B777 used as reference aircraft
-    S = 250
-    span = 62.30
-    MAC = 8.75
-    AR = span**2/S
-    taper = 0.275
-    qc_sweep = np.radians(31.60)
-    dihedral = 0
-    Cr = (2*S)/((1+taper)*span)
-#    print(Cr)
-    Ct = Cr*taper
     chords = [Cr, Ct]
-    CD_0 = 0.015
+    CD_0 = cruise_conditions["CD_0"]#0.02#0.0222#0.0207# 0.0202#0.0264
     Angle = 0.0
     
     dx = 0.25*Cr + span/2*np.tan(qc_sweep) - 0.25*Ct
@@ -33,10 +41,10 @@ def make_avl_file():
     z_loc_LE = [0, dz]
     
     Ainc = [0.0, 0.0]
-    spanwise_discretize_points = 18   #If you go too high then your computer is dead
+    spanwise_discretize_points = 50   #If you go too high then your computer is dead
     chordwise_discretize_point = 12     # " "
     
-    with open("avl_dd2.avl", "w") as text_file:
+    with open("avl_testing.avl", "w") as text_file:
             print("Test Wing" +"\n"
             "#Mach" +"\n" + 
             str(0.7) +"\n"
@@ -58,12 +66,11 @@ def make_avl_file():
             for i in range(2):
                 print("SECTION", file=text_file)            
                 print(round(x_loc_LE[i],3),round(y_loc_LE[i],3),round(z_loc_LE[i],3),round(chords[i],3),Ainc[i], file=text_file)        
-            print("AFILE" + "\n"
-                  "n2414.dat.txt", file=text_file)
+            print("AFILE" + "\n""n2414.dat.txt", file=text_file)
 make_avl_file()
 
 def lift_distribution(CL):        
-    p = subprocess.Popen(r"C:\Users\Mels\Desktop\3e jaar TUDelft\DSE\code\class_I\avl.exe", stdin=subprocess.PIPE, universal_newlines=True)
+    p = subprocess.Popen(r"C:\Users\mathi\Documents\DSE\Bigger_is_Better\avl\avl.exe", stdin=subprocess.PIPE, universal_newlines=True)
     set_CL = "a c " + str(CL)
     p.communicate(os.linesep.join(["load", "avl_testing","case", "mach0.7", "oper", set_CL, "x","fs", "endresult"]))          
     lines = [line.rstrip('\n') for line in open('endresult')]
@@ -79,23 +86,34 @@ def lift_distribution(CL):
     os.remove("endresult")
     return(elements)
     
-#output_avl = lift_distribution(0.8)
+output_avl = lift_distribution(0.8)
 
-c = 8.67
-def get_correct_data(output_avl,c):
+def c(z):
+    c = Cr - ((Cr - Ct) / (span / 2)) * z
+    #    if x < (by / 2):
+    #        c = Cr - 2 * x * ((Cr - Cy) / (by))
+    #    if x > (by / 2):
+    #        c = Cy - 2 * (x - (by / 2)) * ((Cy - Ct) / (b - by))
+    return c
+
+
+def get_correct_data(output_avl):
     x_pos = []
     cl = []
+    cl_2 = []
     cd = []
     for i in range(len(output_avl)):
         x_pos.append(output_avl[i][1])
-        cl.append(output_avl[i][4]/c)
+        cl.append(output_avl[i][4])#/c(output_avl[i][1]))
+        cl_2.append(output_avl[i][4]/MAC)
         cd.append(output_avl[i][8])
-#    x_pos = x_pos[len(x_pos):int(len(x_pos)/2)-1:-1] + x_pos[0:int(len(x_pos)/2)]
-#    cl = cl[len(x_pos):int(len(x_pos)/2)-1:-1] + cl[0:int(len(x_pos)/2)]
-#    cd = cd[len(x_pos):int(len(x_pos)/2)-1:-1] + cd[0:int(len(x_pos)/2)]
+    x_pos = x_pos[len(x_pos):int(len(x_pos)/2)-1:-1] + x_pos[0:int(len(x_pos)/2)]
+    cl_2 = cl_2[len(x_pos):int(len(x_pos)/2)-1:-1] + cl_2[0:int(len(x_pos)/2)]
+    cd = cd[len(x_pos):int(len(x_pos)/2)-1:-1] + cd[0:int(len(x_pos)/2)]
 #    plt.scatter(x_pos,cl)
 #    plt.scatter(y_pos,cd)
 #    plt.grid()
-    return(x_pos,cl, cd)
-#x = get_correct_data(output_avl,c)
-#print(x)
+#    print(cl, cl_2)
+    return(x_pos,cl_2, cd)
+    
+x_pos,cl,cd = get_correct_data(output_avl)

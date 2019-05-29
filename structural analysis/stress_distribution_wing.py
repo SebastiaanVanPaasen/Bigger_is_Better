@@ -8,11 +8,11 @@ Created on Wed May 15 09:51:57 2019
 
 import numpy as np  ### Never use * to import stuff, as it makes it difficult to retrace where functions come from
 
-from loading_and_moment_diagrams import load_diagrams
+#from loading_and_moment_diagrams import load_diagrams
 
-Mydistribution = load_diagrams()[2]
-Mzdistribution = load_diagrams()[3]
-Tdistribution = load_diagrams()[4]
+#Mydistribution = load_diagrams()[2]
+#Mzdistribution = load_diagrams()[3]
+#Tdistribution = load_diagrams()[4]
 
 
 
@@ -20,10 +20,22 @@ def load_airfoil(filename):
     f = open(filename,'r')
     lines = f.readlines()
     data = []
+    data_z = []
+    data_y = []
     for line in lines:
         x = line.split()
         data.append(x)
-    print(data)    
+    for i in range(len(data)):
+        for j in range(len(data[i])):
+            data[i][j] = float(data[i][j])
+    for i in range(len(data)):
+        data_z.append(data[i][0])
+        data_y.append(data[i][1])
+
+    #plt.plot(data_z,data_y)
+    #plt.show()
+    return data,data_z,data_y
+
 
 def wing_stress(Mydistribution, Mzdistribution, Tdistribution):
     I_xx =  1e-9

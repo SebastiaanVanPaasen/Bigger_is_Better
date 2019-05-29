@@ -38,12 +38,12 @@ import numpy as np
 # winglet_height = 0.
 
 
-def Wing_wetted_area(root_chord, tip_chord, D_fuselage, span, S,
-                     winglet_height):  # set winglet area to zero if not needed, select correct input for boxed wing
+def Wing_wetted_area(root_chord, tip_chord, D_fuselage, span, S,):  
+    # set winglet area to zero if not needed, select correct input for boxed wing
     fuselage_chord = root_chord * (1 - (D_fuselage / span))  # determine the cord at the outer fuselage
-    winglet_area = tip_chord * winglet_height
+
     exposed_area = S - (0.5 * (
-            fuselage_chord + root_chord)) * D_fuselage + winglet_area  # calulate the exposed area, substracting the area inside the plane from the S
+            fuselage_chord + root_chord)) * D_fuselage  # calulate the exposed area, substracting the area inside the plane from the S
     wetted_area = 1.07 * 2 * exposed_area  # wetted area approximation
     return wetted_area
 
@@ -73,11 +73,9 @@ def V_tail_wetted_area(root_chord_v, taper_ratio_v, span_v):
 
 
 # using an adsee relation the fuselage wetted area is calculated
-def Fus_wetted_area(D_fuselage, L1, L2, L3):
-    wetted_area = np.pi * D_fuselage / 4 * (1 / (3 * L1 ** 2) * ((4 * L1 ** 2 + D_fuselage ** 2 / 4) ** 1.5) \
-                                            - D_fuselage + 4 * L2 + 2 * np.sqrt(L3 ** 2 + D_fuselage ** 2 / 4))
+def Fus_wetted_area(d, L1, L2, L3):
+    wetted_area = ((np.pi*d)/4)*((1/(3*L1**2))*(((4*L1**2 + (d**2)/4)**1.15) - (d**3)/8) - d + 4*L2 + 2*np.sqrt(L3**2 + (d**2)/4))
     return wetted_area
-
 
 # zero lift drag is estimated using wetted areas and factors from adsee, lift induced drag is done in AVL
 def Zero_Lift_Drag_est(S, wing_wetted_area, h_wetted_area, v_wetted_area, fus_wetted_area):

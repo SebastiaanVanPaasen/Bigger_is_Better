@@ -21,9 +21,9 @@ mass_frac_fuse = 0.098
 mass_frac_nac = 0.018
 mass_frac_prop = 0.072
 mass_frac_fix = 0.118
-mass_fractions_input = [mass_frac_wing, mass_frac_emp, mass_frac_fuse, mass_frac_nac, mass_frac_prop, mass_frac_fix, 0,
-                        0, 0]
 
+mass_fracs_wing = np.array([mass_frac_wing, mass_frac_prop, mass_frac_nac])
+mass_fracs_fus = np.array([mass_frac_fus, mass_frac_fix, mass_frac_emp])
 # Design choices required for the Roskam equations -----------------------------------------------------------------
 # first is to include spoilers and speed brakes
 # second is with 2 wing mounted engines
@@ -68,7 +68,7 @@ Oswald = 0.9  # estimated from ADSEE-I L3
 T_input = 0.26
 S_input = 8200
 A = 14
-CD_0 = C_fe * S_ratio
+CD_0 = 0.026
 N_engines = 2.  #
 w_engine = 7000.  # kg   Obtained from Bram
 propeller_choice = 0
@@ -104,7 +104,7 @@ Rho_Landing = Rho_0  # kg/m^3   standard sea-level density
 
 # aircraft cg-locations ------------------------------------------------------------------------------------------------
 x_engines = -1.  # m    x-location engines w.r.t. X_LEMAC
-x_fuel = 22.  # m    cg-location fuel w.r.t nose
+x_fuel_input= 22.  # m    cg-location fuel w.r.t nose
 
 xcg_oew_mac = 0.25  # m     initial cg location OEW w.r.t. MAC
 
@@ -157,7 +157,7 @@ TOP = 220. * lbft2_Nm2  # Guestimated from ADSEE-I L3
 Sigma_TO = Rho_TO / Rho_0  # Ratio of densities
 
 # Stall speeds ---------------------------------------------------------------------------------------------------------
-V_stall_Cruise = 200 / 1.2  # m/s   Guestimated from ADSEE-I L3 Take requirements
+V_stall_Cruise = 250 / 1.2  # m/s   Guestimated from ADSEE-I L3 Take requirements
 V_stall_Landing = min(np.sqrt(Landing_runway / 0.5847), 65.)  # m/s     Guestimated from ADSEE-I L3
 
 # Lift and drag coefficients -------------------------------------------------------------------------------------------

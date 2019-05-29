@@ -4,10 +4,16 @@ Created on Thu May  9 13:38:52 2019
 
 @author: floyd
 """
-from class_I.drag_estimation import *
+import sys
+#sys.path.append("C:/Users/floyd/OneDrive/Documenten/GitHub/Bigger_is_Better/class_I")
+sys.path.append("C:/Users/sebas/OneDrive/Documents/DSE/Bigger_is_Better/class_I")
+#from drag_estimation import *
 import subprocess
 import os
+sys.path.append("C:/Users/sebas/OneDrive/Documents/DSE/Bigger_is_Better/class_I")
 from avl.run_conditions import define_run_condition
+import numpy as np
+
 
 """
 Comments about this file:
@@ -16,6 +22,11 @@ Comments about this file:
 
 """
 ROOT_dir = os.path.dirname(os.path.abspath("conv_wing_avl.py"))
+print(ROOT_dir)
+#cl_cruise = 1
+#M_cruise = 0.75
+#CD_0  = 0.0264
+
 
 
 def make_avl_file(root_chord, tip_chord, span, LE_sweep, dihedral, S, CD_0, M_cruise, tailarm_h, span_h, \
@@ -116,7 +127,8 @@ def make_avl_file(root_chord, tip_chord, span, LE_sweep, dihedral, S, CD_0, M_cr
 
 def run_avl(cl_cruise, M_cruise, CD_0):
     define_run_condition(M_cruise, CD_0)
-    # print(ROOT_dir)
+    
+
     p = subprocess.Popen(str(ROOT_dir) + "/avl/avl.exe", stdin=subprocess.PIPE, stdout=subprocess.DEVNULL,
                         universal_newlines=True)
     set_cl_cruise = "a c " + str(cl_cruise)
@@ -134,25 +146,48 @@ def run_avl(cl_cruise, M_cruise, CD_0):
     return e, CD
 
 
-# run_avl(0.7, 0.4, 0.020)
+#run_avl(cl_cruise, M_cruise, CD_0)
 
 
-def find_clalpha(M_cruise, CD_0):
+def find_clalpha(M_cruise, CD_0, filename):
     define_run_condition(M_cruise, CD_0)
+    ROOT_dir = os.path.dirname(os.path.abspath("conv_wing_avl.py"))
+#    print(ROOT_dir)
     alpha_range = [0, 5]
     CL_range = []
     for j in range(len(alpha_range)):
         p = subprocess.Popen(str(ROOT_dir) + "/avl/avl.exe", stdin=subprocess.PIPE, stdout=subprocess.DEVNULL,
                              universal_newlines=True)
         set_alpha = "a a " + str(alpha_range[j])
-        p.communicate(os.linesep.join(
-            ["load", "conv_wing", "case", "mach" + str(M_cruise) + ".run", "oper", set_alpha, "x", "ft", "endresult"]))
+        p.communicate(os.linesep.join(["load", filename, "case", "mach" + str(M_cruise) + ".run", "oper", set_alpha, "x", "ft", "endresult"]))
         lines = [line.rstrip('\n') for line in open('endresult')]
         CL = float(lines[23].split()[2])
         CL_range.append(CL)
         os.remove("endresult")
-    CL_alpha = round((CL_range[1] - CL_range[0]) / (alpha_range[1] - alpha_range[0]), 3)
+    CL_alpha = round((CL_range[1] - CL_range[0]) / (alpha_range[1] - alpha_range[0]), 5)
     os.remove("mach" + str(M_cruise) + ".run")
     return CL_alpha
+#print("CLa is ", find_clalpha(M_cruise, CD_0))
+    
 
-# print("CLa is ", find_clalpha(0.4, 0.020))
+#CLALPHA PLOTS
+#mylabel = ["AERO", "DD2E", "DD4E", "HBPE", "STRW"]
+#avl_files = ["aero_avl", "dd_2_avl", "dd_4_avl", "hbp_avl","strutted_avl"]
+#CLalpha = np.zeros(len(avl_files))
+#mach = [0.75,0.7,0.75,0.7,0.7]
+#cd_0 = [0.0262, 0.0202, 0.0205, 0.0219, 0.0276]
+#linestyles = ['dashed', 'dashed', (0,(5,5)), 'dotted','dashed']
+#for i in range(len(avl_files)):
+##    print(mach[i], cd_0[i],avl_files[i])
+#    CLalpha[i] = find_clalpha(mach[i],cd_0[i],avl_files[i])
+##    print("CLa is ", find_clalpha(mach[i],cd_0[i],avl_files[i]))
+##print(CLalpha)
+#x = np.arange(-5,20,1)
+#zero_lift_angle = -3.171
+#for i in range(len(CLalpha)):
+#    y = CLalpha[i]*(x-zero_lift_angle) 
+#    plt.plot(x,y,label=mylabel[i], linestyle=linestyles[i])
+#plt.legend()
+#plt.grid()
+#plt.xlabel("Angle of Attack [deg]")
+#plt.ylabel("CL [-]")
