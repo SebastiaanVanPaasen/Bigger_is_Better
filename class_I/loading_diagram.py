@@ -71,8 +71,8 @@ def potato(l_nosecone, W_TO, x_eng, l_n, mass_fractions, tail_h, tail_v, Safety_
     xcg_nac = x_eng + 0.4 * l_n
 
     # Fuselage group - in [m] w.r.t. nose
-    xcg_fuse = 0.4 * l_fuselage
-    xcg_fix = 0.4 * l_fuselage
+    xcg_fuse = 0.5 * l_fuselage
+    xcg_fix = 0.5 * l_fuselage
     xcg_emp = 0.9 * l_fuselage
 
     xcg_nlg = l_nosecone  # assumption, use landing gear function !!!
