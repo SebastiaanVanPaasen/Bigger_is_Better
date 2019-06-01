@@ -25,9 +25,9 @@ strut_length = 20.95
 
 def required_strut_area(strut_length):
     angle = (20.78/180)*np.pi
-    sigma_carbon = 1500*10**6 
-    density_carbon = 1600
-    cost_carbon = 100
+    sigma_carbon = 552 * 10 ** 6#1500*10**6 
+    density_carbon = 2801#1600
+    cost_carbon = 6.6 #100
     P_strut = lm.strutforce/np.sin(angle)
     A_req = P_strut/sigma_carbon
     strut_volume = A_req*strut_length

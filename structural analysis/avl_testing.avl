@@ -4,11 +4,19 @@ Test Wing
 #IYsym IZsym Zsym
 0  0  0
 #Sref  Cref  Bref
+<<<<<<< HEAD
 190.3691002 4.181384013875098 49.7473 
 #Xref Yref Zref
 0  0.0  0
 #CDcp
 0.024 
+=======
+255.7038462 4.532523749961297 61.93187946 
+#Xref Yref Zref
+0  0.0  0
+#CDcp
+0.021 
+>>>>>>> master
 
 SURFACE
 Wing 
@@ -18,8 +26,14 @@ YDUPLICATE
 ANGLE
 0.0
 SECTION
+<<<<<<< HEAD
 0 0 0 5.845 0.0
 SECTION
 13.117 24.874 0.0 1.808 0.0
+=======
+0 0 0 6.365 0.0
+SECTION
+18.574 30.966 0.0 1.893 0.0
+>>>>>>> master
 AFILE
 n2414.dat.txt
