@@ -11,7 +11,7 @@ from matplotlib import pyplot as plt
 import math as m
 from read_csv_input import read_output
 
-filename = 'Design 29 HIGH 2E SEMIDD STRUT'
+filename = 'Design 33 HIGH 2E DD STRUT'
 weights, wing, cruise_conditions = read_output(filename)
 #from loading_and_moment_diagrams import c
 #ROOT_DIR = os.path.dirname(os.path.abspath("structural analysis"))
@@ -70,7 +70,7 @@ def make_avl_file():
 make_avl_file()
 
 def lift_distribution(CL):        
-    p = subprocess.Popen(r"C:\Users\mathi\Documents\DSE\Bigger_is_Better\avl\avl.exe", stdin=subprocess.PIPE, universal_newlines=True)
+    p = subprocess.Popen(r"C:\Users\sebas\OneDrive\Documents\DSE\Bigger_is_Better\avl\avl.exe", stdin=subprocess.PIPE, universal_newlines=True)
     set_CL = "a c " + str(CL)
     p.communicate(os.linesep.join(["load", "avl_testing","case", "mach0.7", "oper", set_CL, "x","fs", "endresult"]))          
     lines = [line.rstrip('\n') for line in open('endresult')]

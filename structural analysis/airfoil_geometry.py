@@ -13,9 +13,10 @@ from scipy import integrate
 from matplotlib import pyplot as plt
 from stress_distribution_wing import load_airfoil
 from loading_and_moment_diagrams import c
+import loading_and_moment_diagrams as lm
 
 N = 100 
-b = 60.#39.56 #41.76
+b = lm.b#39.56 #41.76
 
 
 def airfoil_geometry(N,b):
@@ -50,5 +51,5 @@ def airfoil_geometry(N,b):
 
 
 #data = load_airfoil('NACA3414.txt')
-data_z_all_sec, data_y_upper_all_sec, data_y_lower_all_sec = airfoil_geometry(N,b)
+#data_z_all_sec, data_y_upper_all_sec, data_y_lower_all_sec = airfoil_geometry(N,b)
         

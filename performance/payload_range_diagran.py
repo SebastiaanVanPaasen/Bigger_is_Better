@@ -9,6 +9,20 @@ Created on Mon May 13 11:45:46 2019
 import numpy as np
 import matplotlib.pyplot as plt
 
+import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.ticker as tkr
+
+def func(x, pos):  # formatter function takes tick label and tick position
+   s = '{:0,d}'.format(int(x))
+   return s
+
+
+y_format = tkr.FuncFormatter(func)  # make formatter
+
+
+
+
 #-------------------------------INPUTS-----------------------------------------
 """Weights"""
 #MTOW       =       Maximum take-off weight [N] (optional as fraction of W_TO)
@@ -33,120 +47,48 @@ import matplotlib.pyplot as plt
 #------------------------------VERIFICATION DATA--------------------------------
 
 """Inputs unit test based on B737 MAX-8"""
-<<<<<<< HEAD
-#"""STRW"""
-=======
-"""STRW"""
->>>>>>> master
-#MTOW = 1712063.74
-#OEW  =  900623.75
+
+#"""HIGH SEMI DD CONCEPT"""
+#MTOW = 1580051.306
+#OEW = 966190.5428
+#MPW = 472485.
 #
-##MLW  = MTOW - 0.3*OEW
-#MZFW = OEW + 508587.17
-#MFW  =  297908.01*1.4     # Maximum fuel weight (including reserve fuel)
-#W_fr = MFW/105. * 5.        #reserve fuel
-#A = 18.
-#V = 206.53 #m/s
-#CD0 = 0.0276
-#g = 9.81
-#e = 0.9
-#R_range = 2500.  #range of x-axis
-#R_des = 1400. #[km]
-<<<<<<< HEAD
-#Ct0 = 65e-06
-=======
-#Ct0 = 55e-06
->>>>>>> master
-
-
-
-"""HPBE"""
-#MTOW = 1835973.64
-#OEW  =  959038.84
+#MLW = MTOW - 0.2*OEW
+#MZFW = (OEW+MPW)*1.15
+#MFW = 141376.
+#W_fr = MFW/105 * 5.
 #
-##MLW  = MTOW - 0.3*OEW
-#MZFW = OEW + 508587.17
-#MFW  =  363032.71*1.3     # Maximum fuel weight (including reserve fuel)
-#W_fr = MFW/105. * 5.        #reserve fuel
-#A = 8.
-#V = 209.6 #m/s
-#CD0 = 0.0219
-#g = 9.81
-#e = 0.9
-#R_range = 3200.  #range of x-axis
-#R_des = 1600. #[km]
-#Ct0 = 55e-06
-
-
-"""DD4E"""
-#MTOW = 1533186.85
-#OEW  =  741915.71
 #
-##MLW  = MTOW - 0.3*OEW
-#MZFW = OEW + 508587.17
-#MFW  =  277919.32*1.4     # Maximum fuel weight (including reserve fuel)
-#W_fr = MFW/105. * 5.        #reserve fuel
-#A = 8.5
-#V = 224.58 #m/s
-#CD0 = 0.0205
+#A = 13.
+#e = 0.85
+#CD0 = 0.023
+#V = 232.0625
 #g = 9.81
-#e = 0.9
-#R_range = 3200.  #range of x-axis
-#R_des = 1600. #[km]
-#Ct0 = 55e-06
-
-
-
-"""DD2E"""
-#MTOW = 1545876.62
-#OEW  =  740611.66
 #
-##MLW  = MTOW - 0.3*OEW
-#MZFW = OEW + 508587.17
-#MFW  =  292191.26*1.4     # Maximum fuel weight (including reserve fuel)
-#W_fr = MFW/105. * 5.        #reserve fuel
-#A = 9.
-#V = 215.62 #m/s
-#CD0 = 0.0202
-#g = 9.81
-#e = 0.9
-#R_range = 3200.  #range of x-axis
-#R_des = 1600. #[km]
-#Ct0 = 55e-06
+#R_range = 2500.
+#R_des = 1400.
+#Ct0 = 62e-06
 
+"""LOW SEMI DD CONCEPT"""
+MTOW = 1597097.403
+OEW = 981787.474
+MPW = 472485.
 
-"""Aerodynamic design"""
-#MTOW = 1828542.22
-#OEW  =  1000102.71
-##MLW  = MTOW - 0.3*OEW
-#MZFW = OEW + 508587.17
-#MFW  =  313967.31*1.4     # Maximum fuel weight (including reserve fuel)
-#W_fr = MFW/105. * 5.        #reserve fuel
-#A = 14.
-#V = 221.281 #m/s
-#CD0 = 0.0262
-#g = 9.81
-#e = 0.9
-#R_range = 3000.  #range of x-axis
-#R_des = 1600. #[km]
-#Ct0           = 55e-06  
-
-"""Ref aircraft B737-Max 8 """
-MTOW = 82190*9.81
-OEW = 45065*9.81
-MLW = 69308*9.81
-MZFW = 65952*9.81
-MFW = 20826*9.81
+MLW = MTOW - 0.3*OEW
+MZFW = (OEW+MPW)
+MFW = 142825.*1.4
 W_fr = MFW/105 * 5.
-A = 8.45
+
+
+A = 13.
 e = 0.85
-CD0 = 0.020
-V = 236.
+CD0 = 0.023
+V = 232.0625
 g = 9.81
 
-R_range = 11000
-R_des = 6590.
-Ct0 = 10.7e-06
+R_range = 2500.
+R_des = 1400.
+Ct0 = 65e-06
 
 
 #------------------------------DEFINITIONS-----------------------------------
@@ -175,19 +117,21 @@ def payload_range():
     Wf1 =  (MTOW-MZFW-W_fr)             #fuel weight at max. payload
     Ct = (Ct0 / 233.083) * (V) 
     R_harmonic = ((V/(g*Ct))*CL_CD(A,e,CD0)*np.log(MTOW/(MTOW-Wf1)))/1000.
-
+    #R_harmonic = ((V/(g*Ct))*CL_CD(A,e,CD0)*np.log(MTOW/(MTOW-MZFW-W_fr)))/1000.
+    
     #Max range line (increase fuel, decrease payload)
     R_max = ((V/(g*Ct))*CL_CD(A,e,CD0)*np.log(MTOW/(MTOW-((MFW-W_fr)*1))))/1000.
-
+    #R_max = ((V/(g*Ct))*CL_CD(A,e,CD0)*np.log(MTOW/(MFW-W_fr)))/1000.
+    
     #Ferry range (no payload all fuel, no MTOW anymore)
     W_TO = OEW + MFW 
     Wf2 =  (MFW - W_fr )#*0.4
     R_ferry = ((V/(g*Ct))*CL_CD(A,e,CD0)*np.log(W_TO/(W_TO - Wf2)))/1000.
     
-    plt.vlines(R_harmonic,OEW,MTOW,"m","--",label="Harmonic Range")
-    plt.vlines(R_max, OEW,MTOW,"crimson","--",label="Maximum Range")
-    plt.vlines(R_ferry,OEW,MTOW,"gray","--",label="Ferry Range")
-    #plt.vlines(R_des,OEW,MTOW,"orange","--",label="Design Range")
+    plt.vlines(R_harmonic,OEW,MTOW,"yellowgreen","-.",label="Harmonic Range")
+    plt.vlines(R_max, OEW,MTOW,"magenta","-.",label="Maximum Range")
+    plt.vlines(R_ferry,OEW,MTOW,"gray","-.",label="Ferry Range")
+    plt.vlines(R_des,OEW,MTOW,"orange","-.",label="Design Range")
    
     """Take-off weight line"""    
     #TO line up to MTOW and R_harmonic 
@@ -236,15 +180,21 @@ def payload_range():
     plt.hlines(MTOW,0.,R_ferry,"g","--",label = "MTOW")
     plt.hlines(OEW,0.,R_ferry,"r","--",label = "OEW")
     plt.hlines(MZFW,0.,R_ferry,"b","--", label = "MZFW")
-    #plt.hlines(MLW,0.,R_range,"y","--", label = "MLW")    
+    #plt.hlines(MLW,0.,R_ferry,"y","--", label = "MLW")    
     
     #plt.title('Payload - range diagram')
-    plt.xlabel("Range [km]")
-    plt.ylabel("Weight [N]")
+    plt.xlabel("Range [km]", fontsize = "x-large")
+    plt.ylabel("Weight [N]", fontsize = "x-large")
     plt.ylim(0.95*OEW,1.05*MTOW)
-    plt.legend()
+  
+    plt.legend(loc = "lower left", fontsize = "x-large")
+    
+    ax = plt.gca()
+    ax.get_yaxis().set_major_formatter(plt.FuncFormatter(lambda x, loc: "{:,}".format(int(x))))
+    ax.get_xaxis().set_major_formatter(plt.FuncFormatter(lambda x, loc: "{:,}".format(int(x))))
+    
     plt.show()
-    return 
+    return R_harmonic, R_max, R_ferry
 
 #a = (payload_range()[0][1]-p6ayload())
 print (payload_range())

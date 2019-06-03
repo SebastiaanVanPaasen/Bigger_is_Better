@@ -38,8 +38,8 @@ N_crew = 11.  # Based on the amount of passengers
 m_person = 85.  # kg   Based on statistics of Roskam
 m_carg = 20.  # kg  Based on statistics
 
-l_nac = 4.  # m     Based on ADSEE
-xcg_eng = -7.  # m    Defined w.r.t. LEMAC
+l_nac = 5.  # m     Based on ADSEE
+xcg_eng = -4.  # m    Defined w.r.t. LEMAC
 xcg_oew_mac = 0.25  #   Defined w.r.t. MAC
 x_fuel = 30  # m    Defined w.r.t. nose
 
