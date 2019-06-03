@@ -47,11 +47,11 @@ def main_iterator(cf, char, env, eng, opt, tails):
         
     if N_eng == 2:
         b_n_1, b_n_2, b_n_3, b_n_4 = 3.2, 3.2, 0, 0
-        l_n_1, l_n_2, l_n_3, l_n_4 = 6, 6, 0, 0
+        l_n_1, l_n_2, l_n_3, l_n_4 = 3, 3, 0, 0
         
     else:
         b_n_1, b_n_2, b_n_3, b_n_4 = 3.2, 3.2, 3.2, 3.2
-        l_n_1, l_n_2, l_n_3, l_n_4 = 6, 6, 1, 1
+        l_n_1, l_n_2, l_n_3, l_n_4 = 3, 3, 1, 1
     
     mass_fractions = ip.mass_fractions
     percentages = []
@@ -230,7 +230,7 @@ def main_iterator(cf, char, env, eng, opt, tails):
         # Calculate the accompanying tail sizes ---------------------------
         HC_sweep_h = determine_half_chord_sweep(c_tip_h, QC_sweep_h, c_root_h, b_h)
         HC_sweep_v = determine_half_chord_sweep(c_tip_v, QC_sweep_v, c_root_v, b_v)
-
+        
         # Calculate new wetted area----------------------------------------
         main_wing_wet = Wing_wetted_area(c_root, c_tip, d_fuselage, b, S)
         horizontal_tail_wet = H_tail_wetted_area(c_root_h, tap_h, b_h)
@@ -364,12 +364,12 @@ def main_iterator(cf, char, env, eng, opt, tails):
 #        print("the percentage equals: " + str(percentage))
 #        print(iteration)
         percentages.append(percentage)
-        
-        i += 1
     
+        i += 1
+    print(percentages)
     print("New surface =", opt_Sh_S)
-    print("New arm = ", l_h)
-    print("New position = ", opt_X_LEMAC)
+    print("New arm = ", l_h/l_fuselage)
+    print("New position = ", opt_X_LEMAC/l_fuselage)
     
     sar = ((((0.5 * Rho_cr * (V_cr ** 2) * S * CD_cr) * c_t) / V_cr) * 1000 )/ ip.N_pas  
     # in kg/km/pas
