@@ -22,7 +22,7 @@ import matplotlib.pyplot as plt
 
 #------------------------STATISTICAL INPUTS----------------------------------
 """NOW THE SAME FOR REF. AND DESIGN AIRCRAFT, CHANGE WHEN ENGINE IS KNOWN"""
-Ct0           = 12.2e-06      #Thrust Specific fuel conspumtion [kg/N/s] from B737MAX 
+#Ct0           = 12.2e-06      #Thrust Specific fuel conspumtion [kg/N/s] from B737MAX 
                             #proprtional to speed, divide by nominal conditions
                             #aka cruise speed
                             #12 future high bypass engines
@@ -32,19 +32,97 @@ Ct0           = 12.2e-06      #Thrust Specific fuel conspumtion [kg/N/s] from B7
 
 """INPUTS: CHANGE ACCORDING TO DESIGN"""
 
-MTOW = 1580051.
+"""Design concept 5"""
+MTOW = 1474914.
+A = 14.
+S = 183.29
 
-A = 13.
 e = 0.85
 CD0 = 0.023
 g = 9.81
-S = 210.85
+
 Wcr = (0.8*MTOW)              #63000*9.81#assumption for now
 pax_max = 450
 n = 1                       #load factor of number of passengers
 
+M_des = 0.75
+SAR_des = 0.008190
+Hcr_des = 9000.
+Ct0 = 12.65e-06
 
 
+#"""Design concept 4"""
+#MTOW = 1532734.
+#A = 15.
+#S = 255.70
+#
+#e = 0.85
+#CD0 = 0.023
+#g = 9.81
+#
+#Wcr = (0.8*MTOW)              #63000*9.81#assumption for now
+#pax_max = 450
+#n = 1                       #load factor of number of passengers
+#
+#M_des = 0.775
+#SAR_des = 0.007209
+#Hcr_des = 11000.
+#Ct0 = 10.6e-06
+
+#"""Design concept 3"""
+#MTOW = 1597097.
+#A = 13.
+#S = 199.70
+#
+#e = 0.85
+#CD0 = 0.023
+#g = 9.81
+#
+#Wcr = (0.8*MTOW)              #63000*9.81#assumption for now
+#pax_max = 450
+#n = 1                       #load factor of number of passengers
+#
+#M_des = 0.775
+#SAR_des = 0.008383
+#Hcr_des = 10000.
+#Ct0 = 12.8e-06
+
+#"""Design concept 2"""
+#MTOW = 1520114.
+#A = 13.
+#S = 190.37
+#
+#e = 0.85
+#CD0 = 0.023
+#g = 9.81
+#
+#Wcr = (0.8*MTOW)              #63000*9.81#assumption for now
+#pax_max = 450
+#n = 1                       #load factor of number of passengers
+#
+#M_des = 0.75
+#SAR_des = 0.008471
+#Hcr_des = 8500.
+#Ct0 = 11.9e-06
+
+
+#"""Design concept 1"""
+#MTOW = 1580051.
+#A = 13.
+#S = 210.85
+#
+#e = 0.85
+#CD0 = 0.023
+#g = 9.81
+#
+#Wcr = (0.8*MTOW)              #63000*9.81#assumption for now
+#pax_max = 450
+#n = 1                       #load factor of number of passengers
+#
+#M_des = 0.75
+#SAR_des = 0.008135
+#Hcr_des = 10000.
+#Ct0 = 11.9e-06
 
 #------------------------------VERIFICATION DATA--------------------------------
 
@@ -208,11 +286,6 @@ for h in H:
 SAR_ref_point = 0.0094    
 Mcr = 0.79
 
-M_des = 0.775
-SAR_des = 0.008383098
-
-Hcr_des = 10000.
-
 plt.xlabel("Mach number",fontsize = 'x-large')
 plt.ylabel("Fuel consumption [kg/km/passenger]",fontsize = 'x-large')
 plt.plot(M_des,SAR_des,'ko', label = "Design")
@@ -220,7 +293,7 @@ plt.plot(Mcr,SAR_ref_point,"mo", label = "Ref. aircraft")
 plt.hlines(0.9*SAR_ref_point,0.5,1.,"gray",'--') 
 plt.xlim(0.5,0.95)
 plt.ylim(0.007,0.015)#
-#plt.legend(loc = "upper left")#, fontsize = 'x-large')
+plt.legend(loc = "upper left")#, fontsize = 'x-large')
 
 plt.show()
 

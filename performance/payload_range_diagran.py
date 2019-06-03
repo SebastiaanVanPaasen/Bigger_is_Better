@@ -48,14 +48,55 @@ y_format = tkr.FuncFormatter(func)  # make formatter
 
 """Inputs unit test based on B737 MAX-8"""
 
-#"""HIGH SEMI DD CONCEPT"""
+#"""HIGH SEMI DD CONCEPT: design 1"""
 #MTOW = 1580051.306
 #OEW = 966190.5428
 #MPW = 472485.
 #
-#MLW = MTOW - 0.2*OEW
-#MZFW = (OEW+MPW)*1.15
-#MFW = 141376.
+#MLW = MTOW - 0.3*OEW
+#MZFW = (OEW+MPW)
+#MFW = 141376.*1.4
+#W_fr = MFW/105 * 5.
+#
+#
+#A = 13.
+#e = 0.85
+#CD0 = 0.023
+#V = 224.58
+#g = 9.81
+#
+#R_des = 1400.
+#Ct0 = 32e-06
+
+
+#"""Design 2"""
+#MTOW = 1520114.
+#OEW = 911477.
+#MPW = 472485.
+#
+#MLW = MTOW - 0.3*OEW
+#MZFW = (OEW+MPW)
+#MFW = 136152.*1.4
+#W_fr = MFW/105 * 5.
+#
+#
+#A = 13.
+#e = 0.85
+#CD0 = 0.023
+#V = 229.43
+#g = 9.81
+#
+#R_des = 1400.
+#Ct0 = 25e-06
+
+#"""Design 3 (low wing)"""
+#MTOW = 1597097.403
+#OEW = 981787.474
+#MPW = 472485.
+#
+#MLW = MTOW - 0.3*OEW
+#MZFW = (OEW+MPW)
+#MFW = 142825.*1.4
 #W_fr = MFW/105 * 5.
 #
 #
@@ -67,28 +108,49 @@ y_format = tkr.FuncFormatter(func)  # make formatter
 #
 #R_range = 2500.
 #R_des = 1400.
-#Ct0 = 62e-06
+#Ct0 = 32e-06
 
-"""LOW SEMI DD CONCEPT"""
-MTOW = 1597097.403
-OEW = 981787.474
+
+#"""Design 4"""
+#MTOW = 1532734.
+#OEW = 923089.
+#MPW = 472485.
+#
+#MLW = MTOW - 0.3*OEW
+#MZFW = (OEW+MPW)
+#MFW = 137159.*1.4
+#W_fr = MFW/105 * 5.
+#
+#
+#A = 15.
+#e = 0.85
+#CD0 = 0.023
+#V = 228.66
+#g = 9.81
+#
+#R_des = 1400.
+#Ct0 = 25e-06
+
+"""Design 5"""
+MTOW = 1474914.
+OEW = 871340.
 MPW = 472485.
 
 MLW = MTOW - 0.3*OEW
 MZFW = (OEW+MPW)
-MFW = 142825.*1.4
+MFW = 131089.*1.4
 W_fr = MFW/105 * 5.
 
 
-A = 13.
+A = 14.
 e = 0.85
 CD0 = 0.023
-V = 232.0625
+V = 227.82
 g = 9.81
 
-R_range = 2500.
 R_des = 1400.
-Ct0 = 65e-06
+Ct0 = 25e-06
+
 
 
 #------------------------------DEFINITIONS-----------------------------------
