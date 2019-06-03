@@ -32,23 +32,29 @@ Ct0           = 12e-06      #Thrust Specific fuel conspumtion [kg/N/s] from B737
 
 """INPUTS: CHANGE ACCORDING TO DESIGN"""
 
-MTOW = 82190.*9.81
-OEW  = 45065*9.81
-MLW  = 69308.*9.81
-MZFW = 65952.* 9.81
-MFW  = 20826.*9.81          # Maximum fuel weight (including reserve fuel)
-W_fr = MFW/105. * 5.        #reserve fuel
+MTOW = 82191.*9.81
 
-A = 10.45
+A = (35.92**2 / 127.)
 e = 0.85
 CD0 = 0.020
 g = 9.81
-S = 127.  #127 
+S = 127.*1.2
 
-             #[km]
-Wcr = 0.8*MTOW              #63000*9.81#assumption for now
-pax_max = 450
+Wcr = (0.8*MTOW)              #63000*9.81#assumption for now
+pax_max = 200
 n = 1                       #load factor of number of passengers
+
+
+
+"""For fixed design point"""
+MTOW_des = 
+Wcr_des = MTOW_des*0.8
+hcr_design = 
+A_des = 
+S_des = 
+CD0_des = 
+Ct0_des = 
+
 
 #------------------------------VERIFICATION DATA--------------------------------
 
@@ -65,11 +71,11 @@ Wcr1 = 0.8*MTOW1             #ASSUMPTION!!! WHAT IS W_Cr ACTUALLY
 
 Mcr = 0.79
 hcr = 12000                 #(m)
-S1 = 124.5                    #m^2
+S1 = 127.                  #m^2
 b1 = 35.92                  #m
-A1 = b1**2 / S1
+A1 = 35.92**2 / 127.
 e = 0.85
-CD0 = 0.020
+CD01 = 0.020
 
 pax_ref = 200.
 n_ref = 1.
@@ -159,8 +165,8 @@ V_minSAR = []
 #
 #
 #For the reference case aim to stay below it:
-SAR_ref = SAR(hcr,A1,S1,e,CD0,Ct0,Wcr1)[0]
-V_ref = SAR(hcr,A1,S1,e,CD0,Ct0,Wcr1)[1]
+SAR_ref = SAR(hcr,A1,S1,e,CD01,Ct0,Wcr1)[0]
+V_ref = SAR(hcr,A1,S1,e,CD01,Ct0,Wcr1)[1]
 
 #
 #
@@ -169,6 +175,11 @@ for i in range(len(V_ref)):
     if 0.997*Mcr <= V_ref[i] <= 1.003* Mcr:
         SAR_ref_point = SAR_ref[i]
 
+
+#Actual fuel consumption of design
+SAR_design = SAR(hcr_design,A_des,S_des,e,CD0_des,Ct0_des,Wcr_des)[0]
+V_design = SAR(hcr_design,A_des,S_des,e,CD0_des,Ct0_des,Wcr_des)[1]
+M_design = Mach(V_design,hcr_design)
 
 ##PLot the single point of the ref. aircraft
 ##plt.plot(Mcr,SAR_ref_point,"mo", label = "Ref. aircraft")
@@ -205,17 +216,25 @@ for h in H:
     #plt.subplot(122)
     plt.plot(V,SAR_list,label='%s altitude [m]' % h)
     #plt.title('Fuel consumption per passenger w.r.t. Mach number')
+    k = SAR_list.index(min(SAR_list))
+    print (V[k])
+    
 
-plt.xlabel("Mach number",fontsize = 'xx-large')
-plt.ylabel("Fuel consumption [kg/km/passenger]",fontsize = 'xx-large')
+plt.xlabel("Mach number")#,fontsize = 'large')
+plt.ylabel("Fuel consumption [kg/km/passenger]")#,fontsize = 'large')
 
 plt.plot(Mcr,SAR_ref_point/pax_ref,"mo", label = "Ref. aircraft")   
+plt.plot(M_design, SAR_design/450.,"o", label = "Design")
 #plt.hlines(0.9*SAR_ref_point/pax_ref,0.5,1.,"gray",'--') 
 plt.xlim(0.5,0.95)
 plt.ylim(0.007,0.015)
-plt.legend(loc = "upper left", fontsize = 'xx-large')
+#plt.legend(loc = "lower left")#, fontsize = 'large')
 
 plt.show()
+
+
+
+
 
 # print SAR_ref_point
 
