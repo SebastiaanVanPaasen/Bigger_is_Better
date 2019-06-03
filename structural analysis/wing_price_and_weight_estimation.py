@@ -12,7 +12,7 @@ import loading_and_moment_diagrams as lm
 
 t_skin = 0.002
 N = 100
-t_spar = 0.021
+t_spar = 0.065
 b = lm.b #60.#47.83#39.56#41.76
 length = 0.30
 
