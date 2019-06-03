@@ -1,19 +1,14 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Tue May 14 09:48:11 2019
-
-@author: Mathilde
-"""
-import sys
+#import sys
 #sys.path.append("C:/Users/mathi/Documents/DSE/Bigger_is_Better")
 #sys.path.append("C:/Users/Mels/Desktop/3e jaar TUDelft/DSE/code/Bigger_is_Better")
-import numpy as np  ### Never use * to import stuff, as it makes it difficult to retrace where functions come from
-import scipy as sp
+# Never use * to import stuff, as it makes it difficult to retrace where functions come from
+import numpy as np  
+#import scipy as sp
 import math as m
 from scipy import interpolate  ### Useful to interpolate stuff
 from scipy import integrate
 from matplotlib import pyplot as plt
-from class_I.lift_distr import *
+from class_I.lift_distr import lift_distribution, get_correct_data
 import constants_and_conversions as cc
 
 from read_csv_input import read_output
@@ -39,7 +34,7 @@ tc = 0.14
 
 Wing_W = weights["W_W"]#212307.69#149254.55#161567.21# 285629.97
 #Wing_W = Wing_Wf/9.81 # 57461.507853787  # kg
-Volume = (0.5*(Cr**2*tc + Ct**2*tc)*(b/2))*2  # m^3
+Volume = (0.5 * ((Cr ** 2) * tc + (Ct ** 2) * tc) * (b / 2)) * 2  # m^3
 specific_weight = Wing_W / Volume  # N/m^3
 Fuel_W_tot = weights["W_F"] #335313.11#259149.65#273118.03 # 297271.17in Newton
 Sweepsc = m.atan(m.tan(Sweep0) - 4 / AR * (0.4 * (1 - taper) / (1 + taper)))  # sweep shear center
@@ -51,8 +46,8 @@ start_eng_1 = 0.3 * (b / 2)
 start_eng_2 = 0.6 * (b / 2)
 n_engines = 2
 total_thrust = cruise_conditions["T_TO"]#396428.19#392632.62#418435.81 # 469612.93in Newton
-engine_weight = weights["W_E"]+ weights["W_N"]/n_engines #137279.1+25828.71#156890.4+25767.83#156890.4+21594.79#166696.05 + 23013.97 #137279.1+25828.71 in Newton
-strut_position = 0.68*(b/2)
+engine_weight = weights["W_E"]+ weights["W_N"] / n_engines #137279.1+25828.71#156890.4+25767.83#156890.4+21594.79#166696.05 + 23013.97 #137279.1+25828.71 in Newton
+strut_position = 0.68 * (b / 2)
 strutforce = 1000000.
 # input for each critical case; as the lift distribution varies for each case
 alt = cruise_conditions["H_cr" ]
@@ -63,9 +58,8 @@ n_ult= 3.75
 n = n_ult/1.5#4.7/1.5#4.21/1.5#4.4/1.5#4.4/1.5
 W = weights["W_TO"]#1801946.31#1510125.47#1549762.26#1806203.58
 
-def input_CL(S,V,rho,W):
-    input_CL = W/(0.5*rho*V**2*S)
-    return input_CL
+def input_CL(S, V, rho, W):
+    return W / (0.5 * rho * (V ** 2) * S)
 
 #print(input_CL(n, S, V, rho, W))
 
@@ -75,36 +69,38 @@ x_pos = get_correct_data(output_avl)[0]
 
 ##Lift Code:
 cl = get_correct_data(output_avl)[1]
-PolyFitCurveCl = sp.interpolate.interp1d(x_pos, cl, kind="cubic", fill_value="extrapolate")
+PolyFitCurveCl = interpolate.interp1d(x_pos, cl, kind="cubic", fill_value="extrapolate")
 
 ##Drag Code:
 cdi = get_correct_data(output_avl)[1]
-PolyFitCurveidrag = sp.interpolate.interp1d(x_pos, cdi, kind='cubic', fill_value='extrapolate')
+PolyFitCurveidrag = interpolate.interp1d(x_pos, cdi, kind='cubic', fill_value='extrapolate')
 
 
 ### Define your functions at the beginning of the program
-def c(z):
-    c = Cr - ((Cr - Ct) / (b / 2)) * z
-    return c
 
+
+def c(z):
+    return Cr - ((Cr - Ct) / (b / 2)) * z
 
 
 def S_cross_section(x):
-    return c(x) * c(x) * 0.14
+    return c(x) * c(x) * tc
 
-Vfuel = sp.integrate.quad(S_cross_section, x_fuel_begin, x_fuel_end)[0]
+Vfuel = integrate.quad(S_cross_section, x_fuel_begin, x_fuel_end)[0]
 #print(Vfuel)
-Fuel_W_tank = Fuel_W_tot/2
-specific_W_f = Fuel_W_tank/Vfuel
+Fuel_W_tank = Fuel_W_tot / 2
+specific_W_f = Fuel_W_tank / Vfuel
 
-def Loadcalculator(x0,Ff):
+def Loadcalculator(x0, Ff):
     Nloadcalculations = 100
     xnodevalues = np.linspace(x0, b / 2, Nloadcalculations)
     xleftvalues = xnodevalues[:-1]
     xrightvalues = xnodevalues[1:]
     xmiddlevalues = (xleftvalues + xrightvalues) / 2
-    section_verticalforcelist = []
-    section_horizontalforcelist = []
+    print(xmiddlevalues)
+#    section_verticalforcelist = []
+#    section_horizontalforcelist = []
+    
     Fz = 0
     Fy = 0
     Mz = 0
@@ -383,7 +379,9 @@ def load_diagrams(N):  ### 100 nodes, so 99 beam elements
 
 
 #    plt.show()
+    
 #    print(Liftdistributionvalues[0])
+    
     maxMz = max([max(Mzdistribution), max(Mzdistribution2), max(Mzdistribution3)])
     maxMy = max([max(Mydistribution), max(Mydistribution2), max(Mydistribution3)])
     maxT = max([max(Tdistributionvalues), max(Tdistributionvalues2), max(Tdistributionvalues3)])
