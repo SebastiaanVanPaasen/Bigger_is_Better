@@ -1,0 +1,41 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Wed May 29 16:52:29 2019
+
+@author: Max
+"""
+
+import os
+
+import numpy as np  # delete later should be loaded in the general program
+import matplotlib.pyplot as plt
+
+def load(file_name):
+    script_dir = os.path.dirname(__file__) #<-- absolute dir the script is in
+#    rel_path = "design_results/"+str(file_name)
+    rel_path = str(file_name)
+    abs_file_path = os.path.join(script_dir, rel_path)
+
+
+    f = open(abs_file_path, 'r')
+    lines = f.readlines()
+
+    f.close
+    data = []
+    for line in lines:
+        x = line.split()
+        for i in range(len(x)):
+            x[i] = float(x[i])
+        data.append(x)  
+        
+    return data     
+data = load('NACA0024.txt')    
+
+print(data)
+
+for i in range(0,len(data),5):
+    plt.plot(data[i][0],data[i][1], 'x')
+    
+plt.show()    
+

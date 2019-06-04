@@ -14,8 +14,8 @@ import numpy as np
 """Input values for the B737-800 aircraft"""
 MTOW       =       78220*9.81 #Maximum take-off weight [N]
 W_TO       =       MTOW       #Weight at take-off [N]
-T_TO       =       107*1000   #Total static thrust of all engines at take-off [N]
-T          =       91.63*1000 #Take-off thrust
+T          =       107*1000        #Total static thrust of all engines at take-off [N]
+T_TO       =       91.63*1000*2    #Take-off thrust
 T_cr       =       0.2789*0.8*MTOW #Thrust during cruise, assume a weight of 80%MTOW
 
 CL_maxto   =        2.5
@@ -252,9 +252,9 @@ C_steady = RC(T_TO,D_TO,V2,W_TO,vg_dvdh)      #Rate of climb for steady low alti
 #steady climb low altitude, at constant EAS
 TW_steady_climb = TW_steady_climb_jet(C_steady,a_steady,CD0,W_TO,p_steady,S,A,e) + dTW_constEAS_jet(C_steady,a_steady,W_TO,p_steady,S,CD0) 
 
-print "Rate of climb steady low altitude: ", C_steady, "m/s"
-print "T/W for steady climb :", TW_steady_climb
-print
+print ("Rate of climb steady low altitude at const. EAS: ", C_steady, "m/s")
+print ("T/W for steady climb :", TW_steady_climb)
+print ()
 
 #For service ceiling climb
 Dcr = 0.5*ISA_density(hcr)*V_cr**2.*S*CD
@@ -270,9 +270,9 @@ C_high = RC(T_cr,D_TO,V_cr,0.8*W_TO,vg_dvdh)      #Rate of climb for ceiling
 #High altitude climg: service ceiling thrust at constant EAS 
 TW_ceiling = TW_ceiling_climb_jet(n,CD0,A,e,theta,W_TO,p_high,S) + dTW_constEAS_jet(C_high,a_high,W_TO,p_high,S,CD0) 
 
-print "Rate of climb service ceiling: ", C_high, "m/s"
-print "T/W for ceiling climb :", TW_ceiling
-print
+print ("Rate of climb service ceiling at const. EAS: ", C_high, "m/s")
+print( "T/W for ceiling climb :", TW_ceiling)
+print()
 
 
 """Take-off wing loading diagram"""
@@ -289,10 +289,11 @@ TW_TO = TW_TO_jet(T,T_TO,MTOW,W_TO,M,t_c,qcsweep,S,A,l_f,b_f,h_f,psi_TO,bypass,e
 WS_TO = WS_TO(W_TO, S, rho, CL_maxto,bypass, T_TO,A,S_to,g)
 
 
-print 'Take-off T/W and W/S: ', TW_TO, "and", WS_TO
+print ('Take-off T/W and W/S: ', TW_TO, "and", WS_TO)
     
 
-
+print()
+print(" * at const. EAS means that you are accelerating during climb as the density becomes less" )
   
     
     

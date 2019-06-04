@@ -9,12 +9,12 @@ import numpy as np
 #Detailed drag esstiation
 
 
-rho = 1.225
-V = 200
-mu = 1
-M = 0.7
+rho = 0.46635
+a = 303.79
+mu = 15.05*10**(-6)
+M = 0.75
 k = 0.634*10**(-5)
-
+V = M*a
 
 #rho is cruise density
 #V is cruise speed
@@ -38,6 +38,14 @@ def FF_lifting(max_t_loc,t_c, M,sweep_m ):
     FF = (1 + (0.6/max_t_loc)*t_c + 100*t_c**100)*(1.34*M**0.18*(np.cos(sweep_m))**0.28)
     return FF
 
+FF_strut = FF_lifting(0.3,0.24,M,0)
+Cf_strut = friction_coefficient(rho,V,0.094, mu,k,M,0.1)
+Sw_strut = 4
+S_ref = 183
+
+Cd_strut = (1/S_ref)*FF_strut*Cf_strut*Sw_strut
+print(Cd_strut) 
+
 #FF for fuselage and cannopy
 def FF_body(l,d):
     f = l/d
@@ -53,16 +61,28 @@ def FF_nacelle(l,d):
 #calulate wetted areas
     
 def Fus_wetted_area(d, L1, L2, L3):
-    wetted_area = ((np.pi*d)/4)*((1/(3*L1**2))*(((4*L1**2 + (d**2)/4)**1.15) - (d**3)/8) - d + 4*L2 + 2*np.sqrt(L3**2 + (d**2)/4))
-    return wetted_area
+    S_wet = ((np.pi*d)/4)*((1/(3*L1**2))*(((4*L1**2 + (d**2)/4)**1.15) - (d**3)/8) - d + 4*L2 + 2*np.sqrt(L3**2 + (d**2)/4))
+    return S_wet
+
+def Wing_wetted_area(c_r, c_tip, d_fus, b, S,):  
+    taper = c_t/c_r
+    c_f = c_r * (1 - (d_fus / b)*(1-taper))  # determine the cord at the outer fuselage
+    exposed_area = S - (0.5 *(c_f + c_r))*d_fus  # calulate the exposed area, substracting the area inside the plane from the S
+    print (exposed_area)
+    S_wet = 1.07*2*exposed_area  # wetted area approximation
+    return S_wet
+
+def Tail_wetted_area(S_exp):
+    S_wet = 1.05*2*S_exp
+    return S_wet
 
 
+#S_wet for the nacelle should be determined later source of tu delft available ask max
 #Set interference factors for each component see ADSEE-II lecture 2 slide 48
 IF_wing = 1.1
 IF_emp = 1.05
 IF_fus = 1.0
 IF_nacelle = 1.1
 IF_strut = 1.1
-    
 
     
