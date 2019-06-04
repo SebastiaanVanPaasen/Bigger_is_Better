@@ -14,13 +14,13 @@ minSAR_H = [-0.88924196295702018, -0.57301721587421872, -0.23847334349236435, -0
 V_minSAR_H = [0.0, 0.0, 0.0, 2.6936026936026947, 2.6229508196721318, 3.1948881789137387, 3.0959752321981431, 3.6036036036036041, 4.0579710144927548, 3.8997214484679672]
 
 
-plt.plot(H,minSAR_H,"r",label = "%change in min SAR ")
-plt.plot(H,V_minSAR_H,"b",label = "%change in V at min SAR")
-#plt.title("Changes with respect to the previous values due to step changes in altitude")
-plt.xlabel("Altitude [m]")
-plt.ylabel("Change in % ")
-plt.legend()
-plt.show()
+#plt.plot(H,minSAR_H,"r",label = "%change in min SAR ")
+#plt.plot(H,V_minSAR_H,"b",label = "%change in V at min SAR")
+##plt.title("Changes with respect to the previous values due to step changes in altitude")
+#plt.xlabel("Altitude [m]")
+#plt.ylabel("Change in % ")
+#plt.legend()
+#plt.show()
 
 
 
@@ -50,7 +50,7 @@ plt.subplot(121)
 plt.plot(H,minSAR_A1,"r",label = "%change in min SAR ")
 plt.plot(H,V_minSAR_A1,"b",label = "%change in V at min SAR")
 plt.plot(H,SAR_A1,"g",label = "%average change in SAR")
-#plt.title("Changes due to a 20% decrease in A")
+plt.title("Changes due to a 20% decrease in A")
 plt.xlabel("Altitude [m]")
 plt.ylabel("Change in %")
 plt.legend(loc = "lower right")
@@ -60,10 +60,12 @@ plt.subplot(122)
 plt.plot(H,minSAR_A2,"r",label = "%change in min SAR ")
 plt.plot(H,V_minSAR_A2,"b",label = "%change in V at min SAR")
 plt.plot(H,SAR_A2,"g",label = "%average change in SAR")
-#plt.title("Changes due to a 20% increase in A")
+plt.title("Changes due to a 20% increase in A")
 plt.xlabel("Altitude [m]")
 plt.ylabel("Change in %")
 plt.legend()
+
+
 plt.show()
 
 """Surface Area"""
@@ -86,12 +88,12 @@ minSAR_S2 =[5.0309115744297621, 4.0041396924753521, 2.9479265767994844, 1.868313
 V_minSAR_S2 = [0.0, 0.0, 0.0, 0.0, -2.6229508196721349, -5.1118210862619886, -8.0495356037151726, -8.4084084084084036, -8.6956521739130466, -8.9136490250696347, -8.579088471849877]
 #Overall difference in SAR due to increase
 SAR_S2 = [12.607516806242936, 11.947339037047987, 11.238469025401418, 10.479890517352514, 9.6711128213972373, 8.8122660905196657, 7.9041942542618688, 6.9485413626014489, 5.9552667207100134, 4.674919562048407, 3.3654957749658867]
-
+plt.figure(2)
 plt.subplot(121)
 plt.plot(H,minSAR_S1,"r",label = "%change in min SAR ")
 plt.plot(H,V_minSAR_S1,"b",label = "%change in V at min SAR")
 plt.plot(H,SAR_S1,"g",label = "%average change in SAR")
-#plt.title("Changes due to a 20% decrease in S")
+plt.title("Changes due to a 20% decrease in S")
 plt.xlabel("Altitude [m]")
 plt.ylabel("Change in %")
 plt.legend(loc = "lower right")
@@ -101,7 +103,7 @@ plt.subplot(122)
 plt.plot(H,minSAR_S2,"r",label = "%change in min SAR ")
 plt.plot(H,V_minSAR_S2,"b",label = "%change in V at min SAR")
 plt.plot(H,SAR_S2,"g",label = "%average change in SAR")
-#plt.title("Changes due to a 20% increase in S")
+plt.title("Changes due to a 20% increase in S")
 plt.xlabel("Altitude [m]")
 plt.ylabel("Change in %")
 plt.legend()
@@ -131,26 +133,26 @@ V_minSAR_W2 = [2.0202020202020332, 4.7138047138047305, 8.080808080808092, 11.447
 #Overall difference in SAR due to increase
 SAR_W2 = [11.340741263150033, 12.353513977255927, 13.440985017850098, 14.604713410879658, 15.845451921720132, 17.163000883861866, 18.556065632666446, 20.022124046009129, 21.545897644365308, 23.510066580948454, 25.518841708859146]
 
-# plt.subplot(121)
-plt.figure(1)
-plt.plot(H,minSAR_W1,"r",label = "%change in min SAR ")
+#plt.subplot(121)
+#plt.figure(1)
+#plt.plot(H,minSAR_W1,"r",label = "%change in min SAR ")
 #plt.plot(H,V_minSAR_W1,"b",label = "%change in V at min SAR")
-plt.plot(H,SAR_W1,"g",label = "%average change in SAR")
+#plt.plot(H,SAR_W1,"g",label = "%average change in SAR")
 #plt.title("Changes due to a 20% decrease in W")
-plt.xlabel("Altitude [m]")
-plt.ylabel("Change in %")
-plt.legend(loc = "upper right")
-
-# plt.subplot(122)
-plt.figure(2)
-plt.plot(H,minSAR_W2,"r",label = "%change in min SAR ")
+#plt.xlabel("Altitude [m]")
+#plt.ylabel("Change in %")
+#plt.legend(loc = "upper right")
+#
+#plt.subplot(122)
+#plt.figure(2)
+#plt.plot(H,minSAR_W2,"r",label = "%change in min SAR ")
 #plt.plot(H,V_minSAR_W2,"b",label = "%change in V at min SAR")
-plt.plot(H,SAR_W2,"g",label = "%average change in SAR")
+#plt.plot(H,SAR_W2,"g",label = "%average change in SAR")
 #plt.title("Changes due to a 20% increase in W")
-plt.xlabel("Altitude [m]")
-plt.ylabel("Change in %")
-plt.legend(loc = "lower right")
-plt.show()
+#plt.xlabel("Altitude [m]")
+#plt.ylabel("Change in %")
+#plt.legend(loc = "lower right")
+#plt.show()
 
 """Zero lift drag CD0"""
 CD0 = 1.
@@ -173,26 +175,26 @@ V_minSAR_CD02 = [0.0, 0.0, 0.0, 0.0, -2.6229508196721349, -4.4728434504792487, -
 #Overall difference in SAR due to increase
 SAR_CD02 = [15.967736439768869, 15.60763947475345, 15.220983104764407, 14.807213009465004, 14.366061538943944, 13.897599685738001, 13.402287775051931, 12.881022561418972, 12.339236393114552, 11.640865215662764, 10.926634059072299]
 
-plt.subplot(121)
-plt.plot(H,minSAR_CD01,"r",label = "%change in min SAR ")
-plt.plot(H,V_minSAR_CD01,"b",label = "%change in V at min SAR")
-plt.plot(H,SAR_CD01,"g",label = "%average change in SAR")
-plt.title("Changes due to a 20% decrease in CD0")
-plt.xlabel("Altitude [m]")
-plt.ylabel("Change in %")
-plt.legend(loc = "upper right")
-
-
-plt.subplot(122)
-plt.plot(H,minSAR_CD02,"r",label = "%change in min SAR ")
-plt.plot(H,V_minSAR_CD02,"b",label = "%change in V at min SAR")
-plt.plot(H,SAR_CD02,"g",label = "%average change in SAR")
-plt.title("Changes due to a 20% increase in CD0")
-plt.xlabel("Altitude [m]")
-plt.ylabel("Change in %")
-plt.legend()
-
-plt.show()
+#plt.subplot(121)
+#plt.plot(H,minSAR_CD01,"r",label = "%change in min SAR ")
+#plt.plot(H,V_minSAR_CD01,"b",label = "%change in V at min SAR")
+#plt.plot(H,SAR_CD01,"g",label = "%average change in SAR")
+#plt.title("Changes due to a 20% decrease in CD0")
+#plt.xlabel("Altitude [m]")
+#plt.ylabel("Change in %")
+#plt.legend(loc = "upper right")
+#
+#
+#plt.subplot(122)
+#plt.plot(H,minSAR_CD02,"r",label = "%change in min SAR ")
+#plt.plot(H,V_minSAR_CD02,"b",label = "%change in V at min SAR")
+#plt.plot(H,SAR_CD02,"g",label = "%average change in SAR")
+#plt.title("Changes due to a 20% increase in CD0")
+#plt.xlabel("Altitude [m]")
+#plt.ylabel("Change in %")
+#plt.legend()
+#
+#plt.show()
 
 
 
