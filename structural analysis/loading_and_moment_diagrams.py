@@ -13,7 +13,7 @@ import constants_and_conversions as cc
 
 from read_csv_input import read_output
 
-filename = 'HIGH SEMIDD 2E STRUT'
+filename = 'HIGH SEMIDD 2E'
 weights, wing, cruise_conditions = read_output(filename)
 #print(wing)
 #print(weights)
@@ -47,8 +47,8 @@ start_eng_2 = 0.6 * (b / 2)
 n_engines = 2
 total_thrust = cruise_conditions["T_TO"]#396428.19#392632.62#418435.81 # 469612.93in Newton
 engine_weight = weights["W_E"]+ weights["W_N"] / n_engines #137279.1+25828.71#156890.4+25767.83#156890.4+21594.79#166696.05 + 23013.97 #137279.1+25828.71 in Newton
-strut_position = 0.68 * (b / 2)
-strutforce = 1000000.
+#strut_position = 0.68 * (b / 2)
+#strutforce = 1000000.
 # input for each critical case; as the lift distribution varies for each case
 alt = cruise_conditions["H_cr" ]
 rho = cc.Rho_0 * ((1 + (cc.a * alt) / cc.Temp_0) ** (-(cc.g_0 / (cc.R_gas * cc.a))))#0.32#0.32#0.43 #0.23
@@ -120,11 +120,11 @@ def Loadcalculator(x0, Ff):
         secondenginereachedyet = True
     else:
         secondenginereachedyet = False
-    if x0 > strut_position:
-        strutreachedyet = True
-    else:
-        strutreachedyet = False
-#        
+#    if x0 > strut_position:
+#        strutreachedyet = True
+#    else:
+#        strutreachedyet = False
+##        
     #print(xmiddlevalues)
     for i, x in enumerate(xmiddlevalues):
         ### Geometry calculations
@@ -166,12 +166,12 @@ def Loadcalculator(x0, Ff):
         #        print(section_drag)
 
         # (-) because it's in a direction opposite to thrust
-        section_strutforce = 0.
-        #Strut
-        if x > strut_position and strutreachedyet == False:
-            section_strutforce = strutforce *-1
-            Mz += section_strutforce * (strut_position - x0)
-            strutreachedyet = True
+#        section_strutforce = 0.
+#        #Strut
+#        if x > strut_position and strutreachedyet == False:
+#            section_strutforce = strutforce *-1
+#            Mz += section_strutforce * (strut_position - x0)
+#            strutreachedyet = True
 
         ###Thrust Calculations
         section_thrust = 0
@@ -199,13 +199,13 @@ def Loadcalculator(x0, Ff):
         y_shear_center = 0.5*0.14*c(x)
         #        Cm = PolyFitCurveCm(x)
         #        moment_aero = 0.5 * Cm * rho * (V ** 2) * (chord) * surfacearea * n * m.cos(Sweepsc)
-        strut_torque = -section_strutforce * (lift_position - shear_center) * m.cos(Sweepsc)
+#        strut_torque = -section_strutforce * (lift_position - shear_center) * m.cos(Sweepsc)
         lift_torque = -section_lift * (lift_position - shear_center) * m.cos(Sweepsc)
         weight_torque = -section_weight * (weight_position - shear_center) * m.cos(Sweepsc)
         engine_torque = -section_engineweight * (engine_position - shear_center) * m.cos(Sweepsc)
         fuel_torque = -section_fuel_weight * (fuel_position - shear_center) * m.cos(Sweepsc)
         thrust_torque = section_thrust * (y_shear_center - thrust_position)
-        section_torque = lift_torque + weight_torque + engine_torque + fuel_torque + thrust_torque + strut_torque
+        section_torque = lift_torque + weight_torque + engine_torque + fuel_torque + thrust_torque# + strut_torque
         
 
         
@@ -223,7 +223,7 @@ def Loadcalculator(x0, Ff):
         Th += section_thrust
 
         ###Net force calculations
-        Fy += section_verticalforce + section_strutforce
+        Fy += section_verticalforce  #+ section_strutforce
         Fz += section_horizontalforce
 
         ### Moment calculations

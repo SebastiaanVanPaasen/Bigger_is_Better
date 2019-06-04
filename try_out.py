@@ -8,7 +8,7 @@ from class_I.lift_distr import lift_distribution, get_correct_data
 class Section:
     
     
-    def __init__(self, C_root, C_tip, b, x, dx, tc, n, cd_0):
+    def __init__(self, C_root, C_tip, b, x, dx, tc, n, cd_0, pos_eng):
         self.cr = C_root
         self.ct = C_tip
         self.b = b
@@ -18,6 +18,7 @@ class Section:
         self.n = n
         self.cd_0 = cd_0
         self.chord = self.calc_chord()
+        self.pos_eng = pos_eng
         self.forces = np.array([])
         
 
@@ -50,7 +51,7 @@ class Section:
 #        print(self.cd_0)
 #        print(curve_cd(self.x))
         
-        cd = self.cd_0 + curve_cd(self.x)
+        cd = self.cd_0 + curve_cd(self.x) * self.n * 1.5
         
         return cl, cd
     
@@ -61,34 +62,41 @@ class Section:
 #        print(cd)
         
         lift= 1.5 * self.n * (0.5 * rho * (V ** 2) * self.area * cl)
-        drag = -1 * 1.5 * self.n * (0.5 * rho * (V **2) * self.area * cd)
+        drag = -1 * (0.5 * rho * (V **2) * self.area * cd)
         weight = -1 * self.volume * w_spec
         
         self.forces = np.append(self.forces, [drag, lift, weight])
+        
+        return drag
 
         
-    def calc_fuel_weight(self, w_spec_f, fuel_weight):
+    def calc_fuel_weight(self, w_spec_f, fuel_mass):
         fuel_stored = self.volume * w_spec_f
-
-        if fuel_weight > fuel_stored:            
+        
+#        print("fuel weight", fuel_mass)
+#        print("fuel stored", fuel_stored)
+#        print("fuel volume", self.volume)
+        
+        if fuel_mass > fuel_stored:            
             fuel_weight = -1 * fuel_stored * cc.g_0
             
-        elif fuel_weight > 0:
-            fuel_stored = fuel_weight
+        elif fuel_mass > 0:
+            fuel_stored = fuel_mass
             fuel_weight = -1 * fuel_stored * cc.g_0
             
         else:
+#            print("at section", self.x)
             fuel_stored = 0
             fuel_weight = 0
         
         self.forces = np.append(self.forces, fuel_weight)
-        fuel_weight = fuel_weight - fuel_stored
+        fuel_mass = fuel_mass - fuel_stored
         
-        return fuel_weight
+        return fuel_mass
         
         
     def calc_strut_force(self, loc, F_strut):
-        if self.x == loc:
+        if self.x - self.width / 2 < loc < self.x + self.width / 2:
             strut_force = F_strut
         else:
             strut_force = 0
@@ -99,44 +107,52 @@ class Section:
     def calc_engine_char(self, locations, tot_thrust, w_engine, n_eng):
         
         for i in range(len(locations)):
-            if self.x == locations[i]:
+            if self.x - self.width / 2 <= locations[i] < self.x + self.width / 2:
+#                print("found the engine")
                 thrust = tot_thrust / n_eng
                 w_eng = -1 * w_engine
+               
             else:
                 thrust = 0
                 w_eng = 0
-                
+
         self.forces = np.append(self.forces, [w_eng, thrust])
         
-    
-    def _calc_torque_positions(self, positions, le_sweep):
-        locations = np.zeros((1, len(positions) + 1))
-
-        for i in range(len(locations[0]) - 1):
-            locations[0][i] = positions[i] * self.chord + np.tan(le_sweep) * self.x
+        return thrust
+#        if thrust != 0:
+#            return [True, -1 * thrust * locations[0]]
+#        else:
+#            return [False, 0]
         
-        locations[0][-1] = positions[-1] * self.tc * self.chord
+        
+    def _calc_torque_distances(self, positions, le_sweep):
+        distances = np.zeros((1, len(positions) + 1))
+
+        for i in range(len(distances[0]) - 1):
+            distances[0][i] = positions[i] * self.chord + np.tan(le_sweep) * self.x
+        
+        distances[0][-1] = positions[-1] * self.tc * self.chord
         
 #        print(locations)
         
-        return locations
+        return distances
         
     
     def calc_torques(self, positions, le_sweep, sc_sweep, pos_thrust):
         
-        positions = self._calc_torque_positions(positions, le_sweep)
-        torques = np.zeros((1, len(positions[0])))
+        distances = self._calc_torque_distances(positions, le_sweep)
+        torques = np.zeros((1, len(distances[0])))
         
 #        print(self.forces)
 #        print(torques)
 #        print(positions)
         
-        for i in range(1, len(positions[0])):
-            torques[0][i - 1] = -self.forces[i] * (positions[0][i - 1] - self.sc) * np.cos(sc_sweep)
+        for i in range(1, len(distances[0])):
+            torques[0][i - 1] = -self.forces[i] * (distances[0][i - 1] - self.sc) * np.cos(sc_sweep)
             
 #            print(-self.forces[i] * (positions[0][i - 1] - self.sc) * np.cos(sc_sweep))
             
-        torques[0][-1] = self.forces[-1] * (positions[0][-1] - pos_thrust)
+        torques[0][-1] = self.forces[-1] * (distances[0][-1] - pos_thrust)
         
         T = np.sum(torques)
         
@@ -146,19 +162,26 @@ class Section:
     def calc_tot_force(self):
         F_y = np.sum(self.forces[1:-1])
         F_z = self.forces[0] + self.forces[-1]
+        
+#        print("drag", self.forces[0])
+#        print("thrust", self.forces[-1])
 
         return F_y, F_z
     
 
-    def calc_moments(self, x_0, positions):
-        M_z = np.zeros((1, len(positions) - 2))
+    def calc_moments(self, x_0):
+        M_z = np.zeros((1, len(self.forces) - 2))
         
-        for i in range(1, len(positions) - 1):
-            M_z[0][i - 1] = self.forces[i] * (self.x - self.width / 2 - x_0)
+        for i in range(1, len(self.forces) - 1):
+            M_z[0][i - 1] = self.forces[i] * (self.x - x_0)
             
         M_z = np.sum(M_z)
-        M_y = -1 * (self.forces[0] + self.forces[-1]) * (self.x - self.width / 2 - x_0)
         
+        M_y = -1 * self.forces[0] * (self.x - x_0) - 1 * (self.pos_eng - x_0) * self.forces[-1]
+        
+#        M_z = f_y * (self.x - x_0)
+#        M_y = -1 * f_z * (self.x - x_0) 
+
         return M_z, M_y
         
         

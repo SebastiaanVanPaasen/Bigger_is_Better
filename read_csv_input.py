@@ -48,7 +48,7 @@ def read_output(design):
     df = pandas.read_csv(input_path+'/combined_results.csv', delimiter=',', index_col="Parameter")
 #    print(df)
     
-    weights = {"W_TO" : df[design][0], "W_F" : df[design][2], "W_W" : df[design][4], "W_N" : df[design][7], "W_E" : df[design][38]}
+    weights = {"W_TO" : df[design][0], "W_F" : df[design][2], "W_W" : df[design][4], "W_N" : df[design][7], "W_E" : df[design][39]}
 #    print(weights)
     
     wing = {"A" : df[design][15], "S" : df[design][16], "b" : df[design][17], "C_root" : df[design][18], "C_tip" : df[design][19], "Sweep" : df[design][20], "Taper" : df[design][21]}

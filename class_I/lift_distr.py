@@ -5,7 +5,7 @@ from matplotlib import pyplot as plt
 import math as m
 from read_csv_input import read_output
 
-filename = 'HIGH SEMIDD 2E STRUT'
+filename = 'HIGH SEMIDD 2E'
 weights, wing, cruise_conditions = read_output(filename)
 #from loading_and_moment_diagrams import c
 #ROOT_DIR = os.path.dirname(os.path.abspath("structural analysis"))
