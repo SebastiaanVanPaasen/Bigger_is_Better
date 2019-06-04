@@ -66,7 +66,7 @@ y_format = tkr.FuncFormatter(func)  # make formatter
 #g = 9.81
 #
 #R_des = 1400.
-#Ct0 = 32e-06
+#Ct0 = 12.9e-06*2
 
 
 #"""Design 2"""
@@ -87,7 +87,7 @@ y_format = tkr.FuncFormatter(func)  # make formatter
 #g = 9.81
 #
 #R_des = 1400.
-#Ct0 = 25e-06
+#Ct0 = 13.1e-06*2
 
 #"""Design 3 (low wing)"""
 #MTOW = 1597097.403
@@ -108,7 +108,7 @@ y_format = tkr.FuncFormatter(func)  # make formatter
 #
 #R_range = 2500.
 #R_des = 1400.
-#Ct0 = 32e-06
+#Ct0 = 13.4e-06*2
 
 
 #"""Design 4"""
@@ -129,7 +129,7 @@ y_format = tkr.FuncFormatter(func)  # make formatter
 #g = 9.81
 #
 #R_des = 1400.
-#Ct0 = 25e-06
+#Ct0 = 13.1e-06*2
 
 """Design 5"""
 MTOW = 1474914.
@@ -149,7 +149,7 @@ V = 227.82
 g = 9.81
 
 R_des = 1400.
-Ct0 = 25e-06
+Ct0 = 13.1e-06*2
 
 
 
@@ -193,7 +193,7 @@ def payload_range():
     plt.vlines(R_harmonic,OEW,MTOW,"yellowgreen","-.",label="Harmonic Range")
     plt.vlines(R_max, OEW,MTOW,"magenta","-.",label="Maximum Range")
     plt.vlines(R_ferry,OEW,MTOW,"gray","-.",label="Ferry Range")
-    plt.vlines(R_des,OEW,MTOW,"orange","-.",label="Design Range")
+   # plt.vlines(R_des,OEW,MTOW,"orange","-.",label="Design Range")
    
     """Take-off weight line"""    
     #TO line up to MTOW and R_harmonic 
