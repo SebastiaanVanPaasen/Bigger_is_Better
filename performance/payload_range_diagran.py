@@ -47,6 +47,19 @@ y_format = tkr.FuncFormatter(func)  # make formatter
 #------------------------------VERIFICATION DATA--------------------------------
 
 """Inputs unit test based on B737 MAX-8"""
+MTOW = 82191*9.81
+OEW = 45070*9.81
+MPW = 20882*9.81
+MZFW = OEW + MPW
+MFW = 31594*9.81*0.75
+W_fr = MFW/105 * 5.
+A = 35.92**2 / 127.
+e = 0.85
+CD0 = 0.020
+V = 233.
+g = 9.81
+R_des = 6570.
+Ct0 = 12e-06
 
 #"""HIGH SEMI DD CONCEPT: design 1"""
 #MTOW = 1580051.306
@@ -131,26 +144,26 @@ y_format = tkr.FuncFormatter(func)  # make formatter
 #R_des = 1400.
 #Ct0 = 13.1e-06*2
 
-"""Design 5"""
-MTOW = 1474914.
-OEW = 871340.
-MPW = 472485.
-
-MLW = MTOW - 0.3*OEW
-MZFW = (OEW+MPW)
-MFW = 131089.*1.4
-W_fr = MFW/105 * 5.
-
-
-A = 14.
-e = 0.85
-CD0 = 0.023
-V = 227.82
-g = 9.81
-
-R_des = 1400.
-Ct0 = 13.1e-06*2
-
+#"""Design 5"""
+#MTOW = 1474914.
+#OEW = 871340.
+#MPW = 472485.
+#
+#MLW = MTOW - 0.3*OEW
+#MZFW = (OEW+MPW)
+#MFW = 131089.*1.4
+#W_fr = MFW/105 * 5.
+#
+#
+#A = 14.
+#e = 0.85
+#CD0 = 0.023
+#V = 227.82
+#g = 9.81
+#
+#R_des = 1400.
+#Ct0 = 13.1e-06*2
+#
 
 
 #------------------------------DEFINITIONS-----------------------------------
