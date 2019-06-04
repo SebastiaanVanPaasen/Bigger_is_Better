@@ -149,12 +149,15 @@ Landing_factor = 0.84  # Guestimated from ADSEE-I L3
 TOP = 220. * cc.lbft2_Nm2  # Guestimated from ADSEE-I L3
 Sigma_TO = 1  # Ratio of densities
 
+H_cr = 10000
+V_cr = 230
+
 # Stall speeds ---------------------------------------------------------------------------------------------------------
-V_stall_Cruise = 228 / 1.2  # m/s   Guestimated from ADSEE-I L3 Take requirements
+V_stall_Cruise = V_cr / 1.2  # m/s   Guestimated from ADSEE-I L3 Take requirements
 V_stall_Landing = min(np.sqrt(Landing_runway / 0.5847), 65.)  # m/s     Guestimated from ADSEE-I L3
 
 # Lift and drag coefficients -------------------------------------------------------------------------------------------
-CL_Cruise_max = 1.3  # Guestimated from ADSEE-I L3
+CL_Cruise_max = 1.5  # Guestimated from ADSEE-I L3
 CL_Landing_max = 3.2  # From Obert
 CL_TO_max = 0.9 * CL_Landing_max  # Guestimated from ADSEE-I L3
 
@@ -173,12 +176,11 @@ Climb_gradient = 0.024  # c/V set by CS25 in case 4 engines, should be 0.03
 # Create ranges
 CL_TO = [CL_TO_max]  # / 1.21 - 0.2), CL_TO_max / 1.21, (CL_TO_max / 1.21 + 0.2)]  # Based on CL_max
 CL_Landing = [CL_Landing_max]  # - 0.2), CL_Landing_max, (CL_Landing_max + 0.2)]  # Based on CL_max
-AR = [14]  # - 2, A, A + 2]  # Based on A in class I
+AR = [12]  # - 2, A, A + 2]  # Based on A in class I
 WS = np.arange(0., 10250., 250)
 TW = np.arange(0., 0.45, 0.05)
 
-H_cr = 9000
-V_cr = 228
+
 Rho_cr = cc.Rho_0 * ((1 + (cc.a * H_cr) / cc.Temp_0) ** (-(cc.g_0 / (cc.R_gas * cc.a))))
 N_engines = 2
 
@@ -199,4 +201,4 @@ def final_diagram(cd0, os):
     plot_diagram(requirement, labelling, WS, TW)
 
 
-final_diagram(0.02589, 0.85)
+final_diagram(0.024, 0.85)

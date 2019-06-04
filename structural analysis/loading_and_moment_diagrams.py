@@ -13,7 +13,7 @@ import constants_and_conversions as cc
 
 from read_csv_input import read_output
 
-filename = 'Design 33 HIGH 2E DD STRUT'
+filename = 'HIGH SEMIDD 2E STRUT'
 weights, wing, cruise_conditions = read_output(filename)
 #print(wing)
 #print(weights)
@@ -69,12 +69,13 @@ x_pos = get_correct_data(output_avl)[0]
 
 ##Lift Code:
 cl = get_correct_data(output_avl)[1]
+#print(cl)
 PolyFitCurveCl = interpolate.interp1d(x_pos, cl, kind="cubic", fill_value="extrapolate")
 
 ##Drag Code:
-cdi = get_correct_data(output_avl)[1]
+cdi = get_correct_data(output_avl)[2]
 PolyFitCurveidrag = interpolate.interp1d(x_pos, cdi, kind='cubic', fill_value='extrapolate')
-
+#print(cdi)
 
 ### Define your functions at the beginning of the program
 
@@ -97,7 +98,7 @@ def Loadcalculator(x0, Ff):
     xleftvalues = xnodevalues[:-1]
     xrightvalues = xnodevalues[1:]
     xmiddlevalues = (xleftvalues + xrightvalues) / 2
-    print(xmiddlevalues)
+#    print(xmiddlevalues)
 #    section_verticalforcelist = []
 #    section_horizontalforcelist = []
     
