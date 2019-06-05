@@ -13,13 +13,13 @@ import matplotlib.pyplot as plt
 #------------------------------INPUTS------------------------------------------
 """Input values for the B737-800 aircraft"""
 MTOW       =       78220*9.81 #Maximum take-off weight [N]
-W_TO       =       MTOW       #Weight at take-off [N]
-W_land     =       65310*9.81 #Maximum landing weight [N]
+W_TO       =       63502.9318 *9.81 #MTOW       #Weight at take-off [N]
+W_land     =       58967.0081  *9.81         #65310*9.81 #Maximum landing weight [N]
 
-T_TO       =       0.2789*MTOW#Total static thrust of all engines at take-off [N]
+T_TO       =       96.3*1000*2#Total static thrust of all engines at take-off [N]
 
-CL_maxto   =       2.5  
-CL_max_land=       3.3
+CL_maxto   =       2.2 
+CL_max_land=       3.2
 CD_to      =       0.05 
 CD_land    =       0.09
 
@@ -31,6 +31,7 @@ psi_TO     =       342.06     #Specific Thrust N/airflow [N/kg/s]
 bypass     =       5.5        #Bypass ratio of the engine
 
 g          =       9.80665
+mu         =       0.03
 
 #------------------------------DEFINITIONS-------------------------------------
 """ISA definitions"""
@@ -87,9 +88,10 @@ def Mach(V,h):                  #enter V in m/s
 
 """Take-off distance: all engines functioning"""
 def TO_distance(W_TO,S,rho,CL_maxto,bypass,T_TO,A): #Required distance to pass screen height (30 ft) at a speed of 1.3*VV_stall
-    Vs = np.sqrt((W_TO*2.)/(S*rho*1.3*CL_maxto))   
+    Vs = np.sqrt((W_TO*2.)/(S*rho*1.3*CL_maxto))  
     V_LOF = 1.2*Vs
-    
+
+    #Method 1 Torenbeek
     T_mean = 0.75*((5. + bypass)/(4.+ bypass))*T_TO  #quite low  
     mu_dash = 0.02 + 0.01*CL_maxto
     gamma_LOF = 0.9*(T_mean/W_TO) - (0.3/np.sqrt(A))
@@ -99,7 +101,22 @@ def TO_distance(W_TO,S,rho,CL_maxto,bypass,T_TO,A): #Required distance to pass s
     S_air = (V_LOF**2)/(g*np.sqrt(2)) + (h_to/gamma_LOF)
     S_to = S_run + S_air
     
-    return S_to
+    #Method 2 Anderson
+    kuc = 3.16e-05
+    mu = 0.03
+    Kt = (T_mean/W_TO) - mu
+    G = ((16*h_to/34.3)**2) / ((1 + (16*h_to/34.3))**2) 
+    k3 = (1/(np.pi*A*e))
+    k1 = (1/3)*k3
+    dCD0 = (W_TO/S)*kuc*(W_TO/9.81)**-0.215
+    Ka = -(ISA_density(0)/(2*(W_TO/S)))*(0.02 + dCD0 + (k1 + (G/(np.pi*A*e))*CL_maxto**2) - mu*CL_maxto)
+    
+    sg = (1/(2*g*Ka))*np.log(1 + (Ka/Kt)*V_LOF**2) + 3*V_LOF
+    R = (6.96*Vs**2)/9.81    
+    theta = np.arccos(1- (h_to/R))
+    sa = R*np.sin(theta)
+    
+    return S_to,sa+sg
     
  
 
@@ -121,7 +138,7 @@ def TO_eng_fail(W_TO,g,S,rho,CL_maxto,A,e,T_TO,CD_to,Vx):
     dt = 4.5
     mu = 0.02
     
-    #Conpute variables
+    #Compute variables
     Vs = np.sqrt((W_TO*2.)/(S*rho*CL_maxto))    
     V2 = 1.2*Vs
     CL_to = mu*np.pi*A*e
@@ -133,13 +150,13 @@ def TO_eng_fail(W_TO,g,S,rho,CL_maxto,A,e,T_TO,CD_to,Vx):
     
     #Find overall equation
     S01 = Vx**2 / (2.*a_mean)                                 #Distance covered before engine failure at Vx
-    S12 = (1./gamma_mean)*(((V2**2 - Vx**2)/(2.*g)) + h_to)   #Distance from engine failure up to save screen height at V2
+    S12 = (1./gamma_mean)*(((V2**2 - Vx**2)/(4.*a_mean)) + h_to)   #Distance from engine failure up to save screen height at V2
     Sstop = (Vx**2/(2*a_stop)) + Vx*dt                        #If TO aborted (stop distance needed)
 
 
     S_continue = S01 + S12
     S_abord = S01 + Sstop
-    
+
     return S_continue, S_abord   
     
     
@@ -147,7 +164,7 @@ def BFL(A,e,T_TO,W_TO,CD_to, CL_maxto, bypass,rho,g):      #Balanced field lengt
     #Constants from torenbeek
     h_to = 10.7 #[m]
     gamma2_min = 0.024
-    mu = 0.02
+    mu = 0.03
     
     #Compute variables
     CL_to = mu*np.pi*A*e    
@@ -175,6 +192,7 @@ def BFL(A,e,T_TO,W_TO,CD_to, CL_maxto, bypass,rho,g):      #Balanced field lengt
 #           =       0.50 - 0.60 + nose wheel braking
 
 def S_land(g,W_land,S,rho,CL_max_land):
+    #Method 1 from torenbeek
     #Constants from torenbeek
     h_land = 15.3
     dn = 0.1
@@ -191,7 +209,31 @@ def S_land(g,W_land,S,rho,CL_max_land):
     S_run = Vtd**2 / (a_stop)
 
     SL = S_air + S_run
-    return SL    
+    
+    #Method 2 from Anderson
+    mu = 0.03
+    kuc = 3.16e-05
+    Vf = 1.23*Vs
+    
+    R = Vf**2 / (0.2*g)
+    hf = R*(1 - np.cos(3*np.pi/180.))
+    theta = 3*np.pi/180.
+    sa = (15.3 - hf)/(np.tan(theta))
+    sf = R*np.sin(theta)
+    
+    Vtd = 1.15*Vs
+    k3 = (1/(np.pi*A*e))
+    k1 = (1/3)*k3
+    G = ((16*15.3/34.3)**2) / ((1 + (16*15.3/34.3))**2) 
+    dCD0 = (W_land/S)*kuc*(W_land/9.81)**-0.215
+    D = 0.5*ISA_density(0)*Vtd**2*CL_max_land*S
+    Jt = (D/W_land) + mu
+    Ja = (ISA_density(0)/(2*(W_TO/S)))*(0.02 + dCD0 + (k1 + (G/(np.pi*A*e))*CL_max_land**2) - mu*CL_max_land)
+    
+    sg = 1.5*Vtd + (1/(2*9.81*Ja))*np.log(1 + (Ja/Jt)*Vtd**2)
+    return SL, sa+sf+sg
+
+
 
 #------------------------------MAIN PROGRAM------------------------------------
 rho = ISA_density(0)
@@ -221,7 +263,7 @@ plt.show()
     
 print (" Standard TO length:" , S_TO, "m")
 print (" Standard landing length:", S_land,"m")    
-    
+print ( " Balanced field length:", BFL,"m")
     
     
     
