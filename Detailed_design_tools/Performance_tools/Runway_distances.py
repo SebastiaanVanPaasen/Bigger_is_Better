@@ -219,8 +219,8 @@ plt.title('Balenced field length (engine failure)')
 plt.legend()
 plt.show()    
     
-    
-    
+print (" Standard TO length:" , S_TO, "m")
+print (" Standard landing length:", S_land,"m")    
     
     
     
