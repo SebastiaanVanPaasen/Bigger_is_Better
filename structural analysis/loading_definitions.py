@@ -1,5 +1,6 @@
 import numpy as np
 import constants_and_conversions as cc
+import matplotlib.pyplot as plt
 
 from scipy import interpolate
 from class_I.lift_distr import lift_distribution, get_correct_data
@@ -96,8 +97,9 @@ class Section:
         
         
     def calc_strut_force(self, loc, F_strut):
-        if self.x - self.width / 2 < loc < self.x + self.width / 2:
-            strut_force = F_strut
+        if self.x - self.width / 2 <= loc < self.x + self.width / 2:
+#            print("strut has been found")
+            strut_force = -F_strut
         else:
             strut_force = 0
             
@@ -117,12 +119,6 @@ class Section:
                 w_eng = 0
 
         self.forces = np.append(self.forces, [w_eng, thrust])
-        
-        return thrust
-#        if thrust != 0:
-#            return [True, -1 * thrust * locations[0]]
-#        else:
-#            return [False, 0]
         
         
     def _calc_torque_distances(self, positions, le_sweep):
@@ -169,18 +165,15 @@ class Section:
         return F_y, F_z
     
 
-    def calc_moments(self, x_0):
+    def calc_moments(self):
         M_z = np.zeros((1, len(self.forces) - 2))
         
         for i in range(1, len(self.forces) - 1):
-            M_z[0][i - 1] = self.forces[i] * (self.x - x_0)
+            M_z[0][i - 1] = self.forces[i] * self.x
             
         M_z = np.sum(M_z)
         
-        M_y = -1 * self.forces[0] * (self.x - x_0) - 1 * (self.pos_eng - x_0) * self.forces[-1]
-        
-#        M_z = f_y * (self.x - x_0)
-#        M_y = -1 * f_z * (self.x - x_0) 
+        M_y = -1 * self.forces[0] * self.x - 1 * self.pos_eng * self.forces[-1]
 
         return M_z, M_y
         
@@ -203,6 +196,36 @@ class Helpers:
     
     def input_CL(S, V, rho, W):
         return W / (0.5 * rho * (V ** 2) * S)
+    
+    
+    def plotter(discr, T_plot, M_z_plot, M_y_plot, F_y_plot, F_z_plot):
+        plt.subplot(2,3,5)
+        plt.subplot(2,3,1)
+        plt.gca().set_title('Mz distribution')
+        plt.plot(discr, M_z_plot)
+        plt.xlabel('Position Along Wing Span [$m$]')
+        plt.ylabel('Mz $[Nm]$')
+        plt.subplot(2,3,2)
+        plt.gca().set_title('Fz distribution')
+        plt.plot(discr, F_z_plot)
+        plt.xlabel('Position Along Wing Span [$m$]')
+        plt.ylabel('Fz [$N$]')
+        plt.subplot(2,3,3)
+        plt.gca().set_title('My distribution')
+        plt.plot(discr, M_y_plot)
+        plt.xlabel('Position Along Wing Span [$m$]')
+        plt.ylabel('My $[Nm]$')
+        plt.subplot(2,3,4)
+        plt.gca().set_title('Fy distribution')
+        plt.plot(discr, F_y_plot)
+        plt.xlabel('Position Along Wing Span [$m$]')
+        plt.ylabel('Fy [$N$]')
+        plt.subplot(2,3,5)
+        plt.gca().set_title('T distribution')
+        plt.plot(discr, T_plot)
+        plt.xlabel('Position Along Wing Span [$m$]')
+        plt.ylabel('T $[Nm]$')
+        plt.show()
     
     
 #    def S_cross_section(chord, tc):

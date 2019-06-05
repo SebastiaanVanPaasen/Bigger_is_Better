@@ -1,10 +1,10 @@
 import numpy as np
 import constants_and_conversions as cc
 
-from try_out import Section, Helpers
+from loading_definitions import Section, Helpers
 from read_csv_input import read_output
 
-filename = 'HIGH SEMIDD 2E'
+filename = 'HIGH SEMIDD 2E STRUT'
 weights, wing, cruise_conditions = read_output(filename)
 
 
@@ -42,7 +42,7 @@ pos_thrust = -1.5  # position of y of the thrust vector
 pos_eng_1 = 7.
 #pos_eng_2 = 0.6 * (b / 2)
 pos_eng = [pos_eng_1]
-pos_strut = -1
+pos_strut = 15
 strutforce = 1000000.
 lift_pos, weight_pos = 1/4, 1/2
 fuel_pos, strut_pos, eng_pos = 1/2, 1/4, 0
@@ -67,7 +67,6 @@ F_z = np.zeros((1, len(discr)))
 M_z = np.zeros((1, len(discr)))
 M_y = np.zeros((1, len(discr)))
 D = []
-M_engine = 0
 
 
 for i in range(len(discr)):
@@ -83,18 +82,11 @@ for i in range(len(discr)):
     M_F = section.calc_fuel_weight(w_spec_fuel, M_F)
     
     section.calc_strut_force(pos_strut, strutforce)
-    thrust = section.calc_engine_char(pos_eng, T_TO, W_eng, N_eng)
-    
-    if thrust != 0:
-        m_thrust = thrust * pos_eng_1
-        
+    section.calc_engine_char(pos_eng, T_TO, W_eng, N_eng)
+          
     T[0][i] = section.calc_torques(force_applications, sweep_LE, sweep_SC, pos_thrust)
-    F_y[0][i], F_z[0][i] = section.calc_tot_force()
-    
-    if x - dx < 0:
-        M_z[0][i], M_y[0][i] = section.calc_moments(start)
-    else:
-        M_z[0][i], M_y[0][i] = section.calc_moments(start)
+    F_y[0][i], F_z[0][i] = section.calc_tot_force()  
+    M_z[0][i], M_y[0][i] = section.calc_moments()
     
     x += dx
 
