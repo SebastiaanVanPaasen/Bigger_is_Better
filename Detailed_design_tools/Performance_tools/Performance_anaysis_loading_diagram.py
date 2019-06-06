@@ -42,6 +42,47 @@ bypass     =       5.5        #Bypass ratio of the engine
 
 g          =        9.80665
 
+
+    #r_uc       =       Correction factor for the undercarriage
+    #           =       1.0 fully retracted, no fairings
+    #           =       1.08 Main gear in fairings (e.g. C-130)
+    #           =       1.03 Main gear retracted in nacelles of turboprop engines
+    
+    #r_t        =       Correction factor for the tail
+    #           =       1.24
+    
+    #r_w        =       Correction factor for the wing drag
+    #           =       1. for a cantilever wing
+    #           =       1.1 for a braced wing          
+                      
+    #r_f        =       Correction factor for the fuselage drag
+    #           =       1.0 for a cylindrical fuselage
+    #           =       0.65 + 1.5*(d_f/l_f) for a fuselage with streamlined fairings
+    
+    #r_thr      =       Correction factor for thrust reversers
+    #           =       1.0 with thrust reversers
+    #           =       0.82 without thrust reversers
+    
+    #r_n        =       Correction factor for engine configuration
+    #           =       1.5 for all engines podded
+    #           =       1.65 2 podded and 1 buried in tail
+    #           =       1.25 buried in nacelles on fuselage
+    #           =       1.0 fully buried engines
+    
+    #dCD_comp   =       Correction factor for the drag coefficient due to compressibility effects
+    #           =       0.0005 for long range cruise conditions
+    #           =       0.0020 for high speed cruise conditions
+    
+#Assumed values for now
+r_re = 1.0     #no boundary layer affected at take-off speed
+r_uc = 1.0
+r_t = 1.24
+r_w = 1.
+r_f = 1.0
+r_thr = 1.0
+r_n = 1.5
+dCD_comp = 0.   #TO conditions so not yet in compressibility region
+
 #---------------------------DEFINITIONS----------------------------------------
 """ISA definitions"""
 
@@ -112,48 +153,6 @@ def Sos(h):
 
 """Take-off T/W jet"""
 def TW_TO_jet(T,T_TO,MTOW,W_TO,M,t_c,qcsweep,S,A,l_f,b_f,h_f,psi_TO,bypass,e,rho,p0): #T/W for TO of a jet aircraft
-
-    #r_uc       =       Correction factor for the undercarriage
-    #           =       1.0 fully retracted, no fairings
-    #           =       1.08 Main gear in fairings (e.g. C-130)
-    #           =       1.03 Main gear retracted in nacelles of turboprop engines
-    
-    #r_t        =       Correction factor for the tail
-    #           =       1.24
-    
-    #r_w        =       Correction factor for the wing drag
-    #           =       1. for a cantilever wing
-    #           =       1.1 for a braced wing          
-                      
-    #r_f        =       Correction factor for the fuselage drag
-    #           =       1.0 for a cylindrical fuselage
-    #           =       0.65 + 1.5*(d_f/l_f) for a fuselage with streamlined fairings
-    
-    #r_thr      =       Correction factor for thrust reversers
-    #           =       1.0 with thrust reversers
-    #           =       0.82 without thrust reversers
-    
-    #r_n        =       Correction factor for engine configuration
-    #           =       1.5 for all engines podded
-    #           =       1.65 2 podded and 1 buried in tail
-    #           =       1.25 buried in nacelles on fuselage
-    #           =       1.0 fully buried engines
-    
-    #dCD_comp   =       Correction factor for the drag coefficient due to compressibility effects
-    #           =       0.0005 for long range cruise conditions
-    #           =       0.0020 for high speed cruise conditions
-    
-    #Assumed values for now
-    r_re = 1.0     #no boundary layer affected at take-off speed
-    r_uc = 1.0
-    r_t = 1.24
-    r_w = 1.
-    r_f = 1.0
-    r_thr = 1.0
-    r_n = 1.5
-    dCD_comp = 0.   #TO conditions so not yet in compressibility region
-    
-    
     #Compute parameters in equation
     delta = 1.0                     #p/p0 since p0=p during take-off
     k_w = MTOW / W_TO
