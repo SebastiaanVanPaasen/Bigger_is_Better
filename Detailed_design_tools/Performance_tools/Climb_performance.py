@@ -200,7 +200,6 @@ plt.ylabel("Required thrust [kN]")
 plt.grid(True)
 plt.legend()  
 
-
 """Steady Climb rate"""
 plt.figure(2)
 plt.subplot(221)
@@ -298,7 +297,6 @@ plt.xlabel("Altitude [m]")
 plt.ylabel("Mach number")
 plt.grid(True)
 
-
 print ("RC max steady:", RC_max)
 print ("RC max unsteady:", RC_max_unst)
 
@@ -328,7 +326,9 @@ plt.grid(True)
 plt.legend()    
 
 
-
+ax = plt.gca()
+ax.get_yaxis().set_major_formatter(plt.FuncFormatter(lambda x, loc: "{:,}".format(int(x))))
+ax.get_xaxis().set_major_formatter(plt.FuncFormatter(lambda x, loc: "{:,}".format(int(x))))
 
 """Service and absolute ceilings"""
 #Absolute ceiling is where RCmax = 0
@@ -356,6 +356,9 @@ plt.ylabel("Altitude [m]")
 plt.grid(True )
 plt.legend()
 
+ax = plt.gca()
+ax.get_yaxis().set_major_formatter(plt.FuncFormatter(lambda x, loc: "{:,}".format(int(x))))
+ax.get_xaxis().set_major_formatter(plt.FuncFormatter(lambda x, loc: "{:,}".format(int(x))))
 
 Vs_list  = []
 Vmax_list = []
@@ -379,7 +382,9 @@ plt.grid(True)
 plt.xlabel("Velocity [m/s]")
 plt.ylabel("Altitude [m/s]")
 plt.legend()    
-
+ax = plt.gca()
+ax.get_yaxis().set_major_formatter(plt.FuncFormatter(lambda x, loc: "{:,}".format(int(x))))
+ax.get_xaxis().set_major_formatter(plt.FuncFormatter(lambda x, loc: "{:,}".format(int(x))))
 
 
 """Steepest climb"""
@@ -427,7 +432,6 @@ plt.ylabel("Rate of climb [m/s]")
 plt.grid(True)
 
 
-    
 """Gliding unpowered descent"""
 Vv_min_list = []
 range_list = []
@@ -453,6 +457,10 @@ plt.title("Range during glide")
 plt.ylabel("Starting altitude [m]" )
 plt.xlabel("Range [km]" )
 plt.grid(True)
+
+ax = plt.gca()
+ax.get_yaxis().set_major_formatter(plt.FuncFormatter(lambda x, loc: "{:,}".format(int(x))))
+ax.get_xaxis().set_major_formatter(plt.FuncFormatter(lambda x, loc: "{:,}".format(int(x))))
 
 
 theta_min = (np.arctan(1/ (L_Dmax)))*(180/np.pi)
