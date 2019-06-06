@@ -63,7 +63,7 @@ strut_applic = 0.25
 pos_strut, l_strut, T_y, T_z = Helpers.calc_strut_char(Cr, Ct, b, d_fus, x_strut, 
                                              sweep_LE, strut_applic, tc)
 E = 69 * (10 ** 9)
-E_strut = 69 * (10 ** 9)
+E_strut = 181 * (10 ** 9)
 A_strut = (1 / 4) * np.pi * ((10 / 100) ** 2)
 
 
@@ -114,7 +114,7 @@ M_z = np.sum(M_z)
 M_forces = np.sum(np.array(moment_forces))
 M_num = np.sum(np.array(num))
 
-M_forces = M_forces / 6
+M_forces = M_forces / 6 
 M_num = M_num / 2
 
 print(T, F_y, F_z, M_y, M_z, M_forces, M_num)
@@ -132,8 +132,8 @@ while discr[i] < x_strut:
 
 print(I / len(discr))
 
-sigma_strut = 552 * (10 ** 6)
-force_results = Helpers.indet_sys(pos_strut, E_strut, l_strut, sigma_strut, E, I, x_strut, forces, T_y, T_z)
+#sigma_strut = 552 * (10 ** 6)
+force_results = Helpers.indet_sys(pos_strut, E_strut, l_strut, A_strut, E, I, x_strut, forces, T_y, T_z)
 
 print(force_results)
 

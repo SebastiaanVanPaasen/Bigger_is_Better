@@ -253,14 +253,16 @@ class Helpers:
         sum_m_z = np.array([-2 * x_strut, 0, 0, 0, 0, 0, 1])
         
         defl_strut_moment = (-1 / (E * I)) * (1 / 2) * (x_strut ** 2)
-        defl_strut_force = (-1 / (E * I)) * (1 / 6) * (x_strut **3)
-        defl_strut = np.array([(-v_strut_y* l_strut / (E_strut * A_strut)), 0, defl_strut_force, 0, 0, 0, defl_strut_moment])
+        defl_strut_force = (-1 / (E * I)) * (1 / 2) * (x_strut **2)
+        
+        defl_strut = np.array([(-l_strut / (E_strut * A_strut)), 0, defl_strut_force, 0, 0, 0, defl_strut_moment])
 #        defl_strut = np.array([0, 0, defl_strut_force, 0, 0, 0, defl_strut_moment])
+        
         defl_strut_num = (1 / (E * I)) * (M_forces * (x_strut ** 3) * (1 / 6) + M_num * (x_strut ** 2) * (1 / 2))
 #        defl_strut_num =  (1 / (E * I)) * (M_forces * (x_strut ** 3) * (1 / 6) + M_num * (x_strut ** 2) * (1 / 2)) + (sigma_strut * l_strut) / (E_strut * v_strut_y)
         
         sys_mat = np.array([sum_f_x, sum_f_y, sum_f_z, sum_m_x, sum_m_y, sum_m_z, defl_strut])
-        sys_vec = np.array([0, F_y, F_z, T, M_y, M_z,  defl_strut_num  ])
+        sys_vec = np.array([0, F_y, F_z, T, M_y, M_z, defl_strut_num])
         
         result = np.linalg.solve(sys_mat, sys_vec)
         
