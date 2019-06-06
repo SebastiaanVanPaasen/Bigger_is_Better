@@ -68,20 +68,21 @@ class Section:
         
         self.forces = np.append(self.forces, [drag, lift, weight])
         
-        return drag
+        return lift, weight, drag
 
         
-    def calc_fuel_weight(self, w_spec_f, fuel_mass):
+    def calc_fuel_weight(self, w_spec_f, fuel_mass, start_fuel):
         fuel_stored = self.volume * w_spec_f
         
 #        print("fuel weight", fuel_mass)
 #        print("fuel stored", fuel_stored)
 #        print("fuel volume", self.volume)
         
-        if fuel_mass > fuel_stored:            
+        if fuel_mass > fuel_stored and start_fuel <= self.x: 
+#            print("starting here")
             fuel_weight = -1 * fuel_stored * cc.g_0
             
-        elif fuel_mass > 0:
+        elif fuel_mass > 0 and start_fuel <= self.x:
             fuel_stored = fuel_mass
             fuel_weight = -1 * fuel_stored * cc.g_0
             
@@ -93,7 +94,7 @@ class Section:
         self.forces = np.append(self.forces, fuel_weight)
         fuel_mass = fuel_mass - fuel_stored
         
-        return fuel_mass
+        return fuel_mass, fuel_weight
         
         
     def calc_strut_force(self, loc, F_strut):
@@ -120,6 +121,7 @@ class Section:
 
         self.forces = np.append(self.forces, [w_eng, thrust])
         
+        return thrust
         
     def _calc_torque_distances(self, positions, le_sweep):
         distances = np.zeros((1, len(positions) + 1))
@@ -196,6 +198,75 @@ class Helpers:
     
     def input_CL(S, V, rho, W):
         return W / (0.5 * rho * (V ** 2) * S)
+    
+    
+    def calc_chord(cr, ct, b, x):
+        return cr - ((cr - ct) / (b / 2)) * x
+    
+    
+    def calc_sc(chord, x, le_sweep):
+        return  0.4 * chord + np.tan(le_sweep) * x
+    
+    
+    def calc_inertia(width, thickness, dist):
+        return 2 * (width * thickness * (dist ** 2))
+    
+    
+    def calc_strut_char(Cr, Ct, b, d_fus, x_strut, sweep_LE, strut_applic, tc):
+        strut_length = np.sqrt((x_strut ** 2) + (d_fus ** 2))
+        strut_chord = Helpers.calc_chord(Cr, Ct, b, x_strut)
+        
+        front_part = np.sin(sweep_LE) * x_strut + strut_applic * strut_chord
+        z_comp = 0.5 * Cr - front_part
+        sc = Helpers.calc_sc(strut_chord, x_strut, sweep_LE)
+        
+        strut_angle_vert= np.arctan(d_fus / x_strut)
+        strut_angle_horz = np.arctan(z_comp / x_strut)
+        
+        x_component = np.sin(strut_angle_vert) * np.cos(strut_angle_horz)
+        y_component = np.cos(strut_angle_vert)
+        z_component = np.sin(strut_angle_vert) * np.sin(strut_angle_horz)
+        
+        strut_pos = [x_component, y_component, z_component]
+        
+        dist_T_y = strut_applic - sc
+        dist_T_z = 0.5 * tc * strut_chord
+        
+#        Inert = Helpers.calc_inertia(0.4 * strut_chord, 0.5 * tc * strut_chord)
+    
+        return strut_pos, strut_length, dist_T_y, dist_T_z
+    
+    
+    def indet_sys(strut_pos, E_strut, l_strut, A_strut, E, I, x_strut, forces, d_T_y, d_T_z):
+        T, F_y, F_z, M_y, M_z = forces[0], forces[1], forces[2], forces[3], forces[4]
+        M_forces, M_num = forces[5], forces[6]
+        
+        v_strut_x = strut_pos[0]
+        v_strut_y = strut_pos[1]
+        v_strut_z = strut_pos[2]
+        
+        sum_f_x = np.array([v_strut_x, 1, 0, 0, 0, 0, 0])
+        sum_f_y = np.array([v_strut_y, 0, 1, 0, 0, 0, 0])
+        sum_f_z = np.array([v_strut_z, 0, 0, 1, 0, 0, 0])
+        sum_m_x = np.array([-d_T_y - d_T_z, 0, 0, 0, 1, 0, 0])
+        sum_m_y = np.array([2 * x_strut, 0, 0, 0, 0, 1, 0])
+        sum_m_z = np.array([-2 * x_strut, 0, 0, 0, 0, 0, 1])
+        
+        defl_strut_moment = (-1 / (E * I)) * (1 / 2) * (x_strut ** 2)
+        defl_strut_force = (-1 / (E * I)) * (1 / 2) * (x_strut **2)
+        
+        defl_strut = np.array([(-l_strut / (E_strut * A_strut)), 0, defl_strut_force, 0, 0, 0, defl_strut_moment])
+#        defl_strut = np.array([0, 0, defl_strut_force, 0, 0, 0, defl_strut_moment])
+        
+        defl_strut_num = (1 / (E * I)) * (M_forces * (x_strut ** 3) * (1 / 6) + M_num * (x_strut ** 2) * (1 / 2))
+#        defl_strut_num =  (1 / (E * I)) * (M_forces * (x_strut ** 3) * (1 / 6) + M_num * (x_strut ** 2) * (1 / 2)) + (sigma_strut * l_strut) / (E_strut * v_strut_y)
+        
+        sys_mat = np.array([sum_f_x, sum_f_y, sum_f_z, sum_m_x, sum_m_y, sum_m_z, defl_strut])
+        sys_vec = np.array([0, F_y, F_z, T, M_y, M_z, defl_strut_num])
+        
+        result = np.linalg.solve(sys_mat, sys_vec)
+        
+        return result
     
     
     def plotter(discr, T_plot, M_z_plot, M_y_plot, F_y_plot, F_z_plot):
