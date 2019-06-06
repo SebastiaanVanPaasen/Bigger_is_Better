@@ -11,7 +11,7 @@ from matplotlib import pyplot as plt
 import math as m
 from read_csv_input import read_output
 
-filename = 'Design 33 HIGH 2E DD STRUT'
+filename = 'Design 42 LOW 2E SEMIDD'
 weights, wing, cruise_conditions = read_output(filename)
 #from loading_and_moment_diagrams import c
 #ROOT_DIR = os.path.dirname(os.path.abspath("structural analysis"))
