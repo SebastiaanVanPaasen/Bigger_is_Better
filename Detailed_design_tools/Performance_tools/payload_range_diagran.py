@@ -9,19 +9,6 @@ Created on Mon May 13 11:45:46 2019
 import numpy as np
 import matplotlib.pyplot as plt
 
-import numpy as np
-import matplotlib.pyplot as plt
-import matplotlib.ticker as tkr
-
-def func(x, pos):  # formatter function takes tick label and tick position
-   s = '{:0,d}'.format(int(x))
-   return s
-
-
-y_format = tkr.FuncFormatter(func)  # make formatter
-
-
-
 
 #-------------------------------INPUTS-----------------------------------------
 """Weights"""

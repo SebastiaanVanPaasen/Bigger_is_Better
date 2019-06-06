@@ -16,18 +16,17 @@ MTOW       =       78220*9.81 #Maximum take-off weight [N]
 W_TO       =       MTOW       #Weight at take-off [N]
 T          =       107*1000        #Total static thrust of all engines at take-off [N]
 T_TO       =       91.63*1000*2    #Take-off thrust
-T_cr       =       0.2789*0.8*MTOW #Thrust during cruise, assume a weight of 80%MTOW
+T0         =       0.2789*0.8*MTOW #Thrust during cruise, assume a weight of 80%MTOW
 
 CL_maxto   =        2.5
-CL_maxcr   =        0.9       #Max CL during cruise
 CD0        =        0.02
-CD         =        0.06      #Approximate CD for just after take-off, take-off  climb
- 
-V_to       =       73.25      #Speed during take-off [m/s]       
+CD         =        0.08      #Approximate CD for just after take-off, take-off  climb
+
+  
 V_cr       =       257.22     #Cruise speed [m/s]             
 A          =       9.44       #Aspect ratio [-]
 e          =       0.85       #Oswald efficiency factor [-]
-n          =        2.        #load factor L/W during cruise 
+n          =       2.        #load factor L/W during cruise 
 hcr        =       12000      #Cruise altitude [m]
 
 t_c        =       0.125      #Thickness over chord ration airfoil
@@ -41,7 +40,7 @@ psi_TO     =       342.06     #Specific Thrust N/airflow [N/kg/s?]
 bypass     =       5.5        #Bypass ratio of the engine
 
 g          =        9.80665
-
+m          =        1.3     	#factor for the variation of thrust with alitude
 
     #r_uc       =       Correction factor for the undercarriage
     #           =       1.0 fully retracted, no fairings
@@ -149,6 +148,10 @@ def Sos(h):
     a = np.sqrt(gamma*R*T)
     return a
     
+#Varying thrust with velocity
+def T_alt(T0,h):
+    T = T0*(ISA_density(h)/ISA_density(0))**m
+    return T
 
 
 """Take-off T/W jet"""
@@ -238,7 +241,7 @@ def dTW_constEAS_jet(C,a,W,p,S,CD0):
 #For steady low climb
 Vs = np.sqrt((W_TO*2.)/(S*ISA_density(0)*CL_maxto))    
 V2 = 1.2*Vs                     #"Fly away" speed
-D_TO = 0.5*ISA_density(0)*V2**2.*S*CD
+D_TO = 0.5*ISA_density(0)*V2**2.*S*CD   #(CD0 + (CL_maxto**2)/(np.pi*A*e))
 
 M = Mach(V2,0)
 vg_dvdh = 0.5668*M**2            #Constant EAS in tropospere
@@ -251,7 +254,7 @@ C_steady = RC(T_TO,D_TO,V2,W_TO,vg_dvdh)      #Rate of climb for steady low alti
 #steady climb low altitude, at constant EAS
 TW_steady_climb = TW_steady_climb_jet(C_steady,a_steady,CD0,W_TO,p_steady,S,A,e) + dTW_constEAS_jet(C_steady,a_steady,W_TO,p_steady,S,CD0) 
 
-print ("Rate of climb steady low altitude at const. EAS: ", C_steady, "m/s")
+print ("Rate of climb low altitude at const. EAS: ", C_steady, "m/s")
 print ("T/W for steady climb :", TW_steady_climb)
 print ()
 
@@ -264,14 +267,14 @@ theta = ISA_temp(12000)/ISA_temp(0)                #Constant EAS in stratosphere
 a_high = Sos(hcr)
 p_high = ISA_press(hcr)
 
-C_high = RC(T_cr,D_TO,V_cr,0.8*W_TO,vg_dvdh)      #Rate of climb for ceiling
+C_high = RC(T_alt(T0,hcr),D_TO,V_cr,0.8*W_TO,vg_dvdh)      #Rate of climb for ceiling
 
 #High altitude climg: service ceiling thrust at constant EAS 
 TW_ceiling = TW_ceiling_climb_jet(n,CD0,A,e,theta,W_TO,p_high,S) + dTW_constEAS_jet(C_high,a_high,W_TO,p_high,S,CD0) 
 
 print ("Rate of climb service ceiling at const. EAS: ", C_high, "m/s")
 print( "T/W for ceiling climb :", TW_ceiling)
-print()
+print( )
 
 
 """Take-off wing loading diagram"""
