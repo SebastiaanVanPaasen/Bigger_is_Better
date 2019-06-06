@@ -65,7 +65,7 @@ pos_strut, l_strut, T_y, T_z = Helpers.calc_strut_char(Cr, Ct, b, d_fus, x_strut
 E = 69 * (10 ** 9)
 E_strut = 181 * (10 ** 9)
 A_strut = (1 / 4) * np.pi * ((10 / 100) ** 2)
-
+print(l_strut)
 
 dx = 0.2
 discr = np.arange(0, b / 2, dx) + dx / 2
@@ -74,6 +74,8 @@ polar_cl, polar_cd = Helpers.calc_polars(cl)
 
 moment_forces = []
 num = []
+lift_force = []
+weight_force = []
 
 T = np.zeros((1, len(discr)))
 F_y = np.zeros((1, len(discr)))
@@ -91,7 +93,7 @@ for i in range(len(discr)):
     M_F, fuel_weight = section.calc_fuel_weight(w_spec_fuel, M_F, start_fuel)
     
     section.calc_engine_char(pos_eng, T_TO, W_eng, N_eng)
-    section.calc_torques(force_applications, sweep_LE, sweep_SC, pos_thrust)
+    W_engine = section.calc_torques(force_applications, sweep_LE, sweep_SC, pos_thrust)
 
     T[0][i] = section.calc_torques(force_applications, sweep_LE, sweep_SC, pos_thrust)
     F_y[0][i], F_z[0][i] = section.calc_tot_force()  
@@ -99,58 +101,67 @@ for i in range(len(discr)):
     
     
     moment_forces.append(lift)
+    lift_force.append(lift)
+    weight_force.append(weight)
     num.append(-lift * discr[i])
     
     moment_forces.append(-weight)
     num.append(weight * discr[i])
+    
+    moment_forces.append(-W_engine)
+    num.append(W_engine * pos_eng_1)
+#
+#
+print((lift_force[0] + lift_force[-1]) / 2)
+print((weight_force[0] + weight_force[-1]) / 2)
+print(W_eng)
+print(lift_force[0], lift_force[-1])
+print(weight_force[0], weight_force[-1])
+#T = np.sum(T)   
+#F_y = np.sum(F_y) 
+#F_z = np.sum(F_z) 
+#M_y = np.sum(M_y) 
+#M_z = np.sum(M_z) 
+#
+#M_forces = np.sum(np.array(moment_forces))
+#M_num = np.sum(np.array(num))
+#
+#M_forces = M_forces
+#M_num = M_num
+#
+#print(T, F_y, F_z, M_y, M_z, M_forces, M_num)
+#
+#forces = [T, F_y, F_z, M_y, M_z, M_forces, M_num]
+#
+#I = 0
+#i = 0
+#while discr[i] < x_strut:
+#    chord = Helpers.calc_chord(Cr, Ct, b, discr[i])
+#    part_inertia = Helpers.calc_inertia(chord * 0.1, (1 / 100), 0.5 * tc * chord)
+#    I += part_inertia
+#    i += 1
+#
+#print(I / len(discr))
+#
+##sigma_strut = 552 * (10 ** 6)
+#force_results = Helpers.indet_sys(pos_strut, E_strut, l_strut, A_strut, E, I, x_strut, forces, T_y, T_z)
+#
+#print(force_results)
+#
+##print((sigma_strut * l_strut) / (E_strut) * 1000)
+#print((force_results[0] * l_strut) / (E_strut * A_strut) * 1000)
+#
+#print((force_results[0] / A_strut) / (10 ** 6))
+#
+#m_z = force_results[6]
+#v_y = force_results[2]
 
 
-T = np.sum(T)   
-F_y = np.sum(F_y) 
-F_z = np.sum(F_z) 
-M_y = np.sum(M_y) 
-M_z = np.sum(M_z) 
-
-M_forces = np.sum(np.array(moment_forces))
-M_num = np.sum(np.array(num))
-
-M_forces = M_forces / 6 
-M_num = M_num / 2
-
-print(T, F_y, F_z, M_y, M_z, M_forces, M_num)
-
-forces = [T, F_y, F_z, M_y, M_z, M_forces, M_num]
-
-I = 0
-
-i = 0
-while discr[i] < x_strut:
-    chord = Helpers.calc_chord(Cr, Ct, b, discr[i])
-    part_inertia = Helpers.calc_inertia(chord * 0.1, (1 / 100), 0.5 * tc * chord)
-    I += part_inertia
-    i += 1
-
-print(I / len(discr))
-
-#sigma_strut = 552 * (10 ** 6)
-force_results = Helpers.indet_sys(pos_strut, E_strut, l_strut, A_strut, E, I, x_strut, forces, T_y, T_z)
-
-print(force_results)
-
-#print((sigma_strut * l_strut) / (E_strut) * 1000)
-print((force_results[0] * l_strut) / (E_strut * A_strut) * 1000)
-
-print((force_results[0] / A_strut) / (10 ** 6))
-
-m_z = force_results[6]
-v_y = force_results[2]
 
 
-
-
-sum_x = np.array([pos_strut[0], 1, 0, 0])
-sum_y = np.array([pos_strut[1], 0, 1, 0])
-sum_m = np.array([-2*x_strut, 0, 0, 1])
+#sum_x = np.array([pos_strut[0], 1, 0, 0])
+#sum_y = np.array([pos_strut[1], 0, 1, 0])
+#sum_m = np.array([-2*x_strut, 0, 0, 1])
 
 
 

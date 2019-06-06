@@ -121,7 +121,7 @@ class Section:
 
         self.forces = np.append(self.forces, [w_eng, thrust])
         
-        return thrust
+        return w_eng
         
     def _calc_torque_distances(self, positions, le_sweep):
         distances = np.zeros((1, len(positions) + 1))
@@ -253,7 +253,7 @@ class Helpers:
         sum_m_z = np.array([-2 * x_strut, 0, 0, 0, 0, 0, 1])
         
         defl_strut_moment = (-1 / (E * I)) * (1 / 2) * (x_strut ** 2)
-        defl_strut_force = (-1 / (E * I)) * (1 / 2) * (x_strut **2)
+        defl_strut_force = (-1 / (E * I)) * (1 / 6) * (x_strut **3)
         
         defl_strut = np.array([(-l_strut / (E_strut * A_strut)), 0, defl_strut_force, 0, 0, 0, defl_strut_moment])
 #        defl_strut = np.array([0, 0, defl_strut_force, 0, 0, 0, defl_strut_moment])
