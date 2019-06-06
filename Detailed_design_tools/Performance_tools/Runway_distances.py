@@ -12,9 +12,9 @@ import matplotlib.pyplot as plt
 
 #------------------------------INPUTS------------------------------------------
 """Input values for the B737-800 aircraft"""
-MTOW       =       78220*9.81 #Maximum take-off weight [N]
-W_TO       =       63502.9318 *9.81 #MTOW       #Weight at take-off [N]
-W_land     =       58967.0081  *9.81         #65310*9.81 #Maximum landing weight [N]
+MTOW       =       78220*9.81            #Maximum take-off weight [N]
+W_TO       =       63502.9318 *9.81      #MTOW   #Weight at take-off [N]
+W_land     =       58967.0081  *9.81    #65310*9.81 #Maximum landing weight [N]
 
 T_TO       =       96.3*1000*2#Total static thrust of all engines at take-off [N]
 
@@ -31,7 +31,7 @@ psi_TO     =       342.06     #Specific Thrust N/airflow [N/kg/s]
 bypass     =       5.5        #Bypass ratio of the engine
 
 g          =       9.80665
-mu         =       0.03
+mu         =       0.03         #Ground roll friction on dry concrete/asphalt
 
 #------------------------------DEFINITIONS-------------------------------------
 """ISA definitions"""
@@ -149,9 +149,9 @@ def TO_eng_fail(W_TO,g,S,rho,CL_maxto,A,e,T_TO,CD_to,Vx):
     #Vx = V2*( ((1. + 2.*g*h_to/V2**2)/(1. + gamma_mean / (a_mean/g)))**0.5 - ((gamma_mean*g*(dt - 1.))/V2) )
     
     #Find overall equation
-    S01 = Vx**2 / (2.*a_mean)                                 #Distance covered before engine failure at Vx
-    S12 = (1./gamma_mean)*(((V2**2 - Vx**2)/(4.*a_mean)) + h_to)   #Distance from engine failure up to save screen height at V2
-    Sstop = (Vx**2/(2*a_stop)) + Vx*dt                        #If TO aborted (stop distance needed)
+    S01 = Vx**2 / (2.*a_mean)                                    #Distance covered before engine failure at Vx
+    S12 = (1./gamma_mean)*(((V2**2 - Vx**2)/(4.*a_mean)) + h_to) #Distance from engine failure up to save screen height at V2
+    Sstop = (Vx**2/(2*a_stop)) + Vx*dt                           #If TO aborted (stop distance needed)
 
 
     S_continue = S01 + S12
@@ -164,7 +164,7 @@ def BFL(A,e,T_TO,W_TO,CD_to, CL_maxto, bypass,rho,g):      #Balanced field lengt
     #Constants from torenbeek
     h_to = 10.7 #[m]
     gamma2_min = 0.024
-    mu = 0.03
+    mu = 0.02
     
     #Compute variables
     CL_to = mu*np.pi*A*e    
@@ -251,7 +251,7 @@ BFL = BFL(A,e,T_TO,W_TO,CD_to, CL_maxto, bypass,rho,g)
 
 S_land = S_land(g,W_TO,S,rho,CL_max_land)
 
-plt.hlines(S_land,Vx[0],Vx[-1],'k','--',label = "landing")
+#plt.hlines(S_land,Vx[0],Vx[-1],'k','--',label = "landing")
 plt.hlines(BFL, Vx[0],Vx[-1],"gray","--",label = "BFL")
 plt.plot(Vx,S_TO_fail[0],"g", label = "continued")
 plt.plot(Vx,S_TO_fail[1],'r',label = "abord")
