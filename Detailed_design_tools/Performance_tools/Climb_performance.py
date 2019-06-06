@@ -475,10 +475,11 @@ print ("Minimum glide angle: ", theta_min," degrees")
 #for h in H:
 #    Vv_list = []
 #    Vh_list = []
+#
 #    for v in V:
 #        Vv = RC(Wcr,T0,v,S,A,e,CD0,h)
 #        Vh = np.sqrt(v**2  - Vv**2)
-#        
+#  
 #        Vv_list.append(Vv)
 #        Vh_list.append(Vh)
 #    

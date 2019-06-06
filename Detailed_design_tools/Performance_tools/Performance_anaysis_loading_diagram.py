@@ -19,15 +19,14 @@ T_TO       =       91.63*1000*2    #Take-off thrust
 T0         =       0.2789*0.8*MTOW #Thrust during cruise, assume a weight of 80%MTOW
 
 CL_maxto   =        2.5
-CL_maxcr   =        0.9       #Max CL during cruise
 CD0        =        0.02
-CD         =        0.06      #Approximate CD for just after take-off, take-off  climb
+CD         =        0.08      #Approximate CD for just after take-off, take-off  climb
 
-V_to       =       73.25      #Speed during take-off [m/s]       
+  
 V_cr       =       257.22     #Cruise speed [m/s]             
 A          =       9.44       #Aspect ratio [-]
 e          =       0.85       #Oswald efficiency factor [-]
-n          =        2.        #load factor L/W during cruise 
+n          =       2.        #load factor L/W during cruise 
 hcr        =       12000      #Cruise altitude [m]
 
 t_c        =       0.125      #Thickness over chord ration airfoil
@@ -242,7 +241,7 @@ def dTW_constEAS_jet(C,a,W,p,S,CD0):
 #For steady low climb
 Vs = np.sqrt((W_TO*2.)/(S*ISA_density(0)*CL_maxto))    
 V2 = 1.2*Vs                     #"Fly away" speed
-D_TO = 0.5*ISA_density(0)*V2**2.*S*CD
+D_TO = 0.5*ISA_density(0)*V2**2.*S*CD   #(CD0 + (CL_maxto**2)/(np.pi*A*e))
 
 M = Mach(V2,0)
 vg_dvdh = 0.5668*M**2            #Constant EAS in tropospere

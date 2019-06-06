@@ -239,8 +239,8 @@ def S_land(T0,g,W_land,S,rho,CL_max_land,CD_land):
     
     R = Vf**2 / (0.2*g)
     hf = R*(1 - np.cos(3*np.pi/180.))
-    theta = 3*np.pi/180.
-    sa = (15.3 - hf)/(np.tan(theta))
+    theta = 2.*np.pi/180.
+    sa = (15.3 - hf )/(np.tan(theta))
     sf = R*np.sin(theta)
     
     Vtd = 1.15*Vs
@@ -252,8 +252,9 @@ def S_land(T0,g,W_land,S,rho,CL_max_land,CD_land):
     Jt = (D/W_land) + mu
     Ja = (ISA_density(0)/(2*(W_TO/S)))*(0.02 + dCD0 + (k1 + (G/(np.pi*A*e))*CL_max_land**2) - mu*CL_max_land)
     
-    sg = 1.5*Vtd + (1/(2*9.81*Ja))*np.log(1 + (Ja/Jt)*Vtd**2)
-    
+    sg = 1.5*Vtd + ((1/(2*9.81*Ja))*np.log(1 + (Ja/Jt)*Vtd**2))
+    S_tor = sa+sf+sg
+
     #Method 3: Anderson
     Vs_land = np.sqrt((2*W_land)/(rho*S*CL_max_land))
     Vap = 1.3*Vs_land
@@ -270,7 +271,7 @@ def S_land(T0,g,W_land,S,rho,CL_max_land,CD_land):
     
     S_brake = (W_land**2/(2*g*S)*(2/rho)*(1.3**2/CL_max_land**2)*(1. / (T_mean_rev + D_mean + mu*(W_land - L_mean))))
     
-    return SL,sa+sf+sg, S_trans+S_air+S_brake
+    return SL,S_tor, S_trans+S_air+S_brake
 
 
 
@@ -306,6 +307,11 @@ plt.xlabel("Engine failure speed [m/s]")
 plt.ylabel("Distance covered [m]")
 plt.title('Balenced field length (engine failure)')
 plt.legend()
+
+ax = plt.gca()
+ax.get_yaxis().set_major_formatter(plt.FuncFormatter(lambda x, loc: "{:,}".format(int(x))))
+ax.get_xaxis().set_major_formatter(plt.FuncFormatter(lambda x, loc: "{:,}".format(int(x))))
+
 plt.show()    
     
 print ("Standard TO length:" , S_TO, "m")
