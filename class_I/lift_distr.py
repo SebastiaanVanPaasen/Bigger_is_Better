@@ -1,3 +1,9 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Sat May 11 13:30:31 2019
+
+@author: floyd
+"""
 import numpy as np
 import subprocess
 import os
@@ -18,8 +24,8 @@ taper = wing["Taper"]#0.4#0.31#0.4#0.31
 qc_sweep = wing["Sweep"]
 dihedral = 0
 Cr = wing["C_root"]#8.#8.54#7.11#6.63#6.06(2*S)/((1+taper)*span)
-MAC = Cr * (2/3) * ((1 + taper + (taper ** 2)) / (1 + taper))
-Ct = Cr * taper
+MAC = Cr*(2/3)*((1+taper+taper**2)/(1+taper))
+Ct = Cr*taper
 
 def make_avl_file():
     # B777 used as reference aircraft
@@ -61,13 +67,10 @@ def make_avl_file():
                 print("SECTION", file=text_file)            
                 print(round(x_loc_LE[i],3),round(y_loc_LE[i],3),round(z_loc_LE[i],3),round(chords[i],3),Ainc[i], file=text_file)        
             print("AFILE" + "\n""n2414.dat.txt", file=text_file)
-
-
-#make_avl_file()
-
+make_avl_file()
 
 def lift_distribution(CL):        
-    p = subprocess.Popen(r"C:\Users\sebas\OneDrive\Documents\DSE\Bigger_is_Better\avl\avl.exe", stdin=subprocess.PIPE, universal_newlines=True)
+    p = subprocess.Popen(r"C:\Users\mathi\Documents\DSE\Bigger_is_Better\avl\avl.exe", stdin=subprocess.PIPE, universal_newlines=True)
     set_CL = "a c " + str(CL)
     p.communicate(os.linesep.join(["load", "avl_testing","case", "mach0.7", "oper", set_CL, "x","fs", "endresult"]))          
     lines = [line.rstrip('\n') for line in open('endresult')]
@@ -85,6 +88,14 @@ def lift_distribution(CL):
     
 output_avl = lift_distribution(0.8)
 
+def c(z):
+    c = Cr - ((Cr - Ct) / (span / 2)) * z
+    #    if x < (by / 2):
+    #        c = Cr - 2 * x * ((Cr - Cy) / (by))
+    #    if x > (by / 2):
+    #        c = Cy - 2 * (x - (by / 2)) * ((Cy - Ct) / (b - by))
+    return c
+
 
 def get_correct_data(output_avl):
     x_pos = []
@@ -98,11 +109,11 @@ def get_correct_data(output_avl):
         cd.append(output_avl[i][8])
     x_pos = x_pos[len(x_pos):int(len(x_pos)/2)-1:-1] + x_pos[0:int(len(x_pos)/2)]
     cl_2 = cl_2[len(x_pos):int(len(x_pos)/2)-1:-1] + cl_2[0:int(len(x_pos)/2)]
-    cdi = cd[len(x_pos):int(len(x_pos)/2)-1:-1] + cd[0:int(len(x_pos)/2)]
+    cd = cd[len(x_pos):int(len(x_pos)/2)-1:-1] + cd[0:int(len(x_pos)/2)]
 #    plt.scatter(x_pos,cl)
 #    plt.scatter(y_pos,cd)
 #    plt.grid()
 #    print(cl, cl_2)
-    return x_pos, cl_2, cdi
+    return(x_pos,cl_2, cd)
     
-#x_pos,cl,cd = get_correct_data(output_avl)
+x_pos,cl,cd = get_correct_data(output_avl)

@@ -11,9 +11,11 @@ gamma = 1.4
 
 # Conversion factors ----------------------------------------------------------
 ftmin_to_ms = 0.00508
+kgm3_to_slugft3 = 0.00194
 kts_to_ms = 0.51444444
 lbft2_Nm2 = 47.880172
 lbs_to_kg = 0.45359237
+N_to_lbs = 0.2248089
 ft_to_m = 0.3048
 psf_to_nm2 = 1/0.020885
 nm_to_km = 1.852
