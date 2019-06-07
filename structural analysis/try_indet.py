@@ -3,7 +3,7 @@ import numpy as np
 x_strut = 15
 x_eng = 7
 d_fus = 6.8
-b = 25
+b = 30
 
 E_wing = 69 * (10 ** 9)
 I_wing = 0.005
@@ -90,21 +90,30 @@ lift = lift_front_cst * x_strut + 0.5 * lift_front_diff * x_strut
 weight = weight_front_cst * x_strut + 0.5 * weight_front_diff * x_strut
 shear_strut = lift_aft_cst + lift_aft_diff + weight_aft_cst + weight_aft_diff
 
-V_root = lift + weight + shear_strut - strut_force
+V_root_y = lift + weight + shear_strut - strut_force * np.sin(gamma)
 
 mom_aft_strut = -1 * (mom_aft_cst + mom_aft_diff)
 mom_shear_aft_strut = -1 * shear_strut * x_strut
 mom_eng = x_eng * w_eng
 mom_lift = -lift_front_cst * (x_strut ** 2) / 2 - 0.5 * lift_front_diff * (x_strut ** 2) / 3
 mom_weight = -1 * weight_front_cst * (x_strut ** 2) / 2 + 0.5 * weight_front_diff * (x_strut ** 2) / 3
-mom_strut_force = strut_force * x_strut
+mom_strut_force = np.sin(gamma) * strut_force * x_strut
 
 M_root = -1 * (mom_aft_strut + mom_shear_aft_strut + mom_eng + mom_lift + mom_weight + mom_strut_force)
 
-print(M_root)
-print(lift)
 print("Sturt force in N: ", strut_force)
 print("Wing deflection in mm: ", d_wing * 1000)
 print("Strut deflection in mm: ", d_strut * 1000)
 print("Strut stress in mpa: ", (strut_force / A_strut) / (10 ** 6))
+
+forces = [lift_front_cst, 0.5 * lift_front_diff, weight_front_cst, 
+          -0.5 * weight_front_diff, -w_eng, -strut_force]
+positions = [0, 0, 0, 0, x_eng, x_strut]
+
+#def deflection(x_pos, strut_pos, forces, positions):
+x_pos = 16
+
+m_z = lift_front_cst * (x_pos - 0) * (x_pos - 0) / 2
+print(m_z)
+
 
