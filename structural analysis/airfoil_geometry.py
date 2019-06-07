@@ -11,13 +11,35 @@ import math as m
 from scipy import interpolate ### Useful to interpolate stuff
 from scipy import integrate
 from matplotlib import pyplot as plt
-from stress_distribution_wing import load_airfoil
+#from stress_distribution_wing import load_airfoil
 from loading_and_moment_diagrams import c
 import loading_and_moment_diagrams as lm
 
-N = 100 
+N = 5 
 b = lm.b#39.56 #41.76
 
+def load_airfoil(filename):
+    f = open(filename,'r')
+    lines = f.readlines()
+    data = []
+    data_z = []
+    data_y = []
+    for line in lines:
+        x = line.split()
+        data.append(x)
+    for i in range(len(data)):
+        for j in range(len(data[i])):
+            data[i][j] = float(data[i][j])
+    for i in range(len(data)):
+        data_z.append(data[i][0])
+        data_y.append(data[i][1])
+
+#    plt.plot(data_z,data_y)
+#    plt.show()
+    return data,data_z,data_y
+
+#filename = 'NACA3414.txt'
+#print(load_airfoil(filename))
 
 def airfoil_geometry(N,b):
 
@@ -51,5 +73,6 @@ def airfoil_geometry(N,b):
 
 
 #data = load_airfoil('NACA3414.txt')
-#data_z_all_sec, data_y_upper_all_sec, data_y_lower_all_sec = airfoil_geometry(N,b)
-        
+data_z_all_sec, data_y_upper_all_sec, data_y_lower_all_sec = airfoil_geometry(N,b)
+#print(data_z_all_sec[0])
+#print(np.shape(data_z_all_sec))
