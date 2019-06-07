@@ -129,8 +129,9 @@ def plot_diagram(all_requirements, labels, ws, tw):
     plt.scatter(3678, 0.333, label="Embraer EMB-145 (nb)", c="r", marker="*", s=100)
     plt.scatter(3853, 0.342, label="Fokker F70 (nb)", c="g", marker="*", s=100)
     plt.scatter(4519, 0.291, label="Fokker F100 (nb)", c="b", marker="*", s=100)
-    plt.scatter(4800, 0.16, label="Design point minimum T/W", c="r", marker="v", s=100)
-    plt.scatter(8200, 0.275, label="Design point maximum W/S", c="b", marker="v", s=100)
+    plt.scatter(6000, 0.23, label="Design point minimum T/W", c="r", marker="v", s=100)
+    plt.scatter(7000, 0.26, label="Design point average T/W and W/S", c="y", marker="v", s=100)
+    plt.scatter(8000, 0.29, label="Design point maximum W/S", c="b", marker="v", s=100)
 
     plt.legend(loc='center left', bbox_to_anchor=(1, 0.5))
     plt.xlabel(r"$\frac{W}{S}$ [$N/m^2$]")
@@ -148,12 +149,15 @@ Landing_factor = 0.84  # Guestimated from ADSEE-I L3
 TOP = 220. * cc.lbft2_Nm2  # Guestimated from ADSEE-I L3
 Sigma_TO = 1  # Ratio of densities
 
+H_cr = 10000
+V_cr = 230
+
 # Stall speeds ---------------------------------------------------------------------------------------------------------
-V_stall_Cruise = 250 / 1.2  # m/s   Guestimated from ADSEE-I L3 Take requirements
+V_stall_Cruise = V_cr / 1.2  # m/s   Guestimated from ADSEE-I L3 Take requirements
 V_stall_Landing = min(np.sqrt(Landing_runway / 0.5847), 65.)  # m/s     Guestimated from ADSEE-I L3
 
 # Lift and drag coefficients -------------------------------------------------------------------------------------------
-CL_Cruise_max = 1.7  # Guestimated from ADSEE-I L3
+CL_Cruise_max = 1.5  # Guestimated from ADSEE-I L3
 CL_Landing_max = 3.2  # From Obert
 CL_TO_max = 0.9 * CL_Landing_max  # Guestimated from ADSEE-I L3
 
@@ -176,8 +180,7 @@ AR = [12]  # - 2, A, A + 2]  # Based on A in class I
 WS = np.arange(0., 10250., 250)
 TW = np.arange(0., 0.45, 0.05)
 
-H_cr = 9000
-V_cr = 228
+
 Rho_cr = cc.Rho_0 * ((1 + (cc.a * H_cr) / cc.Temp_0) ** (-(cc.g_0 / (cc.R_gas * cc.a))))
 N_engines = 2
 
@@ -198,4 +201,4 @@ def final_diagram(cd0, os):
     plot_diagram(requirement, labelling, WS, TW)
 
 
-final_diagram(0.02589, 0.85)
+final_diagram(0.024, 0.85)

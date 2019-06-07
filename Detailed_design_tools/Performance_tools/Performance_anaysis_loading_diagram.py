@@ -14,20 +14,19 @@ import numpy as np
 """Input values for the B737-800 aircraft"""
 MTOW       =       78220*9.81 #Maximum take-off weight [N]
 W_TO       =       MTOW       #Weight at take-off [N]
-T_TO       =       107*1000   #Total static thrust of all engines at take-off [N]
-T          =       91.63*1000 #Take-off thrust
-T_cr       =       0.2789*0.8*MTOW #Thrust during cruise, assume a weight of 80%MTOW
+T          =       107*1000        #Total static thrust of all engines at take-off [N]
+T_TO       =       91.63*1000*2    #Take-off thrust
+T0         =       0.2789*0.8*MTOW #Thrust during cruise, assume a weight of 80%MTOW
 
 CL_maxto   =        2.5
-CL_maxcr   =        0.9       #Max CL during cruise
 CD0        =        0.02
-CD         =        0.06      #Approximate CD for just after take-off, take-off  climb
- 
-V_to       =       73.25      #Speed during take-off [m/s]       
+CD         =        0.08      #Approximate CD for just after take-off, take-off  climb
+
+  
 V_cr       =       257.22     #Cruise speed [m/s]             
 A          =       9.44       #Aspect ratio [-]
 e          =       0.85       #Oswald efficiency factor [-]
-n          =        2.        #load factor L/W during cruise 
+n          =       2.        #load factor L/W during cruise 
 hcr        =       12000      #Cruise altitude [m]
 
 t_c        =       0.125      #Thickness over chord ration airfoil
@@ -41,6 +40,47 @@ psi_TO     =       342.06     #Specific Thrust N/airflow [N/kg/s?]
 bypass     =       5.5        #Bypass ratio of the engine
 
 g          =        9.80665
+m          =        1.3     	#factor for the variation of thrust with alitude
+
+    #r_uc       =       Correction factor for the undercarriage
+    #           =       1.0 fully retracted, no fairings
+    #           =       1.08 Main gear in fairings (e.g. C-130)
+    #           =       1.03 Main gear retracted in nacelles of turboprop engines
+    
+    #r_t        =       Correction factor for the tail
+    #           =       1.24
+    
+    #r_w        =       Correction factor for the wing drag
+    #           =       1. for a cantilever wing
+    #           =       1.1 for a braced wing          
+                      
+    #r_f        =       Correction factor for the fuselage drag
+    #           =       1.0 for a cylindrical fuselage
+    #           =       0.65 + 1.5*(d_f/l_f) for a fuselage with streamlined fairings
+    
+    #r_thr      =       Correction factor for thrust reversers
+    #           =       1.0 with thrust reversers
+    #           =       0.82 without thrust reversers
+    
+    #r_n        =       Correction factor for engine configuration
+    #           =       1.5 for all engines podded
+    #           =       1.65 2 podded and 1 buried in tail
+    #           =       1.25 buried in nacelles on fuselage
+    #           =       1.0 fully buried engines
+    
+    #dCD_comp   =       Correction factor for the drag coefficient due to compressibility effects
+    #           =       0.0005 for long range cruise conditions
+    #           =       0.0020 for high speed cruise conditions
+    
+#Assumed values for now
+r_re = 1.0     #no boundary layer affected at take-off speed
+r_uc = 1.0
+r_t = 1.24
+r_w = 1.
+r_f = 1.0
+r_thr = 1.0
+r_n = 1.5
+dCD_comp = 0.   #TO conditions so not yet in compressibility region
 
 #---------------------------DEFINITIONS----------------------------------------
 """ISA definitions"""
@@ -108,52 +148,14 @@ def Sos(h):
     a = np.sqrt(gamma*R*T)
     return a
     
+#Varying thrust with velocity
+def T_alt(T0,h):
+    T = T0*(ISA_density(h)/ISA_density(0))**m
+    return T
 
 
 """Take-off T/W jet"""
 def TW_TO_jet(T,T_TO,MTOW,W_TO,M,t_c,qcsweep,S,A,l_f,b_f,h_f,psi_TO,bypass,e,rho,p0): #T/W for TO of a jet aircraft
-
-    #r_uc       =       Correction factor for the undercarriage
-    #           =       1.0 fully retracted, no fairings
-    #           =       1.08 Main gear in fairings (e.g. C-130)
-    #           =       1.03 Main gear retracted in nacelles of turboprop engines
-    
-    #r_t        =       Correction factor for the tail
-    #           =       1.24
-    
-    #r_w        =       Correction factor for the wing drag
-    #           =       1. for a cantilever wing
-    #           =       1.1 for a braced wing          
-                      
-    #r_f        =       Correction factor for the fuselage drag
-    #           =       1.0 for a cylindrical fuselage
-    #           =       0.65 + 1.5*(d_f/l_f) for a fuselage with streamlined fairings
-    
-    #r_thr      =       Correction factor for thrust reversers
-    #           =       1.0 with thrust reversers
-    #           =       0.82 without thrust reversers
-    
-    #r_n        =       Correction factor for engine configuration
-    #           =       1.5 for all engines podded
-    #           =       1.65 2 podded and 1 buried in tail
-    #           =       1.25 buried in nacelles on fuselage
-    #           =       1.0 fully buried engines
-    
-    #dCD_comp   =       Correction factor for the drag coefficient due to compressibility effects
-    #           =       0.0005 for long range cruise conditions
-    #           =       0.0020 for high speed cruise conditions
-    
-    #Assumed values for now
-    r_re = 1.0     #no boundary layer affected at take-off speed
-    r_uc = 1.0
-    r_t = 1.24
-    r_w = 1.
-    r_f = 1.0
-    r_thr = 1.0
-    r_n = 1.5
-    dCD_comp = 0.   #TO conditions so not yet in compressibility region
-    
-    
     #Compute parameters in equation
     delta = 1.0                     #p/p0 since p0=p during take-off
     k_w = MTOW / W_TO
@@ -239,7 +241,7 @@ def dTW_constEAS_jet(C,a,W,p,S,CD0):
 #For steady low climb
 Vs = np.sqrt((W_TO*2.)/(S*ISA_density(0)*CL_maxto))    
 V2 = 1.2*Vs                     #"Fly away" speed
-D_TO = 0.5*ISA_density(0)*V2**2.*S*CD
+D_TO = 0.5*ISA_density(0)*V2**2.*S*CD   #(CD0 + (CL_maxto**2)/(np.pi*A*e))
 
 M = Mach(V2,0)
 vg_dvdh = 0.5668*M**2            #Constant EAS in tropospere
@@ -252,9 +254,9 @@ C_steady = RC(T_TO,D_TO,V2,W_TO,vg_dvdh)      #Rate of climb for steady low alti
 #steady climb low altitude, at constant EAS
 TW_steady_climb = TW_steady_climb_jet(C_steady,a_steady,CD0,W_TO,p_steady,S,A,e) + dTW_constEAS_jet(C_steady,a_steady,W_TO,p_steady,S,CD0) 
 
-print "Rate of climb steady low altitude: ", C_steady, "m/s"
-print "T/W for steady climb :", TW_steady_climb
-print
+print ("Rate of climb low altitude at const. EAS: ", C_steady, "m/s")
+print ("T/W for steady climb :", TW_steady_climb)
+print ()
 
 #For service ceiling climb
 Dcr = 0.5*ISA_density(hcr)*V_cr**2.*S*CD
@@ -265,14 +267,14 @@ theta = ISA_temp(12000)/ISA_temp(0)                #Constant EAS in stratosphere
 a_high = Sos(hcr)
 p_high = ISA_press(hcr)
 
-C_high = RC(T_cr,D_TO,V_cr,0.8*W_TO,vg_dvdh)      #Rate of climb for ceiling
+C_high = RC(T_alt(T0,hcr),D_TO,V_cr,0.8*W_TO,vg_dvdh)      #Rate of climb for ceiling
 
 #High altitude climg: service ceiling thrust at constant EAS 
 TW_ceiling = TW_ceiling_climb_jet(n,CD0,A,e,theta,W_TO,p_high,S) + dTW_constEAS_jet(C_high,a_high,W_TO,p_high,S,CD0) 
 
-print "Rate of climb service ceiling: ", C_high, "m/s"
-print "T/W for ceiling climb :", TW_ceiling
-print
+print ("Rate of climb service ceiling at const. EAS: ", C_high, "m/s")
+print( "T/W for ceiling climb :", TW_ceiling)
+print( )
 
 
 """Take-off wing loading diagram"""
@@ -289,10 +291,11 @@ TW_TO = TW_TO_jet(T,T_TO,MTOW,W_TO,M,t_c,qcsweep,S,A,l_f,b_f,h_f,psi_TO,bypass,e
 WS_TO = WS_TO(W_TO, S, rho, CL_maxto,bypass, T_TO,A,S_to,g)
 
 
-print 'Take-off T/W and W/S: ', TW_TO, "and", WS_TO
+print ('Take-off T/W and W/S: ', TW_TO, "and", WS_TO)
     
 
-
+print()
+print(" * at const. EAS means that you are accelerating during climb as the density becomes less" )
   
     
     

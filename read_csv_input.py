@@ -40,22 +40,21 @@ import sys
 
 def read_output(design):
 #    sys.path.append("C:/Users/Hidde/Documents/Aerospace Engineering Bachelor Year 3/Design Synthesis Exercise/Bigger_is_Better")
-    sys.path.append("C:/Users/mathi/Documents/DSE/Bigger_is_Better")
-    
+    sys.path.append("C:/Users/sebas/OneDrive/Documents/DSE/Bigger_is_Better")
 #    ROOT_DIR = os.path.dirname(os.path.abspath("excel_results"))
-    input_path = sys.path[-1] + '\excel_results'
+    input_path = sys.path[-1] + '/excel_results'
 #    print(input_path)
     
-    df = pandas.read_csv(input_path+'\combined_results_2.csv', delimiter=',', index_col="Parameter")
+    df = pandas.read_csv(input_path+'/combined_results.csv', delimiter=',', index_col="Parameter")
 #    print(df)
     
-    weights = {"W_TO" : df[design][0], "W_F" : df[design][2], "W_W" : df[design][4], "W_N" : df[design][7], "W_E" : df[design][38]}
+    weights = {"W_TO" : df[design][0], "W_F" : df[design][2], "W_W" : df[design][4], "W_N" : df[design][7], "W_E" : df[design][39]}
 #    print(weights)
     
     wing = {"A" : df[design][15], "S" : df[design][16], "b" : df[design][17], "C_root" : df[design][18], "C_tip" : df[design][19], "Sweep" : df[design][20], "Taper" : df[design][21]}
 #    print(wing)
     
-    cruise_conditions = {"T_TO" : df[design][29], "V_cr" : df[design][31], "H_cr" : df[design][32], "CD_0" : df[design][37]}
+    cruise_conditions = {"T_TO" : df[design][29], "V_cr" : df[design][31], "H_cr" : df[design][32], "CD_0" : df[design][38]}
 #    print(cruise_conditions)
 
     return weights, wing, cruise_conditions
