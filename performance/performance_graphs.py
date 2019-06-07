@@ -33,7 +33,7 @@ e = 0.85
 CD0 = 0.020
 g = 9.81
 S = 124.5 
-
+h = 10000.
 F = 2000./3600. #Fuel flow kg/s
 
 #assume weight in cruise is at least MLW to allow for a save landing
@@ -44,7 +44,7 @@ Wcr = MLW
 def ISA_density(h):      # enter height in m
     M = 0.0289644       #kg/mol molar mass of Earth's air
     R = 8.3144590       #universal gas constant Nm/MolK
-si    
+    
     if h < 11000:
         rho0 = 1.225   #kg/m^3
         T = 288.15     #K
@@ -81,17 +81,17 @@ def drag_plot(h,S,A,e,Wcr):         #Drag VS velocity graph
     D = []                  #drag at different airspeeds in kN
     for j in range(len(CL_list)):
         D.append((Wcr * (CD_list[j]/CL_list[j]))/1000.)
-        
-    #plt.plot(V, D)                   #V-D plot for a given altitude and varying speed
-    #plt.xlabel("Speed [km/h]")
-    #plt.show()
+    plt.figure(1)    
+    plt.plot(V, D)                   #V-D plot for a given altitude and varying speed
+    plt.xlabel("Speed [km/h]")
+    plt.show()
     
     k = D.index(min(D))            
-    return V[k] ,D                    #speed at which the minimum drag is experienced
-    
+    return V[k] ,D         
+           #speed at which the minimum drag is experienced
 
 def power_plot(h,Wcr,S,Tcr,CD0):     #input weight in Newtons!!!
-    V = np.linspace(200,1200,800)   #V range in km/h
+    V = np.linspace(300,1200,800)   #V range in km/h
     Pr_list = []                    #power required list in kW
     Pa_list = []                    #Power available list in kW
     for i in V:
@@ -181,6 +181,9 @@ for h in H:
 plt.legend(loc = 'upper center')
 plt.show()        
     
+
+
+
 """RC max and corresponding airspeed and min time to climb to H w.r.t. altitude"""
 V_RCmax = []            #list with V at which RC is max at different altitudes
 RC_max = []             #list with RC max values at different altitudes
@@ -235,30 +238,30 @@ M_list = opt_alt(Wcr,h,S,A,e)[0]
 
 
 
-tmin.remove(0)
-plt.subplot(221)
-plt.plot(H1,tmin,"r")
-plt.title('Minimum time to climb starting from sea level')
-plt.ylabel("T min to climb [s]")
-plt.xlabel("Altitude [m]")
-
-plt.subplot(222)
-plt.plot(H,RC_max,"b")
-plt.title('Maximum rate of climb (RC) w.r.t. altitude')
-plt.ylabel("RC_max [m/s]")
-plt.xlabel("Altitude [m]")
-
-plt.subplot(223)
-plt.plot(H,V_RCmax,"g")
-plt.title('Airspeed at which RC_max is obtained w.r.t. altitude')
-plt.ylabel("V at RC_max [km/s]")
-plt.xlabel("Altitude [m]")
-
-plt.subplot(224)
-plt.plot(M_list,H,"orange")
-plt.title("Mach number w.r.t. altitude")
-plt.xlabel("Mach number")
-plt.ylabel("Altitude [m]")
+#tmin.remove(0)
+#plt.subplot(221)
+#plt.plot(H1,tmin,"r")
+#plt.title('Minimum time to climb starting from sea level')
+#plt.ylabel("T min to climb [s]")
+#plt.xlabel("Altitude [m]")
+#
+#plt.subplot(222)
+#plt.plot(H,RC_max,"b")
+#plt.title('Maximum rate of climb (RC) w.r.t. altitude')
+#plt.ylabel("RC_max [m/s]")
+#plt.xlabel("Altitude [m]")
+#
+#plt.subplot(223)
+#plt.plot(H,V_RCmax,"g")
+#plt.title('Airspeed at which RC_max is obtained w.r.t. altitude')
+#plt.ylabel("V at RC_max [km/s]")
+#plt.xlabel("Altitude [m]")
+#
+#plt.subplot(224)
+#plt.plot(M_list,H,"orange")
+#plt.title("Mach number w.r.t. altitude")
+#plt.xlabel("Mach number")
+#plt.ylabel("Altitude [m]")
 
 
 #plt.subplot(224)
