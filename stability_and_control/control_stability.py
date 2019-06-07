@@ -84,7 +84,7 @@ import matplotlib.pyplot as plt
 
 def control_stability_plot(x_cg, min_cg, max_cg, X_LEMAC_range, S_control, S_stability, MAC, l_fuselage):
 #    print("the X_LEMAC range " + str(X_LEMAC_range))
-    Sh_S = np.linspace(0,2,10000)
+    Sh_S = np.linspace(0,2,1000)
     contr_trend = np.polyfit(x_cg, S_control, 1)
     stability_trend = np.polyfit(x_cg, S_stability, 1)
     a_control = contr_trend[0]
@@ -95,6 +95,7 @@ def control_stability_plot(x_cg, min_cg, max_cg, X_LEMAC_range, S_control, S_sta
     #print("Stability curve", a_stability,"x + ", b_stability)
     Sh_opt = []
     LEMAC_opt = []
+    max_cg_opt_list = []
     for i in range(len(X_LEMAC_range)):
         
         for j in range(len(Sh_S)):
@@ -104,6 +105,7 @@ def control_stability_plot(x_cg, min_cg, max_cg, X_LEMAC_range, S_control, S_sta
             if min_cg[i]>= x1 and max_cg[i]<x2:
                 Sh_opt.append(Sh_S[j])
                 LEMAC_opt.append(X_LEMAC_range[i])
+                max_cg_opt_list.append(max_cg[i]) 
 #                print("Min cg = ", round(min_cg[i],2))
 #                print("Max cg = ", round(max_cg[i],2))
                 break
@@ -119,9 +121,9 @@ def control_stability_plot(x_cg, min_cg, max_cg, X_LEMAC_range, S_control, S_sta
 #    print(min_cg[Sh_opt.index(min(Sh_opt))])
 #    print(max_cg[Sh_opt.index(min(Sh_opt))])
     
-    X_LEMAC = list(np.array(X_LEMAC_range)+LEMAC_opt[Sh_opt.index(min(Sh_opt))])
+    #X_LEMAC = list(np.array(X_LEMAC_range)+LEMAC_opt[Sh_opt.index(min(Sh_opt))])
 #    opt_line = [min_cg[Sh_opt.index(min(Sh_opt))], max_cg[Sh_opt.index(min(Sh_opt))]]
-    opt_LEMAC = [LEMAC_opt[Sh_opt.index(min(Sh_opt))], LEMAC_opt[Sh_opt.index(min(Sh_opt))]]
+    #opt_LEMAC = [LEMAC_opt[Sh_opt.index(min(Sh_opt))], LEMAC_opt[Sh_opt.index(min(Sh_opt))]]
     
     
 #    fig, ax1 = plt.subplots()
@@ -144,14 +146,36 @@ def control_stability_plot(x_cg, min_cg, max_cg, X_LEMAC_range, S_control, S_sta
 ## ax1.legend(loc="lower right")
 ##    ax2.legend(loc="center right")
 #    plt.show()
-    print("the lemac "+ str(LEMAC_opt[Sh_opt.index(min(Sh_opt))]))
-    xcg_aft = max_cg[Sh_opt.index(min(Sh_opt))] * MAC + LEMAC_opt[Sh_opt.index(min(Sh_opt))] * l_fuselage
+    
+    xcg_aft = max_cg_opt_list[Sh_opt.index(min(Sh_opt))] * MAC + LEMAC_opt[Sh_opt.index(min(Sh_opt))] * l_fuselage
     return LEMAC_opt[Sh_opt.index(min(Sh_opt))] * l_fuselage, min(Sh_opt), xcg_aft
 
 #print(control_stability_plot(min_cg, max_cg, X_LEMAC_range, S_control, S_stability))
 
 
+def c_s_coefficients(tap_w):
     
+    # mu_2 from SEAD slides, flap span = 0.6
+    if 0. <= tap_w < 0.2:
+        mu_2 = 1.1 
+    elif 0.2 <= tap_w < 0.4:
+        mu_2 = 0.9
+    elif 0.4 <= tap_w < 0.6:
+        mu_2 = 0.8
+    elif 0.6 < tap_w:
+        mu_2 = 0.75
+        
+    # mu_2 from SEAD slides, flap span = 0.6
+    if 0. <= tap_w < 0.2:
+        mu_3 = 0.04
+    elif 0.2 <= tap_w < 0.4:
+        mu_3 = 0.05
+    elif 0.4 <= tap_w < 0.6:
+        mu_3 = 0.055
+    elif 0.6 < tap_w:
+        mu_3 = 0.06
+
+    return mu_2, mu_3
             
 
         

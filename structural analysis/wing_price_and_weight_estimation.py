@@ -5,33 +5,16 @@ Created on Fri May 17 10:03:19 2019
 @author: mathi
 """
 
-from loading_and_moment_diagrams import load_diagrams
+#from loading_and_moment_diagrams import load_diagrams
 from Airfoil_inertia import *
-
-def wing_price_weight(N,t_skin,b,length,t_spar):
-    density_mat_skin = 2801  # kg/m3
-    mat_cost_skin = 6.6  # euro/kg
-    density_mat_spar = 2801  # kg/m3
-    mat_cost_spar = 6.6
-    skin_volume = sum(s_airfoil(N,b))*t_skin
-    skin_mass = skin_volume * density_mat_skin
-    skin_price = skin_mass * mat_cost_skin
-    spar_areas = I_zz_spars(N,b,length,t_spar)[1]+I_zz_spars(N,b,length,t_spar)[2]
-    spar_volume = spar_areas*b/2
-    spar_mass = spar_volume * density_mat_spar
-    spar_price = spar_mass * mat_cost_spar
-    
-    total_price = (skin_price + spar_price)*2
-    total_mass = (skin_mass + spar_mass)*2
-    return 'skin_mass', skin_mass, 'spar_mass', spar_mass, 'total_mass', total_mass,'total_price', total_price 
+import loading_and_moment_diagrams as lm
+#from parameter_requirements import I_zz_spars
 
 t_skin = 0.002
 N = 100
-t_spar = 0.06
-b = 60.#47.83#39.56#41.76
-length = 0.3
-
-print(wing_price_weight(N,t_skin,b,length,t_spar)[:])
+t_spar = 0.065
+b = lm.b #60.#47.83#39.56#41.76
+length = 0.30
 
 
 def I_zz_spars(N,b,length,t_spar):
@@ -55,7 +38,30 @@ def I_zz_spars(N,b,length,t_spar):
 
     return 'I_zz_spars=', I_zz, front_spar_area, back_spar_area   
 
-length = 0.3
-t_spar = 0.06
+
 print(I_zz_spars(N,b,length,t_spar))
+
+
+def wing_price_weight(N,t_skin,b,length,t_spar):
+    density_mat_skin = 2801  # kg/m3
+    mat_cost_skin = 6.6  # euro/kg
+    density_mat_spar = 2801  # kg/m3
+    mat_cost_spar = 6.6
+    skin_volume = sum(s_airfoil(N,b))*t_skin
+    skin_mass = skin_volume * density_mat_skin
+    skin_price = skin_mass * mat_cost_skin
+    spar_areas = I_zz_spars(N,b,length,t_spar)[1]+I_zz_spars(N,b,length,t_spar)[2]
+    spar_volume = spar_areas*b/2
+    spar_mass = spar_volume * density_mat_spar
+    spar_price = spar_mass * mat_cost_spar
+    
+    total_price = (skin_price + spar_price)*2
+    total_mass = (skin_mass + spar_mass)*2
+    return 'skin_mass', skin_mass, 'spar_mass', spar_mass, 'total_mass', total_mass,'total_price', total_price 
+
+
+print(wing_price_weight(N,t_skin,b,length,t_spar)[:])
+
+
+
 
