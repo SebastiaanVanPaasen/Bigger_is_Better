@@ -4,7 +4,7 @@ import constants_and_conversions as cc
 from loading_definitions import Section, Helpers
 from read_csv_input import read_output
 
-filename = 'HIGH SEMIDD 2E STRUT'
+filename = 'HIGH DD 2E STRUT'
 weights, wing, cruise_conditions = read_output(filename)
 
 
@@ -21,8 +21,8 @@ W_W = weights["W_W"]
 M_F = (weights["W_F"] / cc.g_0) / 2
 N_eng = 2
 W_eng = weights["W_E"] + weights["W_N"] / N_eng
-
-
+#print(Cr, Ct)
+print(M_F)
 T_TO = cruise_conditions["T_TO"]
 alt = cruise_conditions["H_cr" ]
 V_cr = cruise_conditions["V_cr"] * 1.3

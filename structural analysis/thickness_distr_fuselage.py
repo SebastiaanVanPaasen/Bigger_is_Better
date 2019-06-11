@@ -14,14 +14,14 @@ theta = list(np.array([-15,-10,-5,0,5,10,15])*np.pi/180) #angle between the mome
 
 #Iteration 1 of the variable thickness
 alpha = np.arange(0,361,1) # angle between the z-axis and an point evaluated in circumference of cross-section
-#first approximation of the fuselage Izz, assuming circular with constant thickness 
+alpha_deg = list(np.arange(0,361,1)*np.pi/180)#first approximation of the fuselage Izz, assuming circular with constant thickness 
 #I_zz = np.pi*R**3*t
 
 for i in range(len(theta)):
     
     t_circ = []
     for j in range(len(alpha)):
-        t = M * np.sin(alpha[j]*np.pi/180-theta[i])/(np.pi*R**2*sigma)
+        t = M * -np.cos(theta[i])*np.sin(alpha_deg[j])+np.sin(theta[i])*np.cos(alpha_deg[j])/(np.pi*R**2*sigma)
         t_circ.append(abs(t*1000))
         
     t_max = max(t_circ)   
@@ -69,7 +69,7 @@ def max_stress(theta,alpha_segment,I_xx,I_yy):
     max_stress_ratios = []
     for i in range(len(theta)): 
         for j in range(len(alpha_segment)):    
-            stress_ratio = (M*np.cos(theta[i])*R*np.sin(alpha_segment[j])/I_xx + -M*np.sin(theta[i])*R*np.cos(alpha_segment[j])/I_yy)/sigma
+            stress_ratio = (-M*np.cos(theta[i])*R*np.sin(alpha_segment[j])/I_xx + M*np.sin(theta[i])*R*np.cos(alpha_segment[j])/I_yy)/sigma
             stress_ratios[j][i] = stress_ratio
     
     for i in range(len(stress_ratios)):
