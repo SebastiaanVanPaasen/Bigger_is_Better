@@ -32,23 +32,23 @@ import matplotlib.pyplot as plt
 
 """INPUTS: CHANGE ACCORDING TO DESIGN"""
 
-"""Design concept 5"""
-MTOW = 1474914.
-A = 14.
-S = 183.29
-
-e = 0.85
-CD0 = 0.023
-g = 9.81
-
-Wcr = (0.8*MTOW)              #63000*9.81#assumption for now
-pax_max = 450
-n = 1                       #load factor of number of passengers
-
-M_des = 0.75
-SAR_des = 0.008190
-Hcr_des = 9000.
-Ct0 = 12.65e-06
+#"""Design concept 5"""
+#MTOW = 1474914.
+#A = 14.
+#S = 183.29
+#
+#e = 0.85
+#CD0 = 0.023
+#g = 9.81
+#
+#Wcr = (0.8*MTOW)              #63000*9.81#assumption for now
+#pax_max = 450
+#n = 1                       #load factor of number of passengers
+#
+#M_des = 0.75
+#SAR_des = 0.008190
+#Hcr_des = 9000.
+#Ct0 = 12.65e-06
 
 
 #"""Design concept 4"""
@@ -106,23 +106,23 @@ Ct0 = 12.65e-06
 #Ct0 = 11.9e-06
 
 
-#"""Design concept 1"""
-#MTOW = 1580051.
-#A = 13.
-#S = 210.85
-#
-#e = 0.85
-#CD0 = 0.023
-#g = 9.81
-#
-#Wcr = (0.8*MTOW)              #63000*9.81#assumption for now
-#pax_max = 450
-#n = 1                       #load factor of number of passengers
-#
-#M_des = 0.75
-#SAR_des = 0.008135
-#Hcr_des = 10000.
-#Ct0 = 11.9e-06
+"""Design concept 1"""
+MTOW = 1580051.
+A = 13.
+S = 210.85
+
+e = 0.85
+CD0 = 0.023
+g = 9.81
+
+Wcr = (0.8*MTOW)              #63000*9.81#assumption for now
+pax_max = 450
+n = 1                       #load factor of number of passengers
+
+M_des = 0.75
+SAR_des = 0.008135
+Hcr_des = 10000.
+Ct0 = 11.9e-06
 
 #------------------------------VERIFICATION DATA--------------------------------
 
@@ -134,7 +134,7 @@ OEW1 = 45070*g
 MFW1 = 31594*g
 
 
-Wcr1 = 0.8*MTOW1             #ASSUMPTION!!! WHAT IS W_Cr ACTUALLY
+Wcr1 = MTOW1-0.4*MFW1            #ASSUMPTION!!! WHAT IS W_Cr ACTUALLY
 #Wcr1 = 0.75*MTOW             #ASSUMPTION!!! WHAT IS W_Cr ACTUALLY
 
 Mcr = 0.79
