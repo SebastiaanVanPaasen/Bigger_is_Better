@@ -1,10 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import scipy as sp
+from scipy.interpolate import interp1d
 from class_I.lift_distr import get_correct_data, lift_distribution, make_avl_file
 
 D_fus = 7.3
-length = 30
 
 A_strut = 0.25 * np.pi * ((5 / 1000) ** 2)
 E_strut = 181 * (10 ** 9)  
@@ -13,7 +12,11 @@ E_wing = 69 * (10 ** 9)
 I_wing = 0.000499
 L_wing = 30
 
+cr = 6.141
+ct = 1.826
 
+rho_cr = 
+V_cr = 
 
 def deter_strut(F_strut_array, angle, L_s, applications, forces):
     a_l, a_w, a_eng, a_s = applications
@@ -89,30 +92,60 @@ def get_data(CL):
     
     output_avl = lift_distribution(CL)
     x_pos, cl, cdi = get_correct_data(output_avl)
-    #print(x_pos)
-    
-    
-    ##Lift Code:
-    PolyFitCurveCl = sp.interpolate.interp1d(x_pos, cl, kind="cubic", fill_value="extrapolate")
-    
-    
-    ##Drag Code:
-    PolyFitCurveidrag = sp.interpolate.interp1d(x_pos, cdi, kind='cubic', fill_value='extrapolate')
-    #print(cdi)
+#    print(x_pos, cl, cdi)
+
+    PolyFitCurveCl = interp1d(x_pos, cl, kind="cubic", fill_value="extrapolate")
+    PolyFitCurveidrag = interp1d(x_pos, cdi, kind='cubic', fill_value='extrapolate')
     
     return PolyFitCurveCl,  PolyFitCurveidrag
 
 
+def calc_chord(x):
+    return cr - ((cr - ct) / L_wing) * x
+    
+    
+def calc_area(x, width):
+    chord = calc_chord(x)
+    
+    return width * chord
+        
+    
+#    def calc_volume(self):
+#        self.volume = self.width * self.chord * (self.tc * self.chord)
+        
+
+def deter_lift(cl_curve, x, dx):
+    CL = np.aray([])
+    S = np.array([])
+    
+    for i in range(len(x)):
+        CL = np.append(CL, cl_curve(x[i]))
+        S = np.append(S, calc_area(x[i], dx))
+        
+        
+    qs = 0.5 * rho_cr * (V_cr ** 2) * S
+    L = qs * CL
+    print(L)
+    
+    return L
+
+
+cl = 0.37
 l_distr = 25295.5
 w_distr = 3677
 W_eng = 73144
 force = l_distr, w_distr, W_eng
+
+
 
 A_L = 0
 A_W = 0
 A_E = 23
 A_S = 5
 applic = A_L, A_W, A_E, A_S
+
+cl_curve, cd_curve = get_data(cl)
+
 
 L_strut = np.sqrt(D_fus ** 2 + (L_wing - A_S) ** 2)
 gamma = np.arctan(D_fus / (L_wing - A_S))

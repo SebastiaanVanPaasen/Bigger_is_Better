@@ -62,6 +62,8 @@ def input_CL(S,V,rho,W):
     input_CL = W/(0.5*rho*V**2*S)
     return input_CL
 
+print(input_CL(S, V, rho, W), "cl")
+
 #print(input_CL(n, S, V, rho, W))
 make_avl_file()
 ## Import File List:
