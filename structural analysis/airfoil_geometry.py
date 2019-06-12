@@ -15,7 +15,7 @@ from matplotlib import pyplot as plt
 from loading_and_moment_diagrams import c
 import loading_and_moment_diagrams as lm
 
-N = 5 
+N = 100
 b = lm.b#39.56 #41.76
 
 def load_airfoil(filename):
@@ -74,5 +74,6 @@ def airfoil_geometry(N,b):
 
 #data = load_airfoil('NACA3414.txt')
 data_z_all_sec, data_y_upper_all_sec, data_y_lower_all_sec = airfoil_geometry(N,b)
-#print(data_z_all_sec[0])
+print(data_y_upper_all_sec[0][20])
+print(data_y_lower_all_sec[0][20])
 #print(np.shape(data_z_all_sec))
