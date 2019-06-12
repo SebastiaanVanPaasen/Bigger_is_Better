@@ -1,36 +1,33 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Sat May 11 13:30:31 2019
-
-@author: floyd
-"""
 import numpy as np
 import subprocess
 import os
-from matplotlib import pyplot as plt
-import math as m
-from read_csv_input import read_output
 
-filename = 'Design 33 HIGH 2E DD STRUT'
-weights, wing, cruise_conditions = read_output(filename)
+
 #from loading_and_moment_diagrams import c
 #ROOT_DIR = os.path.dirname(os.path.abspath("structural analysis"))
 
-S = wing["S"]#300.#286.02#184.16#193.72#220.27
-span = wing["b"]#60.#47.83#39.56#41.76#55.53
-AR = wing["A"]#8.5#.#8.#8.5#9.#14.
-taper = wing["Taper"]#0.4#0.31#0.4#0.31
-#Sweep0 = m.atan(m.tan(wing["Sweep"]) - 4 / AR * (-0.25 * (1 - taper) / (1 + taper))) # rad
-qc_sweep = wing["Sweep"]
-dihedral = 0
-Cr = wing["C_root"]#8.#8.54#7.11#6.63#6.06(2*S)/((1+taper)*span)
-MAC = Cr*(2/3)*((1+taper+taper**2)/(1+taper))
-Ct = Cr*taper
+#S = wing["S"]#300.#286.02#184.16#193.72#220.27
+#span = wing["b"]#60.#47.83#39.56#41.76#55.53
+##.#8.#8.5#9.#14.
+#taper = wing["Taper"]#0.4#0.31#0.4#0.31
+##Sweep0 = m.atan(m.tan(wing["Sweep"]) - 4 / AR * (-0.25 * (1 - taper) / (1 + taper))) # rad
+#qc_sweep = wing["Sweep"]
+#dihedral = 0
+#Cr = wing["C_root"]#8.#8.54#7.11#6.63#6.06(2*S)/((1+taper)*span)
+#MAC = Cr*(2/3)*((1+taper+taper**2)/(1+taper))
+#Ct = Cr*taper
 
 def make_avl_file():
     # B777 used as reference aircraft
+    S, span, taper, qc_sweep = 238, 60, 0.297, 0.5133 
+    Cr = 6.14
+    Ct = Cr * taper
+    
     chords = [Cr, Ct]
-    CD_0 = cruise_conditions["CD_0"]#0.02#0.0222#0.0207# 0.0202#0.0264
+    MAC = Cr*(2/3)*((1+taper+taper**2)/(1+taper))
+    dihedral = 0
+    
+    CD_0 = 0.0177 
     Angle = 0.0
     
     dx = 0.25*Cr + span/2*np.tan(qc_sweep) - 0.25*Ct
@@ -67,7 +64,9 @@ def make_avl_file():
                 print("SECTION", file=text_file)            
                 print(round(x_loc_LE[i],3),round(y_loc_LE[i],3),round(z_loc_LE[i],3),round(chords[i],3),Ainc[i], file=text_file)        
             print("AFILE" + "\n""n2414.dat.txt", file=text_file)
-make_avl_file()
+            
+            
+#make_avl_file()
 
 def lift_distribution(CL):        
 #    p = subprocess.Popen(r"C:\Users\mathi\Documents\DSE\Bigger_is_Better\avl\avl.exe", stdin=subprocess.PIPE, universal_newlines=True)
@@ -88,18 +87,11 @@ def lift_distribution(CL):
     os.remove("endresult")
     return(elements)
     
-output_avl = lift_distribution(0.8)
-
-def c(z):
-    c = Cr - ((Cr - Ct) / (span / 2)) * z
-    #    if x < (by / 2):
-    #        c = Cr - 2 * x * ((Cr - Cy) / (by))
-    #    if x > (by / 2):
-    #        c = Cy - 2 * (x - (by / 2)) * ((Cy - Ct) / (b - by))
-    return c
+#output_avl = lift_distribution(0.8)
 
 
 def get_correct_data(output_avl):
+    MAC = 4.373
     x_pos = []
     cl = []
     cl_2 = []
@@ -116,6 +108,6 @@ def get_correct_data(output_avl):
 #    plt.scatter(y_pos,cd)
 #    plt.grid()
 #    print(cl, cl_2)
-    return(x_pos,cl_2, cd)
+    return x_pos,cl_2, cd 
     
-x_pos,cl,cd = get_correct_data(output_avl)
+#x_pos,cl,cd = get_correct_data(output_avl)
