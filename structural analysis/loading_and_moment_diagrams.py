@@ -48,13 +48,13 @@ engine_weight = 4100 * cc.g_0 + 25141 /n_engines #137279.1+25828.71#156890.4+257
 #strut_position = 0.68*(b/2)
 
 #print(total_thrust)
-#strutforce = 500000.
+strutforce = 800000.
 # input for each critical case; as the lift distribution varies for each case
 alt = 9000
 rho = cc.Rho_0 * ((1 + (cc.a * alt) / cc.Temp_0) ** (-(cc.g_0 / (cc.R_gas * cc.a))))#0.32#0.32#0.43 #0.23
 V = 235.42*1.3 #252.19#270.55#247.55#301.63
 #print(V)
-n_ult= 1#3.75
+n_ult= 3.75
 n = n_ult/1.5#4.7/1.5#4.21/1.5#4.4/1.5#4.4/1.5
 W = 1536496 #- weights["W_F"]#1801946.31#1510125.47#1549762.26#1806203.58
 
@@ -118,10 +118,10 @@ def Loadcalculator(x0,Ff):
         secondenginereachedyet = True
     else:
         secondenginereachedyet = False
-#    if x0 > strut_position:
-#        strutreachedyet = True
-#    else:
-#        strutreachedyet = False
+    if x0 > strut_position:
+        strutreachedyet = True
+    else:
+        strutreachedyet = False
 ##        
     #print(xmiddlevalues)
     for i, x in enumerate(xmiddlevalues):
@@ -160,16 +160,17 @@ def Loadcalculator(x0,Ff):
         ###Drag Calculations
         Cd = CD0 + PolyFitCurveidrag(x) * n * 1.5
         section_drag = (0.5 * Cd * rho * (V ** 2) * surfacearea)*-1
+    
         #print(section_drag)
         #        print(section_drag)
 
         # (-) because it's in a direction opposite to thrust
-#        section_strutforce = 0.
+        section_strutforce = 0.
 #        #Strut
-#        if x > strut_position and strutreachedyet == False:
-#            section_strutforce = strutforce *-1
-#            Mz += section_strutforce * (strut_position - x0)
-#            strutreachedyet = True
+        if x > strut_position and strutreachedyet == False:
+            section_strutforce = strutforce *-1
+            Mz += section_strutforce * (strut_position - x0)
+            strutreachedyet = True
 
         ###Thrust Calculations
         section_thrust = 0
@@ -198,13 +199,13 @@ def Loadcalculator(x0,Ff):
         y_shear_center = 0.5*0.14*c(x)
         #        Cm = PolyFitCurveCm(x)
         #        moment_aero = 0.5 * Cm * rho * (V ** 2) * (chord) * surfacearea * n * m.cos(Sweepsc)
-#        strut_torque = -section_strutforce * (lift_position - shear_center) * m.cos(Sweepsc)
+        strut_torque = -section_strutforce * (lift_position - shear_center) * m.cos(Sweepsc)
         lift_torque = -section_lift * (lift_position - shear_center) * m.cos(Sweepsc)
         weight_torque = -section_weight * (weight_position - shear_center) * m.cos(Sweepsc)
         engine_torque = -section_engineweight * (engine_position - shear_center) * m.cos(Sweepsc)
         fuel_torque = -section_fuel_weight * (fuel_position - shear_center) * m.cos(Sweepsc)
         thrust_torque = section_thrust * (y_shear_center - thrust_position)
-        section_torque = lift_torque + weight_torque + engine_torque + fuel_torque + thrust_torque #+ strut_torque
+        section_torque = lift_torque + weight_torque + engine_torque + fuel_torque + thrust_torque + strut_torque
         
 
         
@@ -222,7 +223,7 @@ def Loadcalculator(x0,Ff):
         Th += section_thrust
 
         ###Net force calculations
-        Fy += section_verticalforce# + section_strutforce
+        Fy += section_verticalforce + section_strutforce
         Fz += section_horizontalforce
 
         ### Moment calculations
@@ -352,7 +353,7 @@ def load_diagrams(N):  ### 100 nodes, so 99 beam elements
 #    plt.ylim(-1000000, 3000000)
 #    plt.xlabel('Position Along Wing Span [$m$]')
 #    plt.ylabel('T $[Nm]$')
-#  #  plt.show()
+  #  plt.show()
     
 #    plt.plot(HalfspanValues,Liftdistributionvalues)
 #    plt.show()
@@ -396,7 +397,7 @@ def load_diagrams(N):  ### 100 nodes, so 99 beam elements
     minFz = min([min(Fzdistribution), min(Fzdistribution2), min(Fzdistribution3)])
     maxFz = max([max(Fzdistribution), max(Fzdistribution2), max(Fzdistribution3)])
 
-    return Mzdistribution, Mydistribution, Tdistributionvalues,"maxMz=",maxMz, "maxMy=",maxMy,"minMy", minMy, "maxT=",maxT, "maxFy=",maxFy, "minFz=",minFz, "maxFz",maxFz
+    return Mzdistribution, Mydistribution, Tdistributionvalues,maxMz, maxMy, minMy,maxT,maxFy,minFz, maxFz
 
 
 #print(load_diagrams(100))

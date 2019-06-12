@@ -43,20 +43,21 @@ def manoeuvring_envelope(w_to, h, cl_max_pos, cd_at_clmax,S, v_cruise):
     n_lim_neg = np.append(n_lim_neg, [-1, 0])
 
     speeds = np.array([0, V_S, V_A, V_C, V_D])
-    print(n_max)
-    print(speeds)
-    return v_pos,v_neg, n_lim_pos, n_lim_neg
+#    print(n_max)
+#    print(speeds)
+    return v_pos,v_neg, n_lim_pos, n_lim_neg, speeds
 
-
-def gust_envelope(w_to, h, cl_alpha, S, c, v_cruise):
+Vs1 = manoeuvring_envelope(1828542.22, 10000, 1.6 , 0.1 ,280, 239.28)[4][1] 
+#print(Vs1)
+def gust_envelope(w_to, h, cl_alpha, S, c, v_cruise, Vs1):
     # construct gust loading plot
     # first determine density at altitude
     rho = cc.Rho_0 * ((1 + (cc.a * h) / cc.Temp_0) ** (-(cc.g_0 / (cc.R_gas * cc.a) + 1)))
     rho = rho*cc.kgm3_to_slugft3
     mu_g = (2 * (w_to / S)/cc.psf_to_nm2) / (rho * c * cl_alpha * cc.g_0)
-    print(mu_g)
+#    print(mu_g)
     K_g = 0.88 * mu_g / (5.3 + mu_g)
-    print("the kg value is " + str(K_g))
+#    print("the kg value is " + str(K_g))
 
     # Kg = gust alleviation coefficient (as function of GH) with
     # c =  mean geometric chord (m)
@@ -78,7 +79,11 @@ def gust_envelope(w_to, h, cl_alpha, S, c, v_cruise):
     # V_B = v[0] * np.sqrt(1 + ((cl_alpha * K_g * U_B * v_cruise) / (w / s)))
     V_C = v_cruise
     V_D = 1.25 * V_C
-    V_B = v_cruise - 200 * cc.kts_to_ms # still needs to be changed 
+    V_B_higher = Vs1*np.sqrt(1 + K_g*44*V_C*cl_alpha/(498*(w_to / S)/cc.psf_to_nm2))
+    V_B_lower = v_cruise - 44 * cc.kts_to_ms # still needs to be changed 
+    V_B = (V_B_higher+ V_B_lower)/2
+    print("vb",V_B_higher)
+    print("vblow",V_B)
     V = [0, V_B, V_C, V_D]
     n_lim_pos = np.zeros(len(V))
     n_lim_neg = np.zeros(len(V))
@@ -86,8 +91,8 @@ def gust_envelope(w_to, h, cl_alpha, S, c, v_cruise):
     # print("the speeds are " + str(v))
     #  Calculate the load factor based on the gust speed that accompanies the aircraft speed
     for i in range(len(V)):
-        n_lim_pos[i] = 1 + (cl_alpha * v_gusts[i] * V[i]/cc.kts_to_ms * K_g) / (498*(w_to / S)/cc.psf_to_nm2)
-        n_lim_neg[i] = 1 - (cl_alpha * v_gusts[i] * V[i]/cc.kts_to_ms * K_g) / (498*(w_to / S)/cc.psf_to_nm2)
+        n_lim_pos[i] = 1 + ((cl_alpha * v_gusts[i] * V[i]/cc.kts_to_ms * K_g) / (498*(w_to / S)/cc.psf_to_nm2))**2
+        n_lim_neg[i] = 1 - ((cl_alpha * v_gusts[i] * V[i]/cc.kts_to_ms * K_g) / (498*(w_to / S)/cc.psf_to_nm2))**2
         
 #    n_pos = np.append(n_pos, n_neg[-1])
 #    v_pos = np.append(v, v[-1])
@@ -98,9 +103,9 @@ def gust_envelope(w_to, h, cl_alpha, S, c, v_cruise):
 
 def construct_envelope():
     # Note: used values are only estimation and are definitely not correct!
-    v_pos,v_neg, n_lim_pos, n_lim_neg = manoeuvring_envelope(1828542.22, 10000, 1.6 , 0.1 , 280, 239.28)
-    V_gust, n_gust_pos, n_gust_neg = gust_envelope(1828542.22, 10000, 5, 280, 5, 239)
-    print(n_gust_pos, n_gust_neg)
+    v_pos,v_neg, n_lim_pos, n_lim_neg,speeds = manoeuvring_envelope(1828542.22, 10000, 1.6 , 0.1 , 280, 239.28)
+    V_gust, n_gust_pos, n_gust_neg = gust_envelope(1828542.22, 10000, 5, 280, 5, 239, Vs1)
+#    print(n_gust_pos, n_gust_neg)
     plt.plot(v_pos, n_lim_pos)
     plt.plot(v_neg, n_lim_neg)
     plt.plot(V_gust,n_gust_pos)
