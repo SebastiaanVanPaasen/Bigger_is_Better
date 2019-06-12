@@ -21,8 +21,8 @@ W_W = weights["W_W"]
 M_F = (weights["W_F"] / cc.g_0) / 2
 N_eng = 2
 W_eng = weights["W_E"] + weights["W_N"] / N_eng
-
-
+#print(Cr, Ct)
+print(M_F)
 T_TO = cruise_conditions["T_TO"]
 alt = cruise_conditions["H_cr" ]
 V_cr = cruise_conditions["V_cr"] * 1.3
