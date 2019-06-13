@@ -6,6 +6,15 @@ Created on Mon Jun 10 20:14:52 2019
 """
 import numpy as np
 from loading_and_moment_diagrams import c
+import loading_and_moment_diagrams as lm
+
+N= 100
+b = lm.b
+HalfspanValues = np.linspace(0, b / 2 - 0.00001, N)
+
+nr_spars = 4
+first_spar = 0.2
+last_spar = 0.6
 
 def spar_loc(HalfspanValues, nr_spars, first_spar, last_spar):
     
@@ -18,3 +27,5 @@ def spar_loc(HalfspanValues, nr_spars, first_spar, last_spar):
         spar_loc_sec.append(spar_loc)
         
     return spar_loc_sec, delta_spar
+
+spar_loc_sec, delta_spar = spar_loc(HalfspanValues, nr_spars, first_spar, last_spar)

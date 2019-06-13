@@ -5,6 +5,7 @@ Created on Fri Jun  7 14:36:26 2019
 @author: mathi
 """
 from spar_locations import spar_loc
+import spar_locations as sl
 import numpy as np 
 import scipy as sp
 from scipy import interpolate
@@ -21,27 +22,28 @@ airfoil_area = []
 z_c_airfoil = []
 y_c_airfoil = []
 for i in range(len(HalfspanValues)):
-    z_c_airfoil.append(0.42*c(HalfspanValues[i]))
-    y_c_airfoil.append(0.0231*c(HalfspanValues[i]))
-    airfoil_area.append(9.59*10**(-2)*c(HalfspanValues[i]))
-    
+    z_c_airfoil.append(0.303*c(HalfspanValues[i]))
+    y_c_airfoil.append(0.0093*c(HalfspanValues[i]))
+    airfoil_area.append(2.0355494*0.005*c(HalfspanValues[i]))
+
+
 data_z_all_sec = airfoil_geometry(N,b)[0]
 data_y_upper_all_sec = airfoil_geometry(N,b)[1]
 data_y_lower_all_sec = airfoil_geometry(N,b)[2]
 
 
-n_stiff_up = 6
-n_stiff_low = 4
+n_stiff_up = 16
+n_stiff_low = 16
 l_spar_h = 0.2
-t_spar_h = 0.01
-t_spar_v = 0.01
-nr_spars = 2
-first_spar = 0.2 
-last_spar = 0.6
+t_spar_h = 0.02
+t_spar_v = 0.02
+nr_spars = sl.nr_spars
+first_spar = sl.first_spar
+last_spar = sl.last_spar
 delta_spar = spar_loc(HalfspanValues, nr_spars, first_spar, last_spar)[1] 
 spar_loc_sec = spar_loc(HalfspanValues, nr_spars, first_spar, last_spar)[0]
 spar_areas_hori = l_spar_h*t_spar_h*np.ones(nr_spars)
-boom_area = 0.0007
+boom_area = 0.0040
 #print(spar_loc_sec[0][0])
 
 def wing_centroid(boom_area, spar_areas_hori, t_spar_v, z_c_airfoil, y_c_airfoil, n_stiff_up, n_stiff_low, HalfspanValues):
@@ -75,11 +77,11 @@ def wing_centroid(boom_area, spar_areas_hori, t_spar_v, z_c_airfoil, y_c_airfoil
         Polyfit_airfoil_lower = sp.interpolate.interp1d(data_z_all_sec[i], data_y_lower_all_sec[i], kind="cubic", fill_value="extrapolate")
 
         for j in range(len(z_loc_up)):
-            y_loc_up = Polyfit_airfoil_upper(z_loc_up[j])
+            y_loc_up = Polyfit_airfoil_upper(z_loc_stiff_up[i][j])
             y_loc_stiff_up[i][j] = y_loc_up 
 
         for d in range(len(z_loc_low)):
-            y_loc_low = Polyfit_airfoil_lower(z_loc_low[d])
+            y_loc_low = Polyfit_airfoil_lower(z_loc_stiff_low[i][d])
             y_loc_stiff_low[i][d] = y_loc_low
         
         for k in range(len(spar_loc_sec[0])):
@@ -132,7 +134,13 @@ def wing_centroid(boom_area, spar_areas_hori, t_spar_v, z_c_airfoil, y_c_airfoil
 #    print(y_centroid_all_sec[0])
 
     return z_centroid_all_sec, y_centroid_all_sec, y_loc_spar_up, y_loc_spar_low, y_loc_stiff_up, y_loc_stiff_low, y_vertical_spar, z_loc_stiff_up, spar_loc_sec, z_loc_stiff_low
+z_centroid_all_sec, y_centroid_all_sec, y_loc_spar_up, y_loc_spar_low, y_loc_stiff_up, y_loc_stiff_low, y_vertical_spar, z_loc_stiff_up, spar_loc_sec, z_loc_stiff_low = wing_centroid(cw.boom_area, cw.spar_areas_hori, cw.t_spar_v, cw.z_c_airfoil, cw.y_c_airfoil, cw.n_stiff_up, cw.n_stiff_low, cw.HalfspanValues)
 
+plt.scatter(z_loc_stiff_up[0], y_loc_stiff_up[0])
+plt.scatter(z_loc_stiff_low[0], y_loc_stiff_low[0])
+plt.scatter(spar_loc_sec[0], y_loc_spar_up[0])
+plt.scatter(spar_loc_sec[0], y_loc_spar_low[0])
+plt.show()
+#print(wing_centroid(boom_area, spar_areas_hori, t_spar_v, z_c_airfoil, y_c_airfoil, n_stiff_up, n_stiff_low, HalfspanValues)[0])
 #print(wing_centroid(boom_area, spar_areas_hori, t_spar_v, z_c_airfoil, y_c_airfoil, n_stiff_up, n_stiff_low, HalfspanValues)[1])
-#print(wing_centroid(boom_area, spar_areas_hori, spar_areas_verti, z_c_airfoil, y_c_airfoil, n_stiff_up, n_stiff_low, HalfspanValues)[1])
 #print(wing_centroid(boom_area, spar_areas, z_c_airfoil, y_c_airfoil, n_stiff_up, n_stiff_low, HalfspanValues)[7])
