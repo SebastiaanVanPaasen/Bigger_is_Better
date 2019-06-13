@@ -4,7 +4,7 @@ import constants_and_conversions as cc
 from loading_definitions import Section, Helpers
 from read_csv_input import read_output
 
-filename = 'HIGH DD 2E STRUT'
+filename = 'Design 33 HIGH 2E DD STRUT'
 weights, wing, cruise_conditions = read_output(filename)
 
 
