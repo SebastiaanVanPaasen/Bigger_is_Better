@@ -16,6 +16,8 @@ import numpy as np
 #D_fus = fuselage outer diameter [m]
 #bf = wing span [m]
 #y_eng = spanwise location of engine [m]
+#Mfuel = fuel mass [kg]
+#rho_fuel = density of jet fuel [kg/m^3]
 
 t_c = 0.13
 Cs1 = 0.2
@@ -25,7 +27,8 @@ Ct = 1.88879566
 D_fus = 6.2877
 bf = 59.463212
 y_eng = bf/4.
-
+Mfuel = 199151.8874/9.81
+rho_fuel = 804. #kg/m^3
 
 #--------------------------------MAIN PROGRAM--------------------------------
 def Vintegral(y):
@@ -35,15 +38,14 @@ def Vintegral(y):
 V1 = (t_c*(Cs2-Cs1))*(Vintegral((y_eng - 1.)) - Vintegral((D_fus/2.)))
 V2 = (t_c*(Cs2-Cs1))*(Vintegral((bf/2. - 1.)) - Vintegral((y_eng + 1.)))
 
-print V1
-print V2
-
 Vwing = (V1 + V2)
 Vsurge = (Vwing/102.)*2.
 Vfuel = (Vwing - Vsurge)*2.
 
-print ('Wing tank volume:', Vfuel)
+Vreq = Mfuel/rho_fuel
 
+print ('Wing tank volume:', Vfuel, "m^3")
+print ("Required volume:", Vreq, "m^3")
 
 
 
