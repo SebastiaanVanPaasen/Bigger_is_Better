@@ -112,6 +112,7 @@ def construct_envelope():
     plt.plot(V_gust,n_gust_neg)
 
     plt.show()
+    return V_gust, n_gust_pos, n_gust_neg
 
 
 

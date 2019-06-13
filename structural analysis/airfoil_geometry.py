@@ -12,11 +12,19 @@ from scipy import interpolate ### Useful to interpolate stuff
 from scipy import integrate
 from matplotlib import pyplot as plt
 #from stress_distribution_wing import load_airfoil
-from loading_and_moment_diagrams import c
-import loading_and_moment_diagrams as lm
+#from loading_and_moment_diagrams import c
+#import loading_and_moment_diagrams as lm
 
 N = 100
-b = lm.b#39.56 #41.76
+b = 60#39.56 #41.76
+Cr = 6.14
+taper = 0.297 
+
+
+def c(z, Cr, b, taper):
+    Ct = Cr * taper
+    c = Cr - ((Cr - Ct) / (b / 2)) * z
+    return c
 
 def load_airfoil(filename):
     f = open(filename,'r')
@@ -54,11 +62,11 @@ def airfoil_geometry(N,b):
     for i in range(len(HalfspanValues)):
         
         data_z, data_y = load_airfoil('SC(2)-0616.txt')[1], load_airfoil('SC(2)-0616.txt')[2] 
-        data_z_order =  np.array(data_z[0:int((len(data_y)/2))])*c(HalfspanValues[i])
+        data_z_order =  np.array(data_z[0:int((len(data_y)/2))])*c(HalfspanValues[i],Cr, b, taper)
         data_z_all_sec.append(data_z_order)
-        data_y_lower = np.array(data_y[(int((len(data_y)/2))):])*c(HalfspanValues[i])
+        data_y_lower = np.array(data_y[(int((len(data_y)/2))):])*c(HalfspanValues[i],Cr, b, taper)
         data_y_lower_all_sec.append(data_y_lower)
-        data_y_upper = np.array(data_y[0:int((len(data_y)/2))])*c(HalfspanValues[i])
+        data_y_upper = np.array(data_y[0:int((len(data_y)/2))])*c(HalfspanValues[i],Cr, b, taper)
         data_y_upper_all_sec.append(data_y_upper)
     
     data_z_all_sec = np.asarray(data_z_all_sec)

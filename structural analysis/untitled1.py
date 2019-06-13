@@ -136,7 +136,7 @@ def deter_lift(cl_curve, x, width):
         
       
     qs = 0.5 * rho_cr * (V_cr ** 2) * S
-    L = qs * CL
+    L = 3.75* qs * CL
     
 #    plt.plot(x, L)
 #    plt.show()
@@ -162,7 +162,7 @@ def deter_weight(w_wing, x, width):
 #    plt.plot(x, W)
 #    plt.show()
     
-    return W, Volumes
+    return W, Volumes, V_tot
 
 
 def deter_fuel(w_fuel, volumes, density, x, x_start):
@@ -193,7 +193,7 @@ def indet_sys(F_strut_array, dx, angle, L_s, a_s, a_e, cl_polar):
     
     
     lifts = deter_lift(cl_polar, X_root, dx)  #np.array(len(X_root) * [25295.5]) # 
-    weights, Volumes = deter_weight(W_wing, X_root, dx)  #np.array(len(X_root) * [3677]) #
+    weights, Volumes, V_tot = deter_weight(W_wing, X_root, dx)  #np.array(len(X_root) * [3677]) #
     fuel_weights = deter_fuel(W_fuel / 2, Volumes, Rho_fuel, X_root, x_start)
     
 
@@ -262,7 +262,7 @@ def indet_sys(F_strut_array, dx, angle, L_s, a_s, a_e, cl_polar):
     
     distributions = [lifts, weights, fuel_weights, W_eng]
     
-    return F_strut_array[idx], d_wing[idx], distributions
+    return F_strut_array[idx], d_wing[idx], distributions, V_tot, Volumes
 
     
 def strut_opt(A_S_list, A_E, cl_curve, width):
@@ -277,8 +277,8 @@ def strut_opt(A_S_list, A_E, cl_curve, width):
         #print(L_strut, gamma)
         
         
-        F_strut = np.arange(0, 1500000, 1000)
-        force, deflection, all_forces = indet_sys(F_strut, width, gamma, L_strut, A_S, A_E, cl_curve)
+        F_strut = np.arange(0, 4000000, 1000)
+        force, deflection, all_forces, V_tot, Volumes = indet_sys(F_strut, width, gamma, L_strut, A_S, A_E, cl_curve)
         
 #        print("First found optimum")
 #        print(force, deflection)
@@ -286,7 +286,7 @@ def strut_opt(A_S_list, A_E, cl_curve, width):
         
         
         F_strut = np.arange(force - 2000, force + 2000, 0.1)
-        force, deflection, all_forces = indet_sys(F_strut, width, gamma, L_strut, A_S, A_E, cl_curve)
+        force, deflection, all_forces, V_tot, Volumes = indet_sys(F_strut, width, gamma, L_strut, A_S, A_E, cl_curve)
         deflections.append(deflection)
         strut_forces.append(force)
         
@@ -294,7 +294,7 @@ def strut_opt(A_S_list, A_E, cl_curve, width):
 #        print(force, deflection)
 #        print()
        
-    return strut_forces, deflections, all_forces
+    return strut_forces, deflections, all_forces, V_tot, Volumes
 
 
 #A_E = 23
@@ -326,14 +326,16 @@ cl_polar, cd_polar = get_data(cl)
 dx = 0.01
 results = strut_opt(A_S_L, A_E, cl_polar, dx)
 idx = np.argmin(results[0])
+V_tot = results[3]
+Volumes = results[4]
 
-print(results[0])
-print(results[0][idx])
-print()
-
-print(results[1])
-print(results[1][idx])
-print()
+#print(results[0])
+#print(results[0][idx])
+#print()
+#
+#print(results[1])
+#print(results[1][idx])
+#print()
 
 #L_strut = np.sqrt(D_fus ** 2 + (L_wing - A_S_L[idx]) ** 2)
 #gamma = np.arctan(D_fus / (L_wing - A_S_L[idx]))

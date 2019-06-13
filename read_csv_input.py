@@ -40,8 +40,8 @@ import sys
 
 def read_output(design):
 #    sys.path.append("C:/Users/Hidde/Documents/Aerospace Engineering Bachelor Year 3/Design Synthesis Exercise/Bigger_is_Better")
-#    sys.path.append("C:/Users/mathi/Documents/DSE/Bigger_is_Better")
-    sys.path.append("C:/Users/sebas/OneDrive/Documents/DSE/Bigger_is_Better")
+    sys.path.append("C:/Users/mathi/Documents/DSE/Bigger_is_Better")
+#    sys.path.append("C:/Users/sebas/OneDrive/Documents/DSE/Bigger_is_Better")
 #    ROOT_DIR = os.path.dirname(os.path.abspath("excel_results"))
     input_path = sys.path[-1] + '/excel_results'
 #    print(input_path)
