@@ -5,7 +5,7 @@ def read_input(design):
     ROOT_DIR =os.path.dirname(os.path.abspath("read_csv_input.py"))
     input_path = ROOT_DIR + '/input_files'
 #    print(input_path)
-    df = pandas.read_csv(input_path+'/csv_input_HIGH_2E_STRUT.csv', delimiter=',', index_col="Parameter")
+    df = pandas.read_csv(input_path+'/csv_input_FINAL_FINAL_DESIGN_fus.csv', delimiter=';', index_col="Parameter")
 #    print(df)
     
     coef_series = df[design][0:4]

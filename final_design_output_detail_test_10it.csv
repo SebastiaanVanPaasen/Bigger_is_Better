@@ -1,0 +1,41 @@
+;Design 12
+Take off weight [N];1593545.1541280933
+Payload weight [N];472485.24525000004
+Fuel weight [N];207221.19886358164
+Empty weight [N];913838.7100145117
+Wing weight [N];215794.83123207488
+Empennage weight [N];38915.59698810876
+Fuselage weight [N];218142.81317083945
+Nacelle weight [N];26031.70427910978
+Propulsion system weight [N];90977.71012718351
+Fixed equipment weight [N];285119.14070579957
+CL cruise [-];0.598514768791625
+CD cruise [-];0.03078
+L/D-ratio;19.444924262236032
+C_t [kg/Ns];1.1262528167311676e-05
+Oswald factor [-];0.85
+Aspect ratio [-];15.0
+Surface area [m^2];246.4540050093233
+Span [m];60.80139862815534
+Root chord [m];6.248848056620932
+Tip chord [m];1.8580050937997796
+Quarter chord sweep [deg];0.5133219139236866
+Taper ratio [-];0.2973356172152627
+Fuselage length [m];51.40743686839524
+Fuselage diameter [m];5.950784704670639
+Nosecone length [m];7.339301135760454
+Tailcone length [m];13.091726350275406
+Tail arm [m];32.0432071256282
+Horizontal tail surface area [m^2];48.84673973157759
+Vertical surface area [m^2];52.10775275905907
+Take off thrust [N];400487.7581401504
+Cruise Mach number [-];0.775
+Cruise velocity [m/s];235.41812346599397
+Cruise altitude [m];9000.0
+Specific fuel consumption [kg/km/pas];0.008305253344830985
+Fuel consumption reduction [%];18.575947599696228
+RF reduction [%];33.857140423672924
+DOC reduction [%];16.231295691252782
+Wing position root [m];18.01742635598127
+Length upper deck [m];42.04253171950364
+Gap between wing and cabin [m];-24.02510536352237
