@@ -6,25 +6,10 @@ Created on Thu May 16 09:55:34 2019
 """
 
 import numpy as np  ### Never use * to import stuff, as it makes it difficult to retrace where functions come from
-import scipy as sp
-import math as m
-from scipy import interpolate ### Useful to interpolate stuff
-from scipy import integrate
-from matplotlib import pyplot as plt
+
 #from stress_distribution_wing import load_airfoil
-#from loading_and_moment_diagrams import c
-#import loading_and_moment_diagrams as lm
-
-N = 100
-b = 60#39.56 #41.76
-Cr = 6.14
-taper = 0.297 
 
 
-def c(z, Cr, b, taper):
-    Ct = Cr * taper
-    c = Cr - ((Cr - Ct) / (b / 2)) * z
-    return c
 
 def load_airfoil(filename):
     f = open(filename,'r')
@@ -50,7 +35,7 @@ def load_airfoil(filename):
 #filename = 'SC(2)-0616.txt'
 #print(load_airfoil(filename))
 
-def airfoil_geometry(N,b):
+def airfoil_geometry(N,b, c):
 
     HalfspanValues = np.linspace(0, b / 2 - 0.00001, N)
 #    print(HalfspanValues[0])
@@ -82,7 +67,7 @@ def airfoil_geometry(N,b):
 
 
 #data = load_airfoil('NACA3414.txt')
-data_z_all_sec, data_y_upper_all_sec, data_y_lower_all_sec = airfoil_geometry(N,b)
+#data_z_all_sec, data_y_upper_all_sec, data_y_lower_all_sec = airfoil_geometry(N,b)
 #plt.scatter(data_z_all_sec[0], data_y_upper_all_sec[0])
 #plt.scatter(data_z_all_sec[0], data_y_lower_all_sec[0])
 #plt.show()

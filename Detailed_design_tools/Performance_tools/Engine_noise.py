@@ -18,9 +18,6 @@ dT = 80.926
 N = 30.
 d_fan = 2.84124
 
-mjet_dot = 32.55428646
-Vjet = 681.5372527
-
 #distances
 r = 120.
 robs = 1.8   #height of observer 

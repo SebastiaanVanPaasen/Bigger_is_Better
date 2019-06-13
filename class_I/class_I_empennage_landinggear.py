@@ -73,7 +73,7 @@ def class_I_empennage(mass_frac, MAC, l_fuselage, x_eng, l_n, xcg_OEW_MAC, xcg_p
     # cg excursion
     xcglist = []
     xcg_OEW = xcg_OEW_MAC * MAC + X_LEMAC
-    xcg_fuel      = 0.55*MAC +X_LEMAC # %MAC
+    xcg_fuel      = 0.55*MAC + X_LEMAC # %MAC
     xcglist.append(xcg_OEW)
     xcglist.append((xcg_OEW * mass_frac[7] + xcg_payload * mass_frac[8]) / (mass_frac[7] + mass_frac[8]))
     xcglist.append((xcg_OEW * mass_frac[7] + xcg_fuel * mass_frac[9]) / (mass_frac[7] + mass_frac[9]))
@@ -170,7 +170,7 @@ def _calc_h_tail_II(xcg_aft, A_h, l_fuselage, tap_h, sweep_quartchord_h, S_h):
     x_le_h = l_fuselage - C_r_h
     l_h = x_h - xcg_aft
     
-    return x_le_h, sweep_LE_h, y_MAC_h, MAC_h, l_h
+    return x_le_h, sweep_LE_h, y_MAC_h, MAC_h, l_h, C_r_h, C_t_h, b_h
 
 
 def calc_v_tail(x_v, xcg_aft, b, S, A_v, l_fuselage, tap_v, V_v_norm, sweep_quartchord_v):
@@ -201,20 +201,29 @@ def calc_v_tail(x_v, xcg_aft, b, S, A_v, l_fuselage, tap_v, V_v_norm, sweep_quar
 
 
 def _calc_v_tail_II(A_v, l_fuselage, tap_v, S_v, sweep_quartchord_v):
+#    S_v = S_v*2
     
     b_v = np.sqrt(A_v * S_v)
-
+    S_v = S_v*2
+#    b_v = b_v*2
+#    b_v = b_v/2
     C_r_v = S_v / (b_v * (1. + tap_v))
     C_t_v = C_r_v * tap_v
 
     MAC_v = (2. / 3.) * C_r_v * ((1. + tap_v + tap_v ** 2) / (1. + tap_v))
     sweep_LE_v = np.arctan(np.tan(sweep_quartchord_v) - (C_r_v / (2. * b_v)) * (tap_v - 1))
+    b_v = b_v*2
     y_MAC_v = (b_v / 6.) * ((1. + 2. * tap_v) / (1. + tap_v))
     
     x_le_v = l_fuselage - C_r_v
 #    print("root chord vertical tail "+ str(C_r_v))
 #    print("span vertical tail " + str(b_v))
-    return x_le_v, sweep_LE_v, y_MAC_v, MAC_v
+    S_v = S_v/2.
+    b_v = b_v/2.
+    
+#    l_v = x_v - xcg_aft
+    
+    return x_le_v, sweep_LE_v, y_MAC_v, MAC_v, C_r_v, C_t_v, b_v
 
 # class_I_empennage(MAC, l_fuselage, x_eng, l_n, xcg_OEW_MAC, mass_frac_OEW, xcg_payload, mass_frac_payload, xcg_fuel,
 #                  mass_frac_fuel, D_fuse, b)
