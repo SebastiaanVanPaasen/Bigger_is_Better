@@ -22,7 +22,7 @@ import matplotlib.pyplot as plt
 
 #------------------------STATISTICAL INPUTS----------------------------------
 """NOW THE SAME FOR REF. AND DESIGN AIRCRAFT, CHANGE WHEN ENGINE IS KNOWN"""
-Ct0           = 12e-06      #Thrust Specific fuel conspumtion [kg/N/s] from B737MAX 
+#Ct0           = 12.2e-06      #Thrust Specific fuel conspumtion [kg/N/s] from B737MAX 
                             #proprtional to speed, divide by nominal conditions
                             #aka cruise speed
                             #12 future high bypass engines
@@ -32,23 +32,97 @@ Ct0           = 12e-06      #Thrust Specific fuel conspumtion [kg/N/s] from B737
 
 """INPUTS: CHANGE ACCORDING TO DESIGN"""
 
-MTOW = 82190.*9.81
-OEW  = 45065*9.81
-MLW  = 69308.*9.81
-MZFW = 65952.* 9.81
-MFW  = 20826.*9.81          # Maximum fuel weight (including reserve fuel)
-W_fr = MFW/105. * 5.        #reserve fuel
+#"""Design concept 5"""
+#MTOW = 1474914.
+#A = 14.
+#S = 183.29
+#
+#e = 0.85
+#CD0 = 0.023
+#g = 9.81
+#
+#Wcr = (0.8*MTOW)              #63000*9.81#assumption for now
+#pax_max = 450
+#n = 1                       #load factor of number of passengers
+#
+#M_des = 0.75
+#SAR_des = 0.008190
+#Hcr_des = 9000.
+#Ct0 = 12.65e-06
 
-A = 10.45
+
+#"""Design concept 4"""
+#MTOW = 1532734.
+#A = 15.
+#S = 255.70
+#
+#e = 0.85
+#CD0 = 0.023
+#g = 9.81
+#
+#Wcr = (0.8*MTOW)              #63000*9.81#assumption for now
+#pax_max = 450
+#n = 1                       #load factor of number of passengers
+#
+#M_des = 0.775
+#SAR_des = 0.007209
+#Hcr_des = 11000.
+#Ct0 = 10.6e-06
+
+#"""Design concept 3"""
+#MTOW = 1597097.
+#A = 13.
+#S = 199.70
+#
+#e = 0.85
+#CD0 = 0.023
+#g = 9.81
+#
+#Wcr = (0.8*MTOW)              #63000*9.81#assumption for now
+#pax_max = 450
+#n = 1                       #load factor of number of passengers
+#
+#M_des = 0.775
+#SAR_des = 0.008383
+#Hcr_des = 10000.
+#Ct0 = 12.8e-06
+
+#"""Design concept 2"""
+#MTOW = 1520114.
+#A = 13.
+#S = 190.37
+#
+#e = 0.85
+#CD0 = 0.023
+#g = 9.81
+#
+#Wcr = (0.8*MTOW)              #63000*9.81#assumption for now
+#pax_max = 450
+#n = 1                       #load factor of number of passengers
+#
+#M_des = 0.75
+#SAR_des = 0.008471
+#Hcr_des = 8500.
+#Ct0 = 11.9e-06
+
+
+"""Design concept 1"""
+MTOW = 1580051.
+A = 13.
+S = 210.85
+
 e = 0.85
-CD0 = 0.020
+CD0 = 0.023
 g = 9.81
-S = 127.  #127 
 
-             #[km]
-Wcr = 0.8*MTOW              #63000*9.81#assumption for now
+Wcr = (0.8*MTOW)              #63000*9.81#assumption for now
 pax_max = 450
 n = 1                       #load factor of number of passengers
+
+M_des = 0.75
+SAR_des = 0.008135
+Hcr_des = 10000.
+Ct0 = 11.9e-06
 
 #------------------------------VERIFICATION DATA--------------------------------
 
@@ -60,16 +134,16 @@ OEW1 = 45070*g
 MFW1 = 31594*g
 
 
-Wcr1 = 0.8*MTOW1             #ASSUMPTION!!! WHAT IS W_Cr ACTUALLY
+Wcr1 = MTOW1-0.4*MFW1            #ASSUMPTION!!! WHAT IS W_Cr ACTUALLY
 #Wcr1 = 0.75*MTOW             #ASSUMPTION!!! WHAT IS W_Cr ACTUALLY
 
 Mcr = 0.79
 hcr = 12000                 #(m)
-S1 = 124.5                    #m^2
+S1 = 127.                  #m^2
 b1 = 35.92                  #m
-A1 = b1**2 / S1
+A1 = 35.92**2 / 127.
 e = 0.85
-CD0 = 0.020
+CD01 = 0.020
 
 pax_ref = 200.
 n_ref = 1.
@@ -159,15 +233,15 @@ V_minSAR = []
 #
 #
 #For the reference case aim to stay below it:
-SAR_ref = SAR(hcr,A1,S1,e,CD0,Ct0,Wcr1)[0]
-V_ref = SAR(hcr,A1,S1,e,CD0,Ct0,Wcr1)[1]
-
+#SAR_ref = SAR(hcr,A1,S1,e,CD01,Ct0,Wcr1)[0]
+#V_ref = SAR(hcr,A1,S1,e,CD01,Ct0,Wcr1)[1]
 #
-#
-for i in range(len(V_ref)):
-    V_ref[i] = Mach(V_ref[i],hcr)   
-    if 0.997*Mcr <= V_ref[i] <= 1.003* Mcr:
-        SAR_ref_point = SAR_ref[i]
+##
+##
+#for i in range(len(V_ref)):
+#    V_ref[i] = Mach(V_ref[i],hcr)   
+#    if 0.997*Mcr <= V_ref[i] <= 1.003* Mcr:
+#        SAR_ref_point = SAR_ref[i]
 
 
 ##PLot the single point of the ref. aircraft
@@ -197,7 +271,7 @@ for h in H:
     V = SAR(h,A,S,e,CD0,Ct0,Wcr)[1]
 
     for i in range(len(SAR_list)):
-        SAR_list[i] = SAR_list[i]/pax_ref 
+        SAR_list[i] = SAR_list[i]/pax_max 
         
     for i in range(len(V)):                     #Change velocity to Mach
         V[i] = Mach(V[i],h)
@@ -205,17 +279,27 @@ for h in H:
     #plt.subplot(122)
     plt.plot(V,SAR_list,label='%s altitude [m]' % h)
     #plt.title('Fuel consumption per passenger w.r.t. Mach number')
+    #k = SAR_list.index(min(SAR_list))
+    #print (V[k])
+   
+    
+SAR_ref_point = 0.0094    
+Mcr = 0.79
 
-plt.xlabel("Mach number",fontsize = 'xx-large')
-plt.ylabel("Fuel consumption [kg/km/passenger]",fontsize = 'xx-large')
-
-plt.plot(Mcr,SAR_ref_point/pax_ref,"mo", label = "Ref. aircraft")   
-#plt.hlines(0.9*SAR_ref_point/pax_ref,0.5,1.,"gray",'--') 
+plt.xlabel("Mach number",fontsize = 'x-large')
+plt.ylabel("Fuel consumption [kg/km/passenger]",fontsize = 'x-large')
+plt.plot(M_des,SAR_des,'ko', label = "Design")
+plt.plot(Mcr,SAR_ref_point,"mo", label = "Ref. aircraft")   
+plt.hlines(0.9*SAR_ref_point,0.5,1.,"gray",'--') 
 plt.xlim(0.5,0.95)
-plt.ylim(0.007,0.015)
-plt.legend(loc = "upper left", fontsize = 'xx-large')
+plt.ylim(0.007,0.015)#
+plt.legend(loc = "upper left")#, fontsize = 'x-large')
 
 plt.show()
+
+
+
+
 
 # print SAR_ref_point
 
