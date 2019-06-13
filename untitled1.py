@@ -26,7 +26,7 @@ rho_cr = cc.Rho_0 * ((1 + (cc.a * H_cr) / cc.Temp_0) ** (-(cc.g_0 / (cc.R_gas * 
 
 W_TO = 1521753.6
 W_fuel = 200716.1
-W_eng = 73144  #4100 * cc.g_0
+W_eng = 4100 * cc.g_0
 Rho_fuel = 0.804 * 1000
 
 
@@ -186,68 +186,59 @@ def deter_fuel(w_fuel, volumes, density, x, x_start):
     return W
             
     
-    
-
-#l_distr = 25295.5
-#w_distr = 3677
-#
-#force = l_distr, w_distr, W_eng
-
-A_L = 0
-A_W = 0
-A_E = 23
-A_S = 5
-
-applic = A_L, A_W, A_E, A_S
-
-L_strut = np.sqrt(D_fus ** 2 + (L_wing - A_S) ** 2)
-gamma = np.arctan(D_fus / (L_wing - A_S))
-#print(L_strut, gamma)
-
-
-def indet_sys(F_strut_array, dx, angle, L_s, a_s, a_e):
+def indet_sys(F_strut_array, dx, angle, L_s, a_s, a_e):   
     cl = W_TO / (0.5 * rho_cr * (V_cr ** 2) * S)
     cl_polar, cd_curve = get_data(cl)
     
     
-    X_root = np.arange(0 + dx / 2, int(L_wing - a_s) + dx / 2, dx)
-    X_tip = np.arange(int(L_wing - a_s), 0  + dx / 2, -dx)
-#    x_start = L_wing * 0.35
-    print(int(L_wing - a_s))
+    X_root = np.arange(0 + dx / 2, L_wing + dx / 2, dx)
+    X_tip = np.arange(int(L_wing - a_s) - dx / 2, 0  - dx / 2, -dx)
+    x_start = L_wing * 0.34
     
-    lifts = np.array(len(X_root) * [25295.5]) #deter_lift(cl_polar, X, dx) 
-    weights = np.array(len(X_root) * [3677])  #, Volumes = deter_weight(W_wing, X, dx)
-#    fuel_weights = deter_fuel(W_fuel / 2, Volumes, Rho_fuel, X, x_start)
+    
+    lifts = deter_lift(cl_polar, X_root, dx)  #np.array(len(X_root) * [25295.5]) # 
+    weights, Volumes = deter_weight(W_wing, X_root, dx)  #np.array(len(X_root) * [3677]) #
+    fuel_weights = deter_fuel(W_fuel / 2, Volumes, Rho_fuel, X_root, x_start)
     
     
     Lift = []
     Weight = []
-#    Fuel_weight = []
+    Fuel_weight = []
+    
+    
+    
+    
+    print("Forces of lift, weight and fuel weight")
+    print(np.sum(lifts))
+    print(np.sum(weights))
+    print(np.sum(fuel_weights))
+    print()
     
 
     for i in range(len(X_tip)):
         defl_l = deter_d_force(X_tip[i], np.array([0]), lifts[i], a_s)
         defl_w = deter_d_force(X_tip[i], np.array([0]), -weights[i], a_s)
-#        defl_wf = deter_d_force(X_tip[i], np.array([0]), -fuel_weights[i], a_s)
+        defl_wf = deter_d_force(X_tip[i], np.array([0]), -fuel_weights[i], a_s)
            
         Lift = np.append(Lift, defl_l)
         Weight = np.append(Weight, defl_w)
-#        Fuel_weight = np.append(Fuel_weight, defl_wf)
+        Fuel_weight = np.append(Fuel_weight, defl_wf)
 
-    shear_strut = np.sum(lifts[int(L_wing - a_s - a_s):]) - np.sum(weights[int(L_wing - a_s - a_s):]) #- np.sum(fuel_weights[int(L_wing - a_s - a_s):])
-    mom_lift = np.sum(lifts[int(L_wing - a_s - a_s):] * X_root[:a_s]) - np.sum(weights[int(L_wing - a_s - a_s):] * X_root[:a_s]) # np.sum(fuel_weights[int(L_wing - a_s - a_s):] * X_root[:a_s])
+
+    shear_strut = np.sum(lifts[int(L_wing - a_s):]) - np.sum(weights[int(L_wing - a_s):]) - np.sum(fuel_weights[int(L_wing - a_s):])
+    mom_lift = np.sum(lifts[int(L_wing - a_s):] * X_root[:a_s]) - np.sum(weights[int(L_wing - a_s):] * X_root[:a_s]) - np.sum(fuel_weights[int(L_wing - a_s):] * X_root[:a_s])
     
-    d_shear = (shear_strut / (6 * E_wing * I_wing)) * (2 * ((L_wing - a_s) ** 3)) # - 3 * (L_wing ** 2) * a_s + a_s ** 3)
+    d_shear = (shear_strut / (6 * E_wing * I_wing)) * (2 * ((L_wing - a_s) ** 3)) 
     d_mom = (mom_lift / (2 * E_wing * I_wing)) * ((L_wing - a_s) ** 2)
     
     d_lift = np.sum(Lift)
     d_weight = np.sum(Weight)
-#    d_fuel = np.sum(Fuel_weight)
+    d_fuel = np.sum(Fuel_weight)
     
     print("Deflections of lift, weight and fuel weight front")
     print(d_lift)
     print(d_weight)
-#    print(d_fuel)
+    print(d_fuel)
     print()
     
     print("Deflections of shear and moment at the strut")
@@ -261,33 +252,89 @@ def indet_sys(F_strut_array, dx, angle, L_s, a_s, a_e):
     
     print("Deflections of engine and strut")
     print(d_engine)
-    print(d_strut_w)
     print()
     
     
-    d_wing = d_lift + d_weight + d_shear + d_mom + d_engine + d_strut_w #+ d_fuel
-    print(d_wing)
+    d_wing = d_lift + d_weight + d_shear + d_mom + d_engine + d_strut_w + d_fuel
     d_strut = np.sin(angle) * (F_strut_array * L_s) / (E_strut * A_strut)
-    print(d_strut)
-#    print(d_strut)
-    print(d_wing[1086])
-    print(d_strut[1086])
+
     diff = abs(d_wing - d_strut)
     idx = np.argmin(diff)
     
-    return F_strut_array[idx], diff[idx]
+    print("Deflections of wing and strut")
+    print(d_wing[idx])
+    print(d_strut[idx])
+    print()
+    
+    distributions = [lifts, weights, fuel_weights, W_eng, F_strut_array[idx]]
+    
+    return F_strut_array[idx], d_wing[idx], distributions
+
+    
+def strut_opt(A_S_list, A_E):
+    deflections = []
+    strut_forces = []
+    
+    width = 1
+    for A_S in A_S_list:
+        
+        L_strut = np.sqrt(D_fus ** 2 + (L_wing - A_S) ** 2)
+        gamma = np.arctan(D_fus / (L_wing - A_S))
+        #print("Angle and length of the strut")
+        #print(L_strut, gamma)
+        
+        
+        F_strut = np.arange(0, 1500000, 1000)
+        force, deflection, all_forces = indet_sys(F_strut, width, gamma, L_strut, A_S, A_E)
+        print("First found optimum")
+        print(force, deflection)
+        print()
+        
+        
+        F_strut = np.arange(force - 2000, force + 2000, 0.1)
+        force, deflection, all_forces = indet_sys(F_strut, width, gamma, L_strut, A_S, A_E)
+        deflections.append(deflection)
+        strut_forces.append(force)
+        print("Final optimum")
+        print(force, deflection)
+        print()
+        
+    return strut_forces, deflections
 
 
-F_strut = np.arange(0, 1500000, 1000)
-width = 1
-optimum = indet_sys(F_strut, width, gamma, L_strut, A_S, A_E)
-print(optimum)
-
-#F_strut = np.arange(optimum - 2000, optimum + 2000, 0.1)
-#optimum = deter_strut(F_strut, width, gamma, L_strut, A_S, A_E)
-##print(optimum)
+#A_E = 23
+#A_S = 13
+#width = 1
+#L_strut = np.sqrt(D_fus ** 2 + (L_wing - A_S) ** 2)
+#gamma = np.arctan(D_fus / (L_wing - A_S))
+##print(L_strut, gamma)
 #
-#F_str = optimum
+#
+#F_strut = np.arange(0, 1500000, 1000)
+#force, deflection = indet_sys(F_strut, width, gamma, L_strut, A_S, A_E)
+#print("First found optimum")
+#print(force, deflection)
+#print()
+#
+#F_strut = np.arange(force - 2000, force + 2000, 0.1)
+#force, deflection = indet_sys(F_strut, width, gamma, L_strut, A_S, A_E)
+#print("Final optimum")
+#print(force, deflection)
+#print()
+
+A_E = 23
+A_S_L = np.arange(5, 21, 1)
+results = strut_opt(A_S_L, A_E)
+
+print(results[0])
+print(results[0][np.argmin(results[0])])
+print()
+print(results[1])
+print(results[1][np.argmin(results[1])])
+
+
+
+##F_str = optimum
 #X = np.arange(0, 30, 1)
 #
 #d_lift = deter_d_distr(A_L, X, l_distr)
