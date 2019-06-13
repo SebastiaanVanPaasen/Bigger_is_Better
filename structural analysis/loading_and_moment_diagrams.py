@@ -412,9 +412,11 @@ def load_diagrams(N):  ### 100 nodes, so 99 beam elements
     minFz = min([min(Fzdistribution), min(Fzdistribution2), min(Fzdistribution3)])
     maxFz = max([max(Fzdistribution), max(Fzdistribution2), max(Fzdistribution3)])
 
-    return Mzdistribution, Mydistribution, Tdistributionvalues,maxMz, maxMy, minMy,maxT,maxFy,minFz, maxFz
+    return Mzdistribution, Mydistribution, Tdistributionvalues, maxMz, maxMy, minMy,maxT,maxFy,minFz, maxFz
 
 
-#print(load_diagrams(100))
+print(load_diagrams(100)[3])
+print(load_diagrams(100)[5])
+
 
 
