@@ -286,19 +286,19 @@ def strut_opt(A_S_list, A_E):
         
         F_strut = np.arange(0, 1500000, 1000)
         force, deflection, all_forces = indet_sys(F_strut, width, gamma, L_strut, A_S, A_E)
-        print("First found optimum")
-        print(force, deflection)
-        print()
-        
+#        print("First found optimum")
+#        print(force, deflection)
+#        print()
+#        
         
         F_strut = np.arange(force - 2000, force + 2000, 0.1)
         force, deflection, all_forces = indet_sys(F_strut, width, gamma, L_strut, A_S, A_E)
         deflections.append(deflection)
         strut_forces.append(force)
-        print("Final optimum")
-        print(force, deflection)
-        print()
-        
+#        print("Final optimum")
+#        print(force, deflection)
+#        print()
+#        
     return strut_forces, deflections
 
 
