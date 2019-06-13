@@ -16,16 +16,20 @@ def calc_cruise_coefficient(cl, cd, r, V, c_j):
 #    print("The range equals " + str(r))
 #    print("The V equals "+ str(V))
 #    print("The lift over drag ratio equals " + str(cl/cd))
-    
-    return 1 / (np.e ** (r / ((V / (c_j * per_hr_to_N * g_0)) * (cl / cd))))
+#    print(r, cl, cd, V, c_j)
+    ff = 1 / (np.e ** (r / ((V / (c_j * g_0)) * (cl / cd))))
+#    print(ff)
+    return ff
+#    return 1 / (np.e ** (r / ((V / (c_j * per_hr_to_N * g_0)) * (cl / cd))))
 
 
 #   calculate the loiter coefficient based on ADSEE
 def calc_loiter_coefficient(A, oswald_factor, cd_0, E, c_j):
     cd = 2 * cd_0
     cl = np.sqrt((np.pi * A * oswald_factor * cd_0))
-
-    return 1 / (np.e ** (E / ((1 / (c_j * g_0 * per_hr_to_N)) * (cl / cd))))
+    ff = 1 / (np.e ** (E / ((1 / (c_j * g_0)) * (cl / cd))))
+    return ff
+    #return 1 / (np.e ** (E / ((1 / (c_j * g_0 * per_hr_to_N)) * (cl / cd))))
 
 
 #   calculate the total required fuel by multiplying all phases of the flight profile
@@ -50,20 +54,27 @@ def class_I(cl, cd, r_cruise, r_res, v_cruise, cj_cruise, W_tfo_frac, W_e_frac,
 #    print("The loiter coefficient equals " + str(loiter))
 #    print("The second cruise coefficient equals " + str(cruise_2))
 
-    np.append(fuel_fractions, [cruise_1, cruise_2])
-    
+    fuel_fractions[-1] = cruise_1
+    fuel_fractions[-2] = cruise_2
+#    fuel_fractions = np.append(fuel_fractions, [cruise_1, cruise_2])
+#    print(fuel_fractions)
     W_f_frac = calc_fuel_fraction(fuel_fractions)
+#    fuel_fractions = [start, taxi, t_o, climb_1, descent_1, climb_2, 
+#                        descent_2, landing, 0, 0]
+    nom_fuel_fractions = fuel_fractions[0:5] + [fuel_fractions[7]] + [cruise_1]
+    W_nom_fuel_frac = calc_fuel_fraction(nom_fuel_fractions)
+    
     W_to_frac = 1 - W_f_frac - W_tfo_frac - W_e_frac
     
-#    print(W_f_frac)
+#    print(W_f_frac) 
 #    print(W_e_frac)
-
+#    print(W_f_frac)
     W_P = calc_payload_weight(N_pas, N_crew, M_person, M_cargo)
     W_TO = W_P / W_to_frac
     W_F = W_f_frac * W_TO
     W_E = W_e_frac * W_TO + W_tfo_frac * W_TO
-
-    return np.array([W_TO, W_E, W_P, W_F])
+    W_nom_F = W_nom_fuel_frac * W_TO
+    return np.array([W_TO, W_E, W_P, W_F]), W_nom_F
 
 # r_cruise = np.array([1200000, 1400000, 1600000, 1800000])
 # results = np.zeros((4, len(r_cruise)))

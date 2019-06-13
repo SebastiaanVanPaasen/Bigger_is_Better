@@ -1,0 +1,60 @@
+;Design 1
+Take off weight [N];1494488.2705887042
+Payload weight [N];472485.24525000004
+Fuel weight [N];177244.2135486522
+Empty weight [N];844758.8117900521
+Wing weight [N];197936.9127265989
+Empennage weight [N];42235.99202516591
+Fuselage weight [N];202954.3253418126
+Nacelle weight [N];24452.719091718416
+Propulsion system weight [N];64393.364011136066
+Fixed equipment weight [N];275918.2329375831
+CL cruise [-];0.6014354000344444
+CD cruise [-];0.03146
+L/D-ratio;19.117463446740125
+C_t [kg/Ns];1.1262528167311676e-05
+Oswald factor [-];0.85
+CD_0 [-];0.01807796513125229
+Aspect ratio [-];15.0
+Surface area [m^2];231.50503282100277
+Span [m];58.92856261877632
+Root chord [m];5.985328673832518
+Tip chord [m];1.8718130086709912
+Quarter chord sweep [deg];0.4363323129985824
+Taper ratio [-];0.31273353740028353
+Mean aerodynamic chord [m];4.287501433980521
+Dihedral [deg];-1.5000000000000002
+Thickness over chord [-];0.13
+Leading edge root location [m];18.406568837125164
+Fuselage length [m];48.592773981077315
+Fuselage outer diameter [m];6.2877186341350875
+Nosecone length [m];7.7548529820999414
+Tailcone length [m];13.832980995097193
+Cabin length [m];35.09425741206665
+Forward cg [%MAC];0.05120275854834941
+Aft cg [%MAC];0.8093606844825266
+Horizontal tail surface area [m^2];52.18645304315834
+Horizontal tail leading edge root position [m];43.43276028453055
+Horizontal tail leading edge sweep [deg];36.800581529714805
+Horizontal tail mean aerodynamic chord [m];3.8331530317204514
+Horizontal tail arm [m];30.416029442737255
+Horizontal tail root chord [m];5.160013696546762
+Horizontal tail tip chord [m];2.064005478618705
+Horizontal tail span [m];14.44803835033093
+Vertical tail surface area [m^2];55.8490123689518
+Vertical tail leading edge root position [m];41.196582082488646
+Vertical tail leading edge sweep [deg];44.529286425512225
+Vertical tail mean aerodynamic chord [m];6.193376852454549
+Vertical tail root chord [m];7.3961918985886665
+Vertical tail tip chord [m];4.807524734082634
+Vertical tail span [m];9.152787474503475
+Take off thrust [N];376195.6783341295
+Cruise Mach number [-];0.775
+Cruise velocity [m/s];235.41812346599397
+Cruise altitude [m];9000.0
+Cruise fuel consumption [kg/km/pas];0.007973840501475184
+Mission fuel consumption [kg/km/pas];0.019557749256763846
+Fuel consumption reduction [%];21.825093122792328
+Total fuel consumption reduction [%];44.90774857249621
+RF reduction [%];36.4965052027759
+DOC reduction [%];17.530953900491223
