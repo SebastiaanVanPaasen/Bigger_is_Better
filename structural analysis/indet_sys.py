@@ -346,14 +346,14 @@ for idx in range(len(A_S_L)):
     d = d_lift + d_weight + d_fuel_weight + d_strut + d_engine
     
         
-    plt.subplot(1, 2, 1)
+    plt.subplot(1, 3, 1)
     plt.plot(X_root_plot, Vy_dist[idx], label = "Vy for pos " + str(A_S_L[idx]))
     plt.xlabel("X-position [m]")
     plt.ylabel("Vy [N]")
     plt.title("Fy distribution")
     plt.legend()
     
-    plt.subplot(1, 2, 2)
+    plt.subplot(1, 3, 2)
     plt.plot(X_root_plot, Mz_dist[idx], label = "Mz for pos " + str(A_S_L[idx]))
     plt.xlabel("X-position [m]")
     plt.ylabel("Mz [Nm]")
