@@ -7,6 +7,8 @@ r_range = 250 * cc.nm_to_km * 1000  # m     domestic flights of ADSEE-I L3
 max_range = 2000000.  # m    Guestimated
 
 # Fuel fraction statistics from Roskam
+#start = 0.999
+#taxi = 0.995
 start = 0.99
 taxi = 0.99
 t_o = 0.995
@@ -16,7 +18,7 @@ climb_2 = 0.98
 descent_2 = 0.99
 landing = 0.992
 fuel_fractions = [start, taxi, t_o, climb_1, descent_1, climb_2, 
-                        descent_2, landing]
+                        descent_2, landing, 0, 0]
 
 # Mass fractions statistics from Roskam 
 mass_frac_wing = 0.117
@@ -51,7 +53,7 @@ V_h_norm = 0.99
 s_m = 0.10
 SM = 0.10
 Cm_0 = -0.1     # airfoil dependent moment coefficient 
-CL_0 = 0.5      #  CL of flapped wing at angle of attack of 0 deg 
+CL_0 = 1.3      #  CL of flapped wing at angle of attack of 0 deg 
 mu_2 = 1.       # 2D to 3D correction factor from graph  
 mu_3 = 0.025    #  correction factor for sweep from graph
 dc_c_f = 0.5    # flap geometry ratio, see torenbeek book
@@ -62,9 +64,9 @@ V_stall_l = min(np.sqrt(L_run / 0.5847), 65.)
 CL_l_max = 3.2 
 
 N_cargo = 2     # number of cargo compartments
-cargo_fwdfrac = 0.6     # Fraction of the amount the front compartment holds, if N_cargo = 1 then the value is 1
+cargo_fwdfrac = 0.5     # Fraction of the amount the front compartment holds, if N_cargo = 1 then the value is 1
 delta_flap =  0.5235    # flap deflection [rad]
-alpha_land =   0.1745   # angle of attach during approach [rad]
+alpha_land =   0.1745*1.2   # angle of attach during approach [rad]
 CL_H        = -0.8  # liftcoefficient adjustable tail
 eta        =  0.95  # airfoil efficiency = 0.95
 x_ac       =  0.3   # aerodynamic centre location over the mac [n/m]

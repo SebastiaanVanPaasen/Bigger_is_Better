@@ -48,7 +48,7 @@ def Radiative(h, Fnew):  #Fnew is the MTOW fuel fraction of our design
     elif Dif11km >6000:
         NOXrfi = NOXrfi *0.2
         
-    F737 = 0.0094
+    F737 = 0.0102  
     F_frac = Fnew/F737                                              #Below is the RF of our design
     totrfi = (CO2RFI + NOXrfi + conrfi + h2rfi + OtherRFI)*F_frac #Total de/increase in RFi due to delta in fuel weight 
     
@@ -66,7 +66,7 @@ def Radiative(h, Fnew):  #Fnew is the MTOW fuel fraction of our design
 #print("Velocity " + str(Vini))
 
 def Costs(Vini, Fnew):
-    F737 = 0.0094
+    F737 = 0.0102
     F_frac = Fnew/F737
     
     V737 = 828.479 #km/h

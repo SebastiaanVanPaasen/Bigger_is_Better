@@ -39,10 +39,17 @@ class Class_II:
         # fifth is for strutted wings
         # sixth is for fowler flaps
     
+#        for i in range(len(choice)):
+#            if choice[i] == 1:
+#                w_weight = w_weight + w_weight * changes[i]
+##                print(w_weight)
+                
+        change = 0
         for i in range(len(choice)):
             if choice[i] == 1:
-                w_weight = w_weight + w_weight * changes[i]
-#                print(w_weight)
+                change = change + changes[i]
+        
+        w_weight = w_weight + w_weight * change
     
         return w_weight
     
