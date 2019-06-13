@@ -18,15 +18,19 @@ import matplotlib.pyplot as plt
 #Tc = total inlet combustor temp. [K]
 #R_des = design range [km]
 
+"""Design"""
 SAR = 0.0094
 n_eng = 2.
 n_pax = 200.
-hcr = 10000.
+hcr = 8000.
 Mcr = 0.79
 MTOW = 78245.
 R_des = 4500. 
 
 Tc = 711.5    #from cycle calculation
+
+"""Ref. aircraft"""
+hcr_ref = 10000.
 
 #------------------------------------DEFINITIONS-------------------------------
 def ISA_temp(h):
@@ -76,6 +80,23 @@ def EF_NOx(Tc,h): #in kg/kg
 def Cruise_emis(SAR,EF):#returns emission in kg/km-pax
     emission = SAR*EF
     return emission
+    
+def RF_contrails(RF,h):
+    RF_red = RF - 0.002935*((36000*0.3048)-h)
+    return RF_red
+
+def RF_NOx(RF,h):
+    if h < 9144.:
+        k = RF
+    elif 9144. < h <= 9296.4:
+        k = RF*1.19
+    elif 9296.4 < h <= 9906.:
+        k = RF*1.38
+    elif 9906. < h <= 10515.6:
+        k = RF*1.76
+    elif 10515.6 < h:
+        k = RF*2.
+    return k    
 
 
 #-----------------------------------LTO CYCLE-----------------------------------
@@ -176,29 +197,24 @@ print()
 #considere for the cruise phase
 #As cruising time differs each missions, the emissions are calculated using the SAR
 #This resulted in the emissions in kg/(km-pax)
-"""Global warming potentials"""
-#Source 2
-GWP_CO2 = 1.
-GWP_CH4 = 25.
-GWP_N2O = 298.
-
 
 """Emission factors"""
 #Source 1 [kg/kg fuel]
 H2O = 1.237 
 #Source 3  [kg/kg fuel]
 CO2 =3.15
+N2O = 0.0001 
 
 #NOx, see ruijgrok elements of a/c pollution book
 NOx = EF_NOx(Tc,hcr)
 
 
-EF_comp = ['H2O','CO2','NOx','CO','NMVOC','NOx','SO2']
+EF_comp = ['H2O','CO2','NOx','CO','NMVOC','SO2',"N2O"]
 
 if hcr <= 9100.:
-    EF = [H2O,CO2,NOx,0.0052,0.0009,0.0107,0.001]
+    EF = [H2O,CO2,NOx,0.0052,0.0009,0.001,N2O]
 elif hcr > 9100.:
-    EF = [H2O,CO2,NOx, 0.005,0.0008,0.0108,0.001]
+    EF = [H2O,CO2,NOx, 0.005,0.0008,0.001,N2O]
 
 
 """Emission calculations"""
@@ -213,7 +229,7 @@ for i in range(len(EF)):
     total_emis_cr = emissioni*R_des*n_pax 
         
     print (EF_comp[i],emissioni,total_emis_cr)
-    
+  
  
 """Sensitivity EF of NOx"""
 Tc_list = np.arange(500,1200,50)
@@ -249,10 +265,55 @@ plt.show()
 #To take into account the effect of the emissions during cruise as they do not directly
 #influence the quality of life on the ground, while the LTO emissions do
 #To take into account the phenomena which occur high in the atmosphere due to
-#aircraft emissions -> contrails and cirrus clouds   
-    
-    
+#aircraft emissions -> contrails and cirrus clouds 
+#Only consider the driver green house gases, like H2O, CO2 and NOx, which have the
+#largest impact on the ozone layer
 
+"""RF values in mW/m^2"""
+#RF for each emission : best estimate [0], low [1], high [2], 90% confidence interval
+CO2 = [28.,15.2,40.8]
+CH4 = [-12.5,-2.1,-76.2]
+NOx = [12.6,3.8,15.7]
+H2O = [2.8,0.39,20.3]
+contrails = [11.8,5.4,25.6]
+AIC = [33.-contrails[0],12.5-contrails[1],86.7-contrails[2]]
+SO4 = [-4.8,-0.79,29.3] #occur due to chemical reactions with SO2
+soot = [3.4,0.56,20.7]
+    
+H = np.arange(5000,11500,500)
+
+RF_tot_mean = []
+RF_tot_low = []
+RF_tot_high = []
+
+for h in H:
+    RF_tot_mean.append(CO2[0]+CH4[0]+RF_NOx(NOx[0],h)+H2O[0]+RF_contrails(contrails[0],h)+AIC[0]+SO4[0]+soot[0])
+    RF_tot_low.append(CO2[1]+CH4[1]+RF_NOx(NOx[1],h)+H2O[1]+RF_contrails(contrails[1],h)+AIC[1]+SO4[1]+soot[1])    
+    RF_tot_high.append(CO2[2]+CH4[2]+RF_NOx(NOx[2],h)+H2O[2]+RF_contrails(contrails[2],h)+AIC[2]+SO4[2]+soot[2])
+    
+#RF of aircraft
+RF_ac = CO2[0]+CH4[0]+RF_NOx(NOx[0],hcr)+H2O[0]+RF_contrails(contrails[0],hcr)+AIC[0]+SO4[0]+soot[0]
+RF_ref = CO2[0]+CH4[0]+RF_NOx(NOx[0],hcr_ref)+H2O[0]+RF_contrails(contrails[0],hcr_ref)+AIC[0]+SO4[0]+soot[0]
+
+RF_reduction = (RF_ac - RF_ref)/RF_ref * 100.
+print ("RF reduction wrt ref. aircraft",RF_reduction)
+
+
+
+plt.plot(hcr_ref,RF_ref,"o",label = "Reference aicraft")
+plt.plot(hcr,RF_ac,'o',label = "Aircraft")
+plt.plot(H,RF_tot_mean,label = "Best estimate")
+plt.plot(H,RF_tot_low, label = "Lower bound values")
+plt.plot(H,RF_tot_high,label = "Upper bound values")
+plt.title("RF dependency on altitude")
+plt.ylabel("Altitude [m]")
+plt.xlabel("RF [mW/m^2]")
+plt.grid(True)
+
+plt.show()
+
+
+    
     
 
 
