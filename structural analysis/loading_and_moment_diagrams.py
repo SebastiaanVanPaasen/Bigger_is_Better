@@ -1,4 +1,9 @@
 #sys.path.append("C:/Users/mathi/Documents/DSE/Bigger_is_Better")
+<<<<<<< HEAD
+sys.path.append("C:/Users/Mels/Desktop/3e jaar TUDelft/DSE/code/Bigger_is_Better")
+import numpy as np  ### Never use * to import stuff, as it makes it difficult to retrace where functions come from
+import scipy as sp
+=======
 #sys.path.append("C:/Users/Mels/Desktop/3e jaar TUDelft/DSE/code/Bigger_is_Better")
 import numpy as np  ### Never use * to import stuff, as it makes it difficult to retrace where functions come from
 import scipy as sp
@@ -17,6 +22,17 @@ import constants_and_conversions as cc
 #print(weights)
 #print(cruise_conditions)
 ### Move the geometry definition to over here
+<<<<<<< HEAD
+CD0 = 0.0239#cruise_conditions["CD_0"]#.0222#0.0207#0.0202 #0.0264
+S = 190.3691002#wing["S"]#286.02#184.16#193.72#220.27 # m^2
+b = 49.7473#wing["b"]#86.83#47.83#39.56#41.76#55.53
+AR = 13#wing["A"]# 8.#8.5# 9 #14
+taper = 0.3093#wing["Taper"]#0.31#0.4#0.31
+qcsweep= 0.453#wing["Sweep"]
+Sweep0 = m.atan(m.tan(qcsweep) - 4 / AR * (-0.25 * (1 - taper) / (1 + taper))) # rad
+
+Cr = 5.845#wing["C_root"] #8.54#7.11#6.63# 6.06(2 * S) / ((1 + taper) * b)  # (S + np.tan(Sweep0) * by * (b / 4)) / (by + (b - by) * ((1 + taper) / 2))
+=======
 CD0 = 0.0177 
 S = 238 
 b = 60 
@@ -26,13 +42,20 @@ qcsweep= 0.5133
 Sweep0 = m.atan(m.tan(qcsweep) - 4 / AR * (-0.25 * (1 - taper) / (1 + taper))) # rad
 
 Cr = 6.14
+>>>>>>> master
 Ct = Cr * taper
 tc = 0.16
 # Cy = 0.#Cr - np.tan(Sweep0) * (by / 2)
 
+<<<<<<< HEAD
+Wing_W = 208030.9134#weights["W_W"]#212307.69#149254.55#161567.21# 285629.97
+#Wing_W = Wing_Wf/9.81 # 57461.507853787  # kg
+Volume = (0.5*(Cr**2*tc + Ct**2*tc)*(b/2))*2  # m^3
+=======
 Wing_W = 205725 
 
 Volume = un.V_tot  # m^3
+>>>>>>> master
 specific_weight = Wing_W / Volume  # N/m^3
 #Fuel_W_tot = 200716. 
 density = un.Rho_fuel
@@ -44,15 +67,32 @@ x_fuel_begin = 0.35 *(b / 2)
 start_eng_1 = 7
 start_eng_2 = 0.6 * (b / 2)
 n_engines = 2
+<<<<<<< HEAD
+<<<<<<< HEAD
+total_thrust = 441656.3124#cruise_conditions["T_TO"]#396428.19#392632.62#418435.81 # 469612.93in Newton
+engine_weight = (59324.125+28707.66031)/n_engines #weights["W_E"]+ weights["W_N"]/n_engines #137279.1+25828.71#156890.4+25767.83#156890.4+21594.79#166696.05 + 23013.97 #137279.1+25828.71 in Newton
+#strut_position = 0.68*(b/2)
+=======
+total_thrust = cruise_conditions["T_TO"]#396428.19#392632.62#418435.81 # 469612.93in Newton
+engine_weight = weights["W_E"] + weights["W_N"]/n_engines #137279.1+25828.71#156890.4+25767.83#156890.4+21594.79#166696.05 + 23013.97 #137279.1+25828.71 in Newton
+#strut_position = 0.68*(b/2)
+=======
 total_thrust = 386786  #396428.19#392632.62#418435.81 # 469612.93in Newton
 engine_weight = 4100 * cc.g_0 + 25141 /n_engines #137279.1+25828.71#156890.4+25767.83#156890.4+21594.79#166696.05 + 23013.97 #137279.1+25828.71 in Newton
 strut_position = b/2 - un.A_S_L[4]
 strutforce = un.results[0][4]
+>>>>>>> master
 
 # input for each critical case; as the lift distribution varies for each case
+<<<<<<< HEAD
+alt = 8500#cruise_conditions["H_cr" ]
+rho = cc.Rho_0 * ((1 + (cc.a * alt) / cc.Temp_0) ** (-(cc.g_0 / (cc.R_gas * cc.a))))#0.32#0.32#0.43 #0.23
+V = 229.430#cruise_conditions["V_cr"]*1.3 #252.19#270.55#247.55#301.63
+=======
 alt = 9000
 rho = cc.Rho_0 * ((1 + (cc.a * alt) / cc.Temp_0) ** (-(cc.g_0 / (cc.R_gas * cc.a))))#0.32#0.32#0.43 #0.23
 V = 235.42*1.3 #252.19#270.55#247.55#301.63
+>>>>>>> master
 #print(V)
 n_ult= 3.75
 n = n_ult/1.5#4.7/1.5#4.21/1.5#4.4/1.5#4.4/1.5
@@ -79,6 +119,7 @@ cdi = get_correct_data(output_avl)[2]
 PolyFitCurveidrag = sp.interpolate.interp1d(x_pos, cdi, kind='cubic', fill_value='extrapolate')
 #print(cdi)
 
+>>>>>>> master
 ### Define your functions at the beginning of the program
 def c(z):
     c = Cr - ((Cr - Ct) / (b / 2)) * z
@@ -165,12 +206,30 @@ def Loadcalculator(x0,Ff):
         #        print(section_drag)
 
         # (-) because it's in a direction opposite to thrust
+<<<<<<< HEAD
+<<<<<<< HEAD
+        #section_strutforce = 0.
+        #Strut
+        #if x > strut_position and strutreachedyet == False:
+        #    section_strutforce = strutforce *-1
+        #    Mz += section_strutforce * (strut_position - x0)
+        #    strutreachedyet = True
+=======
+#        section_strutforce = 0.
+#        #Strut
+#        if x > strut_position and strutreachedyet == False:
+#            section_strutforce = strutforce *-1
+#            Mz += section_strutforce * (strut_position - x0)
+#            strutreachedyet = True
+>>>>>>> master
+=======
         section_strutforce = 0.
 #        #Strut
         if x > strut_position and strutreachedyet == False:
             section_strutforce = strutforce *-1
             Mz += section_strutforce * (strut_position - x0)
             strutreachedyet = True
+>>>>>>> master
 
         ###Thrust Calculations
         section_thrust = 0
@@ -199,7 +258,15 @@ def Loadcalculator(x0,Ff):
         y_shear_center = 0.5*0.16*c(x)
         #        Cm = PolyFitCurveCm(x)
         #        moment_aero = 0.5 * Cm * rho * (V ** 2) * (chord) * surfacearea * n * m.cos(Sweepsc)
+<<<<<<< HEAD
+<<<<<<< HEAD
+        #strut_torque = -section_strutforce * (lift_position - shear_center) * m.cos(Sweepsc)
+=======
+#        strut_torque = -section_strutforce * (lift_position - shear_center) * m.cos(Sweepsc)
+>>>>>>> master
+=======
         strut_torque = -section_strutforce * (lift_position - shear_center) * m.cos(Sweepsc)
+>>>>>>> master
         lift_torque = -section_lift * (lift_position - shear_center) * m.cos(Sweepsc)
         weight_torque = -section_weight * (weight_position - shear_center) * m.cos(Sweepsc)
         engine_torque = -section_engineweight * (engine_position - shear_center) * m.cos(Sweepsc)

@@ -15,6 +15,9 @@ D_fus = 7.3
 R_strut = 5 / 1000
 A_strut = 0.25 * np.pi * ((2 * R_strut) ** 2)
 E_strut = 181 * (10 ** 9)  
+AR = 15
+taper = 0.297 
+
 
 cr = 6.04
 ct = 1.89
@@ -82,6 +85,7 @@ def get_data(CL):
 def calc_chord(x):
     return cr - ((cr - ct) / L_wing) * x
     
+#print(ai.s_airfoil(100,60, calc_chord))
     
 def calc_area(x, width):
     chord = calc_chord(x)

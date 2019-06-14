@@ -13,11 +13,11 @@ import centroid_wing as cw
 #N = 100 
 #b = lm.b#60.#47.83#39.56#41.76
 
-def s_airfoil(N,b):
+def s_airfoil(N,b,c):
     
-    data_z_all_sec = airfoil_geometry(N,b)[0]
-    data_y_upper_all_sec = airfoil_geometry(N,b)[1]
-    data_y_lower_all_sec = airfoil_geometry(N,b)[2]
+    data_z_all_sec = airfoil_geometry(N,b,c)[0]
+    data_y_upper_all_sec = airfoil_geometry(N,b,c)[1]
+    data_y_lower_all_sec = airfoil_geometry(N,b,c)[2]
     ds_sec_all = []
     s_all_sec = []
     
@@ -33,6 +33,8 @@ def s_airfoil(N,b):
         s_all_sec.append(sum(ds_sec_all[i]))
   
     return(s_all_sec)
+
+
     
     
 def I_zz_spars(l_spar_h ,t_spar_v, t_spar_h, N, b, c, boom_area):
