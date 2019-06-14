@@ -299,8 +299,8 @@ for idx in range(len(A_S_L)):
     
     F_str = results[0][idx]
     Lift, Weight, Fuel_weight, W_eng = results[2][idx]
-    
-    
+    print(F_str)
+    print(sum(Lift))
     Lift_mom = Lift * X_root
     Weight_mom = Weight * X_root
     Fuel_mom = Fuel_weight * X_root
@@ -389,14 +389,15 @@ N = L_wing / dx
 
 Izz_list = np.zeros((len(A_S_L), len(X_root_plot)))
 boom_area = np.zeros((len(A_S_L), len(X_root_plot)))
+Mz_total = np.zeros((len(A_S_L), len(X_root_plot)))
 
 for idx in range(len(A_S_L)):
     I_zz_spar, I_yy_spar, I_yz_spar = ai.I_zz_spars(l_spar_h, t_spar_v, t_spar_h, N, b ,calc_chord)
     I_zz_req = pr.required_Izz(N, b, calc_chord, Mz_dist[idx][1:])
-    print(I_zz_req)
+#    print(I_zz_req)
     airfoil_area, z_c_airfoil, y_c_airfoil = cw.get_skin_centroid(b, N, calc_chord)
     boom_area = ai.wing_geometry(I_zz_req, I_zz_spar, N, b, calc_chord)[0][0]
-    
+#    print(boom_area)
     I_zz_wing, I_yy_wing, I_yz_wing = ai.inertia_wing(I_zz_spar, I_yy_spar, I_yz_spar, boom_area, N, b, calc_chord)
 
     results = strut_opt(A_S_L, A_E, cl_polar, dx, I_zz_wing[int((L_wing - A_S_L[idx]) / dx)])
@@ -416,8 +417,8 @@ for idx in range(len(A_S_L)):
     Mz_root = sum(Lift_mom) - sum(Weight_mom) - sum(Fuel_mom) - Eng_mom - Strut_mom
     Vy_root = sum(Lift) - sum(Weight) - sum(Fuel_weight) - W_eng - F_str
     
-    print(Mz_root)
-    print(Vy_root)
+#    print(Mz_root)
+#    print(Vy_root)
     
     
     Mz_dist[idx][0] = Mz_root
@@ -439,7 +440,8 @@ for idx in range(len(A_S_L)):
     for i in range(len(X_root_plot) - 1):
         Mz_dist[idx][i + 1] = Mz_dist[idx][i] - Vy_dist[idx][i] * (X_root_plot[i + 1] - X_root_plot[i])
 #        D[idx][i + 1] = -(Mz_dist[idx][i + 1] * (X_root_plot[i + 1]) ** 2) / (2 * E_wing * I_wing)
-        
+    
+    
     d_lift = 0
     d_weight = 0
     d_fuel_weight = 0
@@ -456,8 +458,8 @@ for idx in range(len(A_S_L)):
     
     d = d_lift + d_weight + d_fuel_weight + d_strut + d_engine
     
-    print(d)
-    print(len(d))
+#    print(d)
+#    print(len(d))
 #    plt.subplot(1, 3, 1)
 #    plt.plot(X_root_plot, Vy_dist[idx], label = "Vy for pos " + str(A_S_L[idx]))
 #    plt.xlabel("X-position 1 [m]")

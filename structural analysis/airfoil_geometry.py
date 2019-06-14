@@ -47,11 +47,11 @@ def airfoil_geometry(N,b, c):
     for i in range(len(HalfspanValues)):
         
         data_z, data_y = load_airfoil('SC(2)-0616.txt')[1], load_airfoil('SC(2)-0616.txt')[2] 
-        data_z_order =  np.array(data_z[0:int((len(data_y)/2))])*c(HalfspanValues[i],Cr, b, taper)
+        data_z_order =  np.array(data_z[0:int((len(data_y)/2))])*c(HalfspanValues[i])
         data_z_all_sec.append(data_z_order)
-        data_y_lower = np.array(data_y[(int((len(data_y)/2))):])*c(HalfspanValues[i],Cr, b, taper)
+        data_y_lower = np.array(data_y[(int((len(data_y)/2))):])*c(HalfspanValues[i])
         data_y_lower_all_sec.append(data_y_lower)
-        data_y_upper = np.array(data_y[0:int((len(data_y)/2))])*c(HalfspanValues[i],Cr, b, taper)
+        data_y_upper = np.array(data_y[0:int((len(data_y)/2))])*c(HalfspanValues[i])
         data_y_upper_all_sec.append(data_y_upper)
     
     data_z_all_sec = np.asarray(data_z_all_sec)

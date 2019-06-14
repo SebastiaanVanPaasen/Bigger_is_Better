@@ -1,16 +1,6 @@
-<<<<<<< HEAD
-# -*- coding: utf-8 -*-
-"""
-Created on Tue May 28 09:19:12 2019
-
-@author: mathi
-"""
 
 #import loading_and_moment_diagrams as lm
-from loading_and_moment_diagrams import load_diagrams
-from centroid_wing import wing_centroid
-=======
->>>>>>> master
+
 import centroid_wing as cw
 import numpy as np
 from airfoil_geometry import airfoil_geometry
@@ -18,6 +8,7 @@ from airfoil_geometry import airfoil_geometry
 #Mz = load_diagrams(100)[0]
 
 def required_Izz(N, b, c, Mz):
+    
     HalfspanValues = np.linspace(0, b / 2 - 0.00001, N)
     data_y_all_sec_up = airfoil_geometry(N, b, c)[1]
     data_y_all_sec_low = airfoil_geometry(N, b, c)[2]
@@ -25,11 +16,6 @@ def required_Izz(N, b, c, Mz):
     airfoil_area, z_c_airfoil, y_c_airfoil = cw.get_skin_centroid(N, b, c)
     z_centroid_all_sec, y_centroid_all_sec, y_loc_spar_up, y_loc_spar_low, y_loc_stiff_up, y_loc_stiff_low, y_vertical_spar, z_loc_stiff_up, spar_loc_sec,z_loc_stiff_low = cw.wing_centroid(cw.boom_area, cw.spar_areas_hori, cw.t_spar_v, z_c_airfoil, y_c_airfoil, cw.n_stiff_up, cw.n_stiff_low, N, b, c)
 
-<<<<<<< HEAD
-def required_Izz(HalfspanValues, data_y_all_sec_up, data_y_all_sec_low, y_centroid_all_sec, Mz):
-    
-=======
->>>>>>> master
     I_zz_req_all_sec = np.zeros((len(HalfspanValues), 1))
     sigma_ult = 110 * 10 ** 6
     
@@ -42,17 +28,11 @@ def required_Izz(HalfspanValues, data_y_all_sec_up, data_y_all_sec_low, y_centro
 #        print(y_max)
     return I_zz_req_all_sec
 
-<<<<<<< HEAD
-#8.54#7.11#6.63#6.06
-print("req Izz",required_Izz(cw.HalfspanValues, data_y_all_sec_up, data_y_all_sec_low, y_centroid_all_sec, Mz))
+#<<<<<<< HEAD
+
+
 #print("req Izz",required_Izz(5.8451))
 
-=======
- #8.54#7.11#6.63#6.06
-#print("req Izz",required_Izz(cw.HalfspanValues, data_y_all_sec, y_centroid_all_sec, Mz))
-##print("req Izz",required_Izz(5.8451))
-#
->>>>>>> master
 #strut_length = 20.95
 
 #def required_strut_area(strut_length):

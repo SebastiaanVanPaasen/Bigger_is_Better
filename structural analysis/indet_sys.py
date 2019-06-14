@@ -143,13 +143,9 @@ def indet_sys(F_strut_array, dx, angle, L_s, a_s, a_e, cl_polar):
     x_start = L_wing * 0.34
     
     
-<<<<<<< HEAD:structural analysis/untitled1.py
-    lifts = deter_lift(cl_polar, X_root, dx)  #np.array(len(X_root) * [25295.5]) # 
-    weights, Volumes, V_tot = deter_weight(W_wing, X_root, dx)  #np.array(len(X_root) * [3677]) #
-=======
+
     lifts = 3.75 * deter_lift(cl_polar, X_root, dx)  #np.array(len(X_root) * [25295.5]) # 
     weights, Volumes = deter_weight(W_wing, X_root, dx)  #np.array(len(X_root) * [3677]) #
->>>>>>> master:structural analysis/indet_sys.py
     fuel_weights = deter_fuel(W_fuel / 2, Volumes, Rho_fuel, X_root, x_start)
     
 
@@ -235,11 +231,8 @@ def strut_opt(A_S_list, A_E, cl_curve, width):
         
         
         F_strut = np.arange(0, 4000000, 1000)
-<<<<<<< HEAD:structural analysis/untitled1.py
-        force, deflection, all_forces, V_tot, Volumes = indet_sys(F_strut, width, gamma, L_strut, A_S, A_E, cl_curve)
-=======
+
         force, deflection, all_forces = indet_sys(F_strut, width, gamma, L_strut, A_S, A_E, cl_curve)
->>>>>>> master:structural analysis/indet_sys.py
         
 #        print("First found optimum")
 #        print(force, deflection)
@@ -256,11 +249,8 @@ def strut_opt(A_S_list, A_E, cl_curve, width):
 #        print(force, deflection)
 #        print()
        
-<<<<<<< HEAD:structural analysis/untitled1.py
-    return strut_forces, deflections, all_forces, V_tot, Volumes
-=======
+
     return strut_forces, deflections, all_f
->>>>>>> master:structural analysis/indet_sys.py
 
 
 #A_E = 23
@@ -291,10 +281,8 @@ cl_polar, cd_polar = get_data(cl)
 
 dx = 1
 results = strut_opt(A_S_L, A_E, cl_polar, dx)
-<<<<<<< HEAD:structural analysis/untitled1.py
 idx = np.argmin(results[0])
-V_tot = results[3]
-Volumes = results[4]
+
 
 #print(results[0])
 #print(results[0][idx])
@@ -303,7 +291,7 @@ Volumes = results[4]
 #print(results[1])
 #print(results[1][idx])
 #print()
-=======
+#=======
 
 X_root = np.arange(0 + dx / 2, L_wing + dx / 2, dx)
 X_tip = np.arange(L_wing - dx / 2, 0 - dx / 2, -dx)
@@ -405,5 +393,5 @@ for idx in range(len(A_S_L)):
     
     
 
->>>>>>> master:structural analysis/indet_sys.py
+#>>>>>>> master:structural analysis/indet_sys.py
 

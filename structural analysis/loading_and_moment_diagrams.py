@@ -7,8 +7,8 @@ import math as m
 from matplotlib import pyplot as plt
 from class_I.lift_distr import make_avl_file, lift_distribution, get_correct_data
 import constants_and_conversions as cc
-from untitled1 import *
-import untitled1 as un
+#from untitled1 import *
+#import untitled1 as un
 #from read_csv_input import read_output
 
 #design = 'HIGH DD 2E STRUT'

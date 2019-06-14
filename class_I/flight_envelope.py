@@ -82,8 +82,9 @@ def gust_envelope(w_to, h, cl_alpha, S, c, v_cruise, Vs1):
     V_B_higher = Vs1*np.sqrt(1 + K_g*44*V_C*cl_alpha/(498*(w_to / S)/cc.psf_to_nm2))
     V_B_lower = v_cruise - 44 * cc.kts_to_ms # still needs to be changed 
     V_B = (V_B_higher+ V_B_lower)/2
+    print(V_C)
     print("vb",V_B_higher)
-    print("vblow",V_B)
+    print("vblow",V_B_lower)
     V = [0, V_B, V_C, V_D]
     n_lim_pos = np.zeros(len(V))
     n_lim_neg = np.zeros(len(V))
@@ -91,9 +92,8 @@ def gust_envelope(w_to, h, cl_alpha, S, c, v_cruise, Vs1):
     # print("the speeds are " + str(v))
     #  Calculate the load factor based on the gust speed that accompanies the aircraft speed
     for i in range(len(V)):
-        n_lim_pos[i] = 1 + ((cl_alpha * v_gusts[i] * V[i]/cc.kts_to_ms * K_g) / (498*(w_to / S)/cc.psf_to_nm2))**2
-        n_lim_neg[i] = 1 - ((cl_alpha * v_gusts[i] * V[i]/cc.kts_to_ms * K_g) / (498*(w_to / S)/cc.psf_to_nm2))**2
-        
+        n_lim_pos[i] = 1 + (cl_alpha * v_gusts[i] * V[i]/cc.kts_to_ms * K_g) / (498*(w_to / S)/cc.psf_to_nm2)
+        n_lim_neg[i] = 1 - (cl_alpha * v_gusts[i] * V[i]/cc.kts_to_ms * K_g) / (498*(w_to / S)/cc.psf_to_nm2)
 #    n_pos = np.append(n_pos, n_neg[-1])
 #    v_pos = np.append(v, v[-1])
 #    v_neg = v
@@ -103,8 +103,8 @@ def gust_envelope(w_to, h, cl_alpha, S, c, v_cruise, Vs1):
 
 def construct_envelope():
     # Note: used values are only estimation and are definitely not correct!
-    v_pos,v_neg, n_lim_pos, n_lim_neg,speeds = manoeuvring_envelope(1828542.22, 10000, 1.6 , 0.1 , 280, 239.28)
-    V_gust, n_gust_pos, n_gust_neg = gust_envelope(1828542.22, 10000, 5, 280, 5, 239, Vs1)
+    v_pos,v_neg, n_lim_pos, n_lim_neg,speeds = manoeuvring_envelope(1432175,9000,1.2,0.1,220,235)
+    V_gust, n_gust_pos, n_gust_neg = gust_envelope(1432175,9000,5.6, 220, 4.18, 235, speeds[1])
 #    print(n_gust_pos, n_gust_neg)
     plt.plot(v_pos, n_lim_pos)
     plt.plot(v_neg, n_lim_neg)
@@ -112,6 +112,7 @@ def construct_envelope():
     plt.plot(V_gust,n_gust_neg)
 
     plt.show()
+
     return V_gust, n_gust_pos, n_gust_neg
 
 
