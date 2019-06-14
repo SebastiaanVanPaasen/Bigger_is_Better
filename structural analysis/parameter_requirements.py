@@ -14,7 +14,7 @@ def required_Izz(N, b, c, Mz, boom_area):
     data_y_all_sec_low = airfoil_geometry(N, b, c)[2]
 
     airfoil_area, z_c_airfoil, y_c_airfoil = cw.get_skin_centroid(N, b, c)
-    z_centroid_all_sec, y_centroid_all_sec, y_loc_spar_up, y_loc_spar_low, y_loc_stiff_up, y_loc_stiff_low, y_vertical_spar, z_loc_stiff_up, spar_loc_sec,z_loc_stiff_low = cw.wing_centroid(boom_area, cw.spar_areas_hori, cw.t_spar_v, z_c_airfoil, y_c_airfoil, cw.n_stiff_up, cw.n_stiff_low, N, b, c)
+    z_centroid_all_sec, y_centroid_all_sec, y_loc_spar_up, y_loc_spar_low, y_loc_stiff_up, y_loc_stiff_low, y_vertical_spar, z_loc_stiff_up, spar_loc_sec,z_loc_stiff_low, spar_areas_verti = cw.wing_centroid(boom_area, cw.spar_areas_hori, cw.t_spar_v, z_c_airfoil, y_c_airfoil, cw.n_stiff_up, cw.n_stiff_low, N, b, c)
 
     I_zz_req_all_sec = np.zeros((len(HalfspanValues), 1))
     sigma_ult = 100 * 10 ** 6
