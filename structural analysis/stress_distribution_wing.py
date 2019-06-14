@@ -1,11 +1,10 @@
 from matplotlib import pyplot as plt
-import numpy as np  ### Never use * to import stuff, as it makes it difficult to retrace where functions come from
+import numpy as np  
 from airfoil_geometry import airfoil_geometry
 import parameter_requirements as pr
 import practised as prac
 import centroid_wing as cw
 import Airfoil_inertia as ai
-#from loading_and_moment_diagrams import load_diagrams
 
 
 def wing_stress(b, Mz, My):
@@ -53,6 +52,7 @@ def wing_stress(b, Mz, My):
             y_low[i][j] = (y_centroid_all_sec[i] - y_low_nodes[i][j])
             local_stress_up[i][j] = (((-1)*My_wing[i]*I_zz_wing[i] + (-1)*Mz_wing[i]*I_yz_wing[i])*z[i][j] + ((-1)*-Mz_wing[i]*I_yy_wing[i] - (-1)*My_wing[i]*I_yz_wing[i])*y_up[i][j])/(I_zz_wing[i]*I_yy_wing[i] - I_yz_wing[i]**2)
             local_stress_low[i][j] = (((-1)*My_wing[i]*I_zz_wing[i] + (-1)*Mz_wing[i]*I_yz_wing[i])*z[i][j] + ((-1)*-Mz_wing[i]*I_yy_wing[i] - (-1)*My_wing[i]*I_yz_wing[i])*y_low[i][j])/(I_zz_wing[i]*I_yy_wing[i] - I_yz_wing[i]**2)
+            
 #    print(y_up[0])
     
     return z, local_stress_up,local_stress_low
@@ -60,6 +60,7 @@ def wing_stress(b, Mz, My):
 
 Mz = prac.Mz_dist
 My = prac.My_dist
+
 #print(wing_stress(60, Mz[0]))
 max_stress_up = np.zeros((len(prac.A_S_L),len(prac.X_root_plot)-1)) 
 max_stress_low = np.zeros((len(prac.A_S_L),len(prac.X_root_plot)-1)) 
@@ -77,13 +78,13 @@ for i in range(len(prac.A_S_L)):
         min_stress_up[i][j] = min(stress_up[j])
         min_stress_low[i][j] = min(stress_low[j])
         
-print(max_stress_up)
+#print(max_stress_up)
     
 #print(min(stress_up[0]))
 #print(max(stress_low[0]))
 #plt.plot(z_pos[0], stress_up[0])
-plt.plot(z_pos[0], stress_low[0])
-plt.show()
+#plt.plot(z_pos[0], stress_low[0])
+#plt.show()
 
 #R = 2.5
 #fus_sec = list(np.arange(0,31,1))
