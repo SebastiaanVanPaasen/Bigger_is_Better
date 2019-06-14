@@ -58,7 +58,7 @@ import numpy as np
 def Sh_S_control(CL_H,CL_AH,l_h,Vh_V,x_cg,Cm_0,A,qcsweep,delta_flap,b,b_f0,b_fi,taper,c,c_f,dc_c_f,mu_2,mu_3,x_ac,CL_land,b_f,h_f,l_f,S,S_net,hcsweep,M_app,eta,CL_0):                        #final definition for control curve
                                                                                 #as a function of the cg position over mac
     den = (CL_H/CL_AH)*(l_h/c)*Vh_V     #denominator                            #should be ebaluated at landing conditions
-    
+#    den = (CL_H/CL_land)*(l_h/c)*Vh_V
     Sh_S = []
     for i in range(len(x_cg)):
         Sh_S_i = (1./den)*x_cg[i]  + (((Cm_ac(Cm_0,A,qcsweep,delta_flap,b,b_f0,b_fi,taper,c,c_f,dc_c_f,mu_2,mu_3,x_ac,CL_land,b_f,h_f,l_f,S,S_net,hcsweep,M_app,eta,CL_0)/CL_AH)-x_ac)/den)
@@ -70,12 +70,14 @@ def Sh_S_control(CL_H,CL_AH,l_h,Vh_V,x_cg,Cm_0,A,qcsweep,delta_flap,b,b_f0,b_fi,
     
 def Cm_ac(Cm_0,A,qcsweep,delta_flap,b,b_f0,b_fi,taper,c,c_f,dc_c_f,mu_2,mu_3,x_ac,CL_land,b_f,h_f,l_f,S,S_net,hcsweep,M_app,eta,CL_0):                                      #C_mac consists of three parts
     Cm_ac = Cm_ac_w(Cm_0,A,qcsweep) + dflap_Cm_ac(delta_flap,b,b_f0,b_fi,taper,c,c_f,dc_c_f,mu_2,mu_3,A,qcsweep,x_ac,CL_land) + dfus_Cm_ac(b_f,h_f,l_f,b,c,S,S_net,A,hcsweep,M_app,eta,CL_0)                #due to wing, due to fuselage and due to flaps
+    print("Cm_ac", Cm_ac)
     return Cm_ac
     
     
     
 def Cm_ac_w(Cm_0,A,qcsweep):                                                    #Cm_ac change due to wing 
     Cm_ac_w = Cm_0*((A*np.cos(qcsweep)**2.)/(A + 2.*np.cos(qcsweep)))
+    print(Cm_ac_w)
     return Cm_ac_w
     
     
@@ -86,6 +88,7 @@ def dfus_Cm_ac(b_f,h_f,l_f,b,c,S,S_net,A,hcsweep,M_app,eta,CL_0):               
     CL_alpha_AH = CL_alpha_w * (1. + 2.15*(b_f/b)) * (S_net/S) + (np.pi/2.)*(b_f**2./S)
     
     dfus_Cm_ac = -1.8*(1. - (2.5*b_f/b))*((np.pi*b_f*h_f*l_f)/(4.*S*c))*(CL_0/CL_alpha_AH)
+    print(dfus_Cm_ac)
     return dfus_Cm_ac
 
 
@@ -103,6 +106,7 @@ def dflap_Cm_ac(delta_flap,b,b_f0,b_fi,taper,c,c_f,dc_c_f,mu_2,mu_3,A,qcsweep,x_
     dflap_Cm_qc = mu_2*(-mu_1*dflap_Cl_max*c_dash_c -(CL_land + dflap_Cl_max*(1-Swf_S))*(1./8.)*c_dash_c*(c_dash_c-1.)) +  0.7*(A/(1.+ (2./A)))*mu_3*dflap_Cl_max*np.tan(qcsweep)
                                                                                 #Cm_quarter chord change due to flaps
     dflap_Cm_ac = dflap_Cm_qc + CL_land*(0.25 - x_ac)                           #Transform to change wrt to aerodyanmic centre
+#    print(dflap_Cm_ac)
     return dflap_Cm_ac
     
   
