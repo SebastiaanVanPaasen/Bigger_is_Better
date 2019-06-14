@@ -82,9 +82,9 @@ def gust_envelope(w_to, h, cl_alpha, S, c, v_cruise, Vs1):
     V_B_higher = Vs1*np.sqrt(1 + K_g*44*V_C*cl_alpha/(498*(w_to / S)/cc.psf_to_nm2))
     V_B_lower = v_cruise - 44 * cc.kts_to_ms # still needs to be changed 
     V_B = (V_B_higher+ V_B_lower)/2
-    print(V_C)
-    print("vb",V_B_higher)
-    print("vblow",V_B_lower)
+#    print(V_C)
+#    print("vb",V_B_higher)
+#    print("vblow",V_B_lower)
     V = [0, V_B, V_C, V_D]
     n_lim_pos = np.zeros(len(V))
     n_lim_neg = np.zeros(len(V))
@@ -97,7 +97,7 @@ def gust_envelope(w_to, h, cl_alpha, S, c, v_cruise, Vs1):
 #    n_pos = np.append(n_pos, n_neg[-1])
 #    v_pos = np.append(v, v[-1])
 #    v_neg = v
-
+    print(n_lim_pos)
     return V, n_lim_pos, n_lim_neg
 
 

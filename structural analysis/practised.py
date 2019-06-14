@@ -253,6 +253,7 @@ def strut_opt(A_S_list, A_E, cl_curve, width, I_wing):
     deflections = []
     strut_forces = []
     all_f = []
+    L_str = []
     
     for A_S in A_S_list:
         
@@ -275,12 +276,13 @@ def strut_opt(A_S_list, A_E, cl_curve, width, I_wing):
         deflections.append(deflection)
         strut_forces.append(force)
         all_f.append(all_forces)
+        L_str.append(L_strut)
         
 #        print("Final optimum")
 #        print(force, deflection)
 #        print()
        
-    return strut_forces, deflections, all_f
+    return strut_forces, deflections, all_f, L_str
 
 
 A_E = 23
@@ -418,6 +420,7 @@ Izz_list = np.zeros((len(A_S_L), len(X_root_plot)))
 boom_area = np.zeros((len(A_S_L), len(X_root_plot)))
 Mz_total = np.zeros((len(A_S_L), len(X_root_plot)))
 
+
 for idx in range(len(A_S_L)):
     I_zz_spar, I_yy_spar, I_yz_spar = ai.I_zz_spars(l_spar_h, t_spar_v, t_spar_h, N, b ,calc_chord)
     I_zz_req = pr.required_Izz(N, b, calc_chord, Mz_dist[idx][1:])
@@ -431,6 +434,7 @@ for idx in range(len(A_S_L)):
     
     gamma = np.arctan(D_fus / (L_wing - A_S_L[idx]))
     
+
     F_str = results[0][idx]
     Lift, Weight, Fuel_weight, W_eng, Drag, Thrust = results[2][idx]
     
@@ -484,7 +488,9 @@ for idx in range(len(A_S_L)):
     
     
     d = d_lift + d_weight + d_fuel_weight + d_strut + d_engine
-    
+
+L_strut_list = results[3]
+print(L_strut_list)
 #    print(d)
 #    print(len(d))
 #    plt.subplot(1, 3, 1)
