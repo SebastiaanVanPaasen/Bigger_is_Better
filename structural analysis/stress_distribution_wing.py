@@ -1,21 +1,13 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed May 15 09:51:57 2019
-
-@author: Mathilde
-
-"""
 from matplotlib import pyplot as plt
-import numpy as np  ### Never use * to import stuff, as it makes it difficult to retrace where functions come from
+import numpy as np  
 from airfoil_geometry import airfoil_geometry
 import parameter_requirements as pr
 import practised as prac
 import centroid_wing as cw
 import Airfoil_inertia as ai
-#from loading_and_moment_diagrams import load_diagrams
 
 
-def wing_stress(b, Mz):
+def wing_stress(b, Mz, My):
     
     l_spar_h, t_spar_v, t_spar_h = cw.l_spar_h, cw.t_spar_v, cw.t_spar_h
     N = prac.L_wing / prac.dx
@@ -38,7 +30,7 @@ def wing_stress(b, Mz):
 #    y_centroid = wing_centroid(boom_area, spar_areas_hori, t_spar_v, z_c_airfoil, y_c_airfoil, n_stiff_up, n_stiff_low, N, b, c)
 #    
     Mz_wing = Mz
-    My_wing = np.zeros(len(Mz_wing))
+    My_wing = My
     
     z_nodes = airfoil_geometry(N,b,prac.calc_chord)[0] #adapt to centroid
     y_up_nodes = airfoil_geometry(N,b,prac.calc_chord)[1]  #adapt
@@ -60,12 +52,15 @@ def wing_stress(b, Mz):
             y_low[i][j] = (y_centroid_all_sec[i] - y_low_nodes[i][j])
             local_stress_up[i][j] = (((-1)*My_wing[i]*I_zz_wing[i] + (-1)*Mz_wing[i]*I_yz_wing[i])*z[i][j] + ((-1)*-Mz_wing[i]*I_yy_wing[i] - (-1)*My_wing[i]*I_yz_wing[i])*y_up[i][j])/(I_zz_wing[i]*I_yy_wing[i] - I_yz_wing[i]**2)
             local_stress_low[i][j] = (((-1)*My_wing[i]*I_zz_wing[i] + (-1)*Mz_wing[i]*I_yz_wing[i])*z[i][j] + ((-1)*-Mz_wing[i]*I_yy_wing[i] - (-1)*My_wing[i]*I_yz_wing[i])*y_low[i][j])/(I_zz_wing[i]*I_yy_wing[i] - I_yz_wing[i]**2)
+            
 #    print(y_up[0])
     
     return z, local_stress_up,local_stress_low
 
 
 Mz = prac.Mz_dist
+My = prac.My_dist
+
 #print(wing_stress(60, Mz[0]))
 max_stress_up = np.zeros((len(prac.A_S_L),len(prac.X_root_plot)-1)) 
 max_stress_low = np.zeros((len(prac.A_S_L),len(prac.X_root_plot)-1)) 
@@ -74,7 +69,7 @@ min_stress_low = np.zeros((len(prac.A_S_L),len(prac.X_root_plot)-1))
 
 for i in range(len(prac.A_S_L)):
     
-    z_pos, stress_up, stress_low = wing_stress(60, Mz[i])
+    z_pos, stress_up, stress_low = wing_stress(60, Mz[i], My[i])
 #    print(np.shape(stress_up))
     for j in range(len(prac.X_root_plot)-1):
 #        print(len(stress_up[j]))
@@ -83,12 +78,12 @@ for i in range(len(prac.A_S_L)):
         min_stress_up[i][j] = min(stress_up[j])
         min_stress_low[i][j] = min(stress_low[j])
         
-print(max_stress_up)
+#print(max_stress_up)
     
 #print(min(stress_up[0]))
 #print(max(stress_low[0]))
 #plt.plot(z_pos[0], stress_up[0])
-##plt.plot(z_pos[0], stress_low[0])
+#plt.plot(z_pos[0], stress_low[0])
 #plt.show()
 
 #R = 2.5

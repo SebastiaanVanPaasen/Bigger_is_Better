@@ -39,6 +39,9 @@ import sys
 
 
 def read_output(design):
+<<<<<<< HEAD
+    sys.path.append("C:/Users/Mels/Desktop/3e jaar TUDelft/DSE/code\Bigger_is_Better")
+=======
 #    sys.path.append("C:/Users/Hidde/Documents/Aerospace Engineering Bachelor Year 3/Design Synthesis Exercise/Bigger_is_Better")
     sys.path.append("C:/Users/mathi/Documents/DSE/Bigger_is_Better")
 #    sys.path.append("C:/Users/sebas/OneDrive/Documents/DSE/Bigger_is_Better")
