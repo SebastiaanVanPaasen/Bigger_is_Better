@@ -10,10 +10,15 @@ from class_I.lift_distr import get_correct_data, lift_distribution, make_avl_fil
 
 
 
+
 D_fus = 7.3
 
+R_strut = 0.005
 A_strut = 0.25 * np.pi * ((5 / 1000) ** 2)
 E_strut = 181 * (10 ** 9)  
+AR = 15
+taper = 0.297 
+
 
 cr = 6.04
 ct = 1.89
@@ -75,6 +80,7 @@ def get_data(CL):
 def calc_chord(x):
     return cr - ((cr - ct) / L_wing) * x
     
+#print(ai.s_airfoil(100,60, calc_chord))
     
 def calc_area(x, width):
     chord = calc_chord(x)
@@ -390,7 +396,7 @@ l_spar_h, t_spar_v, t_spar_h = cw.l_spar_h, cw.t_spar_v, cw.t_spar_h
 N = L_wing / dx
 
 Izz_list = np.zeros((len(A_S_L), len(X_root_plot)))
-boom_area = np.zeros((len(A_S_L), len(X_root_plot)))
+boom_area = np.zeros((len(A_S_L), 1))
 Mz_total = np.zeros((len(A_S_L), len(X_root_plot)))
 
 
@@ -399,9 +405,9 @@ for idx in range(len(A_S_L)):
     I_zz_req = pr.required_Izz(N, b, calc_chord, Mz_dist[idx][1:])
 #    print(I_zz_req)
     airfoil_area, z_c_airfoil, y_c_airfoil = cw.get_skin_centroid(b, N, calc_chord)
-    boom_area = ai.wing_geometry(I_zz_req, I_zz_spar, N, b, calc_chord)[0][0]
+    boom_area[idx] = ai.wing_geometry(I_zz_req, I_zz_spar, N, b, calc_chord)[0][0]
 #    print(boom_area)
-    I_zz_wing, I_yy_wing, I_yz_wing = ai.inertia_wing(I_zz_spar, I_yy_spar, I_yz_spar, boom_area, N, b, calc_chord)
+    I_zz_wing, I_yy_wing, I_yz_wing = ai.inertia_wing(I_zz_spar, I_yy_spar, I_yz_spar, boom_area[idx], N, b, calc_chord)
 
     results = strut_opt(A_S_L, A_E, cl_polar, dx, I_zz_wing[int((L_wing - A_S_L[idx]) / dx)])
     
@@ -462,7 +468,9 @@ for idx in range(len(A_S_L)):
     
     d = d_lift + d_weight + d_fuel_weight + d_strut + d_engine
 
+print(boom_area)
 L_strut_list = results[3]
+F_strut_list = results[0]
 print(L_strut_list)
 #    print(d)
 #    print(len(d))
