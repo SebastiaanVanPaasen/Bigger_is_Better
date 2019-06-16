@@ -39,7 +39,7 @@ print ("OASPL model:", OASPL)
 print ("OASPL corrected model:", OASPL_cor)
 
 
-
+plt.figure(3)
 plt.subplot(121)  
 plt.plot(freq,SPL_overall_list)
 plt.title("Spectral SPL levels overall aircraft") 

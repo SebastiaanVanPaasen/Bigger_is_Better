@@ -21,23 +21,41 @@ import matplotlib.pyplot as plt
 
 robs = 1.8 #height of the observer
 
-"""Input values of the fokker 70"""
-A_w = 81.
-b_w = 28.
+A_w = 227.12
+b_w = 58.37
 
-A_h = 21.72
-b_h = 10.04
+A_h = 51.51
+b_h = 14.35
 
-A_f = 6.5
-b_f = 16.
-d = 1.1
+
+b_f = 0.75*b_w
+A_f = 0.38*4.24*b_f
+d = 2.0
 
 n_gear = 4.
 n_nose = 2.
 
-theta_flap = 30*np.pi/180.
-V = 68.
-r = 63.5 
+theta_flap = 30.*np.pi/180.
+V = 105. 
+r = 120. 
+
+#"""Input values of the fokker 70"""
+#A_w = 81.
+#b_w = 28.
+#
+#A_h = 21.72
+#b_h = 10.04
+#
+#A_f = 6.5
+#b_f = 16.
+#d = 1.1
+#
+#n_gear = 4.
+#n_nose = 2.
+#
+#theta_flap = 30*np.pi/180.
+#V = 68.
+#r = 63.5 
 
 
 #-------------------------GENERAL CONSTANT INPUTS------------------------------
@@ -282,7 +300,7 @@ for f in freq:
     SPL_gear_cor.append(SPL_geari + dSPL - SPL_absorp)
     SPL_nose_cor.append(SPL_nosei + dSPL - SPL_absorp)
    
-   
+plt.figure(1)  
 plt.subplot(121)   
 plt.plot(freq,SPL,"k",label = "Total")
 plt.plot(freq,SPL_wing,"b",label= "Wing")
