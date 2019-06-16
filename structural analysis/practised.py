@@ -291,7 +291,7 @@ def strut_opt(A_S, A_E, cl_curve, width, I_wing, gamma, L_strut):
 
 
 A_E = 23
-A_S_L = np.arange(10, 26, 1)
+A_S_L = np.arange(5, 6, 1)
 
 cl = W_TO / (0.5 * rho_cr * (V_cr ** 2) * S)
 cl_polar, cd_polar = get_data(cl)
@@ -387,48 +387,48 @@ for idx in range(len(A_S_L)):
     
     d = d_lift + d_weight + d_fuel_weight + d_strut + d_engine
     
-    plt.figure(1)
-    plt.subplot(2, 3, 1)
-    plt.plot(X_root_plot, Vy_dist[idx], label = "Vy for pos " + str(A_S_L[idx]))
-    plt.xlabel("X-position [m]")
-    plt.ylabel("Vy [N]")
-    plt.title("Vy distribution")
-    plt.legend()
-    
-    plt.subplot(2, 3, 2)
-    plt.plot(X_root_plot, Vz_dist[idx], label = "Vz for pos " + str(A_S_L[idx]))
-    plt.xlabel("X-position [m]")
-    plt.ylabel("Vz [N]")
-    plt.title("Vz distribution")
-    plt.legend()
-    
-    plt.subplot(2, 3, 3)
-#    plt.plot(X_tip, d_lift, label = "lift for pos " + str(A_S_L[idx]))
-#    plt.plot(X_tip, d_weight, label = "weight for pos " + str(A_S_L[idx]))
-#    plt.plot(X_tip, d_fuel_weight, label = "fuel weight for pos " + str(A_S_L[idx]))
-#    plt.plot(X_tip, d_strut, label = "strut for pos " + str(A_S_L[idx]))
-#    plt.plot(X_tip, d_engine, label = "engine for pos " + str(A_S_L[idx]))
-    plt.plot(X_tip, d, label = "Deflection for pos " + str(A_S_L[idx]))
-    plt.xlabel("X-position [m]")
-    plt.ylabel("Deflection [m]")
-    plt.title("Deflection along the span")
-    plt.legend()
-    
-    plt.subplot(2, 3, 4)
-    plt.plot(X_root_plot, Mz_dist[idx], label = "Mz for pos " + str(A_S_L[idx]))
-    plt.xlabel("X-position [m]")
-    plt.ylabel("Mz [Nm]")
-    plt.title("Mz distribution")
-    plt.legend()
-    
-    plt.subplot(2, 3, 5)
-    plt.plot(X_root_plot, My_dist[idx], label = "My for pos " + str(A_S_L[idx]))
-    plt.xlabel("X-position [m]")
-    plt.ylabel("My [Nm]")
-    plt.title("My distribution")
-    plt.legend()
-    
-    plt.show()
+#    plt.figure(1)
+#    plt.subplot(2, 3, 1)
+#    plt.plot(X_root_plot, Vy_dist[idx], label = "Vy for pos " + str(A_S_L[idx]))
+#    plt.xlabel("X-position [m]")
+#    plt.ylabel("Vy [N]")
+#    plt.title("Vy distribution")
+#    plt.legend()
+#    
+#    plt.subplot(2, 3, 2)
+#    plt.plot(X_root_plot, Vz_dist[idx], label = "Vz for pos " + str(A_S_L[idx]))
+#    plt.xlabel("X-position [m]")
+#    plt.ylabel("Vz [N]")
+#    plt.title("Vz distribution")
+#    plt.legend()
+#    
+#    plt.subplot(2, 3, 3)
+##    plt.plot(X_tip, d_lift, label = "lift for pos " + str(A_S_L[idx]))
+##    plt.plot(X_tip, d_weight, label = "weight for pos " + str(A_S_L[idx]))
+##    plt.plot(X_tip, d_fuel_weight, label = "fuel weight for pos " + str(A_S_L[idx]))
+##    plt.plot(X_tip, d_strut, label = "strut for pos " + str(A_S_L[idx]))
+##    plt.plot(X_tip, d_engine, label = "engine for pos " + str(A_S_L[idx]))
+#    plt.plot(X_tip, d, label = "Deflection for pos " + str(A_S_L[idx]))
+#    plt.xlabel("X-position [m]")
+#    plt.ylabel("Deflection [m]")
+#    plt.title("Deflection along the span")
+#    plt.legend()
+#    
+#    plt.subplot(2, 3, 4)
+#    plt.plot(X_root_plot, Mz_dist[idx], label = "Mz for pos " + str(A_S_L[idx]))
+#    plt.xlabel("X-position [m]")
+#    plt.ylabel("Mz [Nm]")
+#    plt.title("Mz distribution")
+#    plt.legend()
+#    
+#    plt.subplot(2, 3, 5)
+#    plt.plot(X_root_plot, My_dist[idx], label = "My for pos " + str(A_S_L[idx]))
+#    plt.xlabel("X-position [m]")
+#    plt.ylabel("My [Nm]")
+#    plt.title("My distribution")
+#    plt.legend()
+#    
+#    plt.show()
 
 
 print("-------Starting on second optimisation-------")
@@ -438,29 +438,29 @@ boom_area_old = 0.004
     
 
 for idx in range(len(A_S_L)):
-#    I_zz_spar, I_yy_spar, I_yz_spar = ai.I_zz_spars(l_spar_h, t_spar_v, t_spar_h, N, b ,calc_chord, boom_area_old)
-#    I_zz_req = pr.required_Izz(N, b, calc_chord, Mz_dist[idx][1:], boom_area_old)
-#
-#    
-#    airfoil_area, z_c_airfoil, y_c_airfoil = cw.get_skin_centroid(b, N, calc_chord)
-#    boom_area_new = ai.wing_geometry(I_zz_req, I_zz_spar, N, b, calc_chord, boom_area_old)
-#
-#    
-#    while abs(boom_area_new - boom_area_old) > 1 / 100000:
-#        boom_area_old = boom_area_new
-#        
-#        I_zz_spar, I_yy_spar, I_yz_spar = ai.I_zz_spars(l_spar_h, t_spar_v, t_spar_h, N, b ,calc_chord, boom_area_old)
-#        I_zz_req = pr.required_Izz(N, b, calc_chord, Mz_dist[idx][1:], boom_area_old)
-#        
-#        airfoil_area, z_c_airfoil, y_c_airfoil = cw.get_skin_centroid(b, N, calc_chord)
-#        
-#        
-#        boom_area_new = ai.wing_geometry(I_zz_req, I_zz_spar, N, b, calc_chord, boom_area_old)
-##        print("Updated boom area for strut pos" + str(A_S_L[idx]))
-##        print(boom_area_new[0] * 10000)
+    I_zz_spar, I_yy_spar, I_yz_spar = ai.I_zz_spars(l_spar_h, t_spar_v, t_spar_h, N, b ,calc_chord, boom_area_old)
+    I_zz_req = pr.required_Izz(N, b, calc_chord, Mz_dist[idx][1:], boom_area_old)
+
+    
+    airfoil_area, z_c_airfoil, y_c_airfoil = cw.get_skin_centroid(b, N, calc_chord)
+    boom_area_new = ai.wing_geometry(I_zz_req, I_zz_spar, N, b, calc_chord, boom_area_old)
+
+    
+    while abs(boom_area_new - boom_area_old) > 1 / 1000000:
+        boom_area_old = boom_area_new
+        
+        I_zz_spar, I_yy_spar, I_yz_spar = ai.I_zz_spars(l_spar_h, t_spar_v, t_spar_h, N, b ,calc_chord, boom_area_old)
+        I_zz_req = pr.required_Izz(N, b, calc_chord, Mz_dist[idx][1:], boom_area_old)
+        
+        airfoil_area, z_c_airfoil, y_c_airfoil = cw.get_skin_centroid(b, N, calc_chord)
+        
+        
+        boom_area_new = ai.wing_geometry(I_zz_req, I_zz_spar, N, b, calc_chord, boom_area_old)
+#        print("Updated boom area for strut pos" + str(A_S_L[idx]))
+#        print(boom_area_new[0] * 10000)
     
     
-#    I_zz_sections, I_yy_wing, I_yz_wing = ai.inertia_wing(I_zz_spar, I_yy_spar, I_yz_spar, boom_area_new, N, b, calc_chord)
+    I_zz_sections, I_yy_wing, I_yz_wing = ai.inertia_wing(I_zz_spar, I_yy_spar, I_yz_spar, boom_area_new, N, b, calc_chord)
 #    print(I_zz_sections)
     
 
@@ -571,5 +571,11 @@ for idx in range(len(A_S_L)):
     plt.title("My distribution")
     plt.legend()
     
+    plt.subplot(2, 3, 6)
+    plt.plot(X_root, I_zz_sections, label = "Izz for pos " + str(A_S_L[idx]))
+    plt.xlabel("X-position [m]")
+    plt.ylabel("Izz [m^4]")
+    plt.title("Izz distribution")
+#    plt.legend()
 
     plt.show()

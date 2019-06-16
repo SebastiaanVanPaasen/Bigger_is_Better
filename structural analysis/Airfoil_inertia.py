@@ -176,10 +176,14 @@ def inertia_wing(I_zz_spar, I_yy_spar, I_yz_spar, boom_area, N, b, c):
         I_zz[i] = I_zz_booms + I_zz_spar[i][0] + I_zz_airfoil
         I_yy[i] = I_yy_booms + I_yy_spar[i][0] + I_yy_airfoil
         I_yz[i] = I_yz_booms + I_yz_spar[i][0] + I_yz_airfoil
-    
-#        print(I_zz_booms)
-#        print(I_yz_booms)
-#        
+        
+        
+        print(y_centroid_all_sec[i])
+        print(y_loc_stiff_up[i])
+        print(y_loc_stiff_low[i])
+#        print(z_loc_stiff_up)
+#        print(y_loc_stiff_low)
+#        print(z_loc_stiff_low)
 #    print(I_zz_spars[0][0])
 
     return I_zz, I_yy, I_yz
