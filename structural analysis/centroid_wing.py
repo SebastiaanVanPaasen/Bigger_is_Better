@@ -10,6 +10,21 @@ import numpy as np
 import scipy as sp
 from airfoil_geometry import airfoil_geometry
 
+#from loading_and_moment_diagrams import c
+#import loading_and_moment_diagrams as lm
+
+#
+#N= 100
+#b = 60
+#Cr = 6.14
+#taper = 0.297 
+#HalfspanValues = np.linspace(0, b / 2 - 0.00001, N)
+#
+
+#def c(z, Cr, b, taper):
+#    Ct = Cr * taper
+#    c = Cr - ((Cr - Ct) / (b / 2)) * z
+#    return c
 
 def get_skin_centroid(N, b, c):
     HalfspanValues = np.linspace(0, b / 2 - 0.00001, N)
@@ -26,17 +41,16 @@ def get_skin_centroid(N, b, c):
     return airfoil_area, z_c_airfoil, y_c_airfoil
 
 
-
-
 n_stiff_up = 16
 n_stiff_low = 16
-l_spar_h = 0.2
+l_spar_h = 0.10
 t_spar_h = 0.02
 t_spar_v = 0.02
 nr_spars = sl.nr_spars
 spar_areas_hori = l_spar_h*t_spar_h*np.ones(nr_spars)
-boom_area = 0.0040
+#boom_area = 0.0040
 #print(spar_loc_sec[0][0])
+
 
 def wing_centroid(boom_area, spar_areas_hori, t_spar_v, z_c_airfoil, y_c_airfoil, n_stiff_up, n_stiff_low, N, b, c):
     HalfspanValues = np.linspace(0, b / 2 - 0.00001, N)
@@ -56,7 +70,7 @@ def wing_centroid(boom_area, spar_areas_hori, t_spar_v, z_c_airfoil, y_c_airfoil
     y_loc_spar_up = np.zeros((len(HalfspanValues), len(spar_loc_sec[0])))
     y_loc_spar_low = np.zeros((len(HalfspanValues), len(spar_loc_sec[0])))
     y_vertical_spar = np.zeros((len(HalfspanValues), len(spar_loc_sec[0])))
-    spar_areas_verti = np.zeros((len(HalfspanValues), nr_spars))
+    spar_areas_verti = np.zeros((len(HalfspanValues), len(spar_loc_sec[0])))
 
 #    print(np.shape(spar_loc_sec))
 #    print(spar_loc_sec[1][-1])
@@ -134,16 +148,23 @@ def wing_centroid(boom_area, spar_areas_hori, t_spar_v, z_c_airfoil, y_c_airfoil
 #    print(z_centroid_all_sec[0])
 #    print(y_centroid_all_sec[0])
 
-    return z_centroid_all_sec, y_centroid_all_sec, y_loc_spar_up, y_loc_spar_low, y_loc_stiff_up, y_loc_stiff_low, y_vertical_spar, z_loc_stiff_up, spar_loc_sec, z_loc_stiff_low
-
-
-#z_centroid_all_sec, y_centroid_all_sec, y_loc_spar_up, y_loc_spar_low, y_loc_stiff_up, y_loc_stiff_low, y_vertical_spar, z_loc_stiff_up, spar_loc_sec, z_loc_stiff_low = wing_centroid(cw.boom_area, cw.spar_areas_hori, cw.t_spar_v, cw.z_c_airfoil, cw.y_c_airfoil, cw.n_stiff_up, cw.n_stiff_low, cw.HalfspanValues)
-
-#plt.scatter(z_loc_stiff_up[0], y_loc_stiff_up[0])
-#plt.scatter(z_loc_stiff_low[0], y_loc_stiff_low[0])
-#plt.scatter(spar_loc_sec[0], y_loc_spar_up[0])
-#plt.scatter(spar_loc_sec[0], y_loc_spar_low[0])
-#plt.show()
-#print(wing_centroid(boom_area, spar_areas_hori, t_spar_v, z_c_airfoil, y_c_airfoil, n_stiff_up, n_stiff_low, HalfspanValues)[0])
+    return z_centroid_all_sec, y_centroid_all_sec, y_loc_spar_up, y_loc_spar_low, y_loc_stiff_up, y_loc_stiff_low, y_vertical_spar, z_loc_stiff_up, spar_loc_sec, z_loc_stiff_low, spar_areas_verti
+#<<<<<<< HEAD
+#=======
+#
+#
+#>>>>>>> master
+##z_centroid_all_sec, y_centroid_all_sec, y_loc_spar_up, y_loc_spar_low, y_loc_stiff_up, y_loc_stiff_low, y_vertical_spar, z_loc_stiff_up, spar_loc_sec, z_loc_stiff_low = wing_centroid(cw.boom_area, cw.spar_areas_hori, cw.t_spar_v, cw.z_c_airfoil, cw.y_c_airfoil, cw.n_stiff_up, cw.n_stiff_low, cw.HalfspanValues)
+#
+##plt.scatter(z_loc_stiff_up[0], y_loc_stiff_up[0])
+##plt.scatter(z_loc_stiff_low[0], y_loc_stiff_low[0])
+##plt.scatter(spar_loc_sec[0], y_loc_spar_up[0])
+##plt.scatter(spar_loc_sec[0], y_loc_spar_low[0])
+##plt.show()
+#<<<<<<< HEAD
+###print(wing_centroid(boom_area, spar_areas_hori, t_spar_v, z_c_airfoil, y_c_airfoil, n_stiff_up, n_stiff_low, HalfspanValues)[0])
+#=======
+##print(wing_centroid(boom_area, spar_areas_hori, t_spar_v, z_c_airfoil, y_c_airfoil, n_stiff_up, n_stiff_low, HalfspanValues)[0])
+#>>>>>>> master
 #print(wing_centroid(boom_area, spar_areas_hori, t_spar_v, z_c_airfoil, y_c_airfoil, n_stiff_up, n_stiff_low, HalfspanValues)[1])
 #print(wing_centroid(boom_area, spar_areas, z_c_airfoil, y_c_airfoil, n_stiff_up, n_stiff_low, HalfspanValues)[7])
