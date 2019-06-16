@@ -42,7 +42,7 @@ def I_zz_spars(l_spar_h ,t_spar_v, t_spar_h, N, b, c, boom_area):
     HalfspanValues = np.linspace(0, b / 2 - 0.00001, N)
     airfoil_area, z_c_airfoil, y_c_airfoil = cw.get_skin_centroid(b, N, c)
     
-    z_centroid_all_sec, y_centroid_all_sec, y_loc_spar_up, y_loc_spar_low, y_loc_stiff_up, y_loc_stiff_low, y_vertical_spar, z_loc_stiff_up, spar_loc_sec, z_loc_stiff_low = cw.wing_centroid(boom_area, cw.spar_areas_hori, cw.t_spar_v, z_c_airfoil, y_c_airfoil, cw.n_stiff_up, cw.n_stiff_low, N, b, c)
+    z_centroid_all_sec, y_centroid_all_sec, y_loc_spar_up, y_loc_spar_low, y_loc_stiff_up, y_loc_stiff_low, y_vertical_spar, z_loc_stiff_up, spar_loc_sec, z_loc_stiff_low, spar_areas_verti = cw.wing_centroid(boom_area, cw.spar_areas_hori, cw.t_spar_v, z_c_airfoil, y_c_airfoil, cw.n_stiff_up, cw.n_stiff_low, N, b, c)
 
 
     I_zz_spar = np.zeros((len(HalfspanValues), 1))
@@ -102,9 +102,11 @@ def wing_geometry(I_zz_req, I_zz_spars, N, b, c, boom_area):
     
     HalfspanValues = np.linspace(0, b / 2 - 0.00001, N)
     airfoil_area, z_c_airfoil, y_c_airfoil = cw.get_skin_centroid(N, b, c)
-    z_centroid_all_sec, y_centroid_all_sec, y_loc_spar_up, y_loc_spar_low, y_loc_stiff_up, y_loc_stiff_low, y_vertical_spar, z_loc_stiff_up, spar_loc_sec, z_loc_stiff_low = cw.wing_centroid(boom_area, cw.spar_areas_hori, cw.t_spar_v, z_c_airfoil, y_c_airfoil, cw.n_stiff_up, cw.n_stiff_low, N, b, c)
+    z_centroid_all_sec, y_centroid_all_sec, y_loc_spar_up, y_loc_spar_low, y_loc_stiff_up, y_loc_stiff_low, y_vertical_spar, z_loc_stiff_up, spar_loc_sec, z_loc_stiff_low, spar_areas_verti = cw.wing_centroid(boom_area, cw.spar_areas_hori, cw.t_spar_v, z_c_airfoil, y_c_airfoil, cw.n_stiff_up, cw.n_stiff_low, N, b, c)
 
     single_boom_area = np.zeros((len(HalfspanValues), 1))
+#    print(z_centroid_all_sec)
+#    print(y_centroid_all_sec)
     
     for i in range(len(HalfspanValues)):
         
@@ -139,7 +141,7 @@ def inertia_wing(I_zz_spar, I_yy_spar, I_yz_spar, boom_area, N, b, c):
     HalfspanValues = np.linspace(0, b / 2 - 0.00001, N)
     airfoil_area, z_c_airfoil, y_c_airfoil = cw.get_skin_centroid(N, b, c)
 
-    z_centroid_all_sec, y_centroid_all_sec, y_loc_spar_up, y_loc_spar_low, y_loc_stiff_up, y_loc_stiff_low, y_vertical_spar, z_loc_stiff_up, spar_loc_sec, z_loc_stiff_low = cw.wing_centroid(boom_area, cw.spar_areas_hori, cw.t_spar_v, z_c_airfoil, y_c_airfoil, cw.n_stiff_up, cw.n_stiff_low, N, b, c)
+    z_centroid_all_sec, y_centroid_all_sec, y_loc_spar_up, y_loc_spar_low, y_loc_stiff_up, y_loc_stiff_low, y_vertical_spar, z_loc_stiff_up, spar_loc_sec, z_loc_stiff_low, spar_areas_verti = cw.wing_centroid(boom_area, cw.spar_areas_hori, cw.t_spar_v, z_c_airfoil, y_c_airfoil, cw.n_stiff_up, cw.n_stiff_low, N, b, c)
    
     
     I_zz = np.zeros(len(HalfspanValues))

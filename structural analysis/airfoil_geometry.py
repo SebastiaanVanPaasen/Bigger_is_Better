@@ -49,12 +49,12 @@ def airfoil_geometry(N,b, c):
 
     tc_1 = 0.16
     tc_2 = 0.12
-    switch = b/4
-    slope = 1+(0.12-0.16/(b/8))
+    switch = b/8
+    slope = 1+ (tc_2-tc_1/switch)
     
     for i in range(len(HalfspanValues)):
              
-        if HalfspanValues[i]<b/8:
+        if HalfspanValues[i]<(b/8):
             
             data_z_order =  np.array(data_z1[0:int((len(data_y1)/2))])*c(HalfspanValues[i])
             data_z_all_sec.append(data_z_order)

@@ -16,7 +16,7 @@ import os
 #Cr = wing["C_root"]#8.#8.54#7.11#6.63#6.06(2*S)/((1+taper)*span)
 #MAC = Cr*(2/3)*((1+taper+taper**2)/(1+taper))
 #Ct = Cr*taper
-
+#
 def make_avl_file():
     # B777 used as reference aircraft
     S, span, taper, qc_sweep = 238, 60, 0.297, 0.5133 
@@ -65,12 +65,12 @@ def make_avl_file():
                 print(round(x_loc_LE[i],3),round(y_loc_LE[i],3),round(z_loc_LE[i],3),round(chords[i],3),Ainc[i], file=text_file)        
             print("AFILE" + "\n""n2414.dat.txt", file=text_file)
             
-            
+#            
 #make_avl_file()
 
 def lift_distribution(CL):        
-#    p = subprocess.Popen(r"C:\Users\mathi\Documents\DSE\Bigger_is_Better\avl\avl.exe", stdin=subprocess.PIPE, universal_newlines=True)
-    p = subprocess.Popen(r"C:\Users\sebas\OneDrive\Documents\DSE\Bigger_is_Better\avl\avl.exe", stdin=subprocess.PIPE, universal_newlines=True)
+    p = subprocess.Popen(r"C:\Users\mathi\Documents\DSE\Bigger_is_Better\avl\avl.exe", stdin=subprocess.PIPE, universal_newlines=True)
+#    p = subprocess.Popen(r"C:\Users\sebas\OneDrive\Documents\DSE\Bigger_is_Better\avl\avl.exe", stdin=subprocess.PIPE, universal_newlines=True)
 
     set_CL = "a c " + str(CL)
     p.communicate(os.linesep.join(["load", "avl_testing","case", "mach0.7", "oper", set_CL, "x","fs", "endresult"]))          

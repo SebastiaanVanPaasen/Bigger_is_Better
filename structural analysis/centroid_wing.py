@@ -43,9 +43,9 @@ def get_skin_centroid(N, b, c):
 
 n_stiff_up = 16
 n_stiff_low = 16
-l_spar_h = 0.05
-t_spar_h = 0.01
-t_spar_v = 0.01
+l_spar_h = 0.10
+t_spar_h = 0.02
+t_spar_v = 0.02
 nr_spars = sl.nr_spars
 spar_areas_hori = l_spar_h*t_spar_h*np.ones(nr_spars)
 #boom_area = 0.0040
