@@ -105,6 +105,8 @@ def wing_geometry(I_zz_req, I_zz_spars, N, b, c, boom_area):
     z_centroid_all_sec, y_centroid_all_sec, y_loc_spar_up, y_loc_spar_low, y_loc_stiff_up, y_loc_stiff_low, y_vertical_spar, z_loc_stiff_up, spar_loc_sec, z_loc_stiff_low, spar_areas_verti = cw.wing_centroid(boom_area, cw.spar_areas_hori, cw.t_spar_v, z_c_airfoil, y_c_airfoil, cw.n_stiff_up, cw.n_stiff_low, N, b, c)
 
     single_boom_area = np.zeros((len(HalfspanValues), 1))
+#    print(z_centroid_all_sec)
+#    print(y_centroid_all_sec)
     
     for i in range(len(HalfspanValues)):
         
