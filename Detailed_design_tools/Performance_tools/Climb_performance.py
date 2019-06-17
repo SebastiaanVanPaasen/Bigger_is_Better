@@ -40,7 +40,7 @@ H_lower = 11000
 
 #Altitude and velocity ranges for the plots
 V = np.arange(50,300,5)              #Criose velocity in m/s
-H = np.arange(1000,14000,1000)       #Cruise altitude in m
+H = np.arange(5000,13000,1000)       #Cruise altitude in m
 
 dh = 10000  #altitude that has to be descended
 
@@ -166,9 +166,17 @@ def RD(W,S,A,e,CD0,h):
 
     return Vv_min
 
+def RD_V(W,S,A,e,CD0,h):
+    k =  1. / (np.pi*A*e) 
+    Vinf = np.sqrt((2./ISA_density(h))*np.sqrt((k*W)/(3*CD0*S)))
+    return Vinf
+
+
 def glide_range(L_D,dh):  
     R = (L_D)*dh
     return R
+
+
 
 
 #--------------------------------------MAIN PROGRAM------------------------------
@@ -240,7 +248,7 @@ plt.plot(H,RC_max)
 plt.title("Max. steady rate of climb" )
 plt.xlabel("Altitude [m]" )
 plt.ylabel("Rate of climb [m/s]" )
-plt.grid("True")
+plt.grid(True)
 
 plt.subplot(223)
 plt.plot(H,M_RC_max)
@@ -288,7 +296,7 @@ plt.plot(H,RC_max_unst)
 plt.title("Max. accelerated rate of climb" )
 plt.xlabel("Altitude [m]" )
 plt.ylabel("Rate of climb [m/s]" )
-plt.grid("True")
+plt.grid(True)
 
 plt.subplot(223)
 plt.plot(H,M_RC_max_unst)
@@ -435,28 +443,39 @@ plt.grid(True)
 """Gliding unpowered descent"""
 Vv_min_list = []
 range_list = []
-
+Vinf_list = []
 for i in range(len(H)):
     Vv_min = RD(Wcr,S,A,e,CD0,H[i])   
     Vv_min_list.append(Vv_min)
-
-    range_list.append(glide_range(L_D[i],dh)/1000)
+    V_inf = RD_V(Wcr,S,A,e,CD0,H[i])
+    Vinf_list.append(V_inf)
+    
+    range_list.append(glide_range(L_D[i],H[i])/1000)
      
 plt.figure(7)
 
-plt.subplot(121)
+plt.subplot(221)
 plt.plot(H,Vv_min_list)  
 plt.title("Minimum descend rate")
 plt.xlabel("Altitude [m]" )
 plt.ylabel("Rate of descent [m]" )
 plt.grid(True)
 
-plt.subplot(122)
-plt.plot(range_list,H,' o' )  
+plt.subplot(222)
+plt.plot(H,range_list,' o' )  
 plt.title("Range during glide")
-plt.ylabel("Starting altitude [m]" )
-plt.xlabel("Range [km]" )
+plt.xlabel("Starting altitude [m]" )
+plt.ylabel("Range [km]" )
 plt.grid(True)
+
+plt.subplot(223)
+plt.plot(H,Vinf_list )  
+plt.title("Velocity at minimum RD")
+plt.xlabel("Altitude [m]" )
+plt.ylabel("Velocity [m/s]" )
+plt.grid(True)
+
+
 
 ax = plt.gca()
 ax.get_yaxis().set_major_formatter(plt.FuncFormatter(lambda x, loc: "{:,}".format(int(x))))
@@ -466,6 +485,8 @@ ax.get_xaxis().set_major_formatter(plt.FuncFormatter(lambda x, loc: "{:,}".forma
 theta_min = (np.arctan(1/ (L_Dmax)))*(180/np.pi)
 print ("Minimum glide angle: ", theta_min," degrees")
 
+
+plt.show()
 
 
 
@@ -508,7 +529,7 @@ print ("Minimum glide angle: ", theta_min," degrees")
 #plt.plot(H,Vmin_list, label = "Min. V in cruise")
 #plt.plot(H,Vmax_list,label = "Max. V in cruise")
 #plt.grid("True")
-#plt.title("Min. and max. V depending on T and D")
+#plt.title("Min. d max. V depending on T and D")
 #plt.xlabel("Altitude [m]")
 #plt.ylabel("Mach number")
 #plt.legend() 

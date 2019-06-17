@@ -232,7 +232,7 @@ def TW_ceiling_climb_jet(n,CD0,A,e,theta,W,p,S):  #HIGH ALTITUDE indicates servi
 #To fly at constant EAS instead of constant TAS add this term
 def dTW_constEAS_jet(C,a,W,p,S,CD0):
     gamma = 1.4
-    dT_W = 0.567*C/a*np.sqrt(((C/a)*(W/(p*S)))/(gamma*CD0))
+    dT_W = 0.567*C/a*np.sqrt(((abs(C)/a)*(W/(p*S)))/(gamma*CD0))
     return dT_W
       
     

@@ -39,22 +39,17 @@ def get_skin_centroid(N, b, c):
         airfoil_area.append(2.0355494*0.005*c(HalfspanValues[i]))
         
     return airfoil_area, z_c_airfoil, y_c_airfoil
-#>>>>>>> master
-
-
 
 
 n_stiff_up = 16
 n_stiff_low = 16
-l_spar_h = 0.2
+l_spar_h = 0.10
 t_spar_h = 0.02
 t_spar_v = 0.02
 nr_spars = sl.nr_spars
 spar_areas_hori = l_spar_h*t_spar_h*np.ones(nr_spars)
-boom_area = 0.0040
+#boom_area = 0.0040
 #print(spar_loc_sec[0][0])
-
-#<<<<<<< HEAD
 
 
 def wing_centroid(boom_area, spar_areas_hori, t_spar_v, z_c_airfoil, y_c_airfoil, n_stiff_up, n_stiff_low, N, b, c):
@@ -68,7 +63,6 @@ def wing_centroid(boom_area, spar_areas_hori, t_spar_v, z_c_airfoil, y_c_airfoil
     data_y_upper_all_sec = airfoil_geometry(N,b, c)[1]
     data_y_lower_all_sec = airfoil_geometry(N,b, c)[2] 
 
-#>>>>>>> master
     n_total = n_stiff_up+n_stiff_low
     
     z_loc_stiff_up = []
@@ -154,7 +148,7 @@ def wing_centroid(boom_area, spar_areas_hori, t_spar_v, z_c_airfoil, y_c_airfoil
 #    print(z_centroid_all_sec[0])
 #    print(y_centroid_all_sec[0])
 
-    return z_centroid_all_sec, y_centroid_all_sec, y_loc_spar_up, y_loc_spar_low, y_loc_stiff_up, y_loc_stiff_low, y_vertical_spar, z_loc_stiff_up, spar_loc_sec, z_loc_stiff_low
+    return z_centroid_all_sec, y_centroid_all_sec, y_loc_spar_up, y_loc_spar_low, y_loc_stiff_up, y_loc_stiff_low, y_vertical_spar, z_loc_stiff_up, spar_loc_sec, z_loc_stiff_low, spar_areas_verti
 #<<<<<<< HEAD
 #=======
 #
