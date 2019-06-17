@@ -18,8 +18,8 @@ from class_I.lift_distr import get_correct_data, lift_distribution
 AR = 15
 D_fus = 7.3
 
-R_strut = 5 / 1000
-A_strut = 0.25 * np.pi * ((2 * R_strut) ** 2) ##
+#R_strut = 5 / 1000
+#A_strut = 0.25 * np.pi * ((2 * R_strut) ** 2) ##
 E_strut = 69 * (10 ** 9)  
 AR = 15
 taper = 0.297 
@@ -207,6 +207,7 @@ def indet_sys(dx, angle, L_s, a_s, a_e, cl_polar, I_wing):
     fuel_weights = np.cos(alpha) * fuel_weights_v
     W_eng = np.cos(alpha) * W_eng_v
     
+#    print(lifts)
     
     Lift = []
     Weight = []
@@ -254,23 +255,26 @@ def indet_sys(dx, angle, L_s, a_s, a_e, cl_polar, I_wing):
 #    print(d_mom)
 #    print()
 
-        
+#    print("d_lift",d_lift)
+
     d_engine = (-W_eng / (6 * E_wing * I_wing)) * (2 * ((L_wing - a_s) ** 3 ) - 3 * ((L_wing - a_s) ** 2) * (a_e - a_s) + (a_e - a_s) ** 3)    
 #    print("Deflections of engine and strut")
 #    print(d_engine)
 #    print()
     
     sigma = 100 * (10 ** 6)
-    d_wing = d_lift + d_weight + d_shear + d_mom + d_engine + d_fuel
+    d_wing = d_lift + d_weight + d_shear + d_mom + d_fuel + d_engine
     
+    print("dwing", d_wing)
 #    print("strut length", L_s)
 #    print("angle of strut", np.sin(angle), angle)
 #    print("sigma", sigma)
-    d_strut = np.sin(angle) * sigma * L_s / E_strut + 0.2
+    d_strut = np.sin(angle) * sigma * L_s / E_strut 
 #    print("deflection of strut", d_strut)
     d_strut_v = d_wing - d_strut
     F_strut = ((d_strut_v / (2 * ((L_wing - a_s) ** 3))) * (6 * E_wing * I_wing)) / np.sin(angle)
-    
+    print("d_strut", d_strut)
+    print("d_strut_v",d_strut_v)
     
     distributions = [lifts, weights, fuel_weights, W_eng, drags, thrust]
     
@@ -292,9 +296,9 @@ def strut_opt(A_S, A_E, cl_curve, width, I_wing, gamma, L_strut):
     strut_force, deflection, all_forces = indet_sys(F_strut, width, gamma, L_strut, A_S, A_E, cl_curve, I_wing[int((A_S) / width)])
     
 #    print(deflection)
-    print("Final optimum")
-    print(force, deflection)
-    print()
+#    print("Final optimum")
+#    print(force, deflection)
+#    print()
    
     return strut_force, deflection, all_forces
 
@@ -336,7 +340,7 @@ for idx in range(len(A_S_L)):
 
 #    print(abs(boom_area_new - boom_area_old) )
     while abs(boom_area_new - boom_area_old) > 1 / 10000:
-        print(abs(boom_area_new - boom_area_old) )
+#        print(abs(boom_area_new - boom_area_old) )
         print("New iteration")
         boom_area_old = boom_area_new
         
@@ -363,9 +367,10 @@ for idx in range(len(A_S_L)):
     
     #    results = strut_opt(A_S_L[idx], A_E, cl_polar, dx, I_zz_sections[::-1], gamma, L_strut) dx, angle, L_s, a_s, a_e, cl_polar, I_wing
     #    print(L_strut)
+#        print("I_zz1",I_zz_sections)
         F_str, d_str, d_w, all_forces = indet_sys(dx, gamma, L_strut, A_S_L[idx], A_E, cl_polar, I_zz_sections[int((A_S_L[idx]) / dx)])
-        print(F_str, d_str, d_w)
-        print(F_str / (100 * (10 ** 6)))
+#        print("F_str",F_str)
+#        print(F_str / (100 * (10 ** 6)))
         print()
 #        
     #    F_str = results[0]
@@ -423,17 +428,21 @@ for idx in range(len(A_S_L)):
         d_weight = 0
         d_fuel_weight = 0
         
+#        print("I_zz2",I_zz_sections)
         for i in range(len(X_root)):
             d_lift += deter_d_force(X_tip[i], X_root, Lift[i], 0, I_zz_sections[::-1])
             d_weight += deter_d_force(X_tip[i], X_root, -Weight[i], 0, I_zz_sections[::-1])
             d_fuel_weight += deter_d_force(X_tip[i], X_root, -Fuel_weight[i], 0, I_zz_sections[::-1])
-            
+        
+        print("d door sturt",d_strut[int(A_S_L[idx]/dx)])
     
         d_strut = deter_d_force(A_S_L[idx], X_root, -np.sin(gamma) * F_str, 0, I_zz_sections[::-1])
         d_engine = deter_d_force(A_E, X_root, -W_eng, 0, I_zz_sections[::-1])
         
-    
+        d_min_strut = d_lift + d_weight + d_fuel_weight #+ d_engine
+#        print(d_min_strut[int(A_S_L[idx]/dx)])
         d = d_lift + d_weight + d_fuel_weight + d_strut + d_engine
+        print("d total",d[int(A_S_L[idx]/dx)])
         
         plt.figure(1)
         plt.subplot(2, 3, 1)
