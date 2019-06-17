@@ -2,26 +2,29 @@ from matplotlib import pyplot as plt
 import numpy as np  
 from airfoil_geometry import airfoil_geometry
 import parameter_requirements as pr
-import practised as prac
+import practiced_2 as prac
 import centroid_wing as cw
 import Airfoil_inertia as ai
 
 
 def wing_stress(b, Mz, My):
     
-    l_spar_h, t_spar_v, t_spar_h = cw.l_spar_h, cw.t_spar_v, cw.t_spar_h
+#    l_spar_h, t_spar_v, t_spar_h = cw.l_spar_h, cw.t_spar_v, cw.t_spar_h
     N = prac.L_wing / prac.dx
     
-    I_zz_spar, I_yy_spar, I_yz_spar = ai.I_zz_spars(l_spar_h, t_spar_v, t_spar_h, N, b ,prac.calc_chord)
-    I_zz_req = pr.required_Izz(N, b, prac.calc_chord, Mz)
-    
+#    I_zz_spar, I_yy_spar, I_yz_spar = ai.I_zz_spars(l_spar_h, t_spar_v, t_spar_h, N, b ,prac.calc_chord,prac.boom_area_all)
+#    I_zz_req = pr.required_Izz(N, b, prac.calc_chord, Mz)
+#    
     airfoil_area, z_c_airfoil, y_c_airfoil = cw.get_skin_centroid(b, N, prac.calc_chord)
-    z_centroid_all_sec, y_centroid_all_sec, y_loc_spar_up, y_loc_spar_low, y_loc_stiff_up, y_loc_stiff_low, y_vertical_spar, z_loc_stiff_up, spar_loc_sec, z_loc_stiff_low, spar_areas_verti = cw.wing_centroid(boom_area, cw.spar_areas_hori, cw.t_spar_v, z_c_airfoil, y_c_airfoil, cw.n_stiff_up, cw.n_stiff_low, N, b, c)
-
-    boom_area = ai.wing_geometry(I_zz_req, I_zz_spar, N, b, prac.calc_chord)[0][0]
-    I_zz_wing, I_yy_wing, I_yz_wing = ai.inertia_wing(I_zz_spar, I_yy_spar, I_yz_spar, boom_area, N, b, prac.calc_chord)
+    z_centroid_all_sec, y_centroid_all_sec, y_loc_spar_up, y_loc_spar_low, y_loc_stiff_up, y_loc_stiff_low, y_vertical_spar, z_loc_stiff_up, spar_loc_sec, z_loc_stiff_low, spar_areas_verti = cw.wing_centroid(prac.boom_area_all, cw.spar_areas_hori, cw.t_spar_v, z_c_airfoil, y_c_airfoil, cw.n_stiff_up, cw.n_stiff_low, N, b, prac.calc_chord)
+#
+#    boom_area = ai.wing_geometry(I_zz_req, I_zz_spar, N, b, prac.calc_chord)[0][0]
+#    I_zz_wing, I_yy_wing, I_yz_wing = ai.inertia_wing(I_zz_spar, I_yy_spar, I_yz_spar, boom_area, N, b, prac.calc_chord)
 
     HalfspanValues = np.linspace(0, b / 2 - 0.00001, N)
+    I_yy_wing = prac.I_yy_wing
+    I_zz_wing = prac.I_zz_sections
+    I_yz_wing = prac.I_yz_wing
 #    I_yy_wing = inertia_wing(I_zz_spar, I_yy_spar, I_yz_spar, boom_area, N, b, c)
 #    I_zz_wing = inertia_wing(I_zz_spar, I_yy_spar, I_yz_spar, boom_area, N, b, c)
 #    I_zy_wing = inertia_wing(I_zz_spar, I_yy_spar, I_yz_spar, boom_area, N, b, c)
@@ -53,7 +56,7 @@ def wing_stress(b, Mz, My):
             local_stress_up[i][j] = (((-1)*My_wing[i]*I_zz_wing[i] + (-1)*Mz_wing[i]*I_yz_wing[i])*z[i][j] + ((-1)*-Mz_wing[i]*I_yy_wing[i] - (-1)*My_wing[i]*I_yz_wing[i])*y_up[i][j])/(I_zz_wing[i]*I_yy_wing[i] - I_yz_wing[i]**2)
             local_stress_low[i][j] = (((-1)*My_wing[i]*I_zz_wing[i] + (-1)*Mz_wing[i]*I_yz_wing[i])*z[i][j] + ((-1)*-Mz_wing[i]*I_yy_wing[i] - (-1)*My_wing[i]*I_yz_wing[i])*y_low[i][j])/(I_zz_wing[i]*I_yy_wing[i] - I_yz_wing[i]**2)
             
-#    print(y_up[0])
+    print(I_zz_wing)
     
     return z, local_stress_up,local_stress_low
 
@@ -78,7 +81,7 @@ for i in range(len(prac.A_S_L)):
         min_stress_up[i][j] = min(stress_up[j])
         min_stress_low[i][j] = min(stress_low[j])
         
-#print(max_stress_up)
+print("max_stress",max_stress_up)
     
 #print(min(stress_up[0]))
 #print(max(stress_low[0]))

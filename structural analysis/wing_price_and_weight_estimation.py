@@ -5,7 +5,7 @@ Created on Fri May 17 10:03:19 2019
 @author: mathi
 """
 
-import practised as prac
+import practiced_2 as prac
 import Airfoil_inertia as ai
 import centroid_wing as cw
 import numpy as np
@@ -27,10 +27,10 @@ def strut_area_req_B():
     
     F_strut = prac.F_strut
     print(F_strut)
-    R_strut = prac.R_strut
+#    R_strut = prac.R_strut
     L_strut = prac.L_str
     print(L_strut)
-    I_strut = 0.25*np.pi*R_strut**4
+#    I_strut = 0.25*np.pi*R_strut**4
     P_cr = F_strut
     I_req = np.zeros(len(prac.A_S_L))
     req_area = np.zeros(len(prac.A_S_L))
@@ -46,7 +46,7 @@ def strut_area_req_B():
 #            I_strut = 0.25*np.pi*(R_strut**4)
         print(I_req[i])
 
-        print(R_strut_new)
+        print("r_strut", R_strut_new)
 
         req_area[i] = np.pi*R_strut_new**2
         sigma_crit[i] = P_cr[i]/req_area[i]
@@ -61,12 +61,12 @@ def strut_cost(A_req_P, A_req_B, density, cost):
     L_strut =  prac.L_str
     
     for i in range(len(prac.A_S_L)):
-        Max_area[i] = max(A_req_P[i], A_req_B[i])
-
+        Max_area[i] = A_req_P[i]#max(A_req_P[i], A_req_B[i])
+        
         strut_volume[i] = Max_area[i]*L_strut[i]
         strut_mass[i] = strut_volume[i]*density
         strut_cost[i] = strut_mass[i]*cost
-    
+
     return Max_area, strut_volume, strut_mass, strut_cost
 
 
@@ -103,7 +103,7 @@ def wing_price_weight(A_req_P, A_req_B, density, cost, N, t_skin, b, qcsweep):
 
         total_boom_volume[i] = (boom_area[i] * nr_stiff)*(b/2)/np.cos(Sweep_LE)
     
-    print(boom_area)
+    print("boom_area", boom_area)
     boom_mass = total_boom_volume * density
     boom_cost = boom_mass * cost
     

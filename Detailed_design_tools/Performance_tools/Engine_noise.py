@@ -164,7 +164,7 @@ for f in freq:
     SPL_fan_effects.append(SPL_corrected - SPL_absorp + dSPL - 15.)     #reduction of 15 dB due to geared fan and acoustic lining in fan inlet!!
     
     
-
+plt.figure(2)
 plt.subplot(121)  
 plt.plot(freq,SPL_fan_list)
 plt.title("Fan noise") 

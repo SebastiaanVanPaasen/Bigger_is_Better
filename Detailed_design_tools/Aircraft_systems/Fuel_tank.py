@@ -5,7 +5,6 @@ Created on Thu Jun 13 16:46:31 2019
 @author: nikki
 """
 
-import numpy as np
 
 #----------------------------------INPUTS-------------------------------------
 #t_c = thickness over chord ratio of airfoil
@@ -50,7 +49,8 @@ print ("Required volume:", Vreq, "m^3")
 
 
 
-
+print y_eng
+print bf/2.-10.
 
 
 
