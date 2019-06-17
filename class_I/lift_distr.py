@@ -74,7 +74,9 @@ def lift_distribution(CL):
 
     set_CL = "a c " + str(CL)
     p.communicate(os.linesep.join(["load", "conv_wing_goed","case", "mach0.75.run", "oper", set_CL, "x","fs", "endresult2"]))          
-    lines = [line.rstrip('\n') for line in open('C:/Users/mathi/Documents/DSE/Bigger_is_Better/avl/endresult')]
+#    lines = [line.rstrip('\n') for line in open('C:/Users/mathi/Documents/DSE/Bigger_is_Better/avl/endresult')]
+    lines = [line.rstrip('\n') for line in open(r'C:\Users\sebas\OneDrive\Documents\DSE\Bigger_is_Better\avl\endresult')]
+
     elements = []
     count = 0
     for i in range(len(lines)):

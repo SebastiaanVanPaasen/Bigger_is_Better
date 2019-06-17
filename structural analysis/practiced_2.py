@@ -13,14 +13,14 @@ import Airfoil_inertia as ai
 import parameter_requirements as pr
 
 from scipy.interpolate import interp1d
-from class_I.lift_distr import *#get_correct_data, lift_distribution
+from class_I.lift_distr import get_correct_data, lift_distribution
 
 AR = 15
 D_fus = 7.3
 
-A_strut = 0.04734998 #0.25 * np.pi * ((2 * R_strut) ** 2) ##
-R_strut = np.sqrt(A_strut/np.pi)#5 / 1000
-E_strut = 181 * (10 ** 9)  
+R_strut = 5 / 1000
+A_strut = 0.25 * np.pi * ((2 * R_strut) ** 2) ##
+E_strut = 69 * (10 ** 9)  
 AR = 15
 taper = 0.297 
 MAC = 4.247
@@ -36,7 +36,7 @@ I_zz_wing = 0.005
 L_wing = b / 2
 
 H_cr = 9000
-V_cr = 235.42
+V_cr = 293
 rho_cr = cc.Rho_0 * ((1 + (cc.a * H_cr) / cc.Temp_0) ** (-(cc.g_0 / (cc.R_gas * cc.a))))
 CD_0_cr = 0.0179
 
@@ -80,6 +80,7 @@ def deter_d_force(applic, x, force, a_s, I_wing):
 
 def get_data(CL):
 #    make_avl_file()
+    
     output_avl = lift_distribution(round(CL,2))
     x_pos, cl, cdi = get_correct_data(output_avl, MAC)
 #    print(x_pos, cl, cdi)
@@ -263,15 +264,18 @@ def indet_sys(F_strut_array, dx, angle, L_s, a_s, a_e, cl_polar, I_wing):
     
     
     d_wing = d_lift + d_weight + d_shear + d_mom + d_engine + d_strut_w + d_fuel
-    d_strut = np.sin(angle) * (F_strut_array * L_s) / (E_strut * A_strut)
+    d_strut = np.sin(angle) * (F_strut_array * L_s) / (E_strut * A_strut) 
 
     diff = abs(d_wing - d_strut)
     idx = np.argmin(diff)
 #    print(diff)
-#    print("Deflections of wing and strut")
-#    print(d_wing[idx])
-#    print(d_strut[idx])
-#    print()
+    
+#    plt.plot()
+    print("Deflections of wing and strut")
+    print(d_wing[idx])
+    print(d_strut[idx])
+    print(diff[idx])
+    print()
     
     distributions = [lifts, weights, fuel_weights, W_eng, drags, thrust]
     
@@ -293,15 +297,15 @@ def strut_opt(A_S, A_E, cl_curve, width, I_wing, gamma, L_strut):
     strut_force, deflection, all_forces = indet_sys(F_strut, width, gamma, L_strut, A_S, A_E, cl_curve, I_wing[int((A_S) / width)])
     
 #    print(deflection)
-#        print("Final optimum")
-#        print(force, deflection)
-#        print()
+    print("Final optimum")
+    print(force, deflection)
+    print()
    
     return strut_force, deflection, all_forces
 
 
 A_E = 23
-A_S_L = np.arange(20, 21, 1)
+A_S_L = np.arange(18, 19, 1)
 
 cl = W_TO / (0.5 * rho_cr * (V_cr ** 2) * S)
 
@@ -336,7 +340,9 @@ for idx in range(len(A_S_L)):
     
     
     F_str = results[0]
+#    print("Strut force in first optimisation")
 #    print(F_str)
+#    print()
     
     Lift, Weight, Fuel_weight, W_eng, Drag, Thrust = results[2]
 
@@ -452,94 +458,102 @@ boom_area_all = np.zeros(len(A_S_L))
 F_strut = np.zeros(len(A_S_L))
 L_str = np.zeros(len(A_S_L))
 
+
 for idx in range(len(A_S_L)):
     I_zz_spar, I_yy_spar, I_yz_spar = ai.I_zz_spars(l_spar_h, t_spar_v, t_spar_h, N, b ,calc_chord, boom_area_old)
     I_zz_req = pr.required_Izz(N, b, calc_chord, Mz_dist[idx][1:], boom_area_old)
 
     boom_area_new = ai.wing_geometry(I_zz_req, I_zz_spar, N, b, calc_chord, boom_area_old)
 
-    
+#    print(abs(boom_area_new - boom_area_old) )
     while abs(boom_area_new - boom_area_old) > 1 / 100000:
+#        print(abs(boom_area_new - boom_area_old) )
+        print("New iteration")
         boom_area_old = boom_area_new
         
         I_zz_spar, I_yy_spar, I_yz_spar = ai.I_zz_spars(l_spar_h, t_spar_v, t_spar_h, N, b ,calc_chord, boom_area_old)
         I_zz_req = pr.required_Izz(N, b, calc_chord, Mz_dist[idx][1:], boom_area_old)
         
         boom_area_new = ai.wing_geometry(I_zz_req, I_zz_spar, N, b, calc_chord, boom_area_old)
-    
-    print("I_zz_req",I_zz_req)
-    boom_area_all[idx] = boom_area_new[0]
-#        print("Updated boom area for strut pos" + str(A_S_L[idx]))
-    
-    print(boom_area_all * 10000)
-    
-    
-    I_zz_sections, I_yy_wing, I_yz_wing = ai.inertia_wing(I_zz_spar, I_yy_spar, I_yz_spar, boom_area_all[idx], N, b, calc_chord)
-#    I_zz_sections = I_zz_req
-#   print("hoi",I_zz_sections-I_zz_req)
-    gamma = np.arctan(D_fus / (L_wing - A_S_L[idx]))
-    L_strut = (L_wing - A_S_L[idx]) / np.cos(gamma)
-    L_str[idx] = L_strut
-    
-
-    results = strut_opt(A_S_L[idx], A_E, cl_polar, dx, I_zz_sections[::-1], gamma, L_strut)
-    
-    
-    F_str = results[0]
-    F_strut[idx] = F_str
-    
-    print("Optimal strut force")
-    print(F_str)
-    print((F_str / A_strut) / (10 ** 6))
-    print()    
-
-    Lift, Weight, Fuel_weight, W_eng, Drag, Thrust = results[2]
-
-    Lift_mom = Lift * X_root
-    Weight_mom = Weight * X_root
-    Fuel_mom = Fuel_weight * X_root
-    Eng_mom = W_eng * (L_wing - A_E)
-    Strut_mom = F_str * (L_wing - A_S_L[idx])
-    Drag_mom = Drag * X_root
-    Thrust_mom = Thrust * (L_wing - A_E)
-    
-    Mz_root = sum(Lift_mom) - sum(Weight_mom) - sum(Fuel_mom) - Eng_mom - Strut_mom
-    My_root = sum(Drag_mom) - Thrust_mom
-    Vy_root = sum(Lift) - sum(Weight) - sum(Fuel_weight) - W_eng - F_str
-    Vz_root = Thrust - sum(Drag)
-    
-    
-#    print("Root moment around z: ", Mz_root)
-#    print("Root moment around y: ", My_root)
-#    print("Root force around y: ", Vy_root)
-#    print("Root force around z: ", Vz_root)
 
     
-    Mz_dist[idx][0] = Mz_root
-    My_dist[idx][0] = My_root
-    Vy_dist[idx][0] = Vy_root
-    Vz_dist[idx][0] = Vz_root
-    
-    for i in range(len(X_root_plot) - 1):
-        Vy_section = Vy_dist[idx][i] - Lift[i] + Weight[i] + Fuel_weight[i]
-        Vz_section = Vz_dist[idx][i] + Drag[i]
+    #    print("I_zz_req",I_zz_req)
+        boom_area_all[idx] = boom_area_new[0]
+    #        print("Updated boom area for strut pos" + str(A_S_L[idx]))
         
-        if X_root_plot[i] > (L_wing - A_E) and X_root_plot[i - 1] < (L_wing - A_E):
-            Vy_section += W_eng
-            
-        if X_root_plot[i] > (L_wing - A_S_L[idx]) and X_root_plot[i - 1] < (L_wing - A_S_L[idx]):
-            Vy_section += F_str
-
-        if X_root_plot[i] > (L_wing - A_E) and X_root_plot[i - 1] < (L_wing - A_E):
-            Vz_section -= Thrust
-            
-        Vy_dist[idx][i + 1] = Vy_section
-        Vz_dist[idx][i + 1] = Vz_section
-    
-    for i in range(len(X_root_plot) - 1):
-        Mz_dist[idx][i + 1] = Mz_dist[idx][i] - Vy_dist[idx][i] * (X_root_plot[i + 1] - X_root_plot[i])
-        My_dist[idx][i + 1] = My_dist[idx][i] + Vz_dist[idx][i] * (X_root_plot[i + 1] - X_root_plot[i])
+    #    print(boom_area_all * 10000)
         
+        
+        I_zz_sections, I_yy_wing, I_yz_wing = ai.inertia_wing(I_zz_spar, I_yy_spar, I_yz_spar, boom_area_all[idx], N, b, calc_chord)
+    #    I_zz_sections = I_zz_req
+    #   print("hoi",I_zz_sections-I_zz_req)
+        gamma = np.arctan(D_fus / (L_wing - A_S_L[idx]))
+        L_strut = (L_wing - A_S_L[idx]) / np.cos(gamma)
+        L_str[idx] = L_strut
+        
+    
+        results = strut_opt(A_S_L[idx], A_E, cl_polar, dx, I_zz_sections[::-1], gamma, L_strut)
+        
+        
+        F_str = results[0]
+        F_strut[idx] = F_str
+        
+        print("Optimal strut force")
+        print(F_str)
+    #    print((F_str / A_strut) / (10 ** 6))
+    #    print()    
+    
+        Lift, Weight, Fuel_weight, W_eng, Drag, Thrust = results[2]
+#        print(Lift)
+#        print()
+        Lift_mom = Lift * X_root
+        Weight_mom = Weight * X_root
+        Fuel_mom = Fuel_weight * X_root
+        Eng_mom = W_eng * (L_wing - A_E)
+        Strut_mom = F_str * (L_wing - A_S_L[idx])
+        Drag_mom = Drag * X_root
+        Thrust_mom = Thrust * (L_wing - A_E)
+        
+        Mz_root = sum(Lift_mom) - sum(Weight_mom) - sum(Fuel_mom) - Eng_mom - Strut_mom
+        My_root = sum(Drag_mom) - Thrust_mom
+        Vy_root = sum(Lift) - sum(Weight) - sum(Fuel_weight) - W_eng - F_str
+        Vz_root = Thrust - sum(Drag)
+        
+        
+    #    print("Root moment around z: ", Mz_root)
+    #    print("Root moment around y: ", My_root)
+    #    print("Root force around y: ", Vy_root)
+    #    print("Root force around z: ", Vz_root)
+    
+        
+        Mz_dist[idx][0] = Mz_root
+        My_dist[idx][0] = My_root
+        Vy_dist[idx][0] = Vy_root
+        Vz_dist[idx][0] = Vz_root
+        
+        for i in range(len(X_root_plot) - 1):
+            Vy_section = Vy_dist[idx][i] - Lift[i] + Weight[i] + Fuel_weight[i]
+            Vz_section = Vz_dist[idx][i] + Drag[i]
+            
+            if X_root_plot[i] > (L_wing - A_E) and X_root_plot[i - 1] < (L_wing - A_E):
+                Vy_section += W_eng
+                
+            if X_root_plot[i] > (L_wing - A_S_L[idx]) and X_root_plot[i - 1] < (L_wing - A_S_L[idx]):
+                Vy_section += F_str
+    
+            if X_root_plot[i] > (L_wing - A_E) and X_root_plot[i - 1] < (L_wing - A_E):
+                Vz_section -= Thrust
+                
+            Vy_dist[idx][i + 1] = Vy_section
+            Vz_dist[idx][i + 1] = Vz_section
+        
+        for i in range(len(X_root_plot) - 1):
+            Mz_dist[idx][i + 1] = Mz_dist[idx][i] - Vy_dist[idx][i] * (X_root_plot[i + 1] - X_root_plot[i])
+            My_dist[idx][i + 1] = My_dist[idx][i] + Vz_dist[idx][i] * (X_root_plot[i + 1] - X_root_plot[i])
+            
+#        print(abs(boom_area_new - boom_area_old) )
+#        print(Mz_dist[idx])
+#        
     d_lift = 0
     d_weight = 0
     d_fuel_weight = 0
