@@ -1,9 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed May 15 16:01:47 2019
-
-@author: floyd
-"""
 import numpy as np
 from airfoil_geometry import airfoil_geometry
 import centroid_wing as cw
@@ -112,6 +106,7 @@ def wing_geometry(I_zz_req, I_zz_spars, N, b, c, boom_area):
     for i in range(len(HalfspanValues)):
         
         y_2 = 0
+        I_zz_airfoil = 0
         
         for k in range(len(y_loc_stiff_up[0])):
             y_2 += (-y_loc_stiff_up[i][k] + y_centroid_all_sec[i])**2 
@@ -119,7 +114,13 @@ def wing_geometry(I_zz_req, I_zz_spars, N, b, c, boom_area):
         for j in range(len(y_loc_stiff_low[0])):
             y_2 += (- y_loc_stiff_low[i][j] + y_centroid_all_sec[i])**2 
         
-        single_boom_area[i][0] = (I_zz_req[i][0] - I_zz_spars[i][0])/y_2
+            
+        I_zz_airfoil += airfoil_area[i]*(-y_c_airfoil[i] - (-1)*y_centroid_all_sec[i])**2
+#        I_yy_airfoil += airfoil_area[i]*(z_c_airfoil[i] - z_centroid_all_sec[i])**2
+#        I_yz_airfoil += airfoil_area[i]*(-y_c_airfoil[i] - (-1)*y_centroid_all_sec[i])*(z_c_airfoil[i] - z_centroid_all_sec[i])
+#        print(I_zz_req[i], I_zz_spars[i][0], I_zz_airfoil)
+
+        single_boom_area[i][0] = (I_zz_req[i] - I_zz_spars[i][0] - I_zz_airfoil)/y_2
         
 #        print("y",y_loc_stiff_up)
 #        print(y_2*single_boom_area[i][0])

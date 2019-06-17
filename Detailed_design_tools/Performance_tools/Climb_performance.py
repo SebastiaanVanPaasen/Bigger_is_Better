@@ -24,9 +24,9 @@ CD0        =       0.020
 CL_max     =       2.2
 CL_maxcr   =       0.8
 L_Dmax     =        20     
-CLcr       =       0.6
+#CLcr       =       0.6
 CDcr       =       0.05
-CD_TO      =       0.07
+#CD_TO      =       0.07
 """NOTE THIS VALUE DEPENDS ON THE ENGINE TYPE"""
 m          =       1.3 #factor for the variation of thrust with alitude
  

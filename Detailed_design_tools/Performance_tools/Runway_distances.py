@@ -21,7 +21,6 @@ T0         =       96.3*1000*2 #127.62*1000  #@ SEA LEVEL!!!
 
 CL_maxto   =       2.2 
 CL_max_land=       3.2
-CD_to      =       0.05 
 CD_land    =       0.09
 CD_TO      =       0.07
 
@@ -283,10 +282,10 @@ S_TO = TO_distance(W_TO,S,rho,CL_maxto,bypass,T_TO,A)
 
 #Take-off distance with engine failure: continued and abord
 Vx = np.arange(0,76.,1)
-S_TO_fail = TO_eng_fail(W_TO,g,S,rho,CL_maxto,A,e,T_TO,CD_to,Vx)    
+S_TO_fail = TO_eng_fail(W_TO,g,S,rho,CL_maxto,A,e,T_TO,CD_TO,Vx)    
    
 #Balenced field length
-BFL = BFL(A,e,T_TO,W_TO,CD_to, CL_maxto, bypass,rho,g)
+BFL = BFL(A,e,T_TO,W_TO,CD_TO, CL_maxto, bypass,rho,g)
 
 S_land = S_land(T0,g,W_TO,S,rho,CL_max_land,CD_land)
 
