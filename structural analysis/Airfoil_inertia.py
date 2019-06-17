@@ -88,7 +88,7 @@ def I_zz_spars(l_spar_h ,t_spar_v, t_spar_h, N, b, c, boom_area):
         I_yy_spar[j] = I_yy
         I_yz_spar[j] = I_yz
         
-    print("I_zz in spar",I_zz_spar)
+#    print("I_zz in spar",I_zz_spar)
     return I_zz_spar, I_yy_spar, I_yz_spar
 
 #print(I_zz_spars(cw.l_spar_h, cw.t_spar_v, cw.t_spar_h)[0][0])
@@ -114,17 +114,18 @@ def wing_geometry(I_zz_req, I_zz_spars, N, b, c, boom_area):
         y_2 = 0
         
         for k in range(len(y_loc_stiff_up[0])):
-            y_2 += (-y_loc_stiff_up[i][k] - (-1)*y_centroid_all_sec[i])**2 
+            y_2 += (-y_loc_stiff_up[i][k] + y_centroid_all_sec[i])**2 
     
         for j in range(len(y_loc_stiff_low[0])):
-            y_2 += (- y_loc_stiff_low[i][j] - (-1)*y_centroid_all_sec[i])**2 
+            y_2 += (- y_loc_stiff_low[i][j] + y_centroid_all_sec[i])**2 
         
         single_boom_area[i][0] = (I_zz_req[i][0] - I_zz_spars[i][0])/y_2
         
-        print(y_2*single_boom_area[i][0])
+#        print("y",y_loc_stiff_up)
+#        print(y_2*single_boom_area[i][0])
 #    plt.plot(HalfspanValues, single_boom_area)
 #    plt.show()
-#    print("single_boom_area",single_boom_area*10000)
+    print("single_boom_area",single_boom_area*10000)
     return max(single_boom_area)
 
 #print("single boom area", wing_geometry(I_zz_req, I_zz_spars, y_loc_stiff_up, y_loc_stiff_low)[0]) 

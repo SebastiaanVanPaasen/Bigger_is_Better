@@ -25,7 +25,7 @@ def required_Izz(N, b, c, Mz, boom_area):
 #        print(y_low_max)
         y_max = max(abs(y_up_max),abs(y_low_max))
         I_zz_req_all_sec[i] = abs(Mz[i]) * y_max / sigma_ult
-#        print("Mz",Mz[i])
+        print("Mz",Mz[i])
 #        print("y_max",y_max)
 #    print("I_zz_req",I_zz_req_all_sec)
 

@@ -41,8 +41,8 @@ def get_skin_centroid(N, b, c):
     return airfoil_area, z_c_airfoil, y_c_airfoil
 
 
-n_stiff_up = 16
-n_stiff_low = 16
+n_stiff_up = 10
+n_stiff_low = 10
 l_spar_h = 0.30
 t_spar_h = 0.04
 t_spar_v = 0.04
