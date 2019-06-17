@@ -295,7 +295,7 @@ def strut_opt(A_S, A_E, cl_curve, width, I_wing, gamma, L_strut):
 
 
 A_E = 23
-A_S_L = np.arange(5, 21, 1)
+A_S_L = np.arange(5, 6, 1)
 
 cl = W_TO / (0.5 * rho_cr * (V_cr ** 2) * S)
 cl_polar, cd_polar = get_data(cl)
@@ -444,27 +444,13 @@ F_strut = np.zeros(len(A_S_L))
 L_str = np.zeros(len(A_S_L))
 
 for idx in range(len(A_S_L)):
-#    I_zz_spar, I_yy_spar, I_yz_spar = ai.I_zz_spars(l_spar_h, t_spar_v, t_spar_h, N, b ,calc_chord, boom_area_old)
-#    I_zz_req = pr.required_Izz(N, b, calc_chord, Mz_dist[idx][1:], boom_area_old)
-#
-#    
-#    airfoil_area, z_c_airfoil, y_c_airfoil = cw.get_skin_centroid(b, N, calc_chord)
-#    boom_area_new = ai.wing_geometry(I_zz_req, I_zz_spar, N, b, calc_chord, boom_area_old)
-#
-#    
-#    while abs(boom_area_new - boom_area_old) > 1 / 100000:
-#        boom_area_old = boom_area_new
-#        
-#        I_zz_spar, I_yy_spar, I_yz_spar = ai.I_zz_spars(l_spar_h, t_spar_v, t_spar_h, N, b ,calc_chord, boom_area_old)
-#        I_zz_req = pr.required_Izz(N, b, calc_chord, Mz_dist[idx][1:], boom_area_old)
-#        
-#        airfoil_area, z_c_airfoil, y_c_airfoil = cw.get_skin_centroid(b, N, calc_chord)
-#        
-#        
-#        boom_area_new = ai.wing_geometry(I_zz_req, I_zz_spar, N, b, calc_chord, boom_area_old)
-##        print("Updated boom area for strut pos" + str(A_S_L[idx]))
-##        print(boom_area_new[0] * 10000)
+    I_zz_spar, I_yy_spar, I_yz_spar = ai.I_zz_spars(l_spar_h, t_spar_v, t_spar_h, N, b ,calc_chord, boom_area_old)
+    I_zz_req = pr.required_Izz(N, b, calc_chord, Mz_dist[idx][1:], boom_area_old)
+
     
+    airfoil_area, z_c_airfoil, y_c_airfoil = cw.get_skin_centroid(b, N, calc_chord)
+    boom_area_new = ai.wing_geometry(I_zz_req, I_zz_spar, N, b, calc_chord, boom_area_old)
+
     
     while abs(boom_area_new - boom_area_old) > 1 / 100000:
         boom_area_old = boom_area_new
@@ -598,5 +584,11 @@ for idx in range(len(A_S_L)):
     plt.title("My distribution")
     plt.legend()
     
+    plt.subplot(2, 3, 6)
+    plt.plot(X_root, I_zz_sections, label = "Izz for pos " + str(A_S_L[idx]))
+    plt.xlabel("X-position [m]")
+    plt.ylabel("Izz [m^4]")
+    plt.title("Izz distribution")
+#    plt.legend()
 
     plt.show()
