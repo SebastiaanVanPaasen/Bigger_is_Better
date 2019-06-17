@@ -186,7 +186,7 @@ def inertia_wing(I_zz_spar, I_yy_spar, I_yz_spar, boom_area, N, b, c):
 
 #        print("I_zz used",I_zz_spar[i][0])
 #        
-    print("Izz wing",I_zz_airfoil)
+#    print("Izz wing",I_zz_airfoil)
 
     return I_zz, I_yy, I_yz
     
