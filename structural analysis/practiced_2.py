@@ -18,12 +18,12 @@ from class_I.lift_distr import *#get_correct_data, lift_distribution
 AR = 15
 D_fus = 7.3
 
-R_strut = 0.14#5 / 1000
-A_strut = 0.25 * np.pi * ((2 * R_strut) ** 2)
+A_strut = 0.04734998 #0.25 * np.pi * ((2 * R_strut) ** 2) ##
+R_strut = np.sqrt(A_strut/np.pi)#5 / 1000
 E_strut = 181 * (10 ** 9)  
 AR = 15
 taper = 0.297 
-
+MAC = 4.247
 
 cr = 6.04
 ct = 1.89
@@ -32,7 +32,7 @@ S = 235.7
 
 W_wing = 200737.6
 E_wing = 69 * (10 ** 9)
-I_zz_wing = 0.05
+I_zz_wing = 0.005
 L_wing = b / 2
 
 H_cr = 9000
@@ -79,10 +79,9 @@ def deter_d_force(applic, x, force, a_s, I_wing):
 
 
 def get_data(CL):
-    make_avl_file()
-    
-    output_avl = lift_distribution(CL)
-    x_pos, cl, cdi = get_correct_data(output_avl)
+#    make_avl_file()
+    output_avl = lift_distribution(round(CL,2))
+    x_pos, cl, cdi = get_correct_data(output_avl, MAC)
 #    print(x_pos, cl, cdi)
 
     PolyFitCurveCl = interp1d(x_pos, cl, kind="cubic", fill_value="extrapolate")
@@ -282,7 +281,7 @@ def indet_sys(F_strut_array, dx, angle, L_s, a_s, a_e, cl_polar, I_wing):
 def strut_opt(A_S, A_E, cl_curve, width, I_wing, gamma, L_strut):
     
 #    print("hoi",I_wing[int((A_S) / width)])
-    F_strut = np.arange(0, 4000000, 1000)
+    F_strut = np.arange(0, 6000000, 1000)
     force, deflection, all_forces = indet_sys(F_strut, width, gamma, L_strut, A_S, A_E, cl_curve, I_wing[int((A_S) / width)])
     
 #        print("First found optimum")
@@ -302,9 +301,10 @@ def strut_opt(A_S, A_E, cl_curve, width, I_wing, gamma, L_strut):
 
 
 A_E = 23
-A_S_L = np.arange(5, 21, 1)
+A_S_L = np.arange(20, 21, 1)
 
 cl = W_TO / (0.5 * rho_cr * (V_cr ** 2) * S)
+
 cl_polar, cd_polar = get_data(cl)
 
 dx = 1
@@ -470,15 +470,16 @@ for idx in range(len(A_S_L)):
         
         boom_area_new = ai.wing_geometry(I_zz_req, I_zz_spar, N, b, calc_chord, boom_area_old)
     
-
+    print("I_zz_req",I_zz_req)
     boom_area_all[idx] = boom_area_new[0]
 #        print("Updated boom area for strut pos" + str(A_S_L[idx]))
-#    print(boom_area_new * 10000)
+    
+    print(boom_area_all * 10000)
     
     
-    I_zz_sections, I_yy_wing, I_yz_wing = ai.inertia_wing(I_zz_spar, I_yy_spar, I_yz_spar, boom_area_new, N, b, calc_chord)
-#    I_zz_sections = I_zz_sections[::-1]
-#    print(I_zz_sections)
+    I_zz_sections, I_yy_wing, I_yz_wing = ai.inertia_wing(I_zz_spar, I_yy_spar, I_yz_spar, boom_area_all[idx], N, b, calc_chord)
+#    I_zz_sections = I_zz_req
+#   print("hoi",I_zz_sections-I_zz_req)
     gamma = np.arctan(D_fus / (L_wing - A_S_L[idx]))
     L_strut = (L_wing - A_S_L[idx]) / np.cos(gamma)
     L_str[idx] = L_strut
@@ -489,7 +490,7 @@ for idx in range(len(A_S_L)):
     
     F_str = results[0]
     F_strut[idx] = F_str
-#    print(F_str)
+    print("strut force",F_str)
     Lift, Weight, Fuel_weight, W_eng, Drag, Thrust = results[2]
 
     Lift_mom = Lift * X_root
@@ -575,7 +576,7 @@ for idx in range(len(A_S_L)):
     plt.xlabel("X-position [m]")
     plt.ylabel("Deflection [m]")
     plt.title("Deflection along the span")
-    plt.legend()
+#    plt.legend()
     
     plt.subplot(2, 3, 4)
     plt.plot(X_root_plot, Mz_dist[idx], label = "Mz for pos " + str(A_S_L[idx]))

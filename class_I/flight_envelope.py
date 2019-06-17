@@ -98,6 +98,7 @@ def gust_envelope(w_to, h, cl_alpha, S, c, v_cruise, Vs1):
 #    v_pos = np.append(v, v[-1])
 #    v_neg = v
     print(n_lim_pos)
+    print(V)
     return V, n_lim_pos, n_lim_neg
 
 

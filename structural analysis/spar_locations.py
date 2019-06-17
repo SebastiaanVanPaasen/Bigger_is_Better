@@ -14,7 +14,7 @@ import numpy as np
 #HalfspanValues = np.linspace(0, b / 2 - 0.00001, N)
 #
 
-nr_spars = 4
+nr_spars = 2
 first_spar = 0.2
 last_spar = 0.6
 
