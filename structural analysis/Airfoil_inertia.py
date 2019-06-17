@@ -1,9 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed May 15 16:01:47 2019
-
-@author: floyd
-"""
 import numpy as np
 from airfoil_geometry import airfoil_geometry
 import centroid_wing as cw
@@ -111,6 +105,7 @@ def wing_geometry(I_zz_req, I_zz_spars, N, b, c, boom_area):
     for i in range(len(HalfspanValues)):
         
         y_2 = 0
+        I_zz_airfoil = 0
         
         for k in range(len(y_loc_stiff_up[0])):
             y_2 += (-y_loc_stiff_up[i][k] - (-1)*y_centroid_all_sec[i])**2 
@@ -118,11 +113,18 @@ def wing_geometry(I_zz_req, I_zz_spars, N, b, c, boom_area):
         for j in range(len(y_loc_stiff_low[0])):
             y_2 += (- y_loc_stiff_low[i][j] - (-1)*y_centroid_all_sec[i])**2 
         
-        single_boom_area[i][0] = (I_zz_req[i][0] - I_zz_spars[i][0])/y_2
+            
+        I_zz_airfoil += airfoil_area[i]*(-y_c_airfoil[i] - (-1)*y_centroid_all_sec[i])**2
+#        I_yy_airfoil += airfoil_area[i]*(z_c_airfoil[i] - z_centroid_all_sec[i])**2
+#        I_yz_airfoil += airfoil_area[i]*(-y_c_airfoil[i] - (-1)*y_centroid_all_sec[i])*(z_c_airfoil[i] - z_centroid_all_sec[i])
+#        print(I_zz_req[i], I_zz_spars[i][0], I_zz_airfoil)
+
+        single_boom_area[i][0] = (I_zz_req[i] - I_zz_spars[i][0] - I_zz_airfoil)/y_2
         
 #        print(y_2*single_boom_area)
 #    plt.plot(HalfspanValues, single_boom_area)
 #    plt.show()
+#    print(single_boom_area)
 
     return max(single_boom_area)
 
@@ -175,14 +177,15 @@ def inertia_wing(I_zz_spar, I_yy_spar, I_yz_spar, boom_area, N, b, c):
         I_yy_airfoil += airfoil_area[i]*(z_c_airfoil[i] - z_centroid_all_sec[i])**2
         I_yz_airfoil += airfoil_area[i]*(-y_c_airfoil[i] - (-1)*y_centroid_all_sec[i])*(z_c_airfoil[i] - z_centroid_all_sec[i])
 
+        print(I_zz_booms, I_zz_spar[i][0])
         I_zz[i] = I_zz_booms + I_zz_spar[i][0] + I_zz_airfoil
         I_yy[i] = I_yy_booms + I_yy_spar[i][0] + I_yy_airfoil
         I_yz[i] = I_yz_booms + I_yz_spar[i][0] + I_yz_airfoil
         
         
-        print(y_centroid_all_sec[i])
-        print(y_loc_stiff_up[i])
-        print(y_loc_stiff_low[i])
+#        print(y_centroid_all_sec[i])
+#        print(y_loc_stiff_up[i])
+#        print(y_loc_stiff_low[i])
 #        print(z_loc_stiff_up)
 #        print(y_loc_stiff_low)
 #        print(z_loc_stiff_low)

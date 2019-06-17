@@ -278,18 +278,18 @@ def strut_opt(A_S, A_E, cl_curve, width, I_wing, gamma, L_strut):
     F_strut = np.arange(0, 4000000, 1000)
     force, deflection, all_forces = indet_sys(F_strut, width, gamma, L_strut, A_S, A_E, cl_curve, I_wing[int((A_S) / width)])
     
-#        print("First found optimum")
-#        print(force, deflection)
-#        print()
-    
+#    print("First found optimum")
+#    print(force, deflection)
+#    print()
+#    
     
     F_strut = np.arange(force - 2000, force + 2000, 0.1)
     strut_force, deflection, all_forces = indet_sys(F_strut, width, gamma, L_strut, A_S, A_E, cl_curve, I_wing[int((A_S) / width)])
     
 #    print(deflection)
-#        print("Final optimum")
-#        print(force, deflection)
-#        print()
+#    print("Final optimum")
+#    print(force, deflection)
+#    print()
    
     return strut_force, deflection, all_forces
 
@@ -482,7 +482,11 @@ for idx in range(len(A_S_L)):
     
     F_str = results[0]
     F_strut[idx] = F_str
-#    print(F_str)
+    
+    print("Required strut force")
+    print(F_str)
+    print()
+    
     Lift, Weight, Fuel_weight, W_eng, Drag, Thrust = results[2]
 
     Lift_mom = Lift * X_root
