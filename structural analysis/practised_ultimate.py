@@ -274,18 +274,18 @@ def indet_sys(dx, angle, L_s, a_s, a_e, cl_polar, I_zz_sections):
     sigma = 100 * (10 ** 6)
     d_wing = defl_l + defl_w + defl_wf + defl_eng
     
-    print("d wing")
-    print(d_wing[int(a_s / dx)])
-    print("lift", defl_l[int(a_s / dx)])
-    print("weight", defl_w[int(a_s / dx)])
-    print("fuel", defl_wf[int(a_s / dx)])
-    print("eng", defl_eng[int(a_s / dx)])
-    print()
+#    print("d wing")
+#    print(d_wing[int(a_s / dx)])
+#    print("lift", defl_l[int(a_s / dx)])
+#    print("weight", defl_w[int(a_s / dx)])
+#    print("fuel", defl_wf[int(a_s / dx)])
+#    print("eng", defl_eng[int(a_s / dx)])
+#    print()
     
 #    print("strut length", L_s)
 #    print("angle of strut", np.sin(angle), angle)
 #    print("sigma", sigma)
-    d_strut = np.sin(angle) * sigma * L_s / E_strut + 0.2
+    d_strut = np.sin(angle) * sigma * L_s / E_strut 
 #    print("deflection of strut", d_strut)
     d_strut_v = d_wing[int((a_s) / dx)] - d_strut
 
@@ -293,8 +293,8 @@ def indet_sys(dx, angle, L_s, a_s, a_e, cl_polar, I_zz_sections):
     theta_a = (((L_wing - (a_s + dx/2)) ** 2) / (2 * E_wing * I_zz_sections[::-1][int((a_s)/dx)])) * (a_s+(dx/2))
 #    extra = -(dx/2) ** 3 / (6 * E_wing * I_zz_sections[::-1][int((a_s)/dx)])
     F_strut = -(d_strut_v / (y_a + theta_a))  # (2 * ((L_wing) ** 3))) * (6 * E_wing * I_wing)) / np.sin(angle)
-    d_str = deter_d_force(a_s + dx/2, X_root, -F_strut, 0, I_zz_sections[::-1])
-    print(d_str[int((a_s)/dx)], a_s, I_zz_sections[::-1][int((a_s)/dx)])
+#    d_str = deter_d_force(a_s + dx/2, X_root, -F_strut, 0, I_zz_sections[::-1])
+#    print(d_str[int((a_s)/dx)], a_s, I_zz_sections[::-1][int((a_s)/dx)])
     distributions = [lifts, weights, fuel_weights, W_eng, drags, thrust]
     
     return F_strut, d_strut, d_strut_v, d_wing, distributions
@@ -315,15 +315,15 @@ def strut_opt(A_S, A_E, cl_curve, width, I_wing, gamma, L_strut):
     strut_force, deflection, all_forces = indet_sys(F_strut, width, gamma, L_strut, A_S, A_E, cl_curve, I_wing[int((A_S) / width)])
     
 #    print(deflection)
-    print("Final optimum")
-    print(force, deflection)
-    print()
+#    print("Final optimum")
+#    print(force, deflection)
+#    print()
    
     return strut_force, deflection, all_forces
 
 
 A_E = 23
-A_S_L = np.arange(12, 13, 1)
+A_S_L = np.arange(10, 13, 0.5)
 
 cl = W_TO / (0.5 * rho_cr * (V_cr ** 2) * S)
 
@@ -371,9 +371,10 @@ for idx in range(len(A_S_L)):
     
     #    print("I_zz_req",I_zz_req)
         boom_area_all[idx] = boom_area_new[0]
-    #        print("Updated boom area for strut pos" + str(A_S_L[idx]))
+        print("Updated boom area for strut pos" + str(A_S_L[idx]))
         
-    #    print(boom_area_all * 10000)
+        print(boom_area_all[idx] * 10000)
+        print()
         
         
         I_zz_sections, I_yy_wing, I_yz_wing = ai.inertia_wing(I_zz_spar, I_yy_spar, I_yz_spar, boom_area_all[idx], N, b, calc_chord)
@@ -461,16 +462,16 @@ for idx in range(len(A_S_L)):
     
         d = d_lift + d_weight + d_fuel_weight + d_strut + d_engine
         
-    print("deflection of components after strut calculation")
-    print(d_lift[int((A_S_L[idx])/dx)])
-    print(d_weight[int((A_S_L[idx])/dx)])
-    print(d_fuel_weight[int((A_S_L[idx])/dx)])
-    print(d_engine[int((A_S_L[idx])/dx)])
-    print(d_strut[int((A_S_L[idx])/dx)])
-    print(d[int((A_S_L[idx])/dx)])
-    print("izz", I_zz_sections[::-1])
+#    print("deflection of components after strut calculation")
+#    print(d_lift[int((A_S_L[idx])/dx)])
+#    print(d_weight[int((A_S_L[idx])/dx)])
+#    print(d_fuel_weight[int((A_S_L[idx])/dx)])
+#    print(d_engine[int((A_S_L[idx])/dx)])
+#    print(d_strut[int((A_S_L[idx])/dx)])
+#    print(d[int((A_S_L[idx])/dx)])
+#    print("izz", I_zz_sections[::-1])
     
-    plt.figure(idx)
+    plt.figure()
     plt.subplot(2, 3, 1)
     plt.plot(X_root_plot, Vy_dist[idx], label = "Vy for pos " + str(A_S_L[idx]))
     plt.xlabel("X-position [m]")

@@ -125,7 +125,7 @@ def wing_geometry(I_zz_req, I_zz_spars, N, b, c, boom_area):
 #        print(y_2*single_boom_area[i][0])
 #    plt.plot(HalfspanValues, single_boom_area)
 #    plt.show()
-    print("single_boom_area",single_boom_area*10000, len(single_boom_area))
+#    print("single_boom_area",single_boom_area*10000, len(single_boom_area))
     return max(single_boom_area)
 
 #print("single boom area", wing_geometry(I_zz_req, I_zz_spars, y_loc_stiff_up, y_loc_stiff_low)[0]) 
