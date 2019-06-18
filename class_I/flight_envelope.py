@@ -6,10 +6,11 @@ import constants_and_conversions as cc
 def manoeuvring_envelope(w_to, h, cl_max_pos,S, v_cruise):
     cd_at_clmax = 0.1
     # construct the manoeuvring plot
-    n_max = min(3.8, max(2.5, 2.1 + (24000 / (w_to / cc.lbs_to_kg + 10000))))
+    n_max = min(3.8, max(2.5, 2.1 + (24000 / (((w_to / cc.g_0) / cc.lbs_to_kg) + 10000))))
     n_min = -1
+    
+    
     rho = cc.Rho_0 * ((1 + (cc.a * h) / cc.Temp_0) ** (-(cc.g_0 / (cc.R_gas * cc.a) + 1)))
-
     cn_max_pos = (cl_max_pos**2 + cd_at_clmax**2)**(1/2)
 #    print(cn_max_pos)
     cn_max_neg = 0.8 * cn_max_pos
@@ -27,6 +28,7 @@ def manoeuvring_envelope(w_to, h, cl_max_pos,S, v_cruise):
         else:
             v_pos[i] = np.sqrt((2 * w_to * n_lim_pos[i]) / (rho * cn_max_pos * S))
         # print(v_pos[i])
+        
     for i in range(len(n_lim_neg)):
         if n_lim_neg[i] == 0.:
             v_neg[i] = 0.
@@ -56,7 +58,8 @@ def gust_envelope(w_to, h, cl_alpha, S, c, v_cruise, Vs1):
     # first determine density at altitude
     rho = cc.Rho_0 * ((1 + (cc.a * h) / cc.Temp_0) ** (-(cc.g_0 / (cc.R_gas * cc.a) + 1)))
     rho = rho*cc.kgm3_to_slugft3
-    mu_g = (2 * (w_to / S)/cc.psf_to_nm2) / (rho * c * cl_alpha * cc.g_0)
+    
+    mu_g = (2 * (w_to / S)/cc.psf_to_nm2) / (rho * (c / cc.ft_to_m) * cl_alpha * (3.2808399 * cc.g_0))
 #    print(mu_g)
     K_g = 0.88 * mu_g / (5.3 + mu_g)
 #    print("the kg value is " + str(K_g))
@@ -107,8 +110,8 @@ def gust_envelope(w_to, h, cl_alpha, S, c, v_cruise, Vs1):
 
 def construct_envelope():
     # Note: used values are only estimation and are definitely not correct!
-    v_pos,v_neg, n_lim_pos, n_lim_neg,speeds = manoeuvring_envelope(1828542.22, 10000, 1.6 , 0.1 , 280, 239.28)
-    V_gust, n_gust_pos, n_gust_neg = gust_envelope(1828542.22, 10000, 5, 280, 5, 239, Vs1)
+    v_pos,v_neg, n_lim_pos, n_lim_neg,speeds = manoeuvring_envelope(1466672, 9000, 1.6, 0.08287, 227, 235)
+    V_gust, n_gust_pos, n_gust_neg = gust_envelope(1466672, 9000, 5.6, 227, 4.247, 235, speeds[1]) #w_to, h, cl_alpha, S, c, v_cruise, Vs1
 #    print(n_gust_pos, n_gust_neg)
     plt.plot(v_pos, n_lim_pos)
     plt.plot(v_neg, n_lim_neg)
@@ -117,6 +120,7 @@ def construct_envelope():
 
     plt.show()
 
+    return V_gust, n_gust_pos, n_gust_neg
 
 
 #print(construct_envelope())

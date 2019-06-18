@@ -17,10 +17,10 @@ m_dot = 510.
 dT = 80.926
 N = 30.
 d_fan = 2.84124
-
+RSS = 100.
 #distances
 r = 120.
-robs = 1.8   #height of observer 
+robs = 1.76   #height of observer 
 
 #---------------------------------CONSTANT INPUTS------------------------------
 #RSS = roto stator spacing/ fan blade chord, assume > 100, as there are not a lot of blades and a large fan diameter
@@ -67,7 +67,7 @@ for f in freq:
     elif M_tip >= 0.72:
         F1 = 34. - 43.*(M_tip - 0.72)
     
-    F2 = -5*np.log10(100./300.)
+    F2 = -5*np.log10(RSS/300.)
     F3 = -18.5 
     F5 = -0.5* (np.log(f/(4.*fb))/np.log(2.2))**2
     F4 = 10*np.log10(np.exp(-F5))
@@ -76,7 +76,7 @@ for f in freq:
 
     """Inlet tonal noise"""
     F1 = 42. - 20.*M_tip
-    F2 = -10*np.log10(100./300.)
+    F2 = -10*np.log10(RSS/300.)
     F3 = -15.5
     F4 = 0.
     
@@ -132,7 +132,7 @@ for f in freq:
     
     """Aft broadband noise"""
     F1 = 34. - 17.*(M_tip - 0.65)
-    F2 = -5.*np.log10(100./300)
+    F2 = -5.*np.log10(RSS/300)
     F3 = -6.9
     F5 = -0.5*(np.log(f/(2.5*fb))/np.log(2.2))**2
     F4 = 10.*np.log10(np.exp(-F5))
@@ -164,7 +164,7 @@ for f in freq:
     SPL_fan_effects.append(SPL_corrected - SPL_absorp + dSPL - 15.)     #reduction of 15 dB due to geared fan and acoustic lining in fan inlet!!
     
     
-
+plt.figure(2)
 plt.subplot(121)  
 plt.plot(freq,SPL_fan_list)
 plt.title("Fan noise") 
