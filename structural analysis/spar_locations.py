@@ -16,7 +16,7 @@ import numpy as np
 
 nr_spars = 2
 first_spar = 0.2
-last_spar = 0.6
+last_spar = 0.55
 
 #<<<<<<< HEAD
 #def c(z, Cr, b, taper):

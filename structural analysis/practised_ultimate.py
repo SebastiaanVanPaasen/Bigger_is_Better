@@ -25,12 +25,12 @@ AR = 15
 taper = 0.297 
 MAC = 4.247
 
-cr = 6.04
-ct = 1.89
-b = 60
-S = 235.7
+cr = 5.928
+ct = 1.85
+b = 58.37
+S = 227.12
 
-W_wing = 200737.6
+W_wing = 173992
 E_wing = 69 * (10 ** 9)
 I_zz_wing = 0.25
 L_wing = b / 2
@@ -38,9 +38,9 @@ L_wing = b / 2
 H_cr = 9000
 V_cr = 293
 rho_cr = cc.Rho_0 * ((1 + (cc.a * H_cr) / cc.Temp_0) ** (-(cc.g_0 / (cc.R_gas * cc.a))))
-CD_0_cr = 0.0179
+CD_0_cr = 0.0189
 
-W_TO = 1521753.6
+W_TO = 1466672
 W_fuel = 193991
 W_N = 23990.5
 
