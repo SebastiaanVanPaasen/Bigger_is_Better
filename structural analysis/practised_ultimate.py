@@ -265,23 +265,15 @@ def indet_sys(dx, angle, L_s, a_s, a_e, cl_polar, I_zz_sections):
 #    print(d_shear)
 #    print(d_mom)
 #    print()
-
-<<<<<<< HEAD
-#    print("d_lift",d_lift)
-
-    d_engine = (-W_eng / (6 * E_wing * I_wing)) * (2 * ((L_wing - a_s) ** 3 ) - 3 * ((L_wing - a_s) ** 2) * (a_e - a_s) + (a_e - a_s) ** 3)    
-=======
         
 #    d_engine = (-W_eng / (6 * E_wing * I_wing)) * (2 * ((L_wing - a_s) ** 3 ) - 3 * ((L_wing - a_s) ** 2) * (a_e - a_s) + (a_e - a_s) ** 3)    
->>>>>>> master
+
 #    print("Deflections of engine and strut")
 #    print(d_engine)
 #    print()
     
     sigma = 100 * (10 ** 6)
-<<<<<<< HEAD
-    d_wing = d_lift + d_weight + d_shear + d_mom + d_fuel + d_engine
-=======
+
     d_wing = defl_l + defl_w + defl_wf + defl_eng
     
 #    print("d wing")
@@ -298,13 +290,8 @@ def indet_sys(dx, angle, L_s, a_s, a_e, cl_polar, I_zz_sections):
 #    print("sigma", sigma)
     d_strut = np.sin(angle) * sigma * L_s / E_strut 
 #    print("deflection of strut", d_strut)
-<<<<<<< HEAD
-    d_strut_v = d_wing - d_strut
-    F_strut = ((d_strut_v / (2 * ((L_wing - a_s) ** 3))) * (6 * E_wing * I_wing)) / np.sin(angle)
-    print("d_strut", d_strut)
-    print("d_strut_v",d_strut_v)
     
-=======
+
     d_strut_v = d_wing[int((a_s) / dx)] - d_strut
 
     y_a = -(2 * L_wing ** 3 - 3 * (L_wing ** 2) *  (a_s + (dx/2)) +  (a_s + (dx/2)) ** 3)/(6 * E_wing * I_zz_sections[::-1][int((a_s)/dx)])
@@ -375,16 +362,11 @@ for idx in range(len(A_S_L)):
 
     boom_area_new = ai.wing_geometry(I_zz_req, I_zz_spar, N, b, calc_chord, boom_area_old)
 
-#    print(abs(boom_area_new - boom_area_old) )
-<<<<<<< HEAD
-    while abs(boom_area_new - boom_area_old) > 1 / 10000:
-#        print(abs(boom_area_new - boom_area_old) )
-        print("New iteration")
-=======
+
     while abs(boom_area_new - boom_area_old) > 1 / 100000:
 #        print(abs(boom_area_new - boom_area_old) )
 #        print("New iteration")
->>>>>>> master
+
         boom_area_old = boom_area_new
         
         I_zz_spar, I_yy_spar, I_yz_spar = ai.I_zz_spars(l_spar_h, t_spar_v, t_spar_h, N, b ,calc_chord, boom_area_old)
@@ -409,21 +391,13 @@ for idx in range(len(A_S_L)):
         L_strut = (L_wing - A_S_L[idx]) / np.cos(gamma)
     
     
-    #    results = strut_opt(A_S_L[idx], A_E, cl_polar, dx, I_zz_sections[::-1], gamma, L_strut) dx, angle, L_s, a_s, a_e, cl_polar, I_wing
-    #    print(L_strut)
-<<<<<<< HEAD
-#        print("I_zz1",I_zz_sections)
-        F_str, d_str, d_w, all_forces = indet_sys(dx, gamma, L_strut, A_S_L[idx], A_E, cl_polar, I_zz_sections[int((A_S_L[idx]) / dx)])
-#        print("F_str",F_str)
-#        print(F_str / (100 * (10 ** 6)))
-=======
+
         F_str, d_str, d_str_v, d_w, all_forces = indet_sys(dx, gamma, L_strut, A_S_L[idx], A_E, cl_polar, I_zz_sections)
         print("Strut force and deflections")
         print(F_str)
         print(d_str)
         print(d_str_v)
         print(F_str / (100 * (10 ** 6)))
->>>>>>> master
         print()
 #        
     #    F_str = results[0]
