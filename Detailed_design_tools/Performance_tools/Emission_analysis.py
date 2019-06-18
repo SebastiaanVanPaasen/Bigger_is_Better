@@ -22,12 +22,14 @@ import matplotlib.pyplot as plt
 SAR = 0.0094
 n_eng = 2.
 n_pax = 200.
-hcr = 8000.
+hcr = 11000.
 Mcr = 0.79
-MTOW = 78245.
-R_des = 4500. 
+MTOW = 82919.
+R_des = 1100. 
 
-Tc = 711.5    #from cycle calculation
+Tc = 711.5    #from cycle calculation 
+
+APU = True
 
 """Ref. aircraft"""
 hcr_ref = 10000.
@@ -77,8 +79,8 @@ def EF_NOx(Tc,h): #in kg/kg
     EF_NOx = (10**(1. + 0.0032*(Tc - 581.25)))*np.sqrt(ISA_press(h)/ISA_press(0))
     return EF_NOx/1000.
     
-def Cruise_emis(SAR,EF):#returns emission in kg/km-pax
-    emission = SAR*EF
+def Cruise_emis(SAR,EF):#returns emission in kg/km
+    emission = SAR*EF*n_pax
     return emission
     
 def RF_contrails(RF,h):
@@ -105,8 +107,12 @@ TIM_TO = 0.7*60.
 TIM_climb = 2.2*60.
 TIM_app = 4.*60.
 TIM_idle = 26.*60.  #Includes taxiing and holding position
+TIM_APU = 0. 
 
-TIM = [TIM_TO,TIM_climb,TIM_app,TIM_idle]
+if APU == True:
+    TIM_APU = 30.*60.
+
+TIM = [TIM_TO,TIM_climb,TIM_app,TIM_idle,TIM_APU]
 
 """Thrust settings as fractions"""
 TS_TO = 1.
@@ -116,7 +122,7 @@ TS_idle = 0.07
 TS_cruise = 0.6
 
 TS = [TS_TO,TS_climb,TS_app,TS_idle]
-phase = ['TO','climb',"app","idle"]
+phase = ['TO','climb',"app","idle","APU"]
 
 
 """Emission factors"""
@@ -149,6 +155,8 @@ Ffuel_cr = (SAR/1000.)*n_pax*Vcr
 #Convert Ffuel for a TS of 100
 Ffuel_max = (Ffuel_cr/(TS_cruise*100.))*100.
 
+#Fuel flow of APU
+Ffuel_APU = 2./60. #kg/s
 
 """LTO cycle emissions"""
 Emis_tot = []
@@ -156,14 +164,22 @@ Emis_tot = []
 for i in range(len(phase)):
     E_list = []
     for j in range(len(EF)):
-        EF_emis = EF[j]
-        TIM_phase = TIM[i]
-        TS_phase = TS[i]
-        
-        Ffuel = Ffuel_max*TS_phase
-        emission = LTO_emis(n_eng,Ffuel,TIM_phase,EF_emis)        
-        E_list.append(emission)
-
+        if i <= 3.:
+            EF_emis = EF[j]
+            TIM_phase = TIM[i]
+            TS_phase = TS[i]
+            
+            Ffuel = Ffuel_max*TS_phase
+            emission = LTO_emis(n_eng,Ffuel,TIM_phase,EF_emis) 
+            
+            E_list.append(emission)
+        elif i == 4.:
+            EF_emis = EF[j]
+            TIM_phase = TIM[i]
+                
+            emission = EF_emis*TIM_APU*Ffuel_APU
+            E_list.append(emission)            
+            
     Emis_tot.append(E_list)
     
     
@@ -208,17 +224,16 @@ N2O = 0.0001
 #NOx, see ruijgrok elements of a/c pollution book
 NOx = EF_NOx(Tc,hcr)
 
-
 EF_comp = ['H2O','CO2','NOx','CO','NMVOC','SO2',"N2O"]
 
-if hcr <= 9100.:
-    EF = [H2O,CO2,NOx,0.0052,0.0009,0.001,N2O]
-elif hcr > 9100.:
-    EF = [H2O,CO2,NOx, 0.005,0.0008,0.001,N2O]
+EF = [H2O,CO2,NOx,0.005,0.0007,0.001,1e-04]
+
+
+
 
 
 """Emission calculations"""
-print ("Cruise emissions [kg/km-pax] & kg")
+print ("Cruise emissions [kg/km] & kg")
 Emissions_cruise = []
 
 for i in range(len(EF)):
@@ -272,7 +287,7 @@ plt.show()
 """RF values in mW/m^2"""
 #RF for each emission : best estimate [0], low [1], high [2], 90% confidence interval
 CO2 = [28.,15.2,40.8]
-CH4 = [-12.5,-2.1,-76.2]
+CH4 = [0.,0.,0.]
 NOx = [12.6,3.8,15.7]
 H2O = [2.8,0.39,20.3]
 contrails = [11.8,5.4,25.6]
@@ -303,11 +318,11 @@ print ("RF reduction wrt ref. aircraft",RF_reduction)
 plt.plot(hcr_ref,RF_ref,"o",label = "Reference aicraft")
 plt.plot(hcr,RF_ac,'o',label = "Aircraft")
 plt.plot(H,RF_tot_mean,label = "Best estimate")
-plt.plot(H,RF_tot_low, label = "Lower bound values")
-plt.plot(H,RF_tot_high,label = "Upper bound values")
+#plt.plot(H,RF_tot_low, label = "Lower bound values")
+#plt.plot(H,RF_tot_high,label = "Upper bound values")
 plt.title("RF dependency on altitude")
-plt.ylabel("Altitude [m]")
-plt.xlabel("RF [mW/m^2]")
+plt.xlabel("Altitude [m]")
+plt.ylabel("RF [mW/m^2]")
 plt.grid(True)
 
 plt.show()
