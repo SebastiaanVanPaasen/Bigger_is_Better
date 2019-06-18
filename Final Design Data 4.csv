@@ -1,0 +1,60 @@
+;Design 1
+Take off weight [N];1466672.702
+Payload weight [N];472485.2453
+Fuel weight [N];193990.9507
+Empty weight [N];800196.5062
+Wing weight [N];173994.0682
+Empennage weight [N];32965.94635
+Fuselage weight [N];194706.4391
+Nacelle weight [N];23990.47204
+Propulsion system weight [N];64911.09823
+Fixed equipment weight [N];273347.5281
+CL cruise [-];0.597998547
+CD cruise [-];0.03228
+L/D-ratio;18.52535772
+C_t [kg/Ns];1.13E-05
+Oswald factor [-];0.85
+CD_0 [-];0.018964636
+Aspect ratio [-];15
+Surface area [m^2];227.1287294
+Span [m];58.36892101
+Root chord [m];5.928486308
+Tip chord [m];1.854036494
+Quarter chord sweep [deg];0.436332313
+Taper ratio [-];0.312733537
+Mean aerodynamic chord [m];4.246783248
+Dihedral [deg];-1.5
+Thickness over chord [-];0.13
+Leading edge root location [m];18.36243263
+Fuselage length [m];49.30336077
+Fuselage outer diameter [m];6.7
+Nosecone length [m];8.263333333
+Tailcone length [m];14.74
+Cabin length [m];35.1736
+Forward cg [%MAC];0.037910709
+Aft cg [%MAC];0.811783482
+Horizontal tail surface area [m^2];51.51794761
+Horizontal tail leading edge root position [m];44.17650333
+Horizontal tail leading edge sweep [deg];36.80058153
+Horizontal tail mean aerodynamic chord [m];3.808522665
+Horizontal tail arm [m];31.18817279
+Horizontal tail root chord [m];5.126857434
+Horizontal tail tip chord [m];2.050742974
+Horizontal tail span [m];14.35520082
+Vertical tail surface area [m^2];55.11267972
+Vertical tail leading edge root position [m];41.95608762
+Vertical tail leading edge sweep [deg];44.52928643
+Vertical tail mean aerodynamic chord [m];6.152413577
+Vertical tail root chord [m];7.34727315
+Vertical tail tip chord [m];4.775727548
+Vertical tail span [m];9.092250524
+Take off thrust [N];369084.1852
+Cruise Mach number [-];0.775
+Cruise velocity [m/s];235.4181235
+Cruise altitude [m];9000
+Cruise fuel consumption [kg/km/pas];0.008027013
+Mission fuel consumption [kg/km/pas];0.022500884
+Fuel consumption reduction [%];21.30379045
+Total fuel consumption reduction [%];36.6172287
+RF reduction [%];36.07303758
+DOC reduction [%];17.32243283

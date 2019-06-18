@@ -193,7 +193,7 @@ def fuselage_cross_section(Npax, Npax_below, c_root, x_LE_root, b, d_outer, tap_
         w_leg = 0.3
 #        w_wbclear = 1.5
         w_wbclear = 0.5
-        w_exit_I = 0.35
+        w_exit_c = 0.5
         wing_space = 0.5*c_f + 2*w_wbclear
         wing_start = x_wingbox - w_wbclear
         
@@ -203,7 +203,7 @@ def fuselage_cross_section(Npax, Npax_below, c_root, x_LE_root, b, d_outer, tap_
         lcabin_above = N_rows_above*Pseat + space_above_1 + space_above_2 + wing_space + w_leg
         
         space_below_1 = w_galley + w_craisle + w_stair + w_leg
-        space_below_2 = w_exit_I + w_lavatory + w_leg
+        space_below_2 = w_exit_c + w_lavatory + w_leg
         space_below_3 = w_galley + w_craisle + w_stair
         
         lcabin_below = N_rows_below*Pseat + space_below_1 + space_below_2 + space_below_3 
@@ -272,8 +272,10 @@ def fuselage_cross_section(Npax, Npax_below, c_root, x_LE_root, b, d_outer, tap_
              aisle_right_point_above, shoulder_left_point_below, shoulder_right_point_below, shoulder_left_point_above,
              shoulder_right_point_above])
 #        print(r)
-        d_inner = 2 * r[2]
-        d_outer = 1.045 * d_inner + 0.084
+#        d_inner = 2 * r[2]
+#        d_outer = 1.045 * d_inner + 0.084
+        d_outer = 6.7
+        d_inner = (d_outer - 0.084)/1.045
         # other dimension of the total fuselage
 
         ltail = Ratio_tail_d_outer * d_inner

@@ -52,7 +52,7 @@ def potato(l_nosecone, W_TO, x_eng, l_n, mass_fractions, tail_h, tail_v, Safety_
     N_cargo, l_fuselage, cargo_fwdfrac, xcg_seats, W_window, W_aisle, W_middle, n_pax, W_person = constants
     
     x_le_h, sweep_LE_h, y_MAC_h, MAC_h, l_h, c_root_h, c_tip_h, b_h = tail_h
-    x_le_v, sweep_LE_v, y_MAC_v, MAC_v, c_root_v, c_tip_v, b_v = tail_v
+    x_le_v, sweep_LE_v, y_MAC_v, MAC_v, c_root_v, c_tip_v, b_v, x_v, x_le_tip_v, S_v = tail_v
     
     W_wing = mass_fractions[0]*W_TO
     W_ht = W_vt = mass_fractions[1]*W_TO
@@ -71,8 +71,8 @@ def potato(l_nosecone, W_TO, x_eng, l_n, mass_fractions, tail_h, tail_v, Safety_
     xcg_nac = x_eng + 0.4 * l_n
 
     # Fuselage group - in [m] w.r.t. nose
-    xcg_fuse = 0.5 * l_fuselage
-    xcg_fix = 0.5 * l_fuselage
+    xcg_fuse = 0.45 * l_fuselage
+    xcg_fix = 0.45 * l_fuselage
     xcg_emp = 0.9 * l_fuselage
 
     xcg_nlg = l_nosecone  # assumption, use landing gear function !!!
@@ -105,8 +105,8 @@ def potato(l_nosecone, W_TO, x_eng, l_n, mass_fractions, tail_h, tail_v, Safety_
     X_LEMAC_range = []
     xcg_OEW_MAC = 0
     # print(X_LEMAC/l_fuselage)
-    for j in np.arange((X_LEMAC / l_fuselage) - 0.2, (X_LEMAC / l_fuselage) + 0.2, 0.001):
-#    for j in np.arange(26.235227232293713/l_fuselage, 0.5, 100):
+#    for j in np.arange((X_LEMAC / l_fuselage) - 0.2, (X_LEMAC / l_fuselage) + 0.2, 0.001):
+    for j in np.arange(21.937611152105728/l_fuselage, 0.5, 100):
     
         X_LEMAC_range.append(j) 
         X_LEMAC = j * l_fuselage
@@ -137,11 +137,13 @@ def potato(l_nosecone, W_TO, x_eng, l_n, mass_fractions, tail_h, tail_v, Safety_
         # Weight order
         W_Orderback = [W_OEW] + [W_cargo2, W_cargo1] + list((np.array(W_window[::-1]) * W_person)) + list(
             (np.array(W_aisle[::-1]) * W_person)) + list((np.array(W_middle[::-1]) * W_person)) + [W_fuel]
-
+#        print(len(W_Orderback))
+#        print(W_Orderback)
         # cg order
         xcg_Orderback = [xcg_OEW_MAC] + [xcg_cargo2_MAC, xcg_cargo1_MAC] + 3 * list(
             (np.array(xcg_seats[::-1]) - X_LEMAC) / MAC) + [xcg_fuel]
-
+#        print(xcg_Orderback)
+#        print(len(xcg_Orderback))
         # Weight actual values
         W_Backloading = [W_OEW]
         for i in range(1, len(W_Orderback)):
@@ -158,11 +160,14 @@ def potato(l_nosecone, W_TO, x_eng, l_n, mass_fractions, tail_h, tail_v, Safety_
         # Weight order
         W_Orderfwd = [W_OEW] + [W_cargo1, W_cargo2] + list((np.array(W_window) * W_person)) + list(
             (np.array(W_aisle) * W_person)) + list((np.array(W_middle) * W_person)) + [W_fuel]
-
+#        print(len(W_Orderfwd))
+#        print(W_Orderback)
         # cg order
         xcg_Orderfwd = [xcg_OEW_MAC] + [xcg_cargo1_MAC, xcg_cargo2_MAC] + 3 * list(
             (np.array(xcg_seats) - X_LEMAC) / MAC) + [xcg_fuel]
-
+#        print(xcg_Orderfwd)
+#        print(len(xcg_Orderfwd))
+        
         # Weight actual values
         W_Fwdloading = [W_OEW]
         for i in range(1, len(W_Orderfwd)):
@@ -207,27 +212,27 @@ def potato(l_nosecone, W_TO, x_eng, l_n, mass_fractions, tail_h, tail_v, Safety_
         min_cg.append(min(xcg_Fwdloading) - Safety_margin)
         max_cg.append(max(xcg_Backloading) + Safety_margin)
         
-        
-#        plt.ylabel("$W$ [N]")
-#        plt.xlabel("$x_{cg}$/$MAC$ [-]")
-#        plt.plot(xcg_fwd_cargo, W_fwd_cargo, label="Cargo fwd")
-#        plt.plot(xcg_fwd_window, W_fwd_window, label="Window fwd")
-#        plt.plot(xcg_fwd_aisle, W_fwd_aisle, label="Aisle fwd")
-#        plt.plot(xcg_fwd_middle, W_fwd_middle, label="Middle fwd")
-#        plt.plot(xcg_bwd_cargo, W_bwd_cargo, label="Cargo bwd")
-#        plt.plot(xcg_bwd_window, W_bwd_window, label="Window bwd")
-#        plt.plot(xcg_bwd_aisle, W_bwd_aisle, label="Aisle bwd")
-#        plt.plot(xcg_bwd_middle, W_bwd_middle, label="Middle bwd")
-#        plt.plot(xcg_fwd_fuel, W_fwd_fuel, label = "Fuel")
-#        plt.plot(minlist, W_range, "k")
-#        plt.plot(maxlist, W_range, "k")
-#        plt.ylim(round(min(W_range)-50000.,-5), round(max(W_range)+50000.,-5))
-#        plt.yticks(np.arange(round(min(W_range)-50000.,-5), round(max(W_range)+160000.,-5), 100000.))
-#        plt.xlim(-0.1, 0.6)
-#        plt.xticks(np.arange(-0.1, 0.7, 0.1))
-#        plt.legend(loc="upper left", prop={'size': 7}, bbox_to_anchor=(.2, .4))
-#        plt.grid(True)
-#        plt.show()
+        plt.close()
+        plt.ylabel("$W$ [N]")
+        plt.xlabel("$x_{cg}$/$MAC$ [-]")
+        plt.plot(xcg_fwd_cargo, W_fwd_cargo, label="Cargo fwd")
+        plt.plot(xcg_fwd_window, W_fwd_window, label="Window fwd")
+        plt.plot(xcg_fwd_aisle, W_fwd_aisle, label="Aisle fwd")
+        plt.plot(xcg_fwd_middle, W_fwd_middle, label="Middle fwd")
+        plt.plot(xcg_bwd_cargo, W_bwd_cargo, label="Cargo bwd")
+        plt.plot(xcg_bwd_window, W_bwd_window, label="Window bwd")
+        plt.plot(xcg_bwd_aisle, W_bwd_aisle, label="Aisle bwd")
+        plt.plot(xcg_bwd_middle, W_bwd_middle, label="Middle bwd")
+        plt.plot(xcg_fwd_fuel, W_fwd_fuel, label = "Fuel")
+        plt.plot(minlist, W_range, "k")
+        plt.plot(maxlist, W_range, "k")
+        plt.ylim(round(min(W_range)-50000.,-5), round(max(W_range)+50000.,-5))
+        plt.yticks(np.arange(round(min(W_range)-50000.,-5), round(max(W_range)+160000.,-5), 100000.))
+        plt.xlim(-0.1, 1.2)
+        plt.xticks(np.arange(-0.1, 1.3, 0.1))
+        plt.legend(loc="upper left", prop={'size': 7}, bbox_to_anchor=(.2, .4))
+        plt.grid(True)
+        plt.show()
         
     difflist = []
     for j in range(len(min_cg)):
@@ -235,6 +240,7 @@ def potato(l_nosecone, W_TO, x_eng, l_n, mass_fractions, tail_h, tail_v, Safety_
         
     min_cg_range = min(difflist)
 
+#    plt.close()
 #    plt.plot(min_cg, X_LEMAC_range)
 #    plt.plot(max_cg, X_LEMAC_range)
 #    plt.show()
