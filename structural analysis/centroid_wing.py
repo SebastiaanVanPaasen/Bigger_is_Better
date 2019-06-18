@@ -41,11 +41,19 @@ def get_skin_centroid(N, b, c):
     return airfoil_area, z_c_airfoil, y_c_airfoil
 
 
+<<<<<<< HEAD
+n_stiff_up = 10
+n_stiff_low = 10
+l_spar_h = 0.30
+t_spar_h = 0.04
+t_spar_v = 0.04
+=======
 n_stiff_up = 12
 n_stiff_low = 12
 l_spar_h = 0.3
 t_spar_h = 0.02
 t_spar_v = 0.03
+>>>>>>> master
 nr_spars = sl.nr_spars
 spar_areas_hori = l_spar_h*t_spar_h*np.ones(nr_spars)
 #boom_area = 0.0040

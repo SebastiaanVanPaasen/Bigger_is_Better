@@ -19,17 +19,17 @@ def strut_area_req_F(sigma):
     
     for i in range(len(prac.A_S_L)):
 
-        A_req[i] = F_strut[i]/sigma
+        A_req[i] = abs(F_strut[i])/sigma
 
     return A_req
 
 def strut_area_req_B():
     
-    F_strut = prac.F_strut
-    print(F_strut)
+    F_strut = abs(prac.F_strut)
+#    print(F_strut)
 #    R_strut = prac.R_strut
     L_strut = prac.L_str
-    print(L_strut)
+#    print(L_strut)
 #    I_strut = 0.25*np.pi*R_strut**4
     P_cr = F_strut
     I_req = np.zeros(len(prac.A_S_L))
@@ -44,9 +44,9 @@ def strut_area_req_B():
 #        while I_strut <I_req[i]:
 #            R_strut += 0.001
 #            I_strut = 0.25*np.pi*(R_strut**4)
-        print(I_req[i])
+#        print(I_req[i])
 
-        print("r_strut", R_strut_new)
+#        print("r_strut", R_strut_new)
 
         req_area[i] = np.pi*R_strut_new**2
         sigma_crit[i] = P_cr[i]/req_area[i]
@@ -61,7 +61,7 @@ def strut_cost(A_req_P, A_req_B, density, cost):
     L_strut =  prac.L_str
     
     for i in range(len(prac.A_S_L)):
-        Max_area[i] = A_req_P[i]#max(A_req_P[i], A_req_B[i])
+        Max_area[i] = max(A_req_P[i], A_req_B[i])
         
         strut_volume[i] = Max_area[i]*L_strut[i]
         strut_mass[i] = strut_volume[i]*density

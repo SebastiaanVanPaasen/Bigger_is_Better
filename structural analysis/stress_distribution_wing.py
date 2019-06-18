@@ -56,7 +56,7 @@ def wing_stress(b, Mz, My):
             local_stress_up[i][j] = (((-1)*My_wing[i]*I_zz_wing[i] + (-1)*Mz_wing[i]*I_yz_wing[i])*z[i][j] + ((-1)*-Mz_wing[i]*I_yy_wing[i] - (-1)*My_wing[i]*I_yz_wing[i])*y_up[i][j])/(I_zz_wing[i]*I_yy_wing[i] - I_yz_wing[i]**2)
             local_stress_low[i][j] = (((-1)*My_wing[i]*I_zz_wing[i] + (-1)*Mz_wing[i]*I_yz_wing[i])*z[i][j] + ((-1)*-Mz_wing[i]*I_yy_wing[i] - (-1)*My_wing[i]*I_yz_wing[i])*y_low[i][j])/(I_zz_wing[i]*I_yy_wing[i] - I_yz_wing[i]**2)
             
-    print(I_zz_wing)
+#    print(I_zz_wing)
     
     return z, local_stress_up,local_stress_low
 
@@ -81,7 +81,7 @@ for i in range(len(prac.A_S_L)):
         min_stress_up[i][j] = min(stress_up[j])
         min_stress_low[i][j] = min(stress_low[j])
         
-print("max_stress",max_stress_up)
+#print("max_stress",max_stress_up)
     
 #print(min(stress_up[0]))
 #print(max(stress_low[0]))

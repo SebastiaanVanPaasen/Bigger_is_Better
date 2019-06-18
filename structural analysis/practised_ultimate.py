@@ -18,8 +18,8 @@ from class_I.lift_distr import get_correct_data, lift_distribution
 AR = 15
 D_fus = 7.3
 
-R_strut = 5 / 1000
-A_strut = 0.25 * np.pi * ((2 * R_strut) ** 2) ##
+#R_strut = 5 / 1000
+#A_strut = 0.25 * np.pi * ((2 * R_strut) ** 2) ##
 E_strut = 69 * (10 ** 9)  
 AR = 15
 taper = 0.297 
@@ -207,6 +207,7 @@ def indet_sys(dx, angle, L_s, a_s, a_e, cl_polar, I_zz_sections):
     fuel_weights = np.cos(alpha) * fuel_weights_v
     W_eng = np.cos(alpha) * W_eng_v
     
+#    print(lifts)
     
 #    Lift = []
 #    Weight = []
@@ -265,13 +266,22 @@ def indet_sys(dx, angle, L_s, a_s, a_e, cl_polar, I_zz_sections):
 #    print(d_mom)
 #    print()
 
+<<<<<<< HEAD
+#    print("d_lift",d_lift)
+
+    d_engine = (-W_eng / (6 * E_wing * I_wing)) * (2 * ((L_wing - a_s) ** 3 ) - 3 * ((L_wing - a_s) ** 2) * (a_e - a_s) + (a_e - a_s) ** 3)    
+=======
         
 #    d_engine = (-W_eng / (6 * E_wing * I_wing)) * (2 * ((L_wing - a_s) ** 3 ) - 3 * ((L_wing - a_s) ** 2) * (a_e - a_s) + (a_e - a_s) ** 3)    
+>>>>>>> master
 #    print("Deflections of engine and strut")
 #    print(d_engine)
 #    print()
     
     sigma = 100 * (10 ** 6)
+<<<<<<< HEAD
+    d_wing = d_lift + d_weight + d_shear + d_mom + d_fuel + d_engine
+=======
     d_wing = defl_l + defl_w + defl_wf + defl_eng
     
 #    print("d wing")
@@ -282,11 +292,19 @@ def indet_sys(dx, angle, L_s, a_s, a_e, cl_polar, I_zz_sections):
 #    print("eng", defl_eng[int(a_s / dx)])
 #    print()
     
+    print("dwing", d_wing)
 #    print("strut length", L_s)
 #    print("angle of strut", np.sin(angle), angle)
 #    print("sigma", sigma)
     d_strut = np.sin(angle) * sigma * L_s / E_strut 
 #    print("deflection of strut", d_strut)
+<<<<<<< HEAD
+    d_strut_v = d_wing - d_strut
+    F_strut = ((d_strut_v / (2 * ((L_wing - a_s) ** 3))) * (6 * E_wing * I_wing)) / np.sin(angle)
+    print("d_strut", d_strut)
+    print("d_strut_v",d_strut_v)
+    
+=======
     d_strut_v = d_wing[int((a_s) / dx)] - d_strut
 
     y_a = -(2 * L_wing ** 3 - 3 * (L_wing ** 2) *  (a_s + (dx/2)) +  (a_s + (dx/2)) ** 3)/(6 * E_wing * I_zz_sections[::-1][int((a_s)/dx)])
@@ -358,9 +376,15 @@ for idx in range(len(A_S_L)):
     boom_area_new = ai.wing_geometry(I_zz_req, I_zz_spar, N, b, calc_chord, boom_area_old)
 
 #    print(abs(boom_area_new - boom_area_old) )
+<<<<<<< HEAD
+    while abs(boom_area_new - boom_area_old) > 1 / 10000:
+#        print(abs(boom_area_new - boom_area_old) )
+        print("New iteration")
+=======
     while abs(boom_area_new - boom_area_old) > 1 / 100000:
 #        print(abs(boom_area_new - boom_area_old) )
 #        print("New iteration")
+>>>>>>> master
         boom_area_old = boom_area_new
         
         I_zz_spar, I_yy_spar, I_yz_spar = ai.I_zz_spars(l_spar_h, t_spar_v, t_spar_h, N, b ,calc_chord, boom_area_old)
@@ -387,12 +411,19 @@ for idx in range(len(A_S_L)):
     
     #    results = strut_opt(A_S_L[idx], A_E, cl_polar, dx, I_zz_sections[::-1], gamma, L_strut) dx, angle, L_s, a_s, a_e, cl_polar, I_wing
     #    print(L_strut)
+<<<<<<< HEAD
+#        print("I_zz1",I_zz_sections)
+        F_str, d_str, d_w, all_forces = indet_sys(dx, gamma, L_strut, A_S_L[idx], A_E, cl_polar, I_zz_sections[int((A_S_L[idx]) / dx)])
+#        print("F_str",F_str)
+#        print(F_str / (100 * (10 ** 6)))
+=======
         F_str, d_str, d_str_v, d_w, all_forces = indet_sys(dx, gamma, L_strut, A_S_L[idx], A_E, cl_polar, I_zz_sections)
         print("Strut force and deflections")
         print(F_str)
         print(d_str)
         print(d_str_v)
         print(F_str / (100 * (10 ** 6)))
+>>>>>>> master
         print()
 #        
     #    F_str = results[0]
@@ -450,17 +481,21 @@ for idx in range(len(A_S_L)):
         d_weight = 0
         d_fuel_weight = 0
         
+#        print("I_zz2",I_zz_sections)
         for i in range(len(X_root)):
             d_lift += deter_d_force(X_tip[i], X_root, Lift[i], 0, I_zz_sections[::-1])
             d_weight += deter_d_force(X_tip[i], X_root, -Weight[i], 0, I_zz_sections[::-1])
             d_fuel_weight += deter_d_force(X_tip[i], X_root, -Fuel_weight[i], 0, I_zz_sections[::-1])
-            
+        
+        print("d door sturt",d_strut[int(A_S_L[idx]/dx)])
     
         d_strut = deter_d_force(A_S_L[idx] + dx/2, X_root, -F_str, 0, I_zz_sections[::-1])
         d_engine = deter_d_force(A_E, X_root, -W_eng, 0, I_zz_sections[::-1])
         
-    
+        d_min_strut = d_lift + d_weight + d_fuel_weight #+ d_engine
+#        print(d_min_strut[int(A_S_L[idx]/dx)])
         d = d_lift + d_weight + d_fuel_weight + d_strut + d_engine
+        print("d total",d[int(A_S_L[idx]/dx)])
         
 #    print("deflection of components after strut calculation")
 #    print(d_lift[int((A_S_L[idx])/dx)])

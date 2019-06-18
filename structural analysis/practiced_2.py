@@ -18,8 +18,8 @@ from class_I.lift_distr import get_correct_data, lift_distribution
 AR = 15
 D_fus = 7.3
 
-R_strut = 5 / 1000
-A_strut = 0.25 * np.pi * ((2 * R_strut) ** 2) ##
+A_strut = 0.056 #0.25 * np.pi * ((2 * R_strut) ** 2) ##
+R_strut = np.sqrt(A_strut/np.pi)#5 / 1000
 E_strut = 69 * (10 ** 9)  
 AR = 15
 taper = 0.297 
@@ -192,7 +192,7 @@ def indet_sys(F_strut_array, dx, angle, L_s, a_s, a_e, cl_polar, I_wing):
     x_start = L_wing * 0.34
     
     alpha = np.radians(3)
-    n = 3.75
+    n = 2.5*1.5
     
     
     lifts_v = n * deter_lift(cl_polar, X_root, dx)   
@@ -285,7 +285,7 @@ def indet_sys(F_strut_array, dx, angle, L_s, a_s, a_e, cl_polar, I_wing):
 def strut_opt(A_S, A_E, cl_curve, width, I_wing, gamma, L_strut):
     
 #    print("hoi",I_wing[int((A_S) / width)])
-    F_strut = np.arange(0, 6000000, 1000)
+    F_strut = np.arange(0,6000000, 1000)
     force, deflection, all_forces = indet_sys(F_strut, width, gamma, L_strut, A_S, A_E, cl_curve, I_wing[int((A_S) / width)])
     
 #        print("First found optimum")
@@ -305,7 +305,7 @@ def strut_opt(A_S, A_E, cl_curve, width, I_wing, gamma, L_strut):
 
 
 A_E = 23
-A_S_L = np.arange(18, 19, 1)
+A_S_L = np.arange(5, 6, 1)
 
 cl = W_TO / (0.5 * rho_cr * (V_cr ** 2) * S)
 
