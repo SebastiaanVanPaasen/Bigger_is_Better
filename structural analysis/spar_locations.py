@@ -29,19 +29,18 @@ last_spar = 0.6
 #    taper = 0.297 
 # 
 #=======
-def spar_loc(N, b, nr_spars, first_spar, last_spar, c):
-    HalfspanValues = np.linspace(0, b / 2 - 0.00001, N)
-#>>>>>>> master
+def spar_loc(N, b, nr_spars, first_spar, last_spar, c, dx):
+    HalfspanValues = np.arange(0 + dx/2, b / 2 + dx/2, dx)
+    HalfspanValues = np.append([0], HalfspanValues)
+    HalfspanValues = np.append(HalfspanValues, b/2)#>>>>>>> master
     spar_loc_sec = []
     for i in range(len(HalfspanValues)):
         first_spar_location = first_spar*c(HalfspanValues[i])
         last_spar_location = last_spar*c(HalfspanValues[i])
         delta_spar = (last_spar_location-first_spar_location)/(nr_spars-1)
-#<<<<<<< HEAD
+
         spar_loc = np.arange(first_spar_location,last_spar_location + delta_spar -0.001,delta_spar)
-#=======
-        spar_loc = np.arange(first_spar_location,last_spar_location+delta_spar-0.001,delta_spar)
-#>>>>>>> master
+
         spar_loc_sec.append(spar_loc)
         
     return spar_loc_sec, delta_spar

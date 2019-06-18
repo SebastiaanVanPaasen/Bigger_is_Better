@@ -7,7 +7,7 @@ import centroid_wing as cw
 import Airfoil_inertia as ai
 
 
-def wing_stress(b, Mz, My):
+def wing_stress(b, Mz, My, dx):
     
 #    l_spar_h, t_spar_v, t_spar_h = cw.l_spar_h, cw.t_spar_v, cw.t_spar_h
     N = prac.L_wing / prac.dx
@@ -15,13 +15,15 @@ def wing_stress(b, Mz, My):
 #    I_zz_spar, I_yy_spar, I_yz_spar = ai.I_zz_spars(l_spar_h, t_spar_v, t_spar_h, N, b ,prac.calc_chord,prac.boom_area_all)
 #    I_zz_req = pr.required_Izz(N, b, prac.calc_chord, Mz)
 #    
-    airfoil_area, z_c_airfoil, y_c_airfoil = cw.get_skin_centroid(b, N, prac.calc_chord)
-    z_centroid_all_sec, y_centroid_all_sec, y_loc_spar_up, y_loc_spar_low, y_loc_stiff_up, y_loc_stiff_low, y_vertical_spar, z_loc_stiff_up, spar_loc_sec, z_loc_stiff_low, spar_areas_verti = cw.wing_centroid(prac.boom_area_all, cw.spar_areas_hori, cw.t_spar_v, z_c_airfoil, y_c_airfoil, cw.n_stiff_up, cw.n_stiff_low, N, b, prac.calc_chord)
+    airfoil_area, z_c_airfoil, y_c_airfoil = cw.get_skin_centroid(b, N, prac.calc_chord, dx)
+    z_centroid_all_sec, y_centroid_all_sec, y_loc_spar_up, y_loc_spar_low, y_loc_stiff_up, y_loc_stiff_low, y_vertical_spar, z_loc_stiff_up, spar_loc_sec, z_loc_stiff_low, spar_areas_verti = cw.wing_centroid(prac.boom_area_all, cw.spar_areas_hori, cw.t_spar_v, z_c_airfoil, y_c_airfoil, cw.n_stiff_up, cw.n_stiff_low, N, b, prac.calc_chord, dx)
 #
 #    boom_area = ai.wing_geometry(I_zz_req, I_zz_spar, N, b, prac.calc_chord)[0][0]
 #    I_zz_wing, I_yy_wing, I_yz_wing = ai.inertia_wing(I_zz_spar, I_yy_spar, I_yz_spar, boom_area, N, b, prac.calc_chord)
 
-    HalfspanValues = np.linspace(0, b / 2 - 0.00001, N)
+    HalfspanValues = np.arange(0 + dx/2, b / 2 + dx/2, dx)
+    HalfspanValues = np.append([0], HalfspanValues)
+    HalfspanValues = np.append(HalfspanValues, b/2)
     I_yy_wing = prac.I_yy_wing
     I_zz_wing = prac.I_zz_sections
     I_yz_wing = prac.I_yz_wing

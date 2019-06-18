@@ -35,10 +35,11 @@ def load_airfoil(filename):
 #filename = 'SC(2)-0616.txt'
 #print(load_airfoil(filename))
 
-def airfoil_geometry(N,b, c):
+def airfoil_geometry(N,b, c, dx):
 
-    HalfspanValues = np.linspace(0, b / 2 - 0.00001, N)
-#    print(HalfspanValues[0])
+    HalfspanValues = np.arange(0 + dx/2, b / 2 + dx/2, dx)
+    HalfspanValues = np.append([0], HalfspanValues)
+    HalfspanValues = np.append(HalfspanValues, b/2)#    print(HalfspanValues[0])
     
     data_z_all_sec = []
     data_y_lower_all_sec = []

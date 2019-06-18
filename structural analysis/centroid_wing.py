@@ -26,9 +26,10 @@ from airfoil_geometry import airfoil_geometry
 #    c = Cr - ((Cr - Ct) / (b / 2)) * z
 #    return c
 
-def get_skin_centroid(N, b, c):
-    HalfspanValues = np.linspace(0, b / 2 - 0.00001, N)
-
+def get_skin_centroid(N, b, c, dx):
+    HalfspanValues = np.arange(0 + dx/2, b / 2 + dx/2, dx)
+    HalfspanValues = np.append([0], HalfspanValues)
+    HalfspanValues = np.append(HalfspanValues, b/2)
     airfoil_area = []
     z_c_airfoil = []
     y_c_airfoil = []
@@ -41,35 +42,30 @@ def get_skin_centroid(N, b, c):
     return airfoil_area, z_c_airfoil, y_c_airfoil
 
 
-<<<<<<< HEAD
-n_stiff_up = 10
-n_stiff_low = 10
-l_spar_h = 0.30
-t_spar_h = 0.04
-t_spar_v = 0.04
-=======
+
 n_stiff_up = 12
 n_stiff_low = 12
 l_spar_h = 0.3
 t_spar_h = 0.02
 t_spar_v = 0.03
->>>>>>> master
+
 nr_spars = sl.nr_spars
 spar_areas_hori = l_spar_h*t_spar_h*np.ones(nr_spars)
 #boom_area = 0.0040
 #print(spar_loc_sec[0][0])
 
 
-def wing_centroid(boom_area, spar_areas_hori, t_spar_v, z_c_airfoil, y_c_airfoil, n_stiff_up, n_stiff_low, N, b, c):
-    HalfspanValues = np.linspace(0, b / 2 - 0.00001, N)
-   
+def wing_centroid(boom_area, spar_areas_hori, t_spar_v, z_c_airfoil, y_c_airfoil, n_stiff_up, n_stiff_low, N, b, c, dx):
+    HalfspanValues = np.arange(0 + dx/2, b / 2 + dx/2, dx)
+    HalfspanValues = np.append([0], HalfspanValues)
+    HalfspanValues = np.append(HalfspanValues, b/2)   
     first_spar = sl.first_spar
     last_spar = sl.last_spar
-    spar_loc_sec = spar_loc(N, b, nr_spars, first_spar, last_spar, c)[0]
+    spar_loc_sec = spar_loc(N, b, nr_spars, first_spar, last_spar, c, dx)[0]
 
-    data_z_all_sec = airfoil_geometry(N,b, c)[0]
-    data_y_upper_all_sec = airfoil_geometry(N,b, c)[1]
-    data_y_lower_all_sec = airfoil_geometry(N,b, c)[2] 
+    data_z_all_sec = airfoil_geometry(N,b, c, dx)[0]
+    data_y_upper_all_sec = airfoil_geometry(N,b, c, dx)[1]
+    data_y_lower_all_sec = airfoil_geometry(N,b, c, dx)[2] 
 
     n_total = n_stiff_up+n_stiff_low
     
@@ -116,7 +112,7 @@ def wing_centroid(boom_area, spar_areas_hori, t_spar_v, z_c_airfoil, y_c_airfoil
             y_vertical_spar[i][k] = (y_loc_up_spar - y_loc_low_spar)/2
             spar_areas_verti[i][k] = l_spar_v*t_spar_v
     
-    airfoil_area, z_c_airfoil, y_c_airfoil = get_skin_centroid(N, b, c)
+    airfoil_area, z_c_airfoil, y_c_airfoil = get_skin_centroid(N, b, c, dx)
     z_centroid_all_sec = [] 
     y_centroid_all_sec = []      
     for i in range(len(HalfspanValues)):

@@ -73,10 +73,10 @@ def strut_cost(A_req_P, A_req_B, density, cost):
 def wing_price_weight(A_req_P, A_req_B, density, cost, N, t_skin, b, qcsweep):
             
     Max_area, strut_volume, strut_mass, cost_strut = strut_cost(A_req_P, A_req_B, density, cost)
-    airfoil_area, z_c_airfoil, y_c_airfoil = cw.get_skin_centroid(N, b, prac.calc_chord)
+    airfoil_area, z_c_airfoil, y_c_airfoil = cw.get_skin_centroid(N, b, prac.calc_chord, dx)
     boom_area = prac.boom_area_all
 
-    spar_areas_verti = cw.wing_centroid(boom_area, cw.spar_areas_hori, cw.t_spar_v, z_c_airfoil, y_c_airfoil, cw.n_stiff_up, cw.n_stiff_low, N, b, prac.calc_chord)[10]
+    spar_areas_verti = cw.wing_centroid(boom_area, cw.spar_areas_hori, cw.t_spar_v, z_c_airfoil, y_c_airfoil, cw.n_stiff_up, cw.n_stiff_low, N, b, prac.calc_chord, dx)[10]
     spar_areas_hori = cw.spar_areas_hori
     nr_stiff  = cw.n_stiff_low + cw.n_stiff_up
     Sweep_LE = m.atan(m.tan(qcsweep) - 4 / prac.AR * (-0.25 * (1 - prac.taper) / (1 + prac.taper))) # rad

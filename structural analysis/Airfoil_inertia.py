@@ -31,12 +31,14 @@ def s_airfoil(N,b,c):
 
     
     
-def I_zz_spars(l_spar_h ,t_spar_v, t_spar_h, N, b, c, boom_area):
+def I_zz_spars(l_spar_h ,t_spar_v, t_spar_h, N, b, c, boom_area, dx):
     
-    HalfspanValues = np.linspace(0, b / 2 - 0.00001, N)
-    airfoil_area, z_c_airfoil, y_c_airfoil = cw.get_skin_centroid(b, N, c)
+    HalfspanValues = np.arange(0 + dx/2, b / 2 + dx/2, dx)
+    HalfspanValues = np.append([0], HalfspanValues)
+    HalfspanValues = np.append(HalfspanValues, b/2)
+    airfoil_area, z_c_airfoil, y_c_airfoil = cw.get_skin_centroid(b, N, c, dx)
     
-    z_centroid_all_sec, y_centroid_all_sec, y_loc_spar_up, y_loc_spar_low, y_loc_stiff_up, y_loc_stiff_low, y_vertical_spar, z_loc_stiff_up, spar_loc_sec, z_loc_stiff_low, spar_areas_verti = cw.wing_centroid(boom_area, cw.spar_areas_hori, cw.t_spar_v, z_c_airfoil, y_c_airfoil, cw.n_stiff_up, cw.n_stiff_low, N, b, c)
+    z_centroid_all_sec, y_centroid_all_sec, y_loc_spar_up, y_loc_spar_low, y_loc_stiff_up, y_loc_stiff_low, y_vertical_spar, z_loc_stiff_up, spar_loc_sec, z_loc_stiff_low, spar_areas_verti = cw.wing_centroid(boom_area, cw.spar_areas_hori, cw.t_spar_v, z_c_airfoil, y_c_airfoil, cw.n_stiff_up, cw.n_stiff_low, N, b, c, dx)
 
 
     I_zz_spar = np.zeros((len(HalfspanValues), 1))
@@ -93,16 +95,20 @@ def I_zz_spars(l_spar_h ,t_spar_v, t_spar_h, N, b, c, boom_area):
 #I_zz_req = required_Izz(HalfspanValues, data_y_all_sec, y_centroid_all_sec, Mz)
 
 #first define the wing lay out that is required to obtain the right moment of inertia
-def wing_geometry(I_zz_req, I_zz_spars, N, b, c, boom_area):
-    
-    HalfspanValues = np.linspace(0, b / 2 - 0.00001, N)
-    airfoil_area, z_c_airfoil, y_c_airfoil = cw.get_skin_centroid(N, b, c)
-    z_centroid_all_sec, y_centroid_all_sec, y_loc_spar_up, y_loc_spar_low, y_loc_stiff_up, y_loc_stiff_low, y_vertical_spar, z_loc_stiff_up, spar_loc_sec, z_loc_stiff_low, spar_areas_verti = cw.wing_centroid(boom_area, cw.spar_areas_hori, cw.t_spar_v, z_c_airfoil, y_c_airfoil, cw.n_stiff_up, cw.n_stiff_low, N, b, c)
+def wing_geometry(I_zz_req, I_zz_spars, N, b, c, boom_area, dx):
+#    dx = 0.1
+    HalfspanValues = np.arange(0 + dx/2, b / 2 + dx/2, dx)
+    HalfspanValues = np.append([0], HalfspanValues)
+    HalfspanValues = np.append(HalfspanValues, b/2)
+    print(HalfspanValues)
+    airfoil_area, z_c_airfoil, y_c_airfoil = cw.get_skin_centroid(N, b, c, dx)
+    z_centroid_all_sec, y_centroid_all_sec, y_loc_spar_up, y_loc_spar_low, y_loc_stiff_up, y_loc_stiff_low, y_vertical_spar, z_loc_stiff_up, spar_loc_sec, z_loc_stiff_low, spar_areas_verti = cw.wing_centroid(boom_area, cw.spar_areas_hori, cw.t_spar_v, z_c_airfoil, y_c_airfoil, cw.n_stiff_up, cw.n_stiff_low, N, b, c , dx)
 
     single_boom_area = np.zeros((len(HalfspanValues), 1))
 #    print(z_centroid_all_sec)
 #    print(y_centroid_all_sec)
-    
+#    print(np.shape(I_zz_spars))
+
     for i in range(len(HalfspanValues)):
         
         y_2 = 0
@@ -119,18 +125,17 @@ def wing_geometry(I_zz_req, I_zz_spars, N, b, c, boom_area):
 #        I_yy_airfoil += airfoil_area[i]*(z_c_airfoil[i] - z_centroid_all_sec[i])**2
 #        I_yz_airfoil += airfoil_area[i]*(-y_c_airfoil[i] - (-1)*y_centroid_all_sec[i])*(z_c_airfoil[i] - z_centroid_all_sec[i])
 #        print(I_zz_req[i], I_zz_spars[i][0], I_zz_airfoil)
-
+#        print("airfoil_area", np.shape(airfoil_area))
+        print(np.shape(I_zz_req))
         single_boom_area[i][0] = (I_zz_req[i] - I_zz_spars[i][0] - I_zz_airfoil)/y_2
         
 #        print("y",y_loc_stiff_up)
 #        print(y_2*single_boom_area[i][0])
 #    plt.plot(HalfspanValues, single_boom_area)
 #    plt.show()
-<<<<<<< HEAD
-#    print("single_boom_area",single_boom_area*10000)
-=======
-    print("single_boom_area",single_boom_area*10000, len(single_boom_area))
->>>>>>> master
+    
+#    print("single_boom_area",single_boom_area*10000, len(single_boom_area))
+
     return max(single_boom_area)
 
 #print("single boom area", wing_geometry(I_zz_req, I_zz_spars, y_loc_stiff_up, y_loc_stiff_low)[0]) 
@@ -144,11 +149,13 @@ def wing_geometry(I_zz_req, I_zz_spars, N, b, c, boom_area):
 #calculate the wing moment of inertia per section 
     
 
-def inertia_wing(I_zz_spar, I_yy_spar, I_yz_spar, boom_area, N, b, c):
-    HalfspanValues = np.linspace(0, b / 2 - 0.00001, N)
-    airfoil_area, z_c_airfoil, y_c_airfoil = cw.get_skin_centroid(N, b, c)
+def inertia_wing(I_zz_spar, I_yy_spar, I_yz_spar, boom_area, N, b, c, dx):
+    HalfspanValues = np.arange(0 + dx/2, b / 2 + dx/2, dx)
+    HalfspanValues = np.append([0], HalfspanValues)
+    HalfspanValues = np.append(HalfspanValues, b/2)
+    airfoil_area, z_c_airfoil, y_c_airfoil = cw.get_skin_centroid(N, b, c,dx)
 
-    z_centroid_all_sec, y_centroid_all_sec, y_loc_spar_up, y_loc_spar_low, y_loc_stiff_up, y_loc_stiff_low, y_vertical_spar, z_loc_stiff_up, spar_loc_sec, z_loc_stiff_low, spar_areas_verti = cw.wing_centroid(boom_area, cw.spar_areas_hori, cw.t_spar_v, z_c_airfoil, y_c_airfoil, cw.n_stiff_up, cw.n_stiff_low, N, b, c)
+    z_centroid_all_sec, y_centroid_all_sec, y_loc_spar_up, y_loc_spar_low, y_loc_stiff_up, y_loc_stiff_low, y_vertical_spar, z_loc_stiff_up, spar_loc_sec, z_loc_stiff_low, spar_areas_verti = cw.wing_centroid(boom_area, cw.spar_areas_hori, cw.t_spar_v, z_c_airfoil, y_c_airfoil, cw.n_stiff_up, cw.n_stiff_low, N, b, c, dx)
    
 #    print("boom area in izz", boom_area)
     I_zz = np.zeros(len(HalfspanValues))
