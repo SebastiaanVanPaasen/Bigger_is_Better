@@ -35,11 +35,8 @@ def load_airfoil(filename):
 #filename = 'SC(2)-0616.txt'
 #print(load_airfoil(filename))
 
-def airfoil_geometry(N,b, c, dx):
+def airfoil_geometry(N,b, c, X_root):
 
-    HalfspanValues = np.arange(0 + dx/2, b / 2 + dx/2, dx)
-    HalfspanValues = np.append([0], HalfspanValues)
-    HalfspanValues = np.append(HalfspanValues, b/2)#    print(HalfspanValues[0])
     
     data_z_all_sec = []
     data_y_lower_all_sec = []
@@ -53,34 +50,34 @@ def airfoil_geometry(N,b, c, dx):
     switch = b/8
     slope = 1+ (tc_2-tc_1/switch)
     
-    for i in range(len(HalfspanValues)):
+    for i in range(len(X_root)):
              
-        if HalfspanValues[i]<(b/8):
+        if X_root[i]<(b/8):
             
-            data_z_order =  np.array(data_z1[0:int((len(data_y1)/2))])*c(HalfspanValues[i])
+            data_z_order =  np.array(data_z1[0:int((len(data_y1)/2))])*c(X_root[i])
             data_z_all_sec.append(data_z_order)
    
-            data_y_lower = np.array(data_y1[(int((len(data_y1)/2))):])*c(HalfspanValues[i])*slope
+            data_y_lower = np.array(data_y1[(int((len(data_y1)/2))):])*c(X_root[i])*slope
             data_y_lower_all_sec.append(data_y_lower)
-            data_y_upper = np.array(data_y1[0:int((len(data_y1)/2))])*c(HalfspanValues[i])*slope
+            data_y_upper = np.array(data_y1[0:int((len(data_y1)/2))])*c(X_root[i])*slope
             data_y_upper_all_sec.append(data_y_upper)
         else:
-            data_z_order =  np.array(data_z2[0:int((len(data_y2)/2))])*c(HalfspanValues[i])
+            data_z_order =  np.array(data_z2[0:int((len(data_y2)/2))])*c(X_root[i])
             data_z_all_sec.append(data_z_order)
    
-            data_y_lower = np.array(data_y2[(int((len(data_y2)/2))):])*c(HalfspanValues[i])
+            data_y_lower = np.array(data_y2[(int((len(data_y2)/2))):])*c(X_root[i])
             data_y_lower_all_sec.append(data_y_lower)
-            data_y_upper = np.array(data_y2[0:int((len(data_y2)/2))])*c(HalfspanValues[i])
+            data_y_upper = np.array(data_y2[0:int((len(data_y2)/2))])*c(X_root[i])
             data_y_upper_all_sec.append(data_y_upper)
             
             
         
     data_z_all_sec = np.asarray(data_z_all_sec)
-    data_z_all_sec = np.reshape(data_z_all_sec, (len(HalfspanValues),len(data_z_order)))
+    data_z_all_sec = np.reshape(data_z_all_sec, (len(X_root),len(data_z_order)))
     data_y_upper_all_sec = np.asarray(data_y_upper_all_sec)
-    data_y_upper_all_sec = np.reshape(data_y_upper_all_sec, (len(HalfspanValues),len(data_z_order)))
+    data_y_upper_all_sec = np.reshape(data_y_upper_all_sec, (len(X_root),len(data_z_order)))
     data_y_lower_all_sec = np.asarray(data_y_lower_all_sec)
-    data_y_lower_all_sec = np.reshape(data_y_lower_all_sec,(len(HalfspanValues),len(data_z_order)))
+    data_y_lower_all_sec = np.reshape(data_y_lower_all_sec,(len(X_root),len(data_z_order)))
     
 #    print(data_y_upper_all_sec[0])
 #    print(data_y_lower_all_sec[10])

@@ -2,12 +2,12 @@ from matplotlib import pyplot as plt
 import numpy as np  
 from airfoil_geometry import airfoil_geometry
 import parameter_requirements as pr
-import practiced_2 as prac
+import practised_ultimate as prac
 import centroid_wing as cw
 import Airfoil_inertia as ai
 
 
-def wing_stress(b, Mz, My, dx):
+def wing_stress(b, Mz, My, X_root):
     
 #    l_spar_h, t_spar_v, t_spar_h = cw.l_spar_h, cw.t_spar_v, cw.t_spar_h
     N = prac.L_wing / prac.dx
@@ -15,15 +15,12 @@ def wing_stress(b, Mz, My, dx):
 #    I_zz_spar, I_yy_spar, I_yz_spar = ai.I_zz_spars(l_spar_h, t_spar_v, t_spar_h, N, b ,prac.calc_chord,prac.boom_area_all)
 #    I_zz_req = pr.required_Izz(N, b, prac.calc_chord, Mz)
 #    
-    airfoil_area, z_c_airfoil, y_c_airfoil = cw.get_skin_centroid(b, N, prac.calc_chord, dx)
-    z_centroid_all_sec, y_centroid_all_sec, y_loc_spar_up, y_loc_spar_low, y_loc_stiff_up, y_loc_stiff_low, y_vertical_spar, z_loc_stiff_up, spar_loc_sec, z_loc_stiff_low, spar_areas_verti = cw.wing_centroid(prac.boom_area_all, cw.spar_areas_hori, cw.t_spar_v, z_c_airfoil, y_c_airfoil, cw.n_stiff_up, cw.n_stiff_low, N, b, prac.calc_chord, dx)
+    airfoil_area, z_c_airfoil, y_c_airfoil = cw.get_skin_centroid(b, N, prac.calc_chord, prac.dx)
+    z_centroid_all_sec, y_centroid_all_sec, y_loc_spar_up, y_loc_spar_low, y_loc_stiff_up, y_loc_stiff_low, y_vertical_spar, z_loc_stiff_up, spar_loc_sec, z_loc_stiff_low, spar_areas_verti = cw.wing_centroid(prac.boom_area_all, cw.spar_areas_hori, cw.t_spar_v, z_c_airfoil, y_c_airfoil, cw.n_stiff_up, cw.n_stiff_low, N, b, prac.calc_chord, X_root, prac.dx)
 #
 #    boom_area = ai.wing_geometry(I_zz_req, I_zz_spar, N, b, prac.calc_chord)[0][0]
 #    I_zz_wing, I_yy_wing, I_yz_wing = ai.inertia_wing(I_zz_spar, I_yy_spar, I_yz_spar, boom_area, N, b, prac.calc_chord)
 
-    HalfspanValues = np.arange(0 + dx/2, b / 2 + dx/2, dx)
-    HalfspanValues = np.append([0], HalfspanValues)
-    HalfspanValues = np.append(HalfspanValues, b/2)
     I_yy_wing = prac.I_yy_wing
     I_zz_wing = prac.I_zz_sections
     I_yz_wing = prac.I_yz_wing
@@ -37,20 +34,20 @@ def wing_stress(b, Mz, My, dx):
     Mz_wing = Mz
     My_wing = My
     
-    z_nodes = airfoil_geometry(N,b,prac.calc_chord)[0] #adapt to centroid
-    y_up_nodes = airfoil_geometry(N,b,prac.calc_chord)[1]  #adapt
-    y_low_nodes = airfoil_geometry(N,b,prac.calc_chord)[2]
+    z_nodes = airfoil_geometry(N,b,prac.calc_chord, X_root)[0] #adapt to centroid
+    y_up_nodes = airfoil_geometry(N,b,prac.calc_chord, X_root)[1]  #adapt
+    y_low_nodes = airfoil_geometry(N,b,prac.calc_chord, X_root)[2]
 
     
-    local_stress_up = np.zeros((len(HalfspanValues), len(z_nodes[0])))
-    local_stress_low = np.zeros((len(HalfspanValues), len(z_nodes[0])))
-    z = np.zeros((len(HalfspanValues), len(z_nodes[0])))
-    y_up = np.zeros((len(HalfspanValues), len(y_up_nodes[0])))
-    y_low = np.zeros((len(HalfspanValues), len(y_low_nodes[0])))
+    local_stress_up = np.zeros((len(X_root), len(z_nodes[0])))
+    local_stress_low = np.zeros((len(X_root), len(z_nodes[0])))
+    z = np.zeros((len(X_root), len(z_nodes[0])))
+    y_up = np.zeros((len(X_root), len(y_up_nodes[0])))
+    y_low = np.zeros((len(X_root), len(y_low_nodes[0])))
     
 #    print(y_up_nodes[0])
     
-    for i in range(len(HalfspanValues)):
+    for i in range(len(X_root)):
         for j in range(len(z_nodes[0])):
             z[i][j] = z_nodes[i][j] - z_centroid_all_sec[i]
             y_up[i][j] = -(y_up_nodes[i][j]-y_centroid_all_sec[i])
@@ -67,29 +64,32 @@ Mz = prac.Mz_dist
 My = prac.My_dist
 
 #print(wing_stress(60, Mz[0]))
-max_stress_up = np.zeros((len(prac.A_S_L),len(prac.X_root_plot)-1)) 
-max_stress_low = np.zeros((len(prac.A_S_L),len(prac.X_root_plot)-1)) 
-min_stress_up = np.zeros((len(prac.A_S_L),len(prac.X_root_plot)-1))
-min_stress_low = np.zeros((len(prac.A_S_L),len(prac.X_root_plot)-1)) 
+max_stress_up = np.zeros((len(prac.A_S_L),len(prac.X_root))) 
+max_stress_low = np.zeros((len(prac.A_S_L),len(prac.X_root))) 
+min_stress_up = np.zeros((len(prac.A_S_L),len(prac.X_root)))
+min_stress_low = np.zeros((len(prac.A_S_L),len(prac.X_root))) 
 
 for i in range(len(prac.A_S_L)):
     
-    z_pos, stress_up, stress_low = wing_stress(60, Mz[i], My[i])
+    z_pos, stress_up, stress_low = wing_stress(60, Mz[i], My[i], prac.X_root)
 #    print(np.shape(stress_up))
-    for j in range(len(prac.X_root_plot)-1):
+    for j in range(len(prac.X_root)):
 #        print(len(stress_up[j]))
         max_stress_up[i][j] = max(stress_up[j])
         max_stress_low[i][j] = max(stress_low[j])
         min_stress_up[i][j] = min(stress_up[j])
         min_stress_low[i][j] = min(stress_low[j])
         
-#print("max_stress",max_stress_up)
+print("max_stress up",max(max_stress_up))
+print("max_stress low",max(max_stress_low))
+print("min_stress up",min(min_stress_up))
+print("min_stress low",min(min_stress_low))
     
 #print(min(stress_up[0]))
 #print(max(stress_low[0]))
-#plt.plot(z_pos[0], stress_up[0])
-#plt.plot(z_pos[0], stress_low[0])
-#plt.show()
+plt.plot(z_pos[0], stress_up[0])
+plt.plot(z_pos[0], stress_low[0])
+plt.show()
 
 #R = 2.5
 #fus_sec = list(np.arange(0,31,1))

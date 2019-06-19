@@ -12,21 +12,21 @@ import matplotlib.pyplot as plt
 
 #------------------------------INPUTS------------------------------------------
 """Input values for the B737-800 aircraft"""
-MTOW       =       78220*9.81            #Maximum take-off weight [N]
-W_TO       =       63502.9318 *9.81      #MTOW   #Weight at take-off [N]
+MTOW       =        1466672.702     #78220*9.81            #Maximum take-off weight [N]
+W_TO       =       MTOW #63502.9318 *9.81      #MTOW   #Weight at take-off [N]
 W_land     =       58967.0081  *9.81    #65310*9.81 #Maximum landing weight [N]
 
-T_TO       =       96.3*1000*2#Total static thrust of all engines at take-off [N]
-T0         =       96.3*1000*2 #127.62*1000  #@ SEA LEVEL!!!
+T_TO       =       2*96.3*1000*2#Total static thrust of all engines at take-off [N]
+T0         =       2*96.3*1000*2 #127.62*1000  #@ SEA LEVEL!!!
 
-CL_maxto   =       2.2 
+CL_maxto   =       2.9 
 CL_max_land=       3.2
 CD_land    =       0.09
 CD_TO      =       0.07
 
-A          =       9.44       #Aspect ratio [-]
+A          =       15.       #Aspect ratio [-]
 e          =       0.85       #Oswald efficiency factor [-]
-S          =       124.60     #Surface area wing [m^2]
+S          =       227.1287294     #Surface area wing [m^2]
 
 psi_TO     =       342.06     #Specific Thrust N/airflow [N/kg/s]
 bypass     =       5.5        #Bypass ratio of the engine

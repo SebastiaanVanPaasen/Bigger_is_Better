@@ -5,7 +5,7 @@ Created on Fri May 17 10:03:19 2019
 @author: mathi
 """
 
-import practiced_2 as prac
+import practised_ultimate as prac
 import Airfoil_inertia as ai
 import centroid_wing as cw
 import numpy as np
@@ -70,13 +70,14 @@ def strut_cost(A_req_P, A_req_B, density, cost):
     return Max_area, strut_volume, strut_mass, strut_cost
 
 
-def wing_price_weight(A_req_P, A_req_B, density, cost, N, t_skin, b, qcsweep):
+def wing_price_weight(A_req_P, A_req_B, density, cost, N, t_skin, b, qcsweep, dx):
             
     Max_area, strut_volume, strut_mass, cost_strut = strut_cost(A_req_P, A_req_B, density, cost)
     airfoil_area, z_c_airfoil, y_c_airfoil = cw.get_skin_centroid(N, b, prac.calc_chord, dx)
     boom_area = prac.boom_area_all
+    X_root = np.arange(0, (b/2)+dx, dx)
 
-    spar_areas_verti = cw.wing_centroid(boom_area, cw.spar_areas_hori, cw.t_spar_v, z_c_airfoil, y_c_airfoil, cw.n_stiff_up, cw.n_stiff_low, N, b, prac.calc_chord, dx)[10]
+    spar_areas_verti = cw.wing_centroid(boom_area, cw.spar_areas_hori, cw.t_spar_v, z_c_airfoil, y_c_airfoil, cw.n_stiff_up, cw.n_stiff_low, N, b, prac.calc_chord,X_root, dx)[10]
     spar_areas_hori = cw.spar_areas_hori
     nr_stiff  = cw.n_stiff_low + cw.n_stiff_up
     Sweep_LE = m.atan(m.tan(qcsweep) - 4 / prac.AR * (-0.25 * (1 - prac.taper) / (1 + prac.taper))) # rad
@@ -107,12 +108,12 @@ def wing_price_weight(A_req_P, A_req_B, density, cost, N, t_skin, b, qcsweep):
     boom_mass = total_boom_volume * density
     boom_cost = boom_mass * cost
     
-    skin_volume = np.zeros(len(prac.X_root_plot))
+    skin_volume = np.zeros(len(prac.X_root))
 
-    for i in range(len(prac.X_root_plot)-1):
+    for i in range(len(prac.X_root)-1):
         
-        skin_volume[i] = ai.s_airfoil(N,b, prac.calc_chord)[i]*prac.dx*t_skin
-    
+        skin_volume[i] = ai.s_airfoil(N,b, prac.calc_chord, X_root)[i] *prac.dx *t_skin
+    print(skin_volume)
     skin_mass = sum(skin_volume) * density
     skin_price = skin_mass * cost
     
@@ -130,19 +131,20 @@ def wing_price_weight(A_req_P, A_req_B, density, cost, N, t_skin, b, qcsweep):
     
     return  skin_mass, spar_mass, boom_mass, total_mass, total_price
 
-t_skin = 0.002
+t_skin = 0.005
 N = prac.N
 b = prac.b
 sigma = 100 * 10 ** 6
 density = 2750
 cost = 3.63 
 qcsweep = (25/180) * np.pi
+dx = prac.dx
 
 A_req_P = strut_area_req_F(sigma)
 I_req, A_req_B, sigma_crit= strut_area_req_B()
 
 max_strut_area, strut_volume, strut_mass, cost_strut = strut_cost(A_req_P, A_req_B, density, cost)
-skin_mass, spar_mass, boom_mass, total_mass, total_price = wing_price_weight(A_req_P, A_req_B, density, cost, N, t_skin, b, qcsweep)
+skin_mass, spar_mass, boom_mass, total_mass, total_price = wing_price_weight(A_req_P, A_req_B, density, cost, N, t_skin, b, qcsweep, dx)
 
 print("area due to force", A_req_P)
 print()
