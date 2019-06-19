@@ -1,36 +1,31 @@
 import numpy as np
-from airfoil_geometry import airfoil_geometry
 import centroid_wing as cw
 
-#from stress_distribution_wing import wing_stress
 
-#N = 100 
-#b = lm.b#60.#47.83#39.56#41.76
-
-def s_airfoil(N,b,c):
-    
-    data_z_all_sec = airfoil_geometry(N,b,c)[0]
-    data_y_upper_all_sec = airfoil_geometry(N,b,c)[1]
-    data_y_lower_all_sec = airfoil_geometry(N,b,c)[2]
+def s_airfoil(data_z_all_sec, data_y_upper_all_sec, data_y_lower_all_sec):
     ds_sec_all = []
     s_all_sec = []
     
     for i in range(len(data_z_all_sec)):
-        for j in range(len(data_z_all_sec[0])-1):
-            ds_sec = np.sqrt((data_z_all_sec[i][j+1]-data_z_all_sec[i][j])**2+(data_y_upper_all_sec[i][j+1]-data_y_upper_all_sec[i][j])**2) + np.sqrt((data_z_all_sec[i][j+1]-data_z_all_sec[i][j])**2+(data_y_lower_all_sec[i][j+1]-data_y_lower_all_sec[i][j])**2)
-            ds_sec_all.append(ds_sec)
+        ds_sec = []
+        
+        for j in range(len(data_z_all_sec[0]) - 1):
+            ds_sec_up = np.sqrt((data_z_all_sec[i][j + 1] - data_z_all_sec[i][j]) ** 2 + (data_y_upper_all_sec[i][j + 1] - data_y_upper_all_sec[i][j]) ** 2)
+            ds_sec.append(ds_sec_up)
+            
+        ds_sec.append(data_y_upper_all_sec[i][-1] - data_y_lower_all_sec[i][-1])
     
-    ds_sec_all = np.asarray(ds_sec_all)
-    ds_sec_all = np.reshape(ds_sec_all, (len(data_z_all_sec),len(data_z_all_sec[0])-1))
-    
-    for i in range(len(ds_sec_all)):
-        s_all_sec.append(sum(ds_sec_all[i]))
+        for j in range(len(data_z_all_sec[0]) - 1):
+            ds_sec_low = np.sqrt((data_z_all_sec[i][::-1][j + 1] - data_z_all_sec[i][::-1][j]) ** 2 + (data_y_lower_all_sec[i][::-1][j + 1] - data_y_lower_all_sec[i][::-1][j]) ** 2)
+            ds_sec.append(ds_sec_low)
+                        
+        ds_sec_all.append(ds_sec)
+        s_all_sec.append(sum(ds_sec))
+
   
-    return(s_all_sec)
+    return s_all_sec, ds_sec_all
 
 
-    
-    
 def I_zz_spars(l_spar_h ,t_spar_v, t_spar_h, N, b, c, boom_area, dx):
     
     HalfspanValues = np.arange(0 + dx/2, b / 2 + dx/2, dx)
