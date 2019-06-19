@@ -61,10 +61,10 @@ def Radiative(h, Fnew):  #Fnew is the MTOW fuel fraction of our design
     Dif_F = (1 - (Fnew/F737))*100
     return Dif737, Dif_F
 
-print(Radiative(13000,0.0094))
+#print(Radiative(13000,0.0094))
     
 Vini = Velocity(.78,ISA_temp(12000))
-print("Velocity " + str(Vini))
+#print("Velocity " + str(Vini))
 
 def Costs(Vini, Fnew):
     F737 = 0.0102

@@ -34,12 +34,12 @@ Created on Thu May  9 14:08:37 2019
 
 import numpy as np
 
-x_ac_wing = 0.4 #this value needs to be read of a graph which requires (M at max cruise speed, AR, taper, sweep)
+x_ac_wing = 0.3 #this value needs to be read of a graph which requires (M at max cruise speed, AR, taper, sweep)
 
 def C_L_alpha_h(M_h_cruise, eta, hcsweeph, A_h):
     beta = np.sqrt(1-M_h_cruise**2)
     C_L_alpha_h = 2*np.pi*A_h/(2 + np.sqrt(4 + ((A_h*beta/eta)**2)*(1+ np.tan(hcsweeph)**2/beta**2)))
-    
+#    print("h", C_L_alpha_h)
     return C_L_alpha_h
 
 def C_L_alpha_w(M_w_cruise, eta, hcsweepw, A_w):
@@ -51,7 +51,7 @@ def C_L_alpha_w(M_w_cruise, eta, hcsweepw, A_w):
 def C_L_alpha_Ah(M_w_cruise, eta, hcsweepw, A_w, b_f, b, S, c_r):
     S_net = S - (b_f*c_r)
     C_L_alpha_Ah = C_L_alpha_w(M_w_cruise, eta, hcsweepw, A_w) * (1 + 2.15*(b_f/b))*(S_net/S) + (np.pi/2)*(b_f**2/S)
-    
+#    print("ah", C_L_alpha_Ah)
     return C_L_alpha_Ah
 
 def x_ac(b_n_1, b_n_2, b_n_3, b_n_4, l_n_1, l_n_2, l_n_3, l_n_4, x_ac_wing, M_w_cruise, eta, hcsweepw, A_w, b_f, b, c_r, S, h_f, l_fn, c, c_g, qcsweep, taper):
@@ -85,7 +85,7 @@ def de_da(l_h, b, qcsweep, m_tv, A_w, M_w_cruise, eta, hcsweepw):
     
     #de_da_check = 4./(A +2.) #sanity check
     #print("Sanity check = ", de_da_check)
-    
+#    print(de_da)
     return de_da
 
 def Sh_S_stability(x_cg, M_h_cruise, eta, hcsweeph, hcsweepw, A_w, A_h, M_w_cruise, b_f, b, S, l_h, qcsweep, m_tv, V_h_V,b_n_1, b_n_2, b_n_3, b_n_4, l_n_1, l_n_2, l_n_3, l_n_4, x_ac_wing, h_f, l_fn, c, c_r, c_g, taper, SM):

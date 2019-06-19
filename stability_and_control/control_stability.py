@@ -86,6 +86,8 @@ def control_stability_plot(x_cg, min_cg, max_cg, X_LEMAC_range, S_control, S_sta
 #    print("the X_LEMAC range " + str(X_LEMAC_range))
     Sh_S = np.linspace(0,2,10000)
     contr_trend = np.polyfit(x_cg, S_control, 1)
+#    print(S_stability)
+#    print(x_cg)
     stability_trend = np.polyfit(x_cg, S_stability, 1)
     a_control = contr_trend[0]
     b_control = contr_trend[1]
@@ -152,9 +154,9 @@ def control_stability_plot(x_cg, min_cg, max_cg, X_LEMAC_range, S_control, S_sta
 #    ax1.set_xlim(round(_min_[Sh_opt.index(min(Sh_opt))], 0)-1.,round(_min_[Sh_opt.index(min(Sh_opt))], 0)+1.5)
 #    
 #    ax1.grid(True)
-##    ax1.legend(loc="lower right")
-###    ax2.legend(loc="center right")
-#    plt.show()
+#    ax1.legend(loc="lower right")
+##    ax2.legend(loc="center right")
+    plt.show()
     
     xcg_aft = max_cg_opt_list[Sh_opt.index(min(Sh_opt))] * MAC + LEMAC_opt[Sh_opt.index(min(Sh_opt))] * l_fuselage
 #    print(LEMAC_opt[Sh_opt.index(min(Sh_opt))])

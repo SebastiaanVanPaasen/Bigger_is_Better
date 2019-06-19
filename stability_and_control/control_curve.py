@@ -70,31 +70,35 @@ def Sh_S_control(CL_H,CL_AH,l_h,Vh_V,x_cg,Cm_0,A,qcsweep,delta_flap,b,b_f0,b_fi,
     
 def Cm_ac(Cm_0,A,qcsweep,delta_flap,b,b_f0,b_fi,taper,c,c_f,dc_c_f,mu_2,mu_3,x_ac,CL_land,b_f,h_f,l_f,S,S_net,hcsweep,M_app,eta,CL_0):                                      #C_mac consists of three parts
     Cm_ac = Cm_ac_w(Cm_0,A,qcsweep) + dflap_Cm_ac(delta_flap,b,b_f0,b_fi,taper,c,c_f,dc_c_f,mu_2,mu_3,A,qcsweep,x_ac,CL_land) + dfus_Cm_ac(b_f,h_f,l_f,b,c,S,S_net,A,hcsweep,M_app,eta,CL_0)                #due to wing, due to fuselage and due to flaps
-    print("Cm_ac", Cm_ac)
+#    print("Cm_ac", Cm_ac)
+#    Cm_ac = 0.05
     return Cm_ac
     
     
     
 def Cm_ac_w(Cm_0,A,qcsweep):                                                    #Cm_ac change due to wing 
     Cm_ac_w = Cm_0*((A*np.cos(qcsweep)**2.)/(A + 2.*np.cos(qcsweep)))
-    print(Cm_ac_w)
+#    print("Wing",Cm_ac_w)
     return Cm_ac_w
     
     
     
-def dfus_Cm_ac(b_f,h_f,l_f,b,c,S,S_net,A,hcsweep,M_app,eta,CL_0):               #Cm_ac change due to fuselage
+def dfus_Cm_ac(b_f,h_f,l_f,b,c,S,S_net,A,hcsweep,M_app,eta,CL_0): #Cm_ac change due to fuselage
+#    M_app = 0.19
+#    CL_0 = 1.21
     beta = np.sqrt(1. - M_app**2)
     CL_alpha_w = (2.*np.pi*A)/(2. + np.sqrt(4. + ((A*beta)/eta)**2 +  (1. + (np.tan(hcsweep)**2. / beta**2.))))
     CL_alpha_AH = CL_alpha_w * (1. + 2.15*(b_f/b)) * (S_net/S) + (np.pi/2.)*(b_f**2./S)
-    
-    dfus_Cm_ac = -1.8*(1. - (2.5*b_f/b))*((np.pi*b_f*h_f*l_f)/(4.*S*c))*(CL_0/CL_alpha_AH)
-    print(dfus_Cm_ac)
+#    print(CL_alpha_AH)
+    dfus_Cm_ac = -1.8*(1. - (2.5*b_f/l_f))*((np.pi*b_f*h_f*l_f)/(4.*S*c))*(CL_0/CL_alpha_AH)
+#    print(dfus_Cm_ac)
     return dfus_Cm_ac
 
 
 
 def dflap_Cm_ac(delta_flap,b,b_f0,b_fi,taper,c,c_f,dc_c_f,mu_2,mu_3,A,qcsweep,x_ac,CL_land):
-                                                                                #Cm_ac due to flaps
+#    delta_flap = np.deg2rad(20)                          #Cm_ac due to flaps
+    
     dflap_Cl_max = 2.*delta_flap * np.sin(delta_flap)                           #change in airfoil Cl_max due to flaps
                                                                                 #calculated using thin airfoil theory as initial guess
     Swf_S = ((b_f0-b_fi)/b)*(1. + ((1.-taper)/(1.+taper))*(1.-((b_f0+b_fi)/b))) #ratio flap affected area over total are

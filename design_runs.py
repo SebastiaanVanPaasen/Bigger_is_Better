@@ -76,9 +76,9 @@ def run_designs(design_names):
 #        finals.append(wingpos_results)
         
     final_result = np.asarray(names)
-    plt.plot(pas_list, above_list, 'rx')
-    plt.plot(pas_list, below_list, 'bx')
-    plt.show()
+#    plt.plot(pas_list, above_list, 'rx')
+#    plt.plot(pas_list, below_list, 'bx')
+#    plt.show()
 
 #    print(final_result)
     for i in range(len(finals)):

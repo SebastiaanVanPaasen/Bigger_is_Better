@@ -19,7 +19,7 @@ import matplotlib.pyplot as plt
 #theta_flap = 30*np.pi/180 #flap deflection in rad
 #r = distance to oberserver as prescribed by the noise measurement points
 
-robs = 1.8 #height of the observer
+robs = 1.75 #height of the observer
 
 A_w = 227.12
 b_w = 58.37
@@ -309,6 +309,7 @@ plt.plot(freq,SPL_slats,"r", label = "Slats")
 plt.plot(freq,SPL_flaps,"c--", label = "Flaps")
 plt.plot(freq, SPL_gear,"orange",label = "Main gear")
 plt.plot(freq, SPL_nose,"m--",label = "Nose gear")
+plt.plot(freq,SPL_cor,"y", label = "Tot corr.")
 
 plt.title("Airframe noise") 
 plt.grid(True)
