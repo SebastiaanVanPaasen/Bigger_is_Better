@@ -47,7 +47,7 @@ def cg_seats(Pseat, N_rows_above, N_rows_below, wing_start, start_pax, space_bel
     n_rows1 = int((wing_start - start_pax)/Pseat)
     loc_front = n_rows1
     xcg_seats = [start_pax]
-    for i in range(max([N_rows_below, N_rows_above]) - 2):
+    for i in range(max([N_rows_below, N_rows_above]) - 1):
         
         xcg_seats.append(xcg_seats[i] + Pseat)
         if i == n_rows1:

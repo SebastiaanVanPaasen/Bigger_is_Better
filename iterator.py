@@ -67,7 +67,7 @@ def main_iterator(cf, char, env, eng, opt, tails):
 #    f_tc = l_tailcone / d_fuselage
 #    f_nc = l_nosecone / d_fuselage
     c_root = 5.
-    x_LE_root = 30.
+    x_LE_root = 20.
     LE_sweep =  0.52
     taper = 0.3
     d_fuselage = 6.
@@ -151,7 +151,7 @@ def main_iterator(cf, char, env, eng, opt, tails):
                                                                             [A_h, tap_h, QC_sweep_h])
          
             l_h, c_root_h, c_tip_h, b_h, S_h = tail_h[0], tail_h[1], tail_h[2], tail_h[3], tail_h[4]
-            c_root_v, c_tip_v, b_v, S_v = tail_v[0], tail_v[1], tail_v[2], tail_v[3] 
+            c_root_v, c_tip_v, b_v, S_v, x_v = tail_v[0], tail_v[1], tail_v[2], tail_v[3], tail_v[4]
             opt_Sh_S = S_h / S
             opt_X_LEMAC = x_lemac 
 #            print("Old surface =", opt_Sh_S)
@@ -165,23 +165,26 @@ def main_iterator(cf, char, env, eng, opt, tails):
             b_f0 = 0.4 * b  #end of flap span
             b_fi = 0.1 * b #begin of flap span
             
-            old_S_h = S_h
+#            old_S_h = S_h
             S_h = opt_Sh_S * S
-            S_v = S_h / old_S_h * S_v
+#            S_v = S_h / old_S_h * S_v
             
             x_lemac = opt_X_LEMAC
 #            print("The leading edge of mac " + str(x_lemac))
-            tail_h = _calc_h_tail_II(xcg_aft, A_h, l_fuselage, tap_h, QC_sweep_h, S_h)
-            tail_v = _calc_v_tail_II(A_v, l_fuselage, tap_v, S_v, QC_sweep_v)
-             
+            
+            tail_v = _calc_v_tail_II(x_v, xcg_aft, b, S, A_v, l_fuselage, tap_v, S_v, QC_sweep_v)
+            x_le_v, sweep_LE_v, y_MAC_v, MAC_v, c_root_v, c_tip_v, b_v, x_v, x_le_tip_v, S_v = tail_v
+            tail_h = _calc_h_tail_II(xcg_aft, A_h, l_fuselage, tap_h, QC_sweep_h, S_h, x_le_tip_v)
+            x_le_h, sweep_LE_h, y_MAC_h, MAC_h, l_h, c_root_h, c_tip_h, b_h = tail_h
+#            print(x_le_tip_v)
             min_cg, max_cg, X_LEMAC_range, min_cg_range = potato(l_nosecone, W_TO, ip.xcg_eng, ip.l_nac, mass_fractions, tail_h, 
                                                          tail_v, ip.s_m, cg_locations, x_lemac, emp_constants, mac)
             
             Y_MAC = (b / 6.) * ((1 + 2 * taper) / (1 + taper))
             
             x_cg = np.linspace(min(min_cg), max(max_cg))
-            x_le_h, sweep_LE_h, y_MAC_h, MAC_h, l_h, c_root_h, c_tip_h, b_h = tail_h
-            x_le_v, sweep_LE_v, y_MAC_v, MAC_v, c_root_v, c_tip_v, b_v = tail_v
+            
+            
             HC_sweep_h = determine_half_chord_sweep(c_tip_h, QC_sweep_h, c_root_h, b_h)
             x_LE_root = x_lemac - LE_sweep * Y_MAC
             
@@ -227,14 +230,14 @@ def main_iterator(cf, char, env, eng, opt, tails):
             
             
             C_L_alpha_Ah_landing = C_L_alpha_Ah(M_w_landing, ip.eta, HC_sweep, A, fuselage_design[1], b, S, c_root)  
-            print("cl_alpha_h", C_L_alpha_Ah_landing)
+#            print("cl_alpha_h", C_L_alpha_Ah_landing)
             
 #            C_L_Ah_landing = C_L_alpha_Ah_landing * ip.alpha_land
-            C_L_Ah_landing = 2.3
+            C_L_Ah_landing = 3.3
 #            print(C_L_Ah_landing)
             mu_2, mu_3 = c_s_coefficients(taper)
             
-            
+            print()
             S_netfus = S - (fuselage_design[1] * c_root)
             control_list = Sh_S_control(ip.CL_H, C_L_Ah_landing, l_h, ip.V_h_norm, x_cg, ip.Cm_0, A, QC_sweep,
                          ip.delta_flap ,b ,b_f0 ,b_fi ,taper , mac, c_f, ip.dc_c_f, mu_2, mu_3, ip.x_ac, ip.CL_l_max,
@@ -245,6 +248,8 @@ def main_iterator(cf, char, env, eng, opt, tails):
             opt_X_LEMAC, opt_Sh_S, xcg_aft, _min_, _max_ = control_stability_plot(x_cg, min_cg, max_cg, X_LEMAC_range, control_list, stability_list, mac, l_fuselage)
 #            print(x_LE_root,opt_X_LEMAC, opt_Sh_S, _min_, _max_)
 #            print(opt_Sh_S)
+            print(opt_Sh_S)
+            print("cg  ", _min_, _max_, (_max_ - _min_))
 #        print("tail surface area " + str(S_h/S))
         # Calculate the accompanying tail sizes ---------------------------
         HC_sweep_h = determine_half_chord_sweep(c_tip_h, QC_sweep_h, c_root_h, b_h)
@@ -268,17 +273,20 @@ def main_iterator(cf, char, env, eng, opt, tails):
                       b_v, c_root_v, QC_sweep_v, tap_v, tail, 12, 5)
 
         new_Oswald, CD_cr = run_avl(CL_cr, M_cr, CD_0)
-        CL_alpha = (find_clalpha(M_cr, CD_0, "conv_wing.avl") * 180) / np.pi
+        CL_alpha = (find_clalpha(0., CD_0, "conv_wing.avl") * 180) / np.pi
         print("cl_alpha", CL_alpha)
+        
         # Determine maximum loads based on manoeuvring and gust envelope------------------------------------------------
         manoeuvring_loads = manoeuvring_envelope(W_TO, H_cr, ip.CL_cr_max, S, V_cr)
-        gust_loads = gust_envelope(W_TO, H_cr, CL_alpha, S, mac, V_cr, manoeuvring_loads[4])
-
+        gust_loads = gust_envelope(W_TO, H_cr, CL_alpha, S, mac, V_cr, manoeuvring_loads[4][1])
+#        print(gust_loads[1])
         V_D = manoeuvring_loads[4][3]
-
-        n_max_manoeuvring = max(manoeuvring_loads[1])
+#        print("manoeuvring", W_TO, H_cr, ip.CL_cr_max, S, V_cr)
+#        print("gust", W_TO, H_cr, CL_alpha, S, mac, V_cr, manoeuvring_loads[4][1])
+        n_max_manoeuvring = max(manoeuvring_loads[2])
         n_max_gust = max(gust_loads[1])
-
+#        print(n_max_gust)
+#        print(n_max_manoeuvring)
         if n_max_manoeuvring > n_max_gust:
             n_ult = 1.5 * n_max_manoeuvring
 #            v_ult =1 manoeuvring_loads[0][list(manoeuvring_loads[1]).index(n_max_manoeuvring)]
@@ -380,7 +388,7 @@ def main_iterator(cf, char, env, eng, opt, tails):
         W_e_frac = W_E_II / W_TO
 
         percentage = abs((W_E_II - W_E_I) / W_E_I)
-
+        print(W_TO)
 #        print("the percentage equals: " + str(percentage))
 #        print(iteration)
         percentages.append(percentage)
@@ -389,8 +397,8 @@ def main_iterator(cf, char, env, eng, opt, tails):
 #        print(x_LE_root)
         print(opt_X_LEMAC)
 #    print(percentages)
-    plt.plot(iterations, percentages)
-    plt.show()
+#    plt.plot(iterations, percentages)
+#    plt.show()
     print("Percentage", percentage)
 #    print()
 #    print(opt_X_LEMAC)

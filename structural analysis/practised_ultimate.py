@@ -430,8 +430,7 @@ for idx in range(len(A_S_L)):
         L_str[idx] = L_strut
 #        print("length strut", L_strut)
     
-    #    results = strut_opt(A_S_L[idx], A_E, cl_polar, dx, I_zz_sections[::-1], gamma, L_strut) dx, angle, L_s, a_s, a_e, cl_polar, I_wing
-    #    print(L_strut)
+
         F_str, d_str, d_str_v, d_w, all_forces = indet_sys(dx, gamma, L_strut, A_S_L[idx], A_E, cl_polar, I_zz_sections)
 #        print("Strut force and deflections")
 #        print("Strut force", F_str)
