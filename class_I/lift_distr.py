@@ -1,7 +1,7 @@
 import numpy as np
 import subprocess
 import os
-
+import math as m
 
 #from loading_and_moment_diagrams import c
 #ROOT_DIR = os.path.dirname(os.path.abspath("structural analysis"))
@@ -19,9 +19,10 @@ import os
 #
 def make_avl_file():
     # B777 used as reference aircraft
-    S, span, taper, qc_sweep = 238, 60, 0.297, 0.5133 
-    Cr = 6.14
+    S, span, taper, sweep0, AR = 51.52, 14.36, 0.399, 0.64229, 4.0
+    Cr = 5.13
     Ct = Cr * taper
+    qc_sweep= m.atan(m.atan(sweep0)+(4./AR)*(-0.25*(1-taper)/(1+taper)))
     
     chords = [Cr, Ct]
     MAC = Cr*(2/3)*((1+taper+taper**2)/(1+taper))
@@ -66,10 +67,10 @@ def make_avl_file():
             print("AFILE" + "\n""n2414.dat.txt", file=text_file)
             
 #            
-#make_avl_file()
+make_avl_file()
 
 def lift_distribution(CL):        
-    p = subprocess.Popen(r"C:\Users\mathi\Documents\DSE\Bigger_is_Better\avl\avl.exe", stdin=subprocess.PIPE, universal_newlines=True)
+    p = subprocess.Popen(r"C:\Users\Mels\Desktop\3e jaar TUDelft\DSE\code\Bigger_is_Better\avl\avl.exe", stdin=subprocess.PIPE, universal_newlines=True)
 #    p = subprocess.Popen(r"C:\Users\sebas\OneDrive\Documents\DSE\Bigger_is_Better\avl\avl.exe", stdin=subprocess.PIPE, universal_newlines=True)
 
     set_CL = "a c " + str(CL)
@@ -87,7 +88,7 @@ def lift_distribution(CL):
     os.remove("endresult")
     return(elements)
     
-#output_avl = lift_distribution(0.8)
+output_avl = lift_distribution(0.8)
 
 
 def get_correct_data(output_avl):
@@ -110,4 +111,4 @@ def get_correct_data(output_avl):
 #    print(cl, cl_2)
     return x_pos,cl_2, cd 
     
-#x_pos,cl,cd = get_correct_data(output_avl)
+x_pos,cl,cd = get_correct_data(output_avl)
