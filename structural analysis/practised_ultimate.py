@@ -53,7 +53,7 @@ W_fuel = 170698
 W_N = 25875
 
 N_eng = 2
-W_eng_v = 4100 * cc.g_0 + W_N / N_eng
+W_eng_v = 4760 * cc.g_0 + W_N / N_eng
 Rho_fuel = 0.804 * 1000
 
 
