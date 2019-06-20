@@ -3,16 +3,15 @@ import matplotlib.pyplot as plt
 import constants_and_conversions as cc
 
 
-def manoeuvring_envelope(w_to, h, cl_max_pos, cd_at_clmax,S, v_cruise):
+def manoeuvring_envelope(w_to, h, cl_max_pos, S, v_cruise):
     # construct the manoeuvring plot
     n_max = min(3.8, max(2.5, 2.1 + (24000 / (((w_to / cc.g_0) / cc.lbs_to_kg) + 10000))))
     n_min = -1
     
-    
     rho = cc.Rho_0 * ((1 + (cc.a * h) / cc.Temp_0) ** (-(cc.g_0 / (cc.R_gas * cc.a) + 1)))
-    cn_max_pos = (cl_max_pos**2 + cd_at_clmax**2)**(1/2)
+    cn_max_pos = 1.1*cl_max_pos
     print(rho)
-    cn_max_neg = (cl_max_pos*0.8**2 + cd_at_clmax*0.8**2)**(1/2)#0.8 * cn_max_pos
+    cn_max_neg =1.1* 0.8*cl_max_pos#0.8 * cn_max_pos
 
     n_lim_pos = np.arange(0., n_max + 0.1, 0.1)
     n_lim_pos = np.append(n_lim_pos, n_max)
@@ -112,8 +111,8 @@ def gust_envelope(w_to, h, cl_alpha, S, c, v_cruise, Vs1):
 
 def construct_envelope():
     # Note: used values are only estimation and are definitely not correct!
-    v_pos,v_neg, n_lim_pos, n_lim_neg,speeds = manoeuvring_envelope(1466672, 9000, 1.6, 0.08287, 227, 235)
-    V_gust, n_gust_pos, n_gust_neg = gust_envelope(1466672, 9000, 5.6, 227, 4.247, 235, speeds[1]) #w_to, h, cl_alpha, S, c, v_cruise, Vs1
+    v_pos,v_neg, n_lim_pos, n_lim_neg,speeds = manoeuvring_envelope(1520276, 9000, 1.52, 211.2, 218)
+    V_gust, n_gust_pos, n_gust_neg = gust_envelope(1520276, 9000, 6.2, 211, 4.03, 218, speeds[1]) #w_to, h, cl_alpha, S, c, v_cruise, Vs1
 #    print(n_gust_pos, n_gust_neg)
     plt.plot(v_pos, n_lim_pos)
     plt.plot(v_neg, n_lim_neg)
@@ -122,7 +121,7 @@ def construct_envelope():
 
     plt.show()
 
-    return V_gust, n_gust_pos, n_gust_neg
+    return V_gust, n_gust_pos, n_gust_neg, speeds
 
 
 

@@ -43,12 +43,12 @@ E_wing = 69 * (10 ** 9)
 I_zz_wing = 0.25
 L_wing = b / 2
 
-H_cr = 9000
-V_cr = 218
+H_cr = 0
+V_cr = 65
 rho_cr = cc.Rho_0 * ((1 + (cc.a * H_cr) / cc.Temp_0) ** (-(cc.g_0 / (cc.R_gas * cc.a) + 1)))
 CD_0_cr = 0.02114
-#print(rho_cr)
-W_TO = 1520276
+print(rho_cr)
+W_TO = 1520276 - 170698
 W_fuel = 170698
 W_N = 25875
 
@@ -165,7 +165,7 @@ def deter_weight(w_wing, x, width):
     
 
     for i in range(len(x)):
-        W = np.append(W, Volumes[i] * w_spec)
+        W = np.append(W, Volumes[i] * w_spec * 1.02)
         
 #    plt.plot(x, W)
 #    plt.show()
@@ -207,7 +207,7 @@ def indet_sys(dx, angle, L_s, a_s, a_e, cl_polar, I_zz_sections):
     X_tip = np.arange(L_wing - dx / 2, 0, -dx)
 
 
-    x_start = L_wing * 0
+    x_start = L_wing * 0.28
     
     alpha = np.radians(3)
     n = 3.75
@@ -299,11 +299,11 @@ def strut_opt(A_S, A_E, cl_curve, width, I_wing, gamma, L_strut):
     return strut_force, deflection, all_forces
 
 
-A_E = 23.25
+A_E = 21.15 #7m from center of fuselage
 A_S_L = np.arange(5.05, 5.55, 0.5)
 
 cl = W_TO / (0.5 * rho_cr * (V_cr ** 2) * S)
-
+print(cl)
 cl_polar, cd_polar = get_data()
 
 dx = 0.1
@@ -457,7 +457,7 @@ for idx in range(len(A_S_L)):
         d = d_lift + d_weight + d_fuel_weight + d_strut + d_engine
     
     x_start = 0*(b/2)
-#    plt.figure()
+    plt.figure()
     plt.plot(X_tip[::-1], all_forces[2], label = "start fuel tank " + str(round(x_start,2)))
     plt.xlabel("X-position [m]")
     plt.ylabel("Fuel weigth [N]")
