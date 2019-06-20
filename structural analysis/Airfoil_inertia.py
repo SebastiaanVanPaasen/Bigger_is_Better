@@ -1,6 +1,6 @@
 import numpy as np
 import centroid_wing as cw
-
+from airfoil_geometry import airfoil_geometry
 
 #N = 100 
 #b = lm.b#60.#47.83#39.56#41.76

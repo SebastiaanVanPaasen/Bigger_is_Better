@@ -124,5 +124,6 @@ def construct_envelope():
     return V_gust, n_gust_pos, n_gust_neg, speeds
 
 
+print(construct_envelope())
 
 print(construct_envelope())

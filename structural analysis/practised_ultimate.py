@@ -209,7 +209,7 @@ def indet_sys(dx, angle, L_s, a_s, a_e, cl_polar, I_zz_sections):
 
     x_start = L_wing * 0.28
     
-    alpha = np.radians(3)
+    alpha = np.radians(0)
     n = 3.75
     
     
@@ -360,9 +360,9 @@ for idx in range(len(A_S_L)):
         
         
         I_zz_sections, I_yy_wing, I_yz_wing = ai.inertia_wing(I_zz_spar, I_yy_spar, I_yz_spar, boom_area_all[idx], N, b, calc_chord, X_root, dx)
-#    
+#       
 #    print("I_zz_sections",I_zz_sections)
-
+        I_zz_sections = np.array(293 * [0.00499])
         strut_loc_wing = L_wing - A_S_L[idx] - pos_from_centerline
        
         gamma = np.arctan(strut_heigth / strut_loc_wing)
@@ -443,6 +443,8 @@ for idx in range(len(A_S_L)):
         d_lift = 0
         d_weight = 0
         d_fuel_weight = 0
+        diff = []
+        diff_2 = []
         
         for i in range(len(X_tip)):
             d_lift += deter_d_force(X_tip[i], X_root, Lift[i], 0, I_zz_sections[::-1])
@@ -464,6 +466,14 @@ for idx in range(len(A_S_L)):
     plt.show()
     plt.legend()
         
+        for i in range(1, len(d)):
+            diff.append(d[i - 1] - d[i])
+            
+ 
+        for i in range(1, len(diff)):
+            diff_2.append(diff[i - 1] - diff[i])
+            
+
 #    print("deflection of components after strut calculation")
 #    print(d_lift[int((A_S_L[idx])/dx)])
 #    print(d_weight[int((A_S_L[idx])/dx)])
@@ -506,8 +516,37 @@ for idx in range(len(A_S_L)):
 ##    plt.plot(X_tip, d_strut, label = "strut for pos " + str(A_S_L[idx]))
 ##    plt.plot(X_tip, d_engine, label = "engine for pos " + str(A_S_L[idx]))
 #    plt.plot(X_root[::-1], d, label = "Deflection for pos " + str(A_S_L[idx]))
+#    plt.plot(X_root[::-1], d_lift, label = "lift ")#for pos " + str(A_S_L[idx]))
+#    plt.plot(X_root[::-1], d_weight, label = "weight")# for pos " + str(A_S_L[idx]))
+#    plt.plot(X_root[::-1], d_fuel_weight, label = "fuel weight")# for pos " + str(A_S_L[idx]))
+#    plt.plot(X_root[::-1], d_strut, label = "strut")# for pos " + str(A_S_L[idx]))
+#    plt.plot(X_root[::-1], d_engine, label = "engine")# for pos " + str(A_S_L[idx]))
+    plt.figure()
+    plt.title("Deflection and its derivatives along the half span")
+
+    plt.subplot(1, 3, 1)
+    plt.plot(X_root[::-1], d, label = "Deflection")# for pos " + str(A_S_L[idx]))
+    plt.title("Deflection [m]")
+    plt.xlabel("X-position [m]")
+    
+    plt.subplot(1, 3, 2)
+    plt.plot(X_root[::-1][1:], diff, label = "First derivative")
+    plt.title("First derivative of the deflection")
+    plt.xlabel("X-position [m]")
+    
+    plt.subplot(1, 3, 3)
+    plt.plot(X_root[::-1][2:], diff_2, label = "Second derivative")
+    plt.title("Second derivative of the deflection")
+    
+    plt.xlabel("X-position [m]")
+    
+    plt.show()
+    
+    
+    
 #    plt.xlabel("X-position [m]")
 #    plt.ylabel("Deflection [m]")
+#    plt.title("Deflection of loading components along the span")
 #    plt.title("Deflection along the span")
 #    plt.legend()
 #
@@ -521,5 +560,4 @@ for idx in range(len(A_S_L)):
 #    
     plt.show()
 print(boom_area_all)
-
 
