@@ -1,16 +1,16 @@
 import numpy as np
 from math import *
 ## define forces
-fuse_W = -216209.34707243
-empennage_W = -35689.77931
-fuse_L = 30000
+fuse_W = -268536
+Vertical_tail = -10075
+fuse_L = 
 wing_component = 150000
-h_tail_component = 15000
-v_tail_component = 8000
-strut = 500000
+h_tail_component = 298056
+v_tail_component = 0.0
+strut = 
 
 ## define positions
-fuse_length = 51,40743687
+fuse_length = 49.3
 wing_pos = 20
 h_tail_pos = 51
 v_tail_pos = 48

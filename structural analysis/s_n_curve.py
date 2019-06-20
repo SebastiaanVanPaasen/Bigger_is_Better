@@ -4,7 +4,7 @@ from matplotlib import pyplot as plt
 ##Fatigue 
 
 ##Aluminium properties:
-S_ult =(0.667)*(570*10**6)
+S_ult =(0.667)*(485*10**6)
 material = 'Aluminium'
 load_type = 'bending'
 Kt = 2
@@ -81,7 +81,7 @@ elif Se == 'NvT':
         Sn = a*(Nf[i]**b)
         Sn_complete.append(Sn)
 
-life_time = (round((6*7*365*27*8)/1000)*1000)
+life_time = (round((7*6*365*27)/1000)*1000)
 Nf = list(Nf)
 pos = Nf.index(life_time)
 stress_life_time = Sn_complete[pos]
@@ -91,8 +91,9 @@ load = [0,stress_life_time,stress_life_time]
 
 
             
-plt.plot(Nf,Sn_complete,label='Aluminium S-N Curve')
-plt.plot(cycles,load, linestyle='dashed',label='Fatigue stress at design range')
+plt.plot(Nf,Sn_complete,label='Aluminum S-N Curve (fuselage), R=-0.5')
+plt.grid(True)
+plt.plot(cycles,load, linestyle='dashed',label='Fatigue stress at design range (fuselage)')
 plt.ylim(0,(400*10**6))
 plt.legend(loc='upper right')
 plt.xscale('log')

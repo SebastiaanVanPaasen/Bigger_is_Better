@@ -22,23 +22,23 @@ D_fus = 7.3
 #A_strut = 0.25 * np.pi * ((2 * R_strut) ** 2) ##
 E_strut = 69 * (10 ** 9)  
 AR = 15
-taper = 0.297 
-MAC = 4.247
+taper = 0.357 
+MAC = 4.03
 
-cr = 5.928
-ct = 1.85
-b = 58.4
-S = 227.12
+cr = 5.53
+ct = 1.97
+b = 56.3
+S = 211.19
 dihedral = (1.5/180) * np.pi
 
-LE_root = 18.36
+LE_root = 19.11
 pos_of_chord = 0.25
-sweep = 0.436
+sweep = 0
 pos_from_centerline = 2.5
 strut_loc_fus = LE_root + pos_of_chord * cr + np.tan(sweep)* (b/2)
 strut_heigth = D_fus - np.tan(dihedral)*(b/2) - 1.
 
-W_wing = 173992
+W_wing = 156375
 E_wing = 69 * (10 ** 9)
 I_zz_wing = 0.25
 L_wing = b / 2
@@ -47,13 +47,12 @@ H_cr = 9000
 V_cr = 235
 rho_cr = cc.Rho_0 * ((1 + (cc.a * H_cr) / cc.Temp_0) ** (-(cc.g_0 / (cc.R_gas * cc.a) + 1)))
 CD_0_cr = 0.0189
-
-W_TO = 1466672
-W_fuel = 193991
-W_N = 23990.5
+W_TO = 1520276
+W_fuel = 170698
+W_N = 25875
 
 N_eng = 2
-W_eng_v = 4100 * cc.g_0 + W_N / N_eng
+W_eng_v = 4760 * cc.g_0 + W_N / N_eng
 Rho_fuel = 0.804 * 1000
 
 
@@ -86,10 +85,10 @@ def deter_d_force(applic, x, force, a_s, I_wing):
     return d_force
 
 
-def get_data(CL):
+def get_data():
 #    make_avl_file()
     
-    output_avl = lift_distribution(round(CL,2))
+    output_avl = lift_distribution()
     x_pos, cl, cdi = get_correct_data(output_avl, MAC)
 #    print(x_pos, cl, cdi)
 
@@ -191,40 +190,31 @@ def deter_fuel(w_fuel, volumes, density, x, x_start):
     
 #    print(W)
 #    print(sum(W))
-#    plt.plot(x, W)
+#    plt.figure()
+#    plt.plot(x, W, label = "start fuel tank " + str(round(x_start,2)))
+#    plt.xlabel("X-position [m]")
+#    plt.ylabel("Fuel weigth [N]")
 #    plt.show()
+#    plt.legend()
     
     return W
             
     
 def indet_sys(dx, angle, L_s, a_s, a_e, cl_polar, I_zz_sections):   
     X_root = np.arange(0, L_wing+dx, dx)
-    #X_root = np.append([0 + dx / 4], X_root)
-    #X_root = np.append([0], X_root)
-    #X_root = np.append(X_root, [L_wing-dx/4])
-    #X_root = np.append(X_root, [L_wing])
-    
+ 
     X_tip = np.arange(L_wing - dx / 2, 0, -dx)
 
 
-#    X_root = np.arange(0 + 3*dx / 4, L_wing + dx / 4, dx)
-#    X_root = np.append([0 + dx / 4], X_root)
-#    X_root = np.append([0], X_root)
-#    X_root = np.append(X_root, [L_wing-dx/4])
-#    X_root = np.append(X_root, [L_wing])
-#
-#    X_tip = np.arange(L_wing - 3*dx / 4, 0  - dx /4 , -dx)
-#    X_tip = np.append([L_wing- dx/4], X_tip)
-#    X_tip = np.append([L_wing], X_tip)
-#    X_tip = np.append(X_tip, [0+dx/4])
-#    
-    x_start = L_wing * 0.245
+    x_start = L_wing * 0
     
     alpha = np.radians(0)
     n = 3.75
     
     
     lifts_v = n * deter_lift(cl_polar, X_tip[::-1], dx)   
+    print("weight", W_TO)
+    print("total lift", 2*sum(lifts_v))
     drags_v, thrust = deter_drag(cd_polar, X_tip[::-1], dx, n)   
     weights_v, Volumes = deter_weight(W_wing, X_tip[::-1], dx)  #
     fuel_weights_v = deter_fuel(W_fuel / 2, Volumes, Rho_fuel, X_tip[::-1], x_start)
@@ -236,12 +226,7 @@ def indet_sys(dx, angle, L_s, a_s, a_e, cl_polar, I_zz_sections):
     fuel_weights = np.cos(alpha) * fuel_weights_v
     W_eng = np.cos(alpha) * W_eng_v
     
-    
-#    Lift = []
-#    Weight = []
-#    Fuel_weight = []
-    
-    
+
 #    print("Forces of lift, drag, thrust, weight and fuel weight")
 #    print(np.sum(lifts))
 #    print(np.sum(drags))
@@ -261,45 +246,10 @@ def indet_sys(dx, angle, L_s, a_s, a_e, cl_polar, I_zz_sections):
         defl_w += deter_d_force(X_tip[i], X_root, -weights[i], 0, I_zz_sections[::-1])
         defl_wf += deter_d_force(X_tip[i], X_root, -fuel_weights[i], 0, I_zz_sections[::-1])
         
-#        Lift = np.append(Lift, defl_l)
-#        Weight = np.append(Weight, defl_w)
-#        Fuel_weight = np.append(Fuel_weight, defl_wf)
-        
+      
     defl_eng += deter_d_force(A_E, X_root, -W_eng, 0, I_zz_sections[::-1])
     
 
-           
-
-
-
-#    shear_strut = np.sum(lifts[int((L_wing - a_s) / dx):]) - np.sum(weights[int((L_wing - a_s) / dx):]) - np.sum(fuel_weights[int((L_wing - a_s) / dx):])
-#    mom_lift = np.sum(lifts[int((L_wing - a_s) / dx):] * X_root[:int(a_s / dx)]) - np.sum(weights[int((L_wing - a_s) / dx):] * X_root[:int(a_s / dx)]) - np.sum(fuel_weights[int((L_wing - a_s) / dx):] * X_root[:int(a_s / dx)])
-#    
-#    
-#    d_shear = (shear_strut / (6 * E_wing * I_wing)) * (2 * ((L_wing - a_s) ** 3)) 
-#    d_mom = (mom_lift / (2 * E_wing * I_wing)) * ((L_wing - a_s) ** 2)
-    
-#    d_lift = np.sum(Lift)
-#    d_weight = np.sum(Weight)
-#    d_fuel = np.sum(Fuel_weight)
-    
-#    print("Deflections of lift, weight and fuel weight front")
-#    print(d_lift)
-#    print(d_weight)
-#    print(d_fuel)
-#    print()
-#    
-#    print("Deflections of shear and moment at the strut")
-#    print(d_shear)
-#    print(d_mom)
-#    print()
-
-        
-#    d_engine = (-W_eng / (6 * E_wing * I_wing)) * (2 * ((L_wing - a_s) ** 3 ) - 3 * ((L_wing - a_s) ** 2) * (a_e - a_s) + (a_e - a_s) ** 3)    
-#    print("Deflections of engine and strut")
-#    print(d_engine)
-#    print()
-    
     sigma = 100 * (10 ** 6)
     d_wing = defl_l + defl_w + defl_wf + defl_eng
     
@@ -320,10 +270,7 @@ def indet_sys(dx, angle, L_s, a_s, a_e, cl_polar, I_zz_sections):
 
     y_a = -(2 * L_wing ** 3 - 3 * (L_wing ** 2) *  (a_s + (dx/2)) +  (a_s + (dx/2)) ** 3)/(6 * E_wing * I_zz_sections[::-1][int((a_s)/dx)])
     theta_a = (((L_wing - (a_s + dx/2)) ** 2) / (2 * E_wing * I_zz_sections[::-1][int((a_s)/dx)])) * (a_s+(dx/2))
-#    extra = -(dx/2) ** 3 / (6 * E_wing * I_zz_sections[::-1][int((a_s)/dx)])
     F_strut = -(d_strut_v / (y_a + theta_a))  # (2 * ((L_wing) ** 3))) * (6 * E_wing * I_wing)) / np.sin(angle)
-#    d_str = deter_d_force(a_s + dx/2, X_root, -F_strut, 0, I_zz_sections[::-1])
-#    print(d_str[int((a_s)/dx)], a_s, I_zz_sections[::-1][int((a_s)/dx)])
     distributions = [lifts, weights, fuel_weights, W_eng, drags, thrust]
     
     return F_strut, d_strut, d_strut_v, d_wing, distributions
@@ -356,26 +303,13 @@ A_S_L = np.arange(5.05, 5.55, 0.5)
 
 cl = W_TO / (0.5 * rho_cr * (V_cr ** 2) * S)
 
-cl_polar, cd_polar = get_data(cl)
+cl_polar, cd_polar = get_data()
 
 dx = 0.1
 
 X_root = np.arange(0, L_wing+dx, dx)
-#X_root = np.append([0 + dx / 4], X_root)
-#X_root = np.append([0], X_root)
-#X_root = np.append(X_root, [L_wing-dx/4])
-#X_root = np.append(X_root, [L_wing])
 
 X_tip = np.arange(L_wing - dx / 2, 0, -dx)
-#X_tip = np.append(X_tip, [0+dx/4])
-
-#X_root = np.arange(0 + dx / 2, L_wing + dx / 2, dx)
-#X_root = np.append([0], X_root)
-#X_root = np.append(X_root, [L_wing])
-#X_tip = np.arange(L_wing - dx / 2, 0  - dx / 2, -dx)
-#X_tip = np.append([L_wing], X_tip)
-#X_tip = np.append(X_tip, [0])
-#X_root_plot = np.append([0], X_root)
 
 #I_zz_sections = np.zeros(len(X_root))
 Mz_dist = np.zeros((len(A_S_L), len(X_root)))
@@ -388,7 +322,8 @@ print("-------Starting on strut optimisation-------")
 N = (L_wing / dx) 
 l_spar_h, t_spar_v, t_spar_h = cw.l_spar_h, cw.t_spar_v, cw.t_spar_h
 boom_area_old = 0.004
-boom_area_all = np.zeros(len(A_S_L))  
+boom_area_all = np.zeros(len(A_S_L)) 
+ 
 F_strut = np.zeros(len(A_S_L))
 L_str = np.zeros(len(A_S_L))
 
@@ -409,6 +344,9 @@ for idx in range(len(A_S_L)):
         I_zz_req = pr.required_Izz(N, b, calc_chord, Mz_dist[idx], boom_area_old, X_root, dx)
         
         boom_area_new = ai.wing_geometry(I_zz_req, I_zz_spar, N, b, calc_chord, boom_area_old,X_root, dx)
+        airfoil_area, z_c_airfoil, y_c_airfoil = cw.get_skin_centroid(N, b, calc_chord,dx)
+
+        z_centroid_all_sec, y_centroid_all_sec, y_loc_spar_up, y_loc_spar_low, y_loc_stiff_up, y_loc_stiff_low, y_vertical_spar, z_loc_stiff_up, spar_loc_sec, z_loc_stiff_low, spar_areas_verti = cw.wing_centroid(boom_area_new, cw.spar_areas_hori, cw.t_spar_v, z_c_airfoil, y_c_airfoil, cw.n_stiff_up, cw.n_stiff_low, N, b, calc_chord, X_root, dx)
 
     
     #    print("I_zz_req",I_zz_req)
@@ -452,6 +390,7 @@ for idx in range(len(A_S_L)):
         Fuel_mom = Fuel_weight * X_tip[::-1]
         Eng_mom = W_eng * (L_wing - A_E)
         Strut_mom = F_str * (L_wing - A_S_L[idx])
+#        Strut_mom_hori = F_str/np.tan(angle) * y_centroid_all_sec[int((L_wing - A_S_L[idx])/dx)] - 
         Drag_mom = Drag * X_tip[::-1]
         Thrust_mom = Thrust * (L_wing - A_E)
         
@@ -517,6 +456,14 @@ for idx in range(len(A_S_L)):
         
     
         d = d_lift + d_weight + d_fuel_weight + d_strut + d_engine
+    
+    x_start = 0*(b/2)
+#    plt.figure()
+    plt.plot(X_tip[::-1], all_forces[2], label = "start fuel tank " + str(round(x_start,2)))
+    plt.xlabel("X-position [m]")
+    plt.ylabel("Fuel weigth [N]")
+    plt.show()
+    plt.legend()
         
         for i in range(1, len(d)):
             diff.append(d[i - 1] - d[i])
@@ -562,6 +509,12 @@ for idx in range(len(A_S_L)):
 #    plt.legend()
 #    
 #    plt.subplot(2, 3, 3)
+##    plt.plot(X_tip, d_lift, label = "lift for pos " + str(A_S_L[idx]))
+##    plt.plot(X_tip, d_weight, label = "weight for pos " + str(A_S_L[idx]))
+##    plt.plot(X_tip, d_fuel_weight, label = "fuel weight for pos " + str(A_S_L[idx]))
+##    plt.plot(X_tip, d_strut, label = "strut for pos " + str(A_S_L[idx]))
+##    plt.plot(X_tip, d_engine, label = "engine for pos " + str(A_S_L[idx]))
+#    plt.plot(X_root[::-1], d, label = "Deflection for pos " + str(A_S_L[idx]))
 #    plt.plot(X_root[::-1], d_lift, label = "lift ")#for pos " + str(A_S_L[idx]))
 #    plt.plot(X_root[::-1], d_weight, label = "weight")# for pos " + str(A_S_L[idx]))
 #    plt.plot(X_root[::-1], d_fuel_weight, label = "fuel weight")# for pos " + str(A_S_L[idx]))
@@ -593,6 +546,7 @@ for idx in range(len(A_S_L)):
 #    plt.xlabel("X-position [m]")
 #    plt.ylabel("Deflection [m]")
 #    plt.title("Deflection of loading components along the span")
+#    plt.title("Deflection along the span")
 #    plt.legend()
 #
 #
@@ -603,6 +557,6 @@ for idx in range(len(A_S_L)):
 #    plt.title("My distribution")
 #    plt.legend()
 #    
-#    plt.show()
-            
+    plt.show()
+print(boom_area_all)
 
