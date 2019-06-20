@@ -94,9 +94,9 @@ def wing_centroid(boom_area, spar_areas_hori, t_spar_v, z_c_airfoil, y_c_airfoil
         z_loc_stiff_up.append(z_loc_up)
         z_loc_low = np.arange(spar_loc_sec[i][0] + stepsize_low , spar_loc_sec[i][-1] -0.001, stepsize_low)
         z_loc_stiff_low.append(z_loc_low)
-        print(X_root[i])
-        print(z_loc_up)
-    print(z_loc_stiff_up[170])
+#        print(X_root[i])
+#        print(z_loc_up)
+#    print(z_loc_stiff_up[170])
     y_loc_stiff_up = np.zeros((len(X_root), len(z_loc_up)))
     y_loc_stiff_low = np.zeros((len(X_root), len(z_loc_low)))    
     

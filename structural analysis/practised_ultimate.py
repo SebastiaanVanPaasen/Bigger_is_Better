@@ -44,8 +44,8 @@ I_zz_wing = 0.25
 L_wing = b / 2
 
 H_cr = 9000
-V_cr = 293
-rho_cr = cc.Rho_0 * ((1 + (cc.a * H_cr) / cc.Temp_0) ** (-(cc.g_0 / (cc.R_gas * cc.a))))
+V_cr = 235
+rho_cr = cc.Rho_0 * ((1 + (cc.a * H_cr) / cc.Temp_0) ** (-(cc.g_0 / (cc.R_gas * cc.a) + 1)))
 CD_0_cr = 0.0189
 
 W_TO = 1466672
@@ -220,7 +220,7 @@ def indet_sys(dx, angle, L_s, a_s, a_e, cl_polar, I_zz_sections):
 #    
     x_start = L_wing * 0.245
     
-    alpha = np.radians(3)
+    alpha = np.radians(0)
     n = 3.75
     
     
@@ -352,7 +352,7 @@ def strut_opt(A_S, A_E, cl_curve, width, I_wing, gamma, L_strut):
 
 
 A_E = 23.25
-A_S_L = np.arange(11.05, 11.55, 0.5)
+A_S_L = np.arange(5.05, 5.55, 0.5)
 
 cl = W_TO / (0.5 * rho_cr * (V_cr ** 2) * S)
 
@@ -421,9 +421,9 @@ for idx in range(len(A_S_L)):
         
         
         I_zz_sections, I_yy_wing, I_yz_wing = ai.inertia_wing(I_zz_spar, I_yy_spar, I_yz_spar, boom_area_all[idx], N, b, calc_chord, X_root, dx)
-#    
+#       
 #    print("I_zz_sections",I_zz_sections)
-
+        I_zz_sections = np.array(293 * [0.00499])
         strut_loc_wing = L_wing - A_S_L[idx] - pos_from_centerline
        
         gamma = np.arctan(strut_heigth / strut_loc_wing)
@@ -503,6 +503,8 @@ for idx in range(len(A_S_L)):
         d_lift = 0
         d_weight = 0
         d_fuel_weight = 0
+        diff = []
+        diff_2 = []
         
         for i in range(len(X_tip)):
             d_lift += deter_d_force(X_tip[i], X_root, Lift[i], 0, I_zz_sections[::-1])
@@ -516,6 +518,14 @@ for idx in range(len(A_S_L)):
     
         d = d_lift + d_weight + d_fuel_weight + d_strut + d_engine
         
+        for i in range(1, len(d)):
+            diff.append(d[i - 1] - d[i])
+            
+ 
+        for i in range(1, len(diff)):
+            diff_2.append(diff[i - 1] - diff[i])
+            
+
 #    print("deflection of components after strut calculation")
 #    print(d_lift[int((A_S_L[idx])/dx)])
 #    print(d_weight[int((A_S_L[idx])/dx)])
@@ -530,214 +540,69 @@ for idx in range(len(A_S_L)):
 #    print(Vz_dist[idx][-1])
 #    
 #    plt.figure()
-    plt.subplot(2, 3, 1)
-    plt.plot(X_root, Vy_dist[idx], label = "Vy for pos " + str(A_S_L[idx]))
-    plt.xlabel("X-position [m]")
-    plt.ylabel("Vy [N]")
-    plt.title("Vy distribution")
-    plt.legend()
-    
-    plt.subplot(2, 3, 4)
-    plt.plot(X_root, Mz_dist[idx], label = "Mz for pos " + str(A_S_L[idx]))
-    plt.xlabel("X-position [m]")
-    plt.ylabel("Mz [Nm]")
-    plt.title("Mz distribution")
-    plt.legend()
-    
-    plt.subplot(2, 3, 2)
-    plt.plot(X_root, Vz_dist[idx], label = "Vz for pos " + str(A_S_L[idx]))
-    plt.xlabel("X-position [m]")
-    plt.ylabel("Vz [N]")
-    plt.title("Vz distribution")
-    plt.legend()
-    
-    plt.subplot(2, 3, 3)
-#    plt.plot(X_tip, d_lift, label = "lift for pos " + str(A_S_L[idx]))
-#    plt.plot(X_tip, d_weight, label = "weight for pos " + str(A_S_L[idx]))
-#    plt.plot(X_tip, d_fuel_weight, label = "fuel weight for pos " + str(A_S_L[idx]))
-#    plt.plot(X_tip, d_strut, label = "strut for pos " + str(A_S_L[idx]))
-#    plt.plot(X_tip, d_engine, label = "engine for pos " + str(A_S_L[idx]))
-    plt.plot(X_root[::-1], d, label = "Deflection for pos " + str(A_S_L[idx]))
-    plt.xlabel("X-position [m]")
-    plt.ylabel("Deflection [m]")
-    plt.title("Deflection along the span")
-    plt.legend()
-
-
-    plt.subplot(2, 3, 5)
-    plt.plot(X_root, My_dist[idx], label = "My for pos " + str(A_S_L[idx]))
-    plt.xlabel("X-position [m]")
-    plt.ylabel("My [Nm]")
-    plt.title("My distribution")
-    plt.legend()
-    
-    plt.show()
-
-
-#print("-------Starting on second optimisation-------")
-#N = L_wing / dx
-#l_spar_h, t_spar_v, t_spar_h = cw.l_spar_h, cw.t_spar_v, cw.t_spar_h
-#boom_area_old = 0.004
-#boom_area_all = np.zeros(len(A_S_L))  
-#F_strut = np.zeros(len(A_S_L))
-#L_str = np.zeros(len(A_S_L))
-#
-#
-#for idx in range(len(A_S_L)):
-#    I_zz_spar, I_yy_spar, I_yz_spar = ai.I_zz_spars(l_spar_h, t_spar_v, t_spar_h, N, b ,calc_chord, boom_area_old)
-#    I_zz_req = pr.required_Izz(N, b, calc_chord, Mz_dist[idx][1:], boom_area_old)
-#
-#    boom_area_new = ai.wing_geometry(I_zz_req, I_zz_spar, N, b, calc_chord, boom_area_old)
-#
-##    print(abs(boom_area_new - boom_area_old) )
-#    while abs(boom_area_new - boom_area_old) > 1 / 100000:
-##        print(abs(boom_area_new - boom_area_old) )
-#        print("New iteration")
-#        boom_area_old = boom_area_new
-#        
-#        I_zz_spar, I_yy_spar, I_yz_spar = ai.I_zz_spars(l_spar_h, t_spar_v, t_spar_h, N, b ,calc_chord, boom_area_old)
-#        I_zz_req = pr.required_Izz(N, b, calc_chord, Mz_dist[idx][1:], boom_area_old)
-#        
-#        boom_area_new = ai.wing_geometry(I_zz_req, I_zz_spar, N, b, calc_chord, boom_area_old)
-#
-#    
-#    #    print("I_zz_req",I_zz_req)
-#        boom_area_all[idx] = boom_area_new[0]
-#    #        print("Updated boom area for strut pos" + str(A_S_L[idx]))
-#        
-#    #    print(boom_area_all * 10000)
-#        
-#        
-#        I_zz_sections, I_yy_wing, I_yz_wing = ai.inertia_wing(I_zz_spar, I_yy_spar, I_yz_spar, boom_area_all[idx], N, b, calc_chord)
-#    #    I_zz_sections = I_zz_req
-#    #   print("hoi",I_zz_sections-I_zz_req)
-#        gamma = np.arctan(D_fus / (L_wing - A_S_L[idx]))
-#        L_strut = (L_wing - A_S_L[idx]) / np.cos(gamma)
-#        L_str[idx] = L_strut
-#        
-#    
-#        results = strut_opt(A_S_L[idx], A_E, cl_polar, dx, I_zz_sections[::-1], gamma, L_strut)
-#        
-#        
-#        F_str = results[0]
-#        F_strut[idx] = F_str
-#        
-#        print("Optimal strut force")
-#        print(F_str)
-#    #    print((F_str / A_strut) / (10 ** 6))
-#    #    print()    
-#    
-#        Lift, Weight, Fuel_weight, W_eng, Drag, Thrust = results[2]
-##        print(Lift)
-##        print()
-#        Lift_mom = Lift * X_root
-#        Weight_mom = Weight * X_root
-#        Fuel_mom = Fuel_weight * X_root
-#        Eng_mom = W_eng * (L_wing - A_E)
-#        Strut_mom = F_str * (L_wing - A_S_L[idx])
-#        Drag_mom = Drag * X_root
-#        Thrust_mom = Thrust * (L_wing - A_E)
-#        
-#        Mz_root = sum(Lift_mom) - sum(Weight_mom) - sum(Fuel_mom) - Eng_mom - Strut_mom
-#        My_root = sum(Drag_mom) - Thrust_mom
-#        Vy_root = sum(Lift) - sum(Weight) - sum(Fuel_weight) - W_eng - F_str
-#        Vz_root = Thrust - sum(Drag)
-#        
-#        
-#    #    print("Root moment around z: ", Mz_root)
-#    #    print("Root moment around y: ", My_root)
-#    #    print("Root force around y: ", Vy_root)
-#    #    print("Root force around z: ", Vz_root)
-#    
-#        
-#        Mz_dist[idx][0] = Mz_root
-#        My_dist[idx][0] = My_root
-#        Vy_dist[idx][0] = Vy_root
-#        Vz_dist[idx][0] = Vz_root
-#        
-#        for i in range(len(X_root_plot) - 1):
-#            Vy_section = Vy_dist[idx][i] - Lift[i] + Weight[i] + Fuel_weight[i]
-#            Vz_section = Vz_dist[idx][i] + Drag[i]
-#            
-#            if X_root_plot[i] > (L_wing - A_E) and X_root_plot[i - 1] < (L_wing - A_E):
-#                Vy_section += W_eng
-#                
-#            if X_root_plot[i] > (L_wing - A_S_L[idx]) and X_root_plot[i - 1] < (L_wing - A_S_L[idx]):
-#                Vy_section += F_str
-#    
-#            if X_root_plot[i] > (L_wing - A_E) and X_root_plot[i - 1] < (L_wing - A_E):
-#                Vz_section -= Thrust
-#                
-#            Vy_dist[idx][i + 1] = Vy_section
-#            Vz_dist[idx][i + 1] = Vz_section
-#        
-#        for i in range(len(X_root_plot) - 1):
-#            Mz_dist[idx][i + 1] = Mz_dist[idx][i] - Vy_dist[idx][i] * (X_root_plot[i + 1] - X_root_plot[i])
-#            My_dist[idx][i + 1] = My_dist[idx][i] + Vz_dist[idx][i] * (X_root_plot[i + 1] - X_root_plot[i])
-#            
-##        print(abs(boom_area_new - boom_area_old) )
-##        print(Mz_dist[idx])
-##        
-#    d_lift = 0
-#    d_weight = 0
-#    d_fuel_weight = 0
-#    
-#    for i in range(len(X_root)):
-#        d_lift += deter_d_force(X_tip[i], X_root, Lift[i], 0, I_zz_sections[::-1])
-#        d_weight += deter_d_force(X_tip[i], X_root, -Weight[i], 0, I_zz_sections[::-1])
-#        d_fuel_weight += deter_d_force(X_tip[i], X_root, -Fuel_weight[i], 0, I_zz_sections[::-1])
-#        
-#        
-#    d_strut = deter_d_force(A_S_L[idx], X_root,  -np.sin(gamma) * F_str, 0, I_zz_sections[::-1])
-#    d_engine = deter_d_force(A_E, X_root, -W_eng, 0, I_zz_sections[::-1])
-##    
-#    
-#    d = d_lift + d_weight + d_fuel_weight + d_strut + d_engine
-#    
-#    plt.figure(2)
 #    plt.subplot(2, 3, 1)
-#    plt.plot(X_root_plot, Vy_dist[idx], label = "Vy for pos " + str(A_S_L[idx]))
+#    plt.plot(X_root, Vy_dist[idx], label = "Vy for pos " + str(A_S_L[idx]))
 #    plt.xlabel("X-position [m]")
 #    plt.ylabel("Vy [N]")
 #    plt.title("Vy distribution")
 #    plt.legend()
 #    
+#    plt.subplot(2, 3, 4)
+#    plt.plot(X_root, Mz_dist[idx], label = "Mz for pos " + str(A_S_L[idx]))
+#    plt.xlabel("X-position [m]")
+#    plt.ylabel("Mz [Nm]")
+#    plt.title("Mz distribution")
+#    plt.legend()
+#    
 #    plt.subplot(2, 3, 2)
-#    plt.plot(X_root_plot, Vz_dist[idx], label = "Vz for pos " + str(A_S_L[idx]))
+#    plt.plot(X_root, Vz_dist[idx], label = "Vz for pos " + str(A_S_L[idx]))
 #    plt.xlabel("X-position [m]")
 #    plt.ylabel("Vz [N]")
 #    plt.title("Vz distribution")
 #    plt.legend()
 #    
 #    plt.subplot(2, 3, 3)
-##    plt.plot(X_root, d_lift, label = "lift for pos " + str(A_S_L[idx]))
-##    plt.plot(X_root, d_weight, label = "weight for pos " + str(A_S_L[idx]))
-##    plt.plot(X_root, d_fuel_weight, label = "fuel weight for pos " + str(A_S_L[idx]))
-##    plt.plot(X_root, d_strut, label = "strut for pos " + str(A_S_L[idx]))
-##    plt.plot(X_root, d_engine, label = "engine for pos " + str(A_S_L[idx]))
-#    plt.plot(X_tip, d, label = "Deflection for pos " + str(A_S_L[idx]))
+#    plt.plot(X_root[::-1], d_lift, label = "lift ")#for pos " + str(A_S_L[idx]))
+#    plt.plot(X_root[::-1], d_weight, label = "weight")# for pos " + str(A_S_L[idx]))
+#    plt.plot(X_root[::-1], d_fuel_weight, label = "fuel weight")# for pos " + str(A_S_L[idx]))
+#    plt.plot(X_root[::-1], d_strut, label = "strut")# for pos " + str(A_S_L[idx]))
+#    plt.plot(X_root[::-1], d_engine, label = "engine")# for pos " + str(A_S_L[idx]))
+    plt.figure()
+    plt.title("Deflection and its derivatives along the half span")
+
+    plt.subplot(1, 3, 1)
+    plt.plot(X_root[::-1], d, label = "Deflection")# for pos " + str(A_S_L[idx]))
+    plt.title("Deflection [m]")
+    plt.xlabel("X-position [m]")
+    
+    plt.subplot(1, 3, 2)
+    plt.plot(X_root[::-1][1:], diff, label = "First derivative")
+    plt.title("First derivative of the deflection")
+    plt.xlabel("X-position [m]")
+    
+    plt.subplot(1, 3, 3)
+    plt.plot(X_root[::-1][2:], diff_2, label = "Second derivative")
+    plt.title("Second derivative of the deflection")
+    
+    plt.xlabel("X-position [m]")
+    
+    plt.show()
+    
+    
+    
 #    plt.xlabel("X-position [m]")
 #    plt.ylabel("Deflection [m]")
-#    plt.title("Deflection along the span")
-##    plt.legend()
-#    
-#    plt.subplot(2, 3, 4)
-#    plt.plot(X_root_plot, Mz_dist[idx], label = "Mz for pos " + str(A_S_L[idx]))
-#    plt.xlabel("X-position [m]")
-#    plt.ylabel("Mz [Nm]")
-#    plt.title("Mz distribution")
+#    plt.title("Deflection of loading components along the span")
 #    plt.legend()
-#    
+#
+#
 #    plt.subplot(2, 3, 5)
-#    plt.plot(X_root_plot, My_dist[idx], label = "My for pos " + str(A_S_L[idx]))
+#    plt.plot(X_root, My_dist[idx], label = "My for pos " + str(A_S_L[idx]))
 #    plt.xlabel("X-position [m]")
 #    plt.ylabel("My [Nm]")
 #    plt.title("My distribution")
 #    plt.legend()
 #    
-#    plt.subplot(2, 3, 6)
-#    plt.plot(X_root, I_zz_sections)
-#    plt.plot(X_root, I_zz_req)
-#    
-#
 #    plt.show()
+            
+

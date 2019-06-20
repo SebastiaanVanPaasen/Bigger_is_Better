@@ -110,7 +110,7 @@ def gust_envelope(w_to, h, cl_alpha, S, c, v_cruise, Vs1):
 
 def construct_envelope():
     # Note: used values are only estimation and are definitely not correct!
-    v_pos,v_neg, n_lim_pos, n_lim_neg,speeds = manoeuvring_envelope(1466672, 9000, 1.6, 0.08287, 227, 235)
+    v_pos,v_neg, n_lim_pos, n_lim_neg,speeds = manoeuvring_envelope(1466672, 9000, 1.6, 227, 235)
     V_gust, n_gust_pos, n_gust_neg = gust_envelope(1466672, 9000, 5.6, 227, 4.247, 235, speeds[1]) #w_to, h, cl_alpha, S, c, v_cruise, Vs1
 #    print(n_gust_pos, n_gust_neg)
     plt.plot(v_pos, n_lim_pos)
@@ -123,4 +123,4 @@ def construct_envelope():
     return V_gust, n_gust_pos, n_gust_neg
 
 
-#print(construct_envelope())
+print(construct_envelope())
