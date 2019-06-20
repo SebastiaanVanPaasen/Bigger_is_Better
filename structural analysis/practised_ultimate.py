@@ -318,7 +318,7 @@ My_dist = np.zeros((len(A_S_L), len(X_root)))
 Vy_dist = np.zeros((len(A_S_L), len(X_root)))
 Vz_dist = np.zeros((len(A_S_L), len(X_root)))
 
-print("-------Starting on first optimisation-------")
+print("-------Starting on strut optimisation-------")
 
 N = (L_wing / dx) 
 l_spar_h, t_spar_v, t_spar_h = cw.l_spar_h, cw.t_spar_v, cw.t_spar_h
@@ -352,10 +352,11 @@ for idx in range(len(A_S_L)):
     
     #    print("I_zz_req",I_zz_req)
         boom_area_all[idx] = boom_area_new[0]
-        print("Updated boom area for strut pos" + str(A_S_L[idx]))
+#        print("Updated boom area for strut pos" + str(A_S_L[idx]))
+#        
+#        print(boom_area_all[idx] * 10000)
+#        print()
         
-        print(boom_area_all[idx] * 10000)
-        print()
         
         
         I_zz_sections, I_yy_wing, I_yz_wing = ai.inertia_wing(I_zz_spar, I_yy_spar, I_yz_spar, boom_area_all[idx], N, b, calc_chord, X_root, dx)

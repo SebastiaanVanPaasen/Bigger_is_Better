@@ -33,20 +33,36 @@ import matplotlib.pyplot as plt
   
 #------------------------------VERIFICATION DATA--------------------------------
 
-"""Inputs unit test based on B737 MAX-8"""
-MTOW = 82191*9.81
-OEW = 45070*9.81
-MPW = 20882*9.81
-MZFW = OEW + MPW
-MFW = 31594*9.81*0.75
-W_fr = MFW/105 * 5.
-A = 35.92**2 / 127.
+#"""Inputs unit test based on B737 MAX-8"""
+#MTOW = 82191*9.81
+#OEW = 45070*9.81
+#MPW = 20882*9.81
+#MZFW = OEW + MPW
+#MFW = 31594*9.81*0.75
+#W_fr = MFW/105 * 5.
+#A = 35.92**2 / 127.
+#e = 0.85
+#CD0 = 0.020
+#V = 233.
+#g = 9.81
+#R_des = 6570.
+#Ct0 = 12e-06
+
+"""Design inputs"""
+MTOW = 1555182.652
+OEW = 910849.4004
+MPW = 472485.2453
+MZFW =  OEW+MPW
+MFW = 171848.00648*1.3
+W_fr = MFW/105.*5.
+A = 15
 e = 0.85
-CD0 = 0.020
-V = 233.
+CD0 = 0.019
+V = 235.418
 g = 9.81
-R_des = 6570.
-Ct0 = 12e-06
+R_des = 1400.
+Ct0 = 1.13e-05*3.15
+
 
 
 
@@ -79,7 +95,7 @@ def payload_range():
     #R_harmonic = ((V/(g*Ct))*CL_CD(A,e,CD0)*np.log(MTOW/(MTOW-MZFW-W_fr)))/1000.
     
     #Max range line (increase fuel, decrease payload)
-    R_max = ((V/(g*Ct))*CL_CD(A,e,CD0)*np.log(MTOW/(MTOW-((MFW-W_fr)*1))))/1000.
+    R_max = ((V/(g*Ct))*CL_CD(A,e,CD0)*np.log(MTOW/(MTOW-((MFW-W_fr)))))/1000.
     #R_max = ((V/(g*Ct))*CL_CD(A,e,CD0)*np.log(MTOW/(MFW-W_fr)))/1000.
     
     #Ferry range (no payload all fuel, no MTOW anymore)

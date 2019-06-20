@@ -48,6 +48,22 @@ dh = 10000  #altitude that has to be descended
 #L/D fpr certain altitudes for now these values are assumed
 L_D = [17,16.5,16,15.5,15,14.5,14,13.5,13,12.5,12,11.5,11]
 
+#Wcr = 242670*9.81
+#T0 = 341.5*2*1000   #kN
+#S = 427.8
+#A = 8.67
+#e = 0.85
+#CD0  = 0.026
+#m = 1.3
+#h = 3050.
+
+
+
+
+
+
+
+
 #----------------------------DEFINITIONS--------------------------------------      
 """ ISA definitions""" 
 def ISA_density(h):      # enter height in m
@@ -180,6 +196,9 @@ def glide_range(L_D,dh):
 
 
 #--------------------------------------MAIN PROGRAM------------------------------
+    
+
+
 """Thrust required and available"""
 min_Tr = []
 min_Tr_M = []
