@@ -61,7 +61,7 @@ def strut_cost(A_req_P, A_req_B, density, cost):
     L_strut =  prac.L_str
     
     for i in range(len(prac.A_S_L)):
-        Max_area[i] = max(A_req_P[i], A_req_B[i])
+        Max_area[i] = A_req_P[i]#max(A_req_P[i], A_req_B[i])
         
         strut_volume[i] = Max_area[i]*L_strut[i]
         strut_mass[i] = strut_volume[i]*density
@@ -74,7 +74,8 @@ def wing_price_weight(A_req_P, A_req_B, density, cost, N, t_skin, b, qcsweep, dx
             
     Max_area, strut_volume, strut_mass, cost_strut = strut_cost(A_req_P, A_req_B, density, cost)
     airfoil_area, z_c_airfoil, y_c_airfoil = cw.get_skin_centroid(N, b, prac.calc_chord, dx)
-    boom_area = prac.boom_area_all
+    boom_area = prac.boom_area_all[:]
+    print("boom area",boom_area)
     X_root = np.arange(0, (b/2)+dx, dx)
 
     spar_areas_verti = cw.wing_centroid(boom_area, cw.spar_areas_hori, cw.t_spar_v, z_c_airfoil, y_c_airfoil, cw.n_stiff_up, cw.n_stiff_low, N, b, prac.calc_chord,X_root, dx)[10]
@@ -104,7 +105,7 @@ def wing_price_weight(A_req_P, A_req_B, density, cost, N, t_skin, b, qcsweep, dx
 
         total_boom_volume[i] = (boom_area[i] * nr_stiff)*(b/2)/np.cos(Sweep_LE)
     
-    print("boom_area", boom_area)
+#    print("boom_area", boom_area)
     boom_mass = total_boom_volume * density
     boom_cost = boom_mass * cost
     
@@ -113,7 +114,7 @@ def wing_price_weight(A_req_P, A_req_B, density, cost, N, t_skin, b, qcsweep, dx
     for i in range(len(prac.X_root)-1):
         
         skin_volume[i] = ai.s_airfoil(N,b, prac.calc_chord, X_root)[i] *prac.dx *t_skin
-    print(skin_volume)
+#    print(skin_volume)
     skin_mass = sum(skin_volume) * density
     skin_price = skin_mass * cost
     

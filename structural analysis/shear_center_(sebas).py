@@ -7,64 +7,63 @@ import Airfoil_inertia as ai
 
 print("------- Starting on shear calculation -------")
 
-
 boom_area = pu.boom_area_all[0]
+I_zz, I_yy, I_yz = pu.I_zz_sections, pu.I_yy_wing, pu.I_yz_wing
+
 #print("The boom area", boom_area)
 
-
-data_z_all_sec, data_y_upper_all_sec, data_y_lower_all_sec = ag.airfoil_geometry(pu.N, pu.b, pu.calc_chord, pu.dx)
+data_z_all_sec, data_y_upper_all_sec, data_y_lower_all_sec = ag.airfoil_geometry(pu.N, pu.b, pu.calc_chord, pu.X_root)
 airfoil_area, z_c_airfoil, y_c_airfoil = cw.get_skin_centroid(pu.N, pu.b, pu.calc_chord, pu.dx)
-z_centroid_all_sec, y_centroid_all_sec, y_loc_spar_up, y_loc_spar_low, y_loc_stiff_up, y_loc_stiff_low, y_vertical_spar, z_loc_stiff_up, spar_loc_sec, z_loc_stiff_low, spar_areas_verti = cw.wing_centroid(boom_area, cw.spar_areas_hori, cw.t_spar_v, z_c_airfoil, y_c_airfoil, cw.n_stiff_up, cw.n_stiff_low, pu.N, pu.b, pu.calc_chord, pu.dx)
-s_all_sec, ds_all_sec = ai.s_airfoil(data_z_all_sec, data_y_upper_all_sec, data_y_lower_all_sec)
+z_centroid_all_sec, y_centroid_all_sec, y_loc_spar_up, y_loc_spar_low, y_loc_stiff_up, y_loc_stiff_low, y_vertical_spar, z_loc_stiff_up, spar_loc_sec, z_loc_stiff_low, spar_areas_verti = cw.wing_centroid(boom_area, cw.spar_areas_hori, cw.t_spar_v, z_c_airfoil, y_c_airfoil, cw.n_stiff_up, cw.n_stiff_low, pu.N, pu.b, pu.calc_chord, pu.X_root, pu.dx)
+s_all_sec, ds_all_sec = ai.s_airfoil(pu.N, pu.b, pu.calc_chord, pu.X_root)
 
 
-boom_loc_y = np.zeros((len(y_loc_spar_up), len(y_loc_stiff_up[0]) * 2 + 3))
-boom_loc_z = np.zeros((len(y_loc_spar_up), len(y_loc_stiff_up[0]) * 2 + 3))
+boom_loc_y = np.zeros((len(y_loc_spar_up), len(y_loc_stiff_up[0]) * 2 + 4))
+boom_loc_z = np.zeros((len(y_loc_spar_up), len(y_loc_stiff_up[0]) * 2 + 4))
 
 for i in range(len(y_loc_spar_up)):
     
     for j in range(len(y_loc_stiff_up[0])):
-        boom_loc_y[i][j] = y_loc_stiff_up[i][j]
-        boom_loc_z[i][j] = z_loc_stiff_up[i][j]
+        boom_loc_y[i][j] = -(y_loc_stiff_up[i][j] - y_centroid_all_sec[i])
+        boom_loc_z[i][j] = z_loc_stiff_up[i][j] - z_centroid_all_sec[i]
         
         
-    boom_loc_y[i][j + 1] = y_loc_spar_up[i][1]
-    boom_loc_z[i][j + 1] = 0.55 * data_z_all_sec[i][-1]
+    boom_loc_y[i][j + 1] = -(y_loc_spar_up[i][1] - y_centroid_all_sec[i])
+    boom_loc_z[i][j + 1] = 0.55 * data_z_all_sec[i][-1] - z_centroid_all_sec[i]
     
     
-    boom_loc_y[i][j + 2] = y_loc_spar_low[i][1]
-    boom_loc_z[i][j + 2] = 0.55 * data_z_all_sec[i][-1]
+    boom_loc_y[i][j + 2] = -(y_loc_spar_low[i][1]  - y_centroid_all_sec[i])
+    boom_loc_z[i][j + 2] = 0.55 * data_z_all_sec[i][-1] - z_centroid_all_sec[i]
         
     rev_y = y_loc_stiff_low[i][::-1]
     rev_z = z_loc_stiff_low[i][::-1]
     
     for k in range(len(y_loc_stiff_low[0])):
-        boom_loc_y[i][j + k + 2] = rev_y[k]
-        boom_loc_z[i][j + k + 2] = rev_z[k]
+        boom_loc_y[i][j + k + 3] = -(rev_y[k] - y_centroid_all_sec[i])
+        boom_loc_z[i][j + k + 3] = rev_z[k] - z_centroid_all_sec[i]
         
         
-    boom_loc_y[i][j + k + 3] = y_loc_spar_low[i][0]
-    boom_loc_z[i][j + k + 3] = 0.15 * data_z_all_sec[i][-1]
+    boom_loc_y[i][j + k + 4] = -(y_loc_spar_low[i][0] - y_centroid_all_sec[i])
+    boom_loc_z[i][j + k + 4] = 0.15 * data_z_all_sec[i][-1] - z_centroid_all_sec[i]
 
     
-    boom_loc_y[i][j + k + 4] = y_loc_spar_up[i][0]
-    boom_loc_z[i][j + k + 4] = 0.15 * data_z_all_sec[i][-1]
+    boom_loc_y[i][j + k + 5] = -(y_loc_spar_up[i][0] - y_centroid_all_sec[i])
+    boom_loc_z[i][j + k + 5] = 0.15 * data_z_all_sec[i][-1] - z_centroid_all_sec[i]
    
 
-
-for i in range(1):
+d = []
+for i in range(len(boom_loc_y)):
     distances = []
     start_idx = 0
     
-#    y_max = max(data_y_upper_all_sec[i])
+    
     start_idx = np.argmin(abs(boom_loc_z[i][0] - data_z_all_sec[i]))
     for j in range(1, len(y_loc_stiff_up[0])):
-#        idx = 0
         
         idx = np.argmin(abs(boom_loc_z[i][j] - data_z_all_sec[i]))
         distance = ds_all_sec[i][start_idx:idx + 1]
         
-        print(distance, start_idx, idx)
+#        print(distance, start_idx, idx)
         distances.append(sum(distance))
         
         start_idx = idx
@@ -73,36 +72,73 @@ for i in range(1):
     distance = ds_all_sec[i][start_idx:idx + 1]
     distances.append(sum(distance))
     
-#            while boom_loc[i][j] - data_y_upper_all_sec[i][start_idx] > 0:
-#                idx += 1
-#            
-#            if j != 0:
-#                dist = ds_all_sec[i][start_idx:idx + 1]
-#                distances.append(dist)
-#            
-#            start_idx = idx
-#        
-#        if boom_loc[i][j] > y_max
-#    print(distances)   
-#    distances.append(sum(ds_all_sec[i][start_idx:idx + 1]))
-#    print(ds_all_sec[i][start_idx:idx + 1])
-#    start_idx = idx
-        
-print(distances)
-        
-        
-        
-        
-        
+    distances.append(abs(boom_loc_y[i][j + 2] - boom_loc_y[i][j + 1]))
+    
+    
+    start_idx = np.argmin(abs(boom_loc_z[i][j + 2] - data_z_all_sec[i]))
+    for k in range(1, len(y_loc_stiff_up[0])):
 
+        idx = np.argmin(abs(boom_loc_z[i][j + k + 2] - data_z_all_sec[i]))
+        distance = ds_all_sec[i][idx - 1:start_idx]
+        
+#        print(distance, start_idx, idx)
+        distances.append(sum(distance))
+        
+        start_idx = idx
+        
+    idx = np.argmin(abs(boom_loc_z[i][j + k + 3] - data_z_all_sec[i]))
+    distance = ds_all_sec[i][idx - 1:start_idx]
+    distances.append(sum(distance))
+    
+    distances.append(abs(boom_loc_y[i][j + k + 3] - boom_loc_y[i][j + k + 4]))
+    
+    d.append(distances)
+    
+    
+#print(distances)
+        
+coef_z = I_yz[0] / (I_zz[0] * I_yy[0] - I_yz[0] ** 2)
+coef_y = -I_yy[0] / (I_zz[0] * I_yy[0] - I_yz[0] ** 2)   
 
+for i in range(1):
+    
+    A_spar_front_up = (cw.spar_areas_hori[0] + cw.t_spar_v * (y_loc_spar_up[i][0] - y_loc_spar_low[i][0]) / 6) * (2 + y_loc_spar_low[i][0] / y_loc_spar_up[i][0])
+    A_spar_front_low = (cw.spar_areas_hori[0] + cw.t_spar_v * (y_loc_spar_up[i][0] - y_loc_spar_low[i][0]) / 6) * (2 + y_loc_spar_up[i][0] / y_loc_spar_low[i][0])
+    front_spar = [A_spar_front_low, A_spar_front_up]
+    
+    A_spar_back_up = (cw.spar_areas_hori[1] + cw.t_spar_v * (y_loc_spar_up[i][1] - y_loc_spar_low[i][1]) / 6) * (2 + y_loc_spar_low[i][1] / y_loc_spar_up[i][1])
+    A_spar_back_low = (cw.spar_areas_hori[1] + cw.t_spar_v * (y_loc_spar_up[i][1] - y_loc_spar_low[i][1]) / 6) * (2 + y_loc_spar_up[i][1] / y_loc_spar_low[i][1])
+    back_spar = [A_spar_back_up, A_spar_back_low]
+    
+    boom_areas = np.append(len(y_loc_stiff_up[0]) * [boom_area], back_spar)
+    boom_areas = np.append(boom_areas, len(y_loc_stiff_up[0]) * [boom_area])
+    boom_areas = np.append(boom_areas, front_spar)
+    
+    diff_q = np.zeros(len(boom_loc_y[0]))
+    base_q = np.zeros(len(boom_loc_y[0])+1)
+    for j in range(len(boom_loc_y[0])):
 
+        delta_q_z = coef_z * boom_loc_z[i][j] * boom_areas[j]
+        delta_q_y = coef_y * boom_loc_y[i][j] * boom_areas[j]
+        
+        print(delta_q_z, delta_q_y)
+        diff_q[j] = delta_q_z + delta_q_y
+    
+    
+#    previous = diff_q[0]
+    for j in range(len(diff_q)+1):
+        base_q[j] = sum(diff_q[:j])
+        
+#        previous = diff_q[j]
+
+print(diff_q)
+print(base_q)
 #for i in range(len(boom_locations)):
     
-plt.plot(data_z_all_sec[0], data_y_upper_all_sec[0])
-plt.plot(data_z_all_sec[0], data_y_lower_all_sec[0])
-plt.axis("scaled")
-plt.show()
+#plt.plot(data_z_all_sec[0], data_y_upper_all_sec[0])
+#plt.plot(data_z_all_sec[0], data_y_lower_all_sec[0])
+#plt.axis("scaled")
+#plt.show()
 
 def q_b(y_loc, z_loc, boom_area, moi):
     """
