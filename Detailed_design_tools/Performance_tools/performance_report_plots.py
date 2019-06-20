@@ -18,37 +18,48 @@ import matplotlib.pyplot as plt
 m = 1.2
 
 """Design inputs"""
-Wto = 1555182.652 
-Wland = 1555182.652 - 0.8*171848.0064
-Wcr = 1555182.652 - 0.4*171848.0064
-T0 = 406.*1000
-
-Vcr = 235.4151
-S = 240.97
-A = 15
-e = 0.6
-CD0 = 0.31
-CD = 0.025
-
-CL_maxcr = 1.62
-CLmax_land = 3.21
-CLmax_TO = 2.94
-Vs_land = np.sqrt((2*Wland)/(1.225*S*CLmax_land))
-Vs_TO = np.sqrt((2*Wto)/(1.225*S*CLmax_TO))
-
-Va = 1.3*Vs_land
-Vtd = 1.15*Vs_land
-V_LOF = 1.2*Vs_TO 
-
-"""B777-200 inputs"""
-#Wcr = (242670. - 0.*52160)*9.81
-#T0 = 342.5*1000*2
-#V = 244.87
-#S = 427.8
-#A = 8.67
+#Wto = 1520276.626
+#Wland = Wto- 0.8*170698.0674
+#Wcr = 1555182.652 - 0.4*170698.0674
+#T0 = 432.34*1000
+#
+#Vcr = 218.7110308
+#S = 221.21 #211.1888478
+#A = 15
 #e = 0.6
-#CD0 = 0.021
+#CD0 = 0.019
 #CD = 0.025
+#CL_maxcr = 1.75
+#L_D = 17.46
+#L_Dmax=17.46
+
+
+"""Needs new values for new design"""
+#CLmax_land = 3.21
+#CLmax_TO = 2.94
+#Vs_land = np.sqrt((2*Wland)/(1.225*S*CLmax_land))
+#Vs_TO = np.sqrt((2*Wto)/(1.225*S*CLmax_TO))
+#
+#Va = 1.3*Vs_land
+#Vtd = 1.15*Vs_land
+#V_LOF = 1.2*Vs_TO 
+
+
+"""B737-8 MAX inputs"""
+Wto = 82191*9.81
+Wcr = (242670. - 0.4*20730)*9.81
+T0 = 130*1000*2
+Vcr = 221.2
+S = 127
+A = 10.16
+e = 0.6
+CD0 = 0.017
+CD = 0.03
+
+#Upper and lower limits for the interpolation for the service ceiling
+H_upper  = 13000
+H_lower = 10000
+
 
 #----------------------------DEFINITIONS--------------------------------------      
 """ ISA definitions""" 
@@ -116,7 +127,7 @@ def RC_unsteady(W,T0,V,S,h,CD):  #at const. EAS thus accelerating during flight
 
 
 #Maximum climb angle (or steepest climb) and corresponding airspeed and RC 
-def steep_climb(T0,W,S,CD0,A,e,h,V):
+def steep_climb(T0,W,S,CD0,A,e,h):
     T = T_alt(T0,h)
     k = 1. / (np.pi*A*e)
     theta_max = np.arcsin((T/W) - np.sqrt(4*CD0*(k))) 
@@ -126,55 +137,145 @@ def steep_climb(T0,W,S,CD0,A,e,h,V):
     
     return theta_max*(180/np.pi), V_theta_max,RC_max_theta   #return in degrees
 
+
+"""Gliding flight: rate of descend"""
+def RD(W,S,A,e,CD0,h):
+    #Smalles rate of descend is obtained at max. (CL**(3/2))/CD
+    k = 1. / (np.pi*A*e)
+    CL_CD = 0.25*(3./(k*CD0**(1./3.)))**0.75
+    Vv_min = - np.sqrt((2*W)/(ISA_density(h)*S))*(1./CL_CD)
+
+    return Vv_min
+
+def RD_V(W,S,A,e,CD0,h):
+    k =  1. / (np.pi*A*e) 
+    Vinf = np.sqrt((2./ISA_density(h))*np.sqrt((k*W)/(3*CD0*S)))
+    return Vinf
+
+
+def glide_range(L_D,dh):  
+    R = (L_D)*dh
+    return R
+
 #--------------------------------------MAIN PROGRAM------------------------------
+
+"""Gliding unpowered descent"""
+#V = np.arange(50,300,5)              #Criose velocity in m/s
+#H = np.arange(1000,13000,1000)
+#
+#
+#Vv_min_list = []
+#range_list = []
+#Vinf_list = []
+#for i in range(len(H)):
+#    Vv_min = -RD(Wcr,S,A,e,CD0,H[i])   
+#    Vv_min_list.append(Vv_min)
+#    V_inf = RD_V(Wcr,S,A,e,CD0,H[i])
+#    Vinf_list.append(V_inf)
+#    if H[i] == 9000:
+#        print (glide_range(L_D,H[i])/1000)
+#    range_list.append(glide_range(L_D,H[i])/1000)
+#     
+#plt.figure(7)
+#plt.plot(H,Vv_min_list)  
+##plt.title("Minimum descend rate")
+#plt.xlabel("Altitude [m]",fontsize='x-large'  )
+#plt.ylabel("Rate of descent [m]",fontsize='x-large' )
+#plt.grid(True)
+#ax = plt.gca()
+##ax.get_yaxis().set_major_formatter(plt.FuncFormatter(lambda x, loc: "{:,}".format(int(x))))
+#ax.get_xaxis().set_major_formatter(plt.FuncFormatter(lambda x, loc: "{:,}".format(int(x))))
+#
+#plt.figure(8)
+#plt.plot(H,range_list)  
+#plt.vlines(9000,range_list[0],range_list[-1],"gray","--")
+#plt.hlines(157.14,H[0],H[-1],"gray","--")
+#plt.plot(9000,157.14,'ko')
+##plt.title("Range during glide")
+#plt.xlabel("Starting altitude [m]",fontsize='x-large' )
+#plt.ylabel("Range [km]",fontsize='x-large' )
+#plt.grid(True)
+#ax = plt.gca()
+##ax.get_yaxis().set_major_formatter(plt.FuncFormatter(lambda x, loc: "{:,}".format(int(x))))
+#ax.get_xaxis().set_major_formatter(plt.FuncFormatter(lambda x, loc: "{:,}".format(int(x))))
+#
+#
+#
+#theta_min = (np.arctan(1/ (L_Dmax)))*(180/np.pi)
+#print ("Minimum glide angle: ", theta_min," degrees")
+#
+#
+#plt.show()
+#
+
+
+
+
+
+
+
+
 """Steepest climb"""
-V = np.arange(50,300,5)              #Criose velocity in m/s
-H = np.arange(5000,13000,1000) 
+#V = np.arange(50,300,5)              #Criose velocity in m/s
+#H = np.arange(1000,13000,1000) 
+#
+#Vs_list = []
+#theta_max_list = []
+#V_thetamax_list = []
+#RC_maxtheta_list = []
+#Vmin_list = []
+#
+#for h in H: 
+#    Vs = np.sqrt((2*Wcr)/(ISA_density(h)*S*CL_maxcr))             #to indentify whether V_theta_max is obtainable
+#    Vs_list.append(Mach(Vs,h))                                  # Since often theta_max cannot be reached since req. V is lower than Vstall
+#
+#    theta_max = steep_climb(T0,Wcr,S,CD0,A,e,h)[0]
+#    V_theta_max = steep_climb(T0,Wcr,S,CD0,A,e,h)[1]
+#    RC_theta_max =  steep_climb(T0,Wcr,S,CD0,A,e,h)[2] 
+#
+#    theta_max_list.append(theta_max)
+#    V_thetamax_list.append(Mach(V_theta_max,h))
+#    RC_maxtheta_list.append(RC_theta_max)
+#
+#plt.figure(5)   
+#
+#
+#plt.plot(H,theta_max_list)
+##plt.title("Max. climb angle")
+#plt.xlabel("Altitude [m]", fontsize = 'large')
+#plt.ylabel("Climb angle [deg]", fontsize = 'large')
+#plt.grid(True)
+#ax = plt.gca()
+##ax.get_yaxis().set_major_formatter(plt.FuncFormatter(lambda x, loc: "{:,}".format(int(x))))
+#ax.get_xaxis().set_major_formatter(plt.FuncFormatter(lambda x, loc: "{:,}".format(int(x))))
+#
+#plt.figure(6)
+#plt.plot(H,V_thetamax_list, label = "V at theta max")
+#plt.plot(H,Vs_list,"--",label = "Stall speed")
+##plt.title("Required speed at max. climb angle")
+#plt.xlabel("Altitude [m]", fontsize = 'large')
+#plt.ylabel("Mach number", fontsize = 'large')
+#plt.grid(True)
+#plt.legend(fontsize = 'large')
+#
+#ax = plt.gca()
+##ax.get_yaxis().set_major_formatter(plt.FuncFormatter(lambda x, loc: "{:,}".format(int(x))))
+#ax.get_xaxis().set_major_formatter(plt.FuncFormatter(lambda x, loc: "{:,}".format(int(x))))
+#
+#plt.figure(7)
+#plt.plot(H,RC_maxtheta_list)
+##plt.title("Rate of climb at max. climb angle")
+#plt.xlabel("Altitude [m]", fontsize = 'large')
+#plt.ylabel("Rate of climb [m/s]", fontsize = 'large')
+#plt.grid(True)
+#
+#ax = plt.gca()
+##ax.get_yaxis().set_major_formatter(plt.FuncFormatter(lambda x, loc: "{:,}".format(int(x))))
+#ax.get_xaxis().set_major_formatter(plt.FuncFormatter(lambda x, loc: "{:,}".format(int(x))))
 
-Vs_list = []
-theta_max_list = []
-V_thetamax_list = []
-RC_maxtheta_list = []
-Vmin_list = []
 
-for h in H: 
-    Vs = np.sqrt((2*Wcr)/(ISA_density(h)*S*CL_maxcr))             #to indentify whether V_theta_max is obtainable
-    Vs_list.append(Mach(Vs,h))                                  # Since often theta_max cannot be reached since req. V is lower than Vstall
 
-    theta_max = steep_climb(T0,Wcr,S,CD0,A,e,h,Vcr)[0]
-    V_theta_max = steep_climb(T0,Wcr,S,CD0,A,e,h,Vcr)[1]
-    RC_theta_max =  steep_climb(T0,Wcr,S,CD0,A,e,h,Vcr)[2] 
-
-    theta_max_list.append(theta_max)
-    V_thetamax_list.append(Mach(V_theta_max,h))
-    RC_maxtheta_list.append(RC_theta_max)
-
-plt.figure(5)   
-
-plt.subplot(221)
-plt.plot(H,theta_max_list)
-plt.title("Max. climb angle")
-plt.xlabel("Altitude [m]")
-plt.ylabel("Climb angle [deg]")
-plt.grid(True)
-
-plt.subplot(222)
-plt.plot(H,V_thetamax_list, label = "V at theta max")
-plt.plot(H,Vs_list,"--",label = "Stall speed")
-plt.title("Required speed at max. climb angle")
-plt.xlabel("Altitude [m]")
-plt.ylabel("Mach number")
-plt.grid(True)
-plt.legend()
-
-plt.subplot(223)
-plt.plot(H,RC_maxtheta_list)
-plt.title("Rate of climb at max. climb angle")
-plt.xlabel("Altitude [m]")
-plt.ylabel("Rate of climb [m/s]")
-plt.grid(True)
-
-"""Steady Climb rate"""
+"""Climb gradient"""  
 #RC_app = RC(Wland,T0,Va,S,A,e,CD0,0)
 #RC_land = RC(Wland,T0,Vtd,S,A,e,CD0,0)
 #RC_to = RC(Wto,T0,V_LOF,S,A,e,CD0,0) #at const. EAS thus accelerating during flight
@@ -182,45 +283,54 @@ plt.grid(True)
 #theta_app = np.arcsin(RC_app/Va)*(180/np.pi)
 #theta_land = np.arcsin(RC_land/Vtd)*(180/np.pi)
 #theta_to = np.arcsin(RC_to/V_LOF)*(180/np.pi)
-
+#
 #theta_app = RC_app/Va*100
 #theta_land = RC_land/Vtd*100
 #theta_to = RC_to/V_LOF*100
+#
+#print (theta_app,theta_land,theta_to)  
 
-#print (theta_app,theta_land,theta_to)
-#H = np.arange(1000,11000,1000)
-#V = np.arange(80,350,20)
-#
-#plt.figure(1)
-#RC_max = [] 
-#M_RC_max = []
-#V_RC_max = []
-#H_RC_max = []
-#
-#for h in H:
-#    RC_list = []
-#    M_list = []
-#    V_list = []
-#    
-#    for v in V:
-#        RC_list.append(RC(Wcr,T0,v,S,A,e,CD0,h))
-#        M_list.append(Mach(v,h))
-#        V_list.append(v)
-#        
-#    plt.plot(M_list,RC_list, label = "%s m" %h)
-#    
-#    k = RC_list.index(max(RC_list))
-#    RC_max.append(max(RC_list))
-#    V_RC_max.append(V_list[k])
-#    M_RC_max.append(M_list[k])
-#    H_RC_max.append(h)
-#    
-#
+        
+"""Steady Climb rate"""
+#Validation data 
+RC_validation = RC(Wto,T0,Vcr,S,A,e,CD0,6096)
+RC_unsteady_vali =RC_unsteady(Wto,T0,Vcr,S,6096,CD)
+print (RC_validation,RC_unsteady_vali)
+
+
+H = np.arange(1000,15000,1000)
+V = np.arange(80,350,20)
+
+plt.figure(1)
+RC_max = [] 
+M_RC_max = []
+V_RC_max = []
+H_RC_max = []
+
+for h in H:
+    RC_list = []
+    M_list = []
+    V_list = []
+    
+    for v in V:
+        RC_list.append(RC(Wto,T0,v,S,A,e,CD0,h))
+        M_list.append(Mach(v,h))
+        V_list.append(v)
+        
+    plt.plot(M_list,RC_list, label = "%s m" %h)
+    
+    k = RC_list.index(max(RC_list))
+    RC_max.append(max(RC_list))
+    V_RC_max.append(V_list[k])
+    M_RC_max.append(M_list[k])
+    H_RC_max.append(h)
+    
+
 #plt.plot(M_RC_max,RC_max," ko",label = " Max. RC" )
 ##plt.title("Steady rate of climb" )
 #plt.xlabel("Mach number", fontsize = "x-large" )
 #plt.ylabel("Rate of climb [m/s]", fontsize = "x-large" )
-#plt.legend(fontsize = "x-large" )  
+#plt.legend(loc = "upper right",fontsize = "x-large" )  
 #plt.grid(True)
 ##plt.show()
 #
@@ -231,20 +341,46 @@ plt.grid(True)
 #plt.xlabel("Altitude [m]",fontsize = "x-large"  )
 #plt.ylabel("Maximum rate of climb [m/s]" , fontsize = "x-large" )
 #plt.grid(True)
-
-#plt.figure(3)
-#plt.plot(H,M_RC_max)
-##plt.title("Mach number at Max. steady RC" )
-#plt.xlabel("Altitude [m]")
-#plt.ylabel("Mach number")
-#plt.grid(True)
-    
+#
+#ax = plt.gca()
+#ax.get_yaxis().set_major_formatter(plt.FuncFormatter(lambda x, loc: "{:,}".format(int(x))))
+#ax.get_xaxis().set_major_formatter(plt.FuncFormatter(lambda x, loc: "{:,}".format(int(x))))
+#
 #plt.show()    
-    
-    
-    
-    
-    
+#  
+#
+"""Service and absolute ceilings"""
+#Absolute ceiling is where RCmax = 0
+#Service ceiling is where RDmax = 100 ft/min = 0.508 m/s (from Anderson book)
+H = list(H)
+k1 = H.index(H_lower)
+k2 = H.index(H_upper)
+
+serv_ceiling = H[k1] + ((0.508 - RC_max[k1])/(RC_max[k2]-RC_max[k1]))*(H[k2]-H[k1])
+abs_ceiling = H[k1] + ((0. - RC_max[k1])/(RC_max[k2]-RC_max[k1]))*(H[k2]-H[k1])
+
+print ("Service ceiling :",serv_ceiling,"m")
+print ("Absolute ceiling :",abs_ceiling,"m")
+
+plt.figure(3)
+
+plt.plot(RC_max,H)
+plt.vlines(0.508,H[0],H[-1],"gray","--",label = " Service ceiling")
+plt.hlines(serv_ceiling,RC_max[0],RC_max[-1],"gray","--")
+plt.vlines(0.,H[0],H[-1],"g","--",label = " Absolute ceiling")
+plt.hlines(abs_ceiling,RC_max[0],RC_max[-1],"g","--")
+#plt.title("Service and absolute ceiling")
+plt.xlabel("Max. rate of climb [m/s]",fontsize='x-large')
+plt.ylabel("Altitude [m]",fontsize='x-large')
+plt.grid(True )
+#plt.ylim(0,14000)
+plt.legend(fontsize='x-large')
+
+ax = plt.gca()
+ax.get_yaxis().set_major_formatter(plt.FuncFormatter(lambda x, loc: "{:,}".format(int(x))))
+ax.get_xaxis().set_major_formatter(plt.FuncFormatter(lambda x, loc: "{:,}".format(int(x))))
+
+
     
     
     

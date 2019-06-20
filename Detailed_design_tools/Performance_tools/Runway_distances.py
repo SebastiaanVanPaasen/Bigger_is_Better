@@ -11,28 +11,59 @@ import matplotlib.pyplot as plt
 
 
 #------------------------------INPUTS------------------------------------------
-"""Input values for the B737-800 aircraft"""
-MTOW       =        1466672.702     #78220*9.81            #Maximum take-off weight [N]
-W_TO       =       MTOW #63502.9318 *9.81      #MTOW   #Weight at take-off [N]
-W_land     =       58967.0081  *9.81    #65310*9.81 #Maximum landing weight [N]
+"""B737-8 MAX inputs"""
+MTOW = 82191*9.81
+W_TO = MTOW
+W_land = 69308*9.81
 
-T_TO       =       2*96.3*1000*2#Total static thrust of all engines at take-off [N]
-T0         =       2*96.3*1000*2 #127.62*1000  #@ SEA LEVEL!!!
+T_TO =  130*2*1000*1. 
+#for land and take-off distanes times 0.7
+#To account for normal thrust setting
+T0 = T_TO
 
 CL_maxto   =       2.9 
 CL_max_land=       3.2
 CD_land    =       0.09
 CD_TO      =       0.07
 
-A          =       15.       #Aspect ratio [-]
-e          =       0.85       #Oswald efficiency factor [-]
-S          =       227.1287294     #Surface area wing [m^2]
+A = 10.16
+e = 0.7
+S = 127
 
 psi_TO     =       342.06     #Specific Thrust N/airflow [N/kg/s]
-bypass     =       5.5        #Bypass ratio of the engine
+bypass     =       9       #Bypass ratio of the engine
 
 g          =       9.80665
 mu         =       0.03         #Ground roll friction on dry concrete/asphalt
+
+
+
+"""Design input values"""
+#MTOW       =      1520276.626
+#W_TO       =       MTOW 
+#MFW        =       170698.0674
+#W_land     =       MTOW-0.8*MFW
+#
+#T_TO       =       398090.9781
+#T0         =       2*216.17*1000 
+#
+#CL_maxto   =       2.9 
+#CL_max_land=       3.2
+#CD_land    =       0.09
+#CD_TO      =       0.07
+#
+#A          =       15.       #Aspect ratio [-]
+#e          =       0.6       #Oswald efficiency factor [-]
+#S          =       211.1888478     #Surface area wing [m^2]
+#
+#psi_TO     =       342.06     #Specific Thrust N/airflow [N/kg/s]
+#bypass     =       15       #Bypass ratio of the engine
+#
+#g          =       9.80665
+#mu         =       0.03         #Ground roll friction on dry concrete/asphalt
+
+
+
 
 #------------------------------DEFINITIONS-------------------------------------
 """ISA definitions"""
@@ -285,12 +316,12 @@ Vx = np.arange(0,76.,1)
 S_TO_fail = TO_eng_fail(W_TO,g,S,rho,CL_maxto,A,e,T_TO,CD_TO,Vx)    
    
 #Balenced field length
-BFL = BFL(A,e,T_TO,W_TO,CD_TO, CL_maxto, bypass,rho,g)
+BFL = BFL(A,e,T0,W_TO,CD_TO, CL_maxto, bypass,rho,g)
 
-S_land = S_land(T0,g,W_TO,S,rho,CL_max_land,CD_land)
+S_land = S_land(T0,g,W_land,S,rho,CL_max_land,CD_land)
 
 #Regulations according to flight mechanics
-req_land = (10/6)*max(S_land)
+req_land = (10/6)*S_land[0]
 
 if BFL > max(S_TO):
     req_TO = BFL
@@ -299,7 +330,7 @@ elif max(S_TO) > BFL:
 
 
 #plt.hlines(S_land,Vx[0],Vx[-1],'k','--',label = "landing")
-plt.hlines(BFL, Vx[0],Vx[-1],"gray","--",label = "BFL")
+plt.hlines(BFL*1.01, Vx[0],Vx[-1],"gray","--",label = "BFL")
 plt.plot(Vx,S_TO_fail[0],"g", label = "continued")
 plt.plot(Vx,S_TO_fail[1],'r',label = "abord")
 plt.xlabel("Engine failure speed [m/s]")
@@ -315,7 +346,7 @@ plt.show()
     
 print ("Standard TO length:" , S_TO, "m")
 print ("Standard landing length:", S_land,"m")    
-print ("Balanced field length:", BFL,"m")
+print ("Balanced field length:", BFL*1.01,"m")
 print ()
 print ("Required TO field length:", req_TO, "m")
 print ("Required landing field length:", req_land, "m")
