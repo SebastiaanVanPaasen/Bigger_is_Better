@@ -322,7 +322,7 @@ print("-------Starting on strut optimisation-------")
 
 N = (L_wing / dx) 
 l_spar_h, t_spar_v, t_spar_h = cw.l_spar_h, cw.t_spar_v, cw.t_spar_h
-#boom_area_old = 0.005
+boom_area_old = 0.005
 boom_area_all = np.zeros(len(A_S_L)) 
  
 F_strut = np.zeros(len(A_S_L))
@@ -373,14 +373,14 @@ for idx in range(len(A_S_L)):
 
 
     F_str, d_str, d_str_v, d_w, all_forces = indet_sys(dx, gamma, L_strut, A_S_L[idx], A_E, cl_polar, I_zz_sections)
-    print("Strut force and deflections")
-    print("Strut force", F_str)
-    print("Deflection of the strut", d_str)
-#        print(d_str_v)
-    print("Required strut area", F_str / (100 * (10 ** 6)))
-#        print()
-    F_strut[idx] = F_str
-#    F_str = results[0]
+#    print("Strut force and deflections")
+#    print("Strut force", F_str)
+#    print("Deflection of the strut", d_str)
+##        print(d_str_v)
+#    print("Required strut area", F_str / (100 * (10 ** 6)))
+##        print()
+#    F_strut[idx] = F_str
+##    F_str = results[0]
 #    print("Strut force in first optimisation")
 #    print(F_str)
 #    print()
@@ -391,14 +391,14 @@ for idx in range(len(A_S_L)):
     Weight_mom = Weight * X_tip[::-1]
     Fuel_mom = Fuel_weight * X_tip[::-1]
     Eng_mom = W_eng * (L_wing - A_E)
-    Strut_mom = F_str * (L_wing - A_S_L[idx])
+#    Strut_mom = F_str * (L_wing - A_S_L[idx])
 #        Strut_mom_hori = F_str/np.tan(angle) * y_centroid_all_sec[int((L_wing - A_S_L[idx])/dx)] - 
     Drag_mom = Drag * X_tip[::-1]
     Thrust_mom = Thrust * (L_wing - A_E)
     
-    Mz_root = sum(Lift_mom) - sum(Weight_mom) - sum(Fuel_mom) - Eng_mom - Strut_mom
+    Mz_root = sum(Lift_mom) - sum(Weight_mom) - sum(Fuel_mom) - Eng_mom #- Strut_mom
     My_root = sum(Drag_mom) - Thrust_mom
-    Vy_root = sum(Lift) - sum(Weight) - sum(Fuel_weight) - W_eng - F_str
+    Vy_root = sum(Lift) - sum(Weight) - sum(Fuel_weight) - W_eng #- F_str
     Vz_root = Thrust - sum(Drag)
     
     print("Root moment around z: ", Mz_root)

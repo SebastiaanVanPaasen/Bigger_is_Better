@@ -101,7 +101,7 @@ def max_stress(theta,alpha_segment,I_xx,I_yy, Mx, My):
 finalthicknessreached = False
 counter = 0
 
-sigma = 105*10**6 #ultimate stress of aluminium 
+sigma = 114*10**6 #ultimate stress of aluminium 
 Mx = -37799412
 My = 216.17*10**3*7
 
@@ -111,7 +111,9 @@ while finalthicknessreached == False:# and counter < 100:
     I_xx = t_iter*segment_length[0]**3*np.sin(alpha_segment[0]+0.5*np.pi)**2/12 + t_iter*segment_length[0]*R_2[0]**2*np.sin(alpha_segment[0])**2
     I_yy = t_iter*segment_length[0]**3*np.cos(alpha_segment[0]+0.5*np.pi)**2/12 + t_iter*segment_length[0]*R_2[0]**2*np.cos(alpha_segment[0])**2
     I_xx_tot = sum(I_xx)
-    I_yy_tot = sum(I_yy) 
+    I_yy_tot = sum(I_yy)
+    print('Ixx',I_xx_tot)
+    print('Iyy',I_yy_tot)
     stress_ratio = max_stress(theta,alpha_segment,I_xx_tot,I_yy_tot, Mx, My)
     
     factor = 1/(counter+1)
@@ -137,21 +139,24 @@ plt.show()
 
 
 
-sigma_fatigue_hoop = 350 * 10**6 # look up from graph
-sigma_fatigue_long = 300 * 10**6
+sigma_fatigue_hoop = 135 * 10**6 # look up from graph
+sigma_fatigue_long = 114 * 10**6
 internal_p = 78.2 * 10**3 
 external_p = 30.1 * 10**3
-R = 5.95/2
+
 
 def t_fus_due_to_pressure(sigma_fatigue_hoop, sigma_fatigue_long,R,internal_p, external_p):
     delta_p = internal_p - external_p
-    t_min_hoop = delta_p*R/sigma_fatigue_hoop
-    t_min_long = delta_p*R/(2*sigma_fatigue_long)
+    t_min_hoop = []
+    t_min_long = []
+    for i in range(len(R)):
+        t_min_hoop.append(delta_p*R[i]/sigma_fatigue_hoop)
+        t_min_long.append(delta_p*R[i]/(2*sigma_fatigue_long))
     return t_min_hoop, t_min_long
 
-t_min_hoop,t_min_long = t_fus_due_to_pressure(sigma_fatigue_hoop, sigma_fatigue_long,R,internal_p, external_p)
-#print(t_min_hoop)
-#print(t_min_long)
+t_min_hoop,t_min_long = t_fus_due_to_pressure(sigma_fatigue_hoop, sigma_fatigue_long, R_2, internal_p, external_p)
+print("tmin hoop", max(t_min_hoop))
+print("tmin long", max(t_min_long))
 
 
 #max_stress_ratios = np.zeros((1,len(t_iter)))
