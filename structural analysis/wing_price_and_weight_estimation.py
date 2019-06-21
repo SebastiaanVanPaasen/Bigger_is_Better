@@ -61,7 +61,7 @@ def strut_cost(A_req_P, A_req_B, density, cost):
     L_strut =  prac.L_str
     
     for i in range(len(prac.A_S_L)):
-        Max_area[i] = A_req_P[i]#max(A_req_P[i], A_req_B[i])
+        Max_area[i] = A_req_P[i]#max(A_req_P[i], A_req_B[i])#A_req_P[i]#
         
         strut_volume[i] = Max_area[i]*L_strut[i]
         strut_mass[i] = strut_volume[i]*density
@@ -74,7 +74,7 @@ def wing_price_weight(A_req_P, A_req_B, density, cost, N, t_skin, b, qcsweep, dx
             
     Max_area, strut_volume, strut_mass, cost_strut = strut_cost(A_req_P, A_req_B, density, cost)
     airfoil_area, z_c_airfoil, y_c_airfoil = cw.get_skin_centroid(N, b, prac.calc_chord, dx)
-    boom_area = prac.boom_area_all[:]
+    boom_area = prac.boom_area_all
     print("boom area",boom_area)
     X_root = np.arange(0, (b/2)+dx, dx)
 
@@ -93,18 +93,22 @@ def wing_price_weight(A_req_P, A_req_B, density, cost, N, t_skin, b, qcsweep, dx
     total_spar_volume = 0
     
     for i in range(len(spar_areas_verti)):
+        spar_volume = 0
         for j in range(len(spar_areas_verti[0])):
             
-            total_spar_volume += (spar_areas_verti[i][j] + spar_areas_hori[j]*2) 
+            spar_volume += (spar_areas_verti[i][j] + spar_areas_hori[j]*2) 
         
-        total_spar_volume = total_spar_volume*prac.dx
+        total_spar_volume += spar_volume*prac.dx
         
     total_boom_volume = np.zeros(len(prac.A_S_L))
 
     for i in range(len(prac.A_S_L)):
-
-        total_boom_volume[i] = (boom_area[i] * nr_stiff)*(b/2)/np.cos(Sweep_LE)
-    
+        
+        if boom_area> 0:
+            
+            total_boom_volume[i] = (boom_area * nr_stiff)*(b/2)/np.cos(Sweep_LE)
+        else:
+            total_boom_volume[i] = 0
 #    print("boom_area", boom_area)
     boom_mass = total_boom_volume * density
     boom_cost = boom_mass * cost
@@ -113,7 +117,7 @@ def wing_price_weight(A_req_P, A_req_B, density, cost, N, t_skin, b, qcsweep, dx
 
     for i in range(len(prac.X_root)-1):
         
-        skin_volume[i] = ai.s_airfoil(N,b, prac.calc_chord, X_root)[i] *prac.dx *t_skin
+        skin_volume[i] = ai.s_airfoil(N,b, prac.calc_chord, X_root)[0][i] *prac.dx *t_skin
 #    print(skin_volume)
     skin_mass = sum(skin_volume) * density
     skin_price = skin_mass * cost
@@ -130,26 +134,30 @@ def wing_price_weight(A_req_P, A_req_B, density, cost, N, t_skin, b, qcsweep, dx
         total_price[i] = (skin_price + spar_price)*2 + cost_strut[i]*2 + boom_cost[i]*2
         total_mass[i] = (skin_mass + spar_mass)*2 + strut_mass[i]*2 + boom_mass[i]*2
     
-    return  skin_mass, spar_mass, boom_mass, total_mass, total_price
+    return  skin_mass, spar_mass, boom_mass, total_mass, total_price, boom_cost
 
 t_skin = 0.005
 N = prac.N
 b = prac.b
-sigma = 100 * 10 ** 6
-density = 2750
-cost = 3.63 
-qcsweep = (25/180) * np.pi
+sigma = 114 * 10 ** 6
+density = 2780
+cost = 1.96 
+qcsweep = 0 * np.pi
 dx = prac.dx
 
-A_req_P = strut_area_req_F(sigma)
+A_req_P = strut_area_req_F(140*10**6)
 I_req, A_req_B, sigma_crit= strut_area_req_B()
 
-max_strut_area, strut_volume, strut_mass, cost_strut = strut_cost(A_req_P, A_req_B, density, cost)
-skin_mass, spar_mass, boom_mass, total_mass, total_price = wing_price_weight(A_req_P, A_req_B, density, cost, N, t_skin, b, qcsweep, dx)
+max_strut_area, strut_volume, strut_mass, cost_strut = strut_cost(A_req_P, A_req_B,1580, 35.2)
+skin_mass, spar_mass, boom_mass, total_mass, total_price, boom_cost = wing_price_weight(A_req_P, A_req_B, density, cost, N, t_skin, b, qcsweep, dx)
 
+print(prac.L_str)
+print()
 print("area due to force", A_req_P)
 print()
 print("area due to buckling", A_req_B)
+print()
+print("spar mass", spar_mass)
 print()
 print("Ireq for buckling", I_req)
 print()
@@ -157,11 +165,15 @@ print("critical stress", sigma_crit)
 print()
 print("skin mass", skin_mass)
 print()
-print("spar mass", spar_mass)
-print()
+#print("spar mass", spar_mass)
+#print()
 print("boom mass", boom_mass)
 print()
+print("boom cost", boom_cost)
+print()
 print("strut mass", strut_mass)
+print()
+print("strut cost", cost_strut)
 print()
 print("total mass", total_mass)
 print()
