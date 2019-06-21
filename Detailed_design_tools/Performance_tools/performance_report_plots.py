@@ -18,20 +18,20 @@ import matplotlib.pyplot as plt
 m = 1.2
 
 """Design inputs"""
-#Wto = 1520276.626
-#Wland = Wto- 0.8*170698.0674
-#Wcr = 1555182.652 - 0.4*170698.0674
-#T0 = 432.34*1000
-#
-#Vcr = 218.7110308
-#S = 221.21 #211.1888478
-#A = 15
-#e = 0.6
-#CD0 = 0.019
-#CD = 0.025
-#CL_maxcr = 1.75
-#L_D = 17.46
-#L_Dmax=17.46
+Wto = 1520276.626
+Wland = Wto- 0.8*170698.0674
+Wcr = 1555182.652 - 0.4*170698.0674
+T0 = 432.34*1000
+
+Vcr = 218.7110308
+S = 221.21 #211.1888478
+A = 15
+e = 0.6
+CD0 = 0.019
+CD = 0.025
+CL_maxcr = 1.75
+L_D = 19.21
+L_Dmax=20.39
 
 
 """Needs new values for new design"""
@@ -46,15 +46,15 @@ m = 1.2
 
 
 """B737-8 MAX inputs"""
-Wto = 82191*9.81
-Wcr = (242670. - 0.4*20730)*9.81
-T0 = 130*1000*2
-Vcr = 221.2
-S = 127
-A = 10.16
-e = 0.6
-CD0 = 0.017
-CD = 0.03
+#Wto = 82191*9.81
+#Wcr = (242670. - 0.4*20730)*9.81
+#T0 = 130*1000*2
+#Vcr = 221.2
+#S = 127
+#A = 10.16
+#e = 0.6
+#CD0 = 0.017
+#CD = 0.03
 
 #Upper and lower limits for the interpolation for the service ceiling
 H_upper  = 13000
@@ -160,53 +160,56 @@ def glide_range(L_D,dh):
 #--------------------------------------MAIN PROGRAM------------------------------
 
 """Gliding unpowered descent"""
-#V = np.arange(50,300,5)              #Criose velocity in m/s
-#H = np.arange(1000,13000,1000)
-#
-#
-#Vv_min_list = []
-#range_list = []
-#Vinf_list = []
-#for i in range(len(H)):
-#    Vv_min = -RD(Wcr,S,A,e,CD0,H[i])   
-#    Vv_min_list.append(Vv_min)
-#    V_inf = RD_V(Wcr,S,A,e,CD0,H[i])
-#    Vinf_list.append(V_inf)
-#    if H[i] == 9000:
-#        print (glide_range(L_D,H[i])/1000)
-#    range_list.append(glide_range(L_D,H[i])/1000)
-#     
-#plt.figure(7)
-#plt.plot(H,Vv_min_list)  
-##plt.title("Minimum descend rate")
-#plt.xlabel("Altitude [m]",fontsize='x-large'  )
-#plt.ylabel("Rate of descent [m]",fontsize='x-large' )
-#plt.grid(True)
-#ax = plt.gca()
-##ax.get_yaxis().set_major_formatter(plt.FuncFormatter(lambda x, loc: "{:,}".format(int(x))))
-#ax.get_xaxis().set_major_formatter(plt.FuncFormatter(lambda x, loc: "{:,}".format(int(x))))
-#
-#plt.figure(8)
-#plt.plot(H,range_list)  
-#plt.vlines(9000,range_list[0],range_list[-1],"gray","--")
-#plt.hlines(157.14,H[0],H[-1],"gray","--")
-#plt.plot(9000,157.14,'ko')
-##plt.title("Range during glide")
-#plt.xlabel("Starting altitude [m]",fontsize='x-large' )
-#plt.ylabel("Range [km]",fontsize='x-large' )
-#plt.grid(True)
-#ax = plt.gca()
-##ax.get_yaxis().set_major_formatter(plt.FuncFormatter(lambda x, loc: "{:,}".format(int(x))))
-#ax.get_xaxis().set_major_formatter(plt.FuncFormatter(lambda x, loc: "{:,}".format(int(x))))
-#
-#
-#
-#theta_min = (np.arctan(1/ (L_Dmax)))*(180/np.pi)
-#print ("Minimum glide angle: ", theta_min," degrees")
-#
-#
-#plt.show()
-#
+V = np.arange(50,300,5)              #Criose velocity in m/s
+H = np.arange(1000,13000,1000)
+
+
+Vv_min_list = []
+range_list = []
+Vinf_list = []
+for i in range(len(H)):
+    Vv_min = -RD(Wcr,S,A,e,CD0,H[i])   
+    Vv_min_list.append(Vv_min)
+    V_inf = RD_V(Wcr,S,A,e,CD0,H[i])
+    Vinf_list.append(V_inf)
+    if H[i] == 9000:
+        print (glide_range(L_D,H[i])/1000)
+    range_list.append(glide_range(L_D,H[i])/1000)
+    
+    
+    
+     
+plt.figure(7)
+plt.plot(H,Vv_min_list)  
+#plt.title("Minimum descend rate")
+plt.xlabel("Altitude [m]",fontsize='x-large'  )
+plt.ylabel("Rate of descent [m]",fontsize='x-large' )
+plt.grid(True)
+ax = plt.gca()
+#ax.get_yaxis().set_major_formatter(plt.FuncFormatter(lambda x, loc: "{:,}".format(int(x))))
+ax.get_xaxis().set_major_formatter(plt.FuncFormatter(lambda x, loc: "{:,}".format(int(x))))
+
+plt.figure(8)
+plt.plot(H,range_list)  
+plt.vlines(9000,range_list[0],range_list[-1],"gray","--")
+plt.hlines(172.89,H[0],H[-1],"gray","--")
+plt.plot(9000,172.89,'ko')
+#plt.title("Range during glide")
+plt.xlabel("Starting altitude [m]",fontsize='x-large' )
+plt.ylabel("Range [km]",fontsize='x-large' )
+plt.grid(True)
+ax = plt.gca()
+#ax.get_yaxis().set_major_formatter(plt.FuncFormatter(lambda x, loc: "{:,}".format(int(x))))
+ax.get_xaxis().set_major_formatter(plt.FuncFormatter(lambda x, loc: "{:,}".format(int(x))))
+
+
+
+theta_min = (np.arctan(1/ (L_Dmax)))*(180/np.pi)
+print ("Minimum glide angle: ", theta_min," degrees")
+
+
+plt.show()
+
 
 
 
@@ -293,37 +296,37 @@ def glide_range(L_D,dh):
         
 """Steady Climb rate"""
 #Validation data 
-RC_validation = RC(Wto,T0,Vcr,S,A,e,CD0,6096)
-RC_unsteady_vali =RC_unsteady(Wto,T0,Vcr,S,6096,CD)
-print (RC_validation,RC_unsteady_vali)
-
-
-H = np.arange(1000,15000,1000)
-V = np.arange(80,350,20)
-
-plt.figure(1)
-RC_max = [] 
-M_RC_max = []
-V_RC_max = []
-H_RC_max = []
-
-for h in H:
-    RC_list = []
-    M_list = []
-    V_list = []
-    
-    for v in V:
-        RC_list.append(RC(Wto,T0,v,S,A,e,CD0,h))
-        M_list.append(Mach(v,h))
-        V_list.append(v)
-        
-    plt.plot(M_list,RC_list, label = "%s m" %h)
-    
-    k = RC_list.index(max(RC_list))
-    RC_max.append(max(RC_list))
-    V_RC_max.append(V_list[k])
-    M_RC_max.append(M_list[k])
-    H_RC_max.append(h)
+#RC_validation = RC(Wto,T0,Vcr,S,A,e,CD0,6096)
+#RC_unsteady_vali =RC_unsteady(Wto,T0,Vcr,S,6096,CD)
+#print (RC_validation,RC_unsteady_vali)
+#
+#
+#H = np.arange(1000,15000,1000)
+#V = np.arange(80,350,20)
+#
+#plt.figure(1)
+#RC_max = [] 
+#M_RC_max = []
+#V_RC_max = []
+#H_RC_max = []
+#
+#for h in H:
+#    RC_list = []
+#    M_list = []
+#    V_list = []
+#    
+#    for v in V:
+#        RC_list.append(RC(Wto,T0,v,S,A,e,CD0,h))
+#        M_list.append(Mach(v,h))
+#        V_list.append(v)
+#        
+#    plt.plot(M_list,RC_list, label = "%s m" %h)
+#    
+#    k = RC_list.index(max(RC_list))
+#    RC_max.append(max(RC_list))
+#    V_RC_max.append(V_list[k])
+#    M_RC_max.append(M_list[k])
+#    H_RC_max.append(h)
     
 
 #plt.plot(M_RC_max,RC_max," ko",label = " Max. RC" )
@@ -352,34 +355,34 @@ for h in H:
 """Service and absolute ceilings"""
 #Absolute ceiling is where RCmax = 0
 #Service ceiling is where RDmax = 100 ft/min = 0.508 m/s (from Anderson book)
-H = list(H)
-k1 = H.index(H_lower)
-k2 = H.index(H_upper)
-
-serv_ceiling = H[k1] + ((0.508 - RC_max[k1])/(RC_max[k2]-RC_max[k1]))*(H[k2]-H[k1])
-abs_ceiling = H[k1] + ((0. - RC_max[k1])/(RC_max[k2]-RC_max[k1]))*(H[k2]-H[k1])
-
-print ("Service ceiling :",serv_ceiling,"m")
-print ("Absolute ceiling :",abs_ceiling,"m")
-
-plt.figure(3)
-
-plt.plot(RC_max,H)
-plt.vlines(0.508,H[0],H[-1],"gray","--",label = " Service ceiling")
-plt.hlines(serv_ceiling,RC_max[0],RC_max[-1],"gray","--")
-plt.vlines(0.,H[0],H[-1],"g","--",label = " Absolute ceiling")
-plt.hlines(abs_ceiling,RC_max[0],RC_max[-1],"g","--")
-#plt.title("Service and absolute ceiling")
-plt.xlabel("Max. rate of climb [m/s]",fontsize='x-large')
-plt.ylabel("Altitude [m]",fontsize='x-large')
-plt.grid(True )
-#plt.ylim(0,14000)
-plt.legend(fontsize='x-large')
-
-ax = plt.gca()
-ax.get_yaxis().set_major_formatter(plt.FuncFormatter(lambda x, loc: "{:,}".format(int(x))))
-ax.get_xaxis().set_major_formatter(plt.FuncFormatter(lambda x, loc: "{:,}".format(int(x))))
-
+#H = list(H)
+#k1 = H.index(H_lower)
+#k2 = H.index(H_upper)
+#
+#serv_ceiling = H[k1] + ((0.508 - RC_max[k1])/(RC_max[k2]-RC_max[k1]))*(H[k2]-H[k1])
+#abs_ceiling = H[k1] + ((0. - RC_max[k1])/(RC_max[k2]-RC_max[k1]))*(H[k2]-H[k1])
+#
+#print ("Service ceiling :",serv_ceiling,"m")
+#print ("Absolute ceiling :",abs_ceiling,"m")
+#
+#plt.figure(3)
+#
+#plt.plot(RC_max,H)
+#plt.vlines(0.508,H[0],H[-1],"gray","--",label = " Service ceiling")
+#plt.hlines(serv_ceiling,RC_max[0],RC_max[-1],"gray","--")
+#plt.vlines(0.,H[0],H[-1],"g","--",label = " Absolute ceiling")
+#plt.hlines(abs_ceiling,RC_max[0],RC_max[-1],"g","--")
+##plt.title("Service and absolute ceiling")
+#plt.xlabel("Max. rate of climb [m/s]",fontsize='x-large')
+#plt.ylabel("Altitude [m]",fontsize='x-large')
+#plt.grid(True )
+##plt.ylim(0,14000)
+#plt.legend(fontsize='x-large')
+#
+#ax = plt.gca()
+#ax.get_yaxis().set_major_formatter(plt.FuncFormatter(lambda x, loc: "{:,}".format(int(x))))
+#ax.get_xaxis().set_major_formatter(plt.FuncFormatter(lambda x, loc: "{:,}".format(int(x))))
+#
 
     
     
