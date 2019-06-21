@@ -13,15 +13,23 @@ import matplotlib.pyplot as plt
 #N = #number of fan blades
 #d_fan = [m] diameter of the fan 
 
-m_dot = 510.
-dT = 80.926
-N = 30.
-d_fan = 2.84124
-RSS = 100.
-#distances
-r = 120.
-robs = 1.76   #height of observer 
+#m_dot = 510.
+#dT = 80.926
+#N = 30.
+#d_fan = 2.84124
+#RSS = 100.
+##distances
+#r = 120.
+#robs = 1.76   #height of observer 
 
+m_dot = 307.*0.85
+dT = 100
+N = 45
+d_fan = 1.5
+RSS = 100.
+r = 300.
+robs = 1.75
+theta = 90.*np.pi/180.
 #---------------------------------CONSTANT INPUTS------------------------------
 #RSS = roto stator spacing/ fan blade chord, assume > 100, as there are not a lot of blades and a large fan diameter
 m0_dot = 0.453 #[kg/s] reference mass flow rate
@@ -29,7 +37,7 @@ dT0 = 0.555 #[K] reference fan total temperature
 RPM_fan = 2000.  
 c = 343.2           #speed of sound [m/s]
 M = 0.3
-theta = 90.*np.pi/180.
+
 pe0 = 2e-05
 W_ref = 10**(-12)  #reference acoustic power
 
@@ -164,24 +172,23 @@ for f in freq:
     SPL_fan_effects.append(SPL_corrected - SPL_absorp + dSPL - 15.)     #reduction of 15 dB due to geared fan and acoustic lining in fan inlet!!
     
     
-plt.figure(2)
-plt.subplot(121)  
+plt.figure(7) 
 plt.plot(freq,SPL_fan_list)
-plt.title("Fan noise") 
+#plt.title("Fan noise") 
 plt.grid(True)
-plt.xlabel("1/3 Octave Band Centre Frequency [Hz]")
-plt.ylabel("1/3 Octave Band SPL [dB]")
+plt.xlabel("1/3 Octave Band Centre Frequency [Hz]",fontsize ='x-large')
+plt.ylabel("1/3 Octave Band SPL [dB]",fontsize ='x-large')
 plt.xlim(50,10000)
-plt.ylim(20,100)
+#plt.ylim(20,100)
 plt.xscale('log')
 
 
-plt.subplot(122)  
+plt.figure(8)
 plt.plot(freq,SPL_fan_effects)
-plt.title("Fan noise including ground effect and atmos. absorption") 
+#plt.title("Fan noise including ground effect and atmos. absorption") 
 plt.grid(True)
-plt.xlabel("1/3 Octave Band Centre Frequency [Hz]")
-plt.ylabel("1/3 Octave Band SPL [dB]")
+plt.xlabel("1/3 Octave Band Centre Frequency [Hz]",fontsize ='x-large')
+plt.ylabel("1/3 Octave Band SPL [dB]",fontsize ='x-large')
 plt.xlim(50,10000)
 plt.xscale('log')
 

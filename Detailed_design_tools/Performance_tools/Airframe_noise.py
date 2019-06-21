@@ -21,23 +21,29 @@ import matplotlib.pyplot as plt
 
 robs = 1.75 #height of the observer
 
-A_w = 227.12
-b_w = 58.37
+A_w = 35.9
+b_w = 35.9
 
-A_h = 51.51
+
+A_h = 32.78
 b_h = 14.35
 
+b_f = 0.599*b_w
+A_f = 0.3*A_w
 
-b_f = 0.75*b_w
-A_f = 0.38*4.24*b_f
-d = 2.0
+d_main = 44.5*2.54/100.
+d_nose = 27*2.54/100.
 
-n_gear = 4.
-n_nose = 2.
+n_gear = 4
+n_nose = 2
 
-theta_flap = 30.*np.pi/180.
-V = 105. 
-r = 120. 
+theta_flap = 5.*np.pi/180.
+V =74*1.5
+
+r =300.
+
+theta = 90.*np.pi/180.         #emission angle (overhead so 90 degrees)
+phi = 0. #90.*np.pi/180. 
 
 #"""Input values of the fokker 70"""
 #A_w = 81.
@@ -63,8 +69,7 @@ mu = 1.84e-05       #dynamic viscosity kg/ms
 rho = 1.225
 c = 343.2           #speed of sound [m/s]
 M = V/c             #Mach number during approach   
-theta = 90.*np.pi/180.         #emission angle (overhead so 90 degrees)
-phi = 0.             #azimuth angle (overhead so 0)
+           #azimuth angle (overhead so 0)
 pe0 = 2e-05         #Reference effective pressure [N/m^2] [Pa]
 
 
@@ -215,8 +220,8 @@ for f in freq:
     
     a_gear = 6
         
-    G_gear = n_gear*(d/b_w)**2    
-    L_gear = d
+    G_gear = n_gear*(d_main/b_w)**2    
+    L_gear = d_main
     
     #Strouhal number
     S_gear = Strouhal(f,L_gear,M,theta,c)
@@ -248,8 +253,8 @@ for f in freq:
     
     a_nose = 6
         
-    G_nose = n_nose*(d/b_w)**2    
-    L_nose = d
+    G_nose = n_nose*(d_nose/b_w)**2    
+    L_nose = d_nose
     
     #Strouhal number
     S_nose = Strouhal(f,L_nose,M,theta,c)
@@ -301,7 +306,6 @@ for f in freq:
     SPL_nose_cor.append(SPL_nosei + dSPL - SPL_absorp)
    
 plt.figure(1)  
-plt.subplot(121)   
 plt.plot(freq,SPL,"k",label = "Total")
 plt.plot(freq,SPL_wing,"b",label= "Wing")
 plt.plot(freq,SPL_tail,"g--",label = "Horizontal tail")
@@ -309,17 +313,17 @@ plt.plot(freq,SPL_slats,"r", label = "Slats")
 plt.plot(freq,SPL_flaps,"c--", label = "Flaps")
 plt.plot(freq, SPL_gear,"orange",label = "Main gear")
 plt.plot(freq, SPL_nose,"m--",label = "Nose gear")
-plt.plot(freq,SPL_cor,"y", label = "Tot corr.")
+#plt.plot(freq,SPL_cor,"y", label = "Tot corr.")
 
-plt.title("Airframe noise") 
+#plt.title("Airframe noise") 
 plt.grid(True)
-plt.xlabel("1/3 Octave Band Centre Frequency [Hz]")
-plt.ylabel("1/3 Octave Band SPL [dB]")
+plt.xlabel("1/3 Octave Band Centre Frequency [Hz]",fontsize ='x-large')
+plt.ylabel("1/3 Octave Band SPL [dB]",fontsize ='x-large')
 plt.xlim(50,10000)
 plt.xscale('log')
-plt.legend()
+plt.legend(fontsize ='x-large')
 
-plt.subplot(122)
+plt.figure(2)
 plt.plot(freq,SPL_cor,"k",label = "Total")
 plt.plot(freq,SPL_wing_cor,"b",label= "Wing")
 plt.plot(freq,SPL_tail_cor, "g--",label = "Horizontal tail")
@@ -328,13 +332,13 @@ plt.plot(freq,SPL_flaps_cor, "c--", label = "Flaps")
 plt.plot(freq, SPL_gear_cor,"orange",label = "Main gear")
 plt.plot(freq, SPL_nose_cor,"m--",label = "Nose gear")
 
-plt.title("Airframe noise including ground effect and atmospheric absorption") 
+#plt.title("Airframe noise including ground effect and atmospheric absorption") 
 plt.grid(True)
-plt.xlabel("1/3 Octave Band Centre Frequency [Hz]")
-plt.ylabel("1/3 Octave Band SPL [dB]")
+plt.xlabel("1/3 Octave Band Centre Frequency [Hz]",fontsize ='x-large')
+plt.ylabel("1/3 Octave Band SPL [dB]",fontsize ='x-large')
 plt.xlim(50,10000)
 plt.xscale('log')
-plt.legend()
+plt.legend(fontsize ='x-large')
 
 plt.show()
 
