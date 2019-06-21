@@ -61,7 +61,7 @@ def strut_cost(A_req_P, A_req_B, density, cost):
     L_strut =  prac.L_str
     
     for i in range(len(prac.A_S_L)):
-        Max_area[i] = A_req_P[i]#max(A_req_P[i], A_req_B[i])#A_req_P[i]#
+        Max_area[i] = max(A_req_P[i], A_req_B[i])#A_req_P[i]#
         
         strut_volume[i] = Max_area[i]*L_strut[i]
         strut_mass[i] = strut_volume[i]*density

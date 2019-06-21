@@ -17,7 +17,7 @@ def wing_stress(b, Mz, My, X_root):
 #    
     airfoil_area, z_c_airfoil, y_c_airfoil = cw.get_skin_centroid(N,b, prac.calc_chord, prac.dx)
     z_centroid_all_sec, y_centroid_all_sec, y_loc_spar_up, y_loc_spar_low, y_loc_stiff_up, y_loc_stiff_low, y_vertical_spar, z_loc_stiff_up, spar_loc_sec, z_loc_stiff_low, spar_areas_verti = cw.wing_centroid(prac.boom_area_all, cw.spar_areas_hori, cw.t_spar_v, z_c_airfoil, y_c_airfoil, cw.n_stiff_up, cw.n_stiff_low, N, b, prac.calc_chord, X_root, prac.dx)
-    print(z_centroid_all_sec)
+#    print(z_centroid_all_sec)
 #    boom_area = ai.wing_geometry(I_zz_req, I_zz_spar, N, b, prac.calc_chord)[0][0]
 #    I_zz_wing, I_yy_wing, I_yz_wing = ai.inertia_wing(I_zz_spar, I_yy_spar, I_yz_spar, boom_area, N, b, prac.calc_chord)
 
@@ -44,7 +44,7 @@ def wing_stress(b, Mz, My, X_root):
     z = np.zeros((len(X_root), len(z_nodes[0])))
     y_up = np.zeros((len(X_root), len(y_up_nodes[0])))
     y_low = np.zeros((len(X_root), len(y_low_nodes[0])))
-    print(z_nodes)
+#    print(z_nodes)
 #    print(y_up_nodes[0])
     
     for i in range(len(X_root)):
@@ -92,10 +92,10 @@ for i in range(len(prac.A_S_L)):
     plt.legend(bbox_to_anchor=(1.05,1), loc="upper left")    
     plt.show()
     
-print("max_stress up",max_stress_up)
-print("max_stress low",max_stress_low)
-print("min_stress up",min_stress_up[0])
-print("min_stress low",min_stress_low[0])
+print("max_stress up",max(max_stress_up[0]))
+print("max_stress low",max(max_stress_low[0]))
+print("min_stress up",min(min_stress_up[0]))
+print("min_stress low",min(min_stress_low[0]))
  
 #R = 2.5
 #fus_sec = list(np.arange(0,31,1))

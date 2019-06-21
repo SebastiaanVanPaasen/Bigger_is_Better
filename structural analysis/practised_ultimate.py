@@ -44,7 +44,7 @@ I_zz_wing = 0.25
 L_wing = b / 2
 
 H_cr = 9000
-V_cr = 201
+V_cr = 218
 rho_cr = cc.Rho_0 * ((1 + (cc.a * H_cr) / cc.Temp_0) ** (-(cc.g_0 / (cc.R_gas * cc.a) + 1)))
 CD_0_cr = 0.02114
 print(rho_cr)
@@ -53,7 +53,7 @@ W_fuel = 170698
 W_N = 25875
 
 N_eng = 2
-W_eng_v = 4760 * cc.g_0 + W_N / N_eng
+W_eng_v = 102023/2 #4760 * cc.g_0 #+ W_N / N_eng
 Rho_fuel = 0.804 * 1000
 
 
@@ -209,8 +209,8 @@ def indet_sys(dx, angle, L_s, a_s, a_e, cl_polar, I_zz_sections):
 
     x_start = L_wing * 0.28
     
-    alpha = np.radians(2.236)
-    n = 2.56*1.5
+    alpha = np.radians(0.9153)
+    n = -1*1.5
     
     
     lifts_v = n * deter_lift(cl_polar, X_tip[::-1], dx)   
@@ -340,7 +340,7 @@ for idx in range(len(A_S_L)):
 #        print(abs(boom_area_new - boom_area_old) )
 #        print("New iteration")
 #    boom_area_old = boom_area_new
-    boom_area_all = 0.009
+    boom_area_all = 0.0045
     
     I_zz_spar, I_yy_spar, I_yz_spar = ai.I_zz_spars(l_spar_h, t_spar_v, t_spar_h, N, b ,calc_chord, boom_area_all,X_root, dx)
     I_zz_req = pr.required_Izz(N, b, calc_chord, Mz_dist[idx], boom_area_all, X_root, dx)
