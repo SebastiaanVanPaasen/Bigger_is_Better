@@ -37,7 +37,7 @@ def s_airfoil(N,b,c, X_root):
     
 def I_zz_spars(l_spar_h ,t_spar_v, t_spar_h, N, b, c, boom_area, X_root, dx):
     
-    airfoil_area, z_c_airfoil, y_c_airfoil = cw.get_skin_centroid(b, N, c, dx)
+    airfoil_area, z_c_airfoil, y_c_airfoil = cw.get_skin_centroid(N, b, c, dx)
     
     z_centroid_all_sec, y_centroid_all_sec, y_loc_spar_up, y_loc_spar_low, y_loc_stiff_up, y_loc_stiff_low, y_vertical_spar, z_loc_stiff_up, spar_loc_sec, z_loc_stiff_low, spar_areas_verti = cw.wing_centroid(boom_area, cw.spar_areas_hori, cw.t_spar_v, z_c_airfoil, y_c_airfoil, cw.n_stiff_up, cw.n_stiff_low, N, b, c, X_root, dx)
 
@@ -118,7 +118,6 @@ def wing_geometry(I_zz_req, I_zz_spars, N, b, c, boom_area, X_root, dx):
 
         single_boom_area[i][0] = (I_zz_req[i] - I_zz_spars[i][0] - I_zz_airfoil)/y_2
         
-
 #    plt.plot(X_root, single_boom_area)
 #    plt.show()
 #    print("single_boom_area",single_boom_area*10000, len(single_boom_area))
@@ -173,7 +172,7 @@ def inertia_wing(I_zz_spar, I_yy_spar, I_yz_spar, boom_area, N, b, c, X_root, dx
 #        print("I_zz used",I_zz_spar[i][0])
 #        
 #    print("Izz wing",I_zz_airfoil)
-
+    print("I_zz",I_zz[0])
     return I_zz, I_yy, I_yz
     
 #print(inertia_wing(I_zz_spar, I_yy_spar, I_yz_spar, airfoil_area, z_c_airfoil, y_c_airfoil, boom_area)[0][0])

@@ -56,9 +56,9 @@ def get_skin_centroid(N, b, c, dx):
 
 n_stiff_up = 12
 n_stiff_low = 12
-l_spar_h = 0.3
-t_spar_h = 0.02
-t_spar_v = 0.03
+l_spar_h = 0.4
+t_spar_h = 0.051
+t_spar_v = 0.038
 
 nr_spars = sl.nr_spars
 spar_areas_hori = l_spar_h*t_spar_h*np.ones(nr_spars)
