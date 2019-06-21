@@ -19,15 +19,15 @@ import matplotlib.pyplot as plt
 #Mfuel = fuel mass [kg]
 #rho_fuel = density of jet fuel [kg/m^3]
 
-t_c = 0.13
+t_c = 0.125
 Cs1 = 0.15
 Cs2 = 0.55
-Cr = 5.928
-Ct = 1.85
+Cr = 5.530189444
+Ct = 1.974277631
 D_fus = 6.7
-bf = 58.37
+bf = 56.28350306
 y_eng = 6.
-Mfuel = 193990./9.81
+Mfuel = 170698.0674/9.81
 rho_fuel = 804. #kg/m^3
 
 #--------------------------------MAIN PROGRAM--------------------------------

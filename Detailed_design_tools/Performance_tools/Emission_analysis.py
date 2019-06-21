@@ -19,20 +19,34 @@ import matplotlib.pyplot as plt
 #R_des = design range [km]
 
 """Design"""
-SAR = 0.0094
-n_eng = 2.
-n_pax = 200.
-hcr = 11000.
-Mcr = 0.79
-MTOW = 82919.
-R_des = 1100. 
 
-Tc = 711.5    #from cycle calculation 
+#SAR = 0.00890419955
+#n_eng = 2.
+#n_pax = 450.
+#hcr = 9000.
+#Mcr = 0.72
+#MTOW = (1520276.626/9.81)
+#R_des = 1100. 
+#
+#Tc = 985    #from cycle calculation 
+#
+#APU = True
+"""Ref. aircraft"""
+hcr_ref = 11000.
+
+""" b737-max 8""" 
+SAR = 0.0102
+MTOW = 82191.
+n_eng = 2
+n_pax = 200
+hcr = 11000
+Mcr = 0.79
+R_des = 1100.
+TIM_idle = 26.*60.  #Includes taxiing and holding position
+
+Tc = 1035. #1111.1
 
 APU = True
-
-"""Ref. aircraft"""
-hcr_ref = 10000.
 
 #------------------------------------DEFINITIONS-------------------------------
 def ISA_temp(h):
@@ -70,8 +84,8 @@ def Vel(M,h):
     V = a*M
     return V
 
-def LTO_emis(n_eng,Ffuel,TIM,EF):    #Ffuel is fuel flow in kg/s
-    emission = n_eng*Ffuel*TIM*EF    #EF is emission factor in kg/kg
+def LTO_emis(Ffuel,TIM,EF):    #Ffuel is fuel flow in kg/s
+    emission = Ffuel*TIM*EF    #EF is emission factor in kg/kg
     return emission
 
 def EF_NOx(Tc,h): #in kg/kg
@@ -106,7 +120,7 @@ def RF_NOx(RF,h):
 TIM_TO = 0.7*60. 
 TIM_climb = 2.2*60.
 TIM_app = 4.*60.
-TIM_idle = 26.*60.  #Includes taxiing and holding position
+
 TIM_APU = 0. 
 
 if APU == True:
@@ -119,7 +133,7 @@ TS_TO = 1.
 TS_climb = 0.85
 TS_app = 0.3
 TS_idle = 0.07
-TS_cruise = 0.6
+TS_cruise = 0.5
 
 TS = [TS_TO,TS_climb,TS_app,TS_idle]
 phase = ['TO','climb',"app","idle","APU"]
@@ -131,20 +145,23 @@ H2O = 1.237
 
 #Source 3 in [kg/kg fuel]
 CO2 =3.15
-SO2 = 0.000274 
-CH4 = 0.00035 
+SO2 = 0.001  #274 
+CO = 0.02367*0.2
 N2O = 0.0001  
-NOx = EF_NOx(Tc,0.)
 NMVOC = 0.00743 
-CO = 0.02367
-PM10 = 0.000064 
+HC = 4e-05
 
-EF = [H2O,CO2,SO2,CH4,N2O,NOx,NMVOC,CO,PM10]
-EF_comp = ['H2O','CO2','SO2','CH4','N2O','NOx','NMVOC','CO','PM10']
 
-"""Tyre and brake wear emission factors: TNO source"""
-PM10_tyre = 2.23e-07   #kg/kg MTOW
-PM10_brake = 2.53e-07  #kg/kg MTOW
+NOx = EF_NOx(Tc,0.)/10
+print (NOx)
+
+
+
+
+
+EF = [H2O,CO2,SO2,N2O,NOx,NMVOC,CO,HC]
+EF_comp = ['H2O','CO2','SO2','N2O','NOx','NMVOC','CO','HC']
+
 
 
 """Constant variables calculation"""
@@ -170,10 +187,16 @@ for i in range(len(phase)):
             TS_phase = TS[i]
             
             Ffuel = Ffuel_max*TS_phase
-            emission = LTO_emis(n_eng,Ffuel,TIM_phase,EF_emis) 
+            print (phase[i],Ffuel)
+            
+            
+            emission = LTO_emis(Ffuel,TIM_phase,EF_emis)
             
             E_list.append(emission)
+            
+            
         elif i == 4.:
+
             EF_emis = EF[j]
             TIM_phase = TIM[i]
                 
@@ -190,16 +213,6 @@ for k in range(len(Emis_tot)):
     print (Emis_tot[k])
     print ()
     
-
-
-"""Tyre and break wear additional emissions"""
-Tyre_wear = PM10_tyre*MTOW
-Brake_wear = PM10_brake*MTOW
-
-print ("PM10 emissions due to brake and tyre wear:", Tyre_wear, Brake_wear)
-print()
-
-
 
 
 
@@ -233,7 +246,7 @@ EF = [H2O,CO2,NOx,0.005,0.0007,0.001,1e-04]
 
 
 """Emission calculations"""
-print ("Cruise emissions [kg/km] & kg")
+print ("Cruise emissions [kg/km-pax] & kg/pax")
 Emissions_cruise = []
 
 for i in range(len(EF)):
@@ -243,7 +256,7 @@ for i in range(len(EF)):
     #In case the design range is the entire cruise distance    
     total_emis_cr = emissioni*R_des*n_pax 
         
-    print (EF_comp[i],emissioni,total_emis_cr)
+    print (EF_comp[i],emissioni/n_pax,total_emis_cr/n_pax)
   
  
 """Sensitivity EF of NOx"""
@@ -259,22 +272,25 @@ NOx_constT = []
 for h in H:
     NOx = EF_NOx(Tc,h)
     NOx_constT.append(NOx)
-    
-plt.subplot(121)
+plt.figure(1)    
 plt.plot(Tc_list, NOx_consth)
-plt.title("EF NOx for const. h, varying Tc")
+#plt.title("EF NOx for const. h, varying Tc")
 plt.grid(True)
-plt.xlabel("Tc [K]")
-plt.ylabel("EF NOx [kg/kg]")
+plt.xlabel("Tc [K]",fontsize ='x-large')
+plt.ylabel("EF NOx [kg/kg]",fontsize ='x-large')
 
-plt.subplot(122)
+plt.figure(2)
 plt.plot(H, NOx_constT)
-plt.title("EF NOx for const. Tc, varying h")
+#plt.title("EF NOx for const. Tc, varying h")
 plt.grid(True)
-plt.xlabel("h [m]")
-plt.ylabel("EF NOx [kg/kg]")
-plt.show()  
+plt.xlabel("Altitude [m]",fontsize ='x-large')
+plt.ylabel("EF NOx [kg/kg]",fontsize ='x-large')
+#plt.show()  
 
+ax = plt.gca()
+#ax.get_yaxis().set_major_formatter(plt.FuncFormatter(lambda x, loc: "{:,}".format(int(x))))
+ax.get_xaxis().set_major_formatter(plt.FuncFormatter(lambda x, loc: "{:,}".format(int(x))))
+plt.show()
 
 #---------------------------------------RADIATIVE FORCING-------------------------
 #To take into account the effect of the emissions during cruise as they do not directly
@@ -311,21 +327,26 @@ RF_ac = CO2[0]+CH4[0]+RF_NOx(NOx[0],hcr)+H2O[0]+RF_contrails(contrails[0],hcr)+A
 RF_ref = CO2[0]+CH4[0]+RF_NOx(NOx[0],hcr_ref)+H2O[0]+RF_contrails(contrails[0],hcr_ref)+AIC[0]+SO4[0]+soot[0]
 
 RF_reduction = (RF_ac - RF_ref)/RF_ref * 100.
+print ("RF ref:", RF_ref, "RF_des:",RF_ac)
 print ("RF reduction wrt ref. aircraft",RF_reduction)
 
 
-
+plt.figure(3)
 plt.plot(hcr_ref,RF_ref,"o",label = "Reference aicraft")
 plt.plot(hcr,RF_ac,'o',label = "Aircraft")
-plt.plot(H,RF_tot_mean,label = "Best estimate")
+plt.plot(H,RF_tot_mean)
 #plt.plot(H,RF_tot_low, label = "Lower bound values")
 #plt.plot(H,RF_tot_high,label = "Upper bound values")
-plt.title("RF dependency on altitude")
-plt.xlabel("Altitude [m]")
-plt.ylabel("RF [mW/m^2]")
-plt.grid(True)
 
-plt.show()
+plt.xlabel("Altitude [m]",fontsize='x-large')
+plt.ylabel("RF [mW/m^2]",fontsize='x-large')
+plt.legend(fontsize='x-large')
+plt.grid(True)
+ax = plt.gca()
+ax.get_yaxis().set_major_formatter(plt.FuncFormatter(lambda x, loc: "{:,}".format(int(x))))
+ax.get_xaxis().set_major_formatter(plt.FuncFormatter(lambda x, loc: "{:,}".format(int(x))))
+
+#plt.show()
 
 
     

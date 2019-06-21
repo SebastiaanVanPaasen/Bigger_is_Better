@@ -48,6 +48,22 @@ g = 9.81
 R_des = 6570.
 Ct0 = 12e-06
 
+#"""Design inputs"""
+#MTOW = 1520276.626
+#OEW = 877093.3135
+#MPW = 472485.2453
+#MZFW =  OEW+MPW
+#MFW = 170698.0674*1.3
+#W_fr = MFW/105.*5.
+#A = 15
+#e = 0.85
+#CD0 = 0.019
+#V = 218.711
+#g = 9.81
+#R_des = 1400.
+#Ct = 1.05e-05*3.17
+
+
 
 
 #------------------------------DEFINITIONS-----------------------------------
@@ -79,7 +95,7 @@ def payload_range():
     #R_harmonic = ((V/(g*Ct))*CL_CD(A,e,CD0)*np.log(MTOW/(MTOW-MZFW-W_fr)))/1000.
     
     #Max range line (increase fuel, decrease payload)
-    R_max = ((V/(g*Ct))*CL_CD(A,e,CD0)*np.log(MTOW/(MTOW-((MFW-W_fr)*1))))/1000.
+    R_max = ((V/(g*Ct))*CL_CD(A,e,CD0)*np.log(MTOW/(MTOW-((MFW-W_fr)))))/1000.
     #R_max = ((V/(g*Ct))*CL_CD(A,e,CD0)*np.log(MTOW/(MFW-W_fr)))/1000.
     
     #Ferry range (no payload all fuel, no MTOW anymore)

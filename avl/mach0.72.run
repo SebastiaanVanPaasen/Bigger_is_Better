@@ -1,7 +1,7 @@
 
 ---------------------------------------------
 
-Run case  1:   -unnamed-
+Run case  1:   -flight-
 
 alpha        ->  alpha       =   0.00000
 beta         ->  beta        =   0.00000
@@ -15,11 +15,11 @@ pb/2V     =   0.00000
 qc/2V     =   0.00000
 rb/2V     =   0.00000
 CL        =   0.00000
-CDo       =   0.02
+CDo       =   0.02114
 bank      =   0.00000     deg
 elevation =   0.00000     deg
 heading   =   0.00000     deg
-Mach      =   0.75
+Mach      =   0.191
 velocity  =   0.00000     Lunit/Tunit
 density   =   1.00000     Munit/Lunit^3
 grav.acc. =   1.00000     Lunit/Tunit^2
