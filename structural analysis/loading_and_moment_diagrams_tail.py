@@ -9,7 +9,7 @@ from scipy.interpolate import interp1d
 import math as m
 import pandas as pd
 from matplotlib import pyplot as plt
-from class_I.lift_distr import make_avl_file, lift_distribution, get_correct_data
+#from class_I.lift_distr import make_avl_file, lift_distribution, get_correct_data
 import constants_and_conversions as cc
 
 #%%
@@ -29,18 +29,20 @@ b_half = importpan('y_s.csv')
 cl = importpan('CL1.csv')
 cl = -1*cl
 
+cl = 0.0
+cl = cl*np.ones(len(b_half))
 
 PolyFitCurveCl = sp.interpolate.interp1d(b_half, cl, kind="cubic", fill_value="extrapolate")
 
 #%%
-Cr = 4.88
-Ct = 1.95
+Cr = 4.56
+Ct = 1.82
 CD0 = 0.0014 
-S = 46.75 
+S = 40.76 
 b = b_half[0]*2
 AR = (b**2)/S
 taper = Ct/Cr 
-Sweep0 = 36.8
+Sweep0 = 15.58
 Sweep0 = Sweep0*0.0174532925
 qcsweep= m.atan(m.atan(Sweep0)+(4./AR)*(-0.25*(1-taper)/(1+taper)))
 e_oswald = 0.85
@@ -50,7 +52,7 @@ Cdi = (cl**2)/(m.pi*AR*e_oswald)
 PolyFitCurveidrag = sp.interpolate.interp1d(b_half, Cdi, kind="cubic", fill_value="extrapolate")
 
 #%%
-tc = 0.08
+tc = 0.12
 # Cy = 0.#Cr - np.tan(Sweep0) * (by / 2)
 Tail_W = 13776.68/2
 
@@ -62,7 +64,7 @@ Sweepsc = qcsweep
 #%%
 alt = 9000
 rho = cc.Rho_0 * ((1 + (cc.a * alt) / cc.Temp_0) ** (-(cc.g_0 / (cc.R_gas * cc.a))))
-V = 235.41
+V = 218.17
 
 #%%
 
@@ -114,7 +116,7 @@ def Loadcalculator(x0,Ff):
         ###FINDING THE TOTAL FORCE DISTRIBUTION ALONG WING HALF SPAN
 
         ### Weight calculations
-        t = 0.08
+        t = 0.12
         
         section_volume = surfacearea*t
         section_weight = section_volume * specific_weight * -1 
@@ -258,12 +260,13 @@ def load_diagrams(N):  ### 100 nodes, so 99 beam elements
         Thrustdistributionvalues3.append(Th)
 #        Engine_distribution3.append(section_engineweight)
         Tdistributionvalues3.append(T)
-    
+    plt.title('Loading and Moment diagrams of the Horizontal tail')
 #    print(Dragdistributionvalues)    
     plt.subplot(2,3,5)
     plt.subplot(2,3,1)
     plt.gca().set_title('Mz distribution')
     plt.plot(HalfspanValues, Mzdistribution)
+
 #    plt.ylim(-40000000,30000000)
     plt.xlabel('Position Along Wing Span [$m$]')
     plt.ylabel('Mz $[Nm]$')
@@ -271,6 +274,7 @@ def load_diagrams(N):  ### 100 nodes, so 99 beam elements
     plt.subplot(2,3,2)
     plt.gca().set_title('Fz distribution')
     plt.plot(HalfspanValues, Fzdistribution)
+
 #    plt.ylim(-300000,300000)
     plt.xlabel('Position Along Wing Span [$m$]')
     plt.ylabel('Fz [$N$]')
@@ -278,6 +282,7 @@ def load_diagrams(N):  ### 100 nodes, so 99 beam elements
     plt.subplot(2,3,3)
     plt.gca().set_title('My distribution')
     plt.plot(HalfspanValues, Mydistribution)
+
 #    plt.ylim(-3000000,500000)
     plt.xlabel('Position Along Wing Span [$m$]')
     plt.ylabel('My $[Nm]$')
@@ -285,6 +290,7 @@ def load_diagrams(N):  ### 100 nodes, so 99 beam elements
     plt.subplot(2,3,4)
     plt.gca().set_title('Fy distribution')
     plt.plot(HalfspanValues, Fydistribution)
+
 #    plt.ylim(-1000000,5000000)
     plt.xlabel('Position Along Wing Span [$m$]')
     plt.ylabel('Fy [$N$]')
@@ -292,6 +298,7 @@ def load_diagrams(N):  ### 100 nodes, so 99 beam elements
     plt.subplot(2,3,5)
     plt.gca().set_title('T distribution')
     plt.plot(HalfspanValues, Tdistributionvalues)
+
 #    plt.ylim(-1000000, 3000000)
     plt.xlabel('Position Along Wing Span [$m$]')
     plt.ylabel('T $[Nm]$')
@@ -331,16 +338,16 @@ def load_diagrams(N):  ### 100 nodes, so 99 beam elements
 
 #   plt.show()
 #    print(Liftdistributionvalues[0])
-#    maxMz = max([max(Mzdistribution), max(Mzdistribution2), max(Mzdistribution3)])
-#    minMz = min([min(Mzdistribution), min(Mzdistribution2), min(Mzdistribution3)])
-#    maxMy = max([max(Mydistribution), max(Mydistribution2), max(Mydistribution3)])
-#    minMy = min([min(Mydistribution), min(Mydistribution2), min(Mydistribution3)])
-#    maxT = max([max(Tdistributionvalues), max(Tdistributionvalues2), max(Tdistributionvalues3)])
-#    maxFy = max([max(Fydistribution), max(Fydistribution2), max(Fydistribution3)])
-#    minFz = min([min(Fzdistribution), min(Fzdistribution2), min(Fzdistribution3)])
-#    maxFz = max([max(Fzdistribution), max(Fzdistribution2), max(Fzdistribution3)])
+    maxMz = max([max(Mzdistribution), max(Mzdistribution2), max(Mzdistribution3)])
+    minMz = min([min(Mzdistribution), min(Mzdistribution2), min(Mzdistribution3)])
+    maxMy = max([max(Mydistribution), max(Mydistribution2), max(Mydistribution3)])
+    minMy = min([min(Mydistribution), min(Mydistribution2), min(Mydistribution3)])
+    maxT = max([max(Tdistributionvalues), max(Tdistributionvalues2), max(Tdistributionvalues3)])
+    maxFy = max([max(Fydistribution), max(Fydistribution2), max(Fydistribution3)])
+    minFz = min([min(Fzdistribution), min(Fzdistribution2), min(Fzdistribution3)])
+    maxFz = max([max(Fzdistribution), max(Fzdistribution2), max(Fzdistribution3)])
 
-    return Mzdistribution, Mydistribution, Tdistributionvalues, maxMz,minMz, maxMy, minMy,maxT,maxFy,minFz, maxFz, Sectionweightdistributionvalues, Fuelweightdistributionvalues
+    return Mzdistribution, Mydistribution, Tdistributionvalues, maxMz ,minMz, maxMy, minMy,maxT,maxFy,minFz, maxFz, Sectionweightdistributionvalues, Fuelweightdistributionvalues
 
 #for j in range(len(strutposition)):
 ##    

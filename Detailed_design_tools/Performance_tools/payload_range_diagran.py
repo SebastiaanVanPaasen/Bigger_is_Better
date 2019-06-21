@@ -33,35 +33,35 @@ import matplotlib.pyplot as plt
   
 #------------------------------VERIFICATION DATA--------------------------------
 
-#"""Inputs unit test based on B737 MAX-8"""
-#MTOW = 82191*9.81
-#OEW = 45070*9.81
-#MPW = 20882*9.81
-#MZFW = OEW + MPW
-#MFW = 31594*9.81*0.75
-#W_fr = MFW/105 * 5.
-#A = 35.92**2 / 127.
-#e = 0.85
-#CD0 = 0.020
-#V = 233.
-#g = 9.81
-#R_des = 6570.
-#Ct0 = 12e-06
-
-"""Design inputs"""
-MTOW = 1555182.652
-OEW = 910849.4004
-MPW = 472485.2453
-MZFW =  OEW+MPW
-MFW = 171848.00648*1.3
-W_fr = MFW/105.*5.
-A = 15
+"""Inputs unit test based on B737 MAX-8"""
+MTOW = 82191*9.81
+OEW = 45070*9.81
+MPW = 20882*9.81
+MZFW = OEW + MPW
+MFW = 31594*9.81*0.75
+W_fr = MFW/105 * 5.
+A = 35.92**2 / 127.
 e = 0.85
-CD0 = 0.019
-V = 235.418
+CD0 = 0.020
+V = 233.
 g = 9.81
-R_des = 1400.
-Ct0 = 1.13e-05*3.15
+R_des = 6570.
+Ct0 = 12e-06
+
+#"""Design inputs"""
+#MTOW = 1520276.626
+#OEW = 877093.3135
+#MPW = 472485.2453
+#MZFW =  OEW+MPW
+#MFW = 170698.0674*1.3
+#W_fr = MFW/105.*5.
+#A = 15
+#e = 0.85
+#CD0 = 0.019
+#V = 218.711
+#g = 9.81
+#R_des = 1400.
+#Ct = 1.05e-05*3.17
 
 
 
