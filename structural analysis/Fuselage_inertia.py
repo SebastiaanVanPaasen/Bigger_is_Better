@@ -7,32 +7,45 @@ Created on Wed Jun 12 16:10:44 2019
 
 from thickness_distr_fuselage import t_fus_due_to_moment
 
+x_pos = []
+y_pos = []
+file = open("C:/Users/mathi/Documents/DSE/Bigger_is_Better/structural analysis/fus_coor.txt", 'r')
+for line in file:
+    x_pos.append([(float(line.split()[0]))])
+    y_pos.append([(float(line.split()[1]))])
+x_pos = np.array(x_pos)/1000
+y_pos = np.array(y_pos)/1000
 
-def fuselage_centroid():
-    y_centroid = sum(req_boom_area*R_2*np.sin(alpha_segment))/sum(req_boom_area)
-    x_centroid = sum(req_boom_area*x_pos*np.cos(alpha_segment))/sum(req_boom_area)
+def fuselage_centroid(boom_area, y_pos, x_pos):
+    
+    t_max, alpha_segment, R, segment_length, theta = t_fus_due_to_moment(sigma, Mx, My)
+
+
+    y_centroid = sum(boom_area*y_pos)/sum(boom_area)
+    x_centroid = sum(boom_area*x_pos)/sum(boom_area)
     
     return y_centroid, x_centroid
     
 set_boom_area = 0.02
-def fuselage_booms(set_boom_area):
-    t_iter, alpha_segment, R_2, segment_length, x_pos = t_fus_due_to_moment()
-    req_boom_area = t_iter*segment_length
-    n_sec = np.zeros((1,len(req_boom_area)))
+
+def fuselage_booms(set_boom_area, sigma, Mx, My):
     
-    for i in range(len(req_boom_area)):
-        n_sec = int(req_boom_area[i]/set_boom_area)
-#    req_boom_area = req_boom_area - 0.10*segment_length        
-        
+    t_max, alpha_segment, R, segment_length, theta = t_fus_due_to_moment(sigma, Mx, My)
+    
+    req_boom_area = t_max*segment_length
+      
     return req_boom_area
 
     
-def fuselage_inertia():
-    req_boom_area = fuselage_booms()
-    I_xx = sum(req_boom_area*(R_2*np.sin(alpha_segment))**2)
-    I_yy = sum(req_boom_area*(x_pos*np.cos(alpha_segment))**2)
+def fuselage_inertia(boom_area, y_pos, x_pos, My, Mx, theta):
+    
+    I_xx = sum(boom_area*(y_pos)**2)
+    I_yy = sum(boom_area*(x_pos)**2)
+    
+    sigma_final = ((Mx * np.cos(theta[i]) + My * np.sin(theta[i])) * R_2[j][0] * np.sin(alpha_segment[j]) / I_xx + ( My * np.cos(theta[i]) - Mx * np.sin(theta[i]))*R_2[j][0]*np.cos(alpha_segment[j])/I_yy)/sigma
 
-    return
+
+    return I_xx, I_yy
 
 def fuselage_stiffener_cost(density,cost):
     #option 1: having different boom areas
