@@ -103,7 +103,21 @@ for i in range(len(X_fuse) - 1):
         Mz_dist[i + 1] -= Mx_tail
 
 
-
+plt.subplot(1, 2, 2)
 plt.plot(X_fuse, Mz_dist)
+plt.xlabel("X-position [m]")
+plt.ylabel("Mz [Nm]")
+plt.title("Mz distribution")
+ax = plt.gca()
+ax.get_yaxis().set_major_formatter(plt.FuncFormatter(lambda x, loc: "{:,}".format(int(x))))
+
+plt.subplot(1, 2, 1)
+plt.plot(X_fuse, Vy_dist)
+plt.xlabel("X-position [m]")
+plt.ylabel("Vy [N]")
+plt.title("Vy distribution")
+ax = plt.gca()
+ax.get_yaxis().set_major_formatter(plt.FuncFormatter(lambda x, loc: "{:,}".format(int(x))))
+
 plt.show()
 #print(max(Mz_dist))

@@ -118,6 +118,9 @@ def construct_envelope():
     plt.plot(v_neg, n_lim_neg)
     plt.plot(V_gust,n_gust_pos)
     plt.plot(V_gust,n_gust_neg)
+    
+    plt.xlabel("V [m/s]")
+    plt.ylabel("n [-]")
 
     plt.show()
 
@@ -126,4 +129,4 @@ def construct_envelope():
 
 print(construct_envelope())
 
-print(construct_envelope())
+#print(construct_envelope())
