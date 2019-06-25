@@ -38,7 +38,7 @@ def strut_area_req_B():
     K = 1. 
     
     for i in range(len(prac.A_S_L)):
-        I_req[i] = P_cr[i]*(K*L_strut[i])**2/(np.pi**2*prac.E_strut)
+        I_req[i] = (P_cr[i]/prac.gamma[i])*(K*L_strut[i])**2/(np.pi**2*prac.E_strut)
 
         R_strut_new = (I_req[i]/(0.25*np.pi))**0.25
 #        while I_strut <I_req[i]:

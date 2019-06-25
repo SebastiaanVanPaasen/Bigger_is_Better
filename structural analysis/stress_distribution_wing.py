@@ -16,7 +16,7 @@ def wing_stress(b, Mz, My, X_root):
 #    I_zz_req = pr.required_Izz(N, b, prac.calc_chord, Mz)
 #    
     airfoil_area, z_c_airfoil, y_c_airfoil = cw.get_skin_centroid(N,b, prac.calc_chord, prac.dx)
-    z_centroid_all_sec, y_centroid_all_sec, y_loc_spar_up, y_loc_spar_low, y_loc_stiff_up, y_loc_stiff_low, y_vertical_spar, z_loc_stiff_up, spar_loc_sec, z_loc_stiff_low, spar_areas_verti = cw.wing_centroid(prac.boom_area_all, cw.spar_areas_hori, cw.t_spar_v, z_c_airfoil, y_c_airfoil, cw.n_stiff_up, cw.n_stiff_low, N, b, prac.calc_chord, X_root, prac.dx)
+    z_centroid_all_sec, y_centroid_all_sec, y_loc_spar_up, y_loc_spar_low, y_loc_stiff_up, y_loc_stiff_low, y_vertical_spar, z_loc_stiff_up, spar_loc_sec, z_loc_stiff_low, spar_areas_verti = cw.wing_centroid(prac.boom_area_all[0], cw.spar_areas_hori, cw.t_spar_v, z_c_airfoil, y_c_airfoil, cw.n_stiff_up, cw.n_stiff_low, N, b, prac.calc_chord, X_root, prac.dx)
 #    print(z_centroid_all_sec)
 #    boom_area = ai.wing_geometry(I_zz_req, I_zz_spar, N, b, prac.calc_chord)[0][0]
 #    I_zz_wing, I_yy_wing, I_yz_wing = ai.inertia_wing(I_zz_spar, I_yy_spar, I_yz_spar, boom_area, N, b, prac.calc_chord)
@@ -71,7 +71,7 @@ min_stress_low = np.zeros((len(prac.A_S_L),len(prac.X_root)))
 
 for i in range(len(prac.A_S_L)):
     
-    z_pos, stress_up, stress_low = wing_stress(56.3, Mz[i], My[i], prac.X_root)
+    z_pos, stress_up, stress_low = wing_stress(52, Mz[i], My[i], prac.X_root)
 #    print(np.shape(stress_up))
     for j in range(len(prac.X_root)):
 #        print(len(stress_up[j]))
@@ -83,9 +83,10 @@ for i in range(len(prac.A_S_L)):
    
 #print(min(stress_up[0]))
 #print(max(stress_low[0]))
-#    plt.figure()
-#    plt.plot(z_pos[i], stress_up[i], 'r', label = 'Stress in the airfoil in negative y-direction')
-#    plt.plot(z_pos[i], stress_low[i], 'b', label = 'Stress in the airfoil in positive y-direction')
+#    plt.rcParams.update({'font.size': 20})        
+##    plt.figure()
+#    plt.plot(z_pos[i], stress_up[i], 'y', label = 'Initial stress top')
+#    plt.plot(z_pos[i], stress_low[i], 'g', label = 'Initial stress bottom')
 #    plt.xlabel("Chordwise position with respect to the centroid [m]")
 #    plt.ylabel("Stress [N/m$^2$]")
 #

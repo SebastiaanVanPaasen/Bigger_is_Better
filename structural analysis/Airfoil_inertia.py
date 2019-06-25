@@ -10,6 +10,8 @@ def s_airfoil(N,b,c, X_root):
     data_z_all_sec = airfoil_geometry(N,b,c, X_root)[0]
     data_y_upper_all_sec = airfoil_geometry(N,b,c, X_root)[1]
     data_y_lower_all_sec = airfoil_geometry(N,b,c, X_root)[2]
+
+    
     ds_sec_all = []
     s_all_sec = []
     
