@@ -83,14 +83,14 @@ for i in range(len(prac.A_S_L)):
    
 #print(min(stress_up[0]))
 #print(max(stress_low[0]))
-    plt.figure()
-    plt.plot(z_pos[i], stress_up[i], 'r', label = 'Stress in the airfoil in negative y-direction')
-    plt.plot(z_pos[i], stress_low[i], 'b', label = 'Stress in the airfoil in positive y-direction')
-    plt.xlabel("Chordwise position with respect to the centroid [m]")
-    plt.ylabel("Stress [N/m$^2$]")
-
-    plt.legend(bbox_to_anchor=(1.05,1), loc="upper left")    
-    plt.show()
+#    plt.figure()
+#    plt.plot(z_pos[i], stress_up[i], 'r', label = 'Stress in the airfoil in negative y-direction')
+#    plt.plot(z_pos[i], stress_low[i], 'b', label = 'Stress in the airfoil in positive y-direction')
+#    plt.xlabel("Chordwise position with respect to the centroid [m]")
+#    plt.ylabel("Stress [N/m$^2$]")
+#
+#    plt.legend(bbox_to_anchor=(1.05,1), loc="upper left")    
+#    plt.show()
     
 print("max_stress up",max(max_stress_up[0]))
 print("max_stress low",max(max_stress_low[0]))

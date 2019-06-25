@@ -106,22 +106,24 @@ for i in range(len(x_start)):
     fuel_weights_v = deter_fuel(W_fuel / 2, Volumes, Rho_fuel, X_tip[::-1], x_start[i])
     weights.append(fuel_weights_v)
     
+plt.rcParams.update({"font.size": 20})
+
 plt.subplot(1, 3, 1)
 plt.plot(X_tip[::-1], weights[0])
 plt.xlabel("X-position [m]")
 plt.ylabel("Fuel weight [N]")
-plt.title("Fuel distribution starting at the root")
+plt.title("Fuel distribution from root")
 
 plt.subplot(1, 3, 2)
 plt.plot(X_tip[::-1], weights[1])
 plt.xlabel("X-position [m]")
 plt.ylabel("Fuel weight [N]")
-plt.title("Fuel distribution starting at 28% of the semi-span")
+plt.title("Fuel distribution from 0.28 b/2")
 
 plt.subplot(1, 3, 3)
 plt.plot(X_tip[::-1], weights[2])
 plt.xlabel("X-position [m]")
 plt.ylabel("Fuel weight [N]")
-plt.title("Fuel distribution starting at 35% of the semi-span")
+plt.title("Fuel distribution from 0.35 b/2")
 
 plt.show()

@@ -102,6 +102,7 @@ for i in range(len(X_fuse) - 1):
     if X_fuse[i + 1] > H_Tail_pos:
         Mz_dist[i + 1] -= Mx_tail
 
+plt.rcParams.update({"font.size": 20})
 
 plt.subplot(1, 2, 2)
 plt.plot(X_fuse, Mz_dist)
