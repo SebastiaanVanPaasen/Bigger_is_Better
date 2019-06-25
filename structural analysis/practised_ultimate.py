@@ -19,7 +19,7 @@ D_fus = 7.3
 
 #R_strut = 5 / 1000
 #A_strut = 0.25 * np.pi * ((2 * R_strut) ** 2) ##
-E_strut = 60.1 * (10 ** 9)  
+E_strut = 130 * (10 ** 9)  
 AR = 13
 taper = 0.357 
 MAC = 4.3
