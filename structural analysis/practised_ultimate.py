@@ -24,6 +24,7 @@ AR = 13
 taper = 0.357 
 MAC = 4.3#4.03
 sigma_strut = 1400 * (10 ** 6)
+density_strut = 1580.
 
 cr = 5.89#5.53
 ct = 2.1#1.97
@@ -283,7 +284,7 @@ def indet_sys(dx, angle, L_s, a_s, a_e, cl_polar, I_zz_sections):
 
 
 A_E = 21.16 #7m from center of fuselage
-A_S_L = np.arange(8.55, 8.65, 0.5)
+A_S_L = np.arange(5.05, 18.55, 2)
 
 cl_polar, cd_polar = get_data()
 
@@ -311,6 +312,7 @@ L_str = np.zeros(len(A_S_L))
 gamma_all = np.zeros(len(A_S_L))
 R_strut_new = np.zeros(len(A_S_L))
 A_req_new = np.zeros(len(A_S_L))
+strut_mass = np.zeros(len(A_S_L))
 
 for idx in range(len(A_S_L)):
     boom_area_old = 0.5
@@ -365,7 +367,7 @@ for idx in range(len(A_S_L)):
         print("Strut force", F_str)
         #    print("Deflection of the strut", d_str)
         ##        print(d_str_v)
-        print("Required strut area", F_str / (140 * (10 ** 6)))
+#        print("Required strut area", F_str / (140 * (10 ** 6)))
         #        print()
         F_strut[idx] = F_str
         #    F_str = results[0]
@@ -432,12 +434,13 @@ for idx in range(len(A_S_L)):
                 My_dist[idx][i + 1] -= Thrust * (X_root[i+1]- (L_wing - A_E))
         z+=1
     K = 1
+    
     I_req_buck = (abs(F_strut[idx])/np.sin(gamma_all[idx]))*(K*L_str[idx])**2/(np.pi**2*E_strut)
     R_strut_new[idx] = (I_req_buck/(0.25*np.pi))**0.25 
     A_req_new[idx] = abs(F_strut[idx])/sigma_strut
-
-    print("r_strut_buck", R_strut_new)
-    print("r_strut_tens", np.sqrt(A_req_new/np.pi))
+    
+    strut_volume = np.pi*(R_strut_new[idx])**2*L_str[idx]
+    strut_mass[idx] = strut_volume*density_strut
     
     d_lift = 0
     d_weight = 0
@@ -541,22 +544,25 @@ for idx in range(len(A_S_L)):
 #    plt.figure()
 #    plt.title("Deflection and its derivatives along the half span")
     
-#    label_list = [20.0, 19.5, 19.0, 18.5, 18.0, 17.5]
+    label_list = [21, 19, 17, 15, 13, 11, 9]
     plt.subplot(2, 3, 5)
-    plt.plot(X_root, My_dist[idx], label = "Strut position " + str(A_S_L[idx]))
+    plt.plot(X_root, My_dist[idx], label = "Strut position " + str(label_list[idx]))
     plt.xlabel("X-position [m]")
     plt.ylabel("My [Nm]")
     plt.title("My distribution")
     ax = plt.gca()
     ax.get_yaxis().set_major_formatter(plt.FuncFormatter(lambda x, loc: "{:,}".format(int(x))))
 #
-#    plt.legend(bbox_to_anchor=(1.05,1), loc="upper left")    
+    plt.legend(bbox_to_anchor=(1.05,1), loc="upper left")    
 #    plt.subplot(3, 3, 6)
 #    plt.plot(label = "strut position" + str(A_S_L[idx]))
 #    plt.legend()
 #    plt.show()
     
-    #
+print("r_strut_buck", R_strut_new)
+print("r_strut_tens", np.sqrt(A_req_new/np.pi))
+print("mass_strut", strut_mass)
+
 #    plt.subplot(1, 3, 1)
 #    plt.plot(X_root[::-1], d, label = "Deflection")# for pos " + str(A_S_L[idx]))
 #    plt.title("Deflection [m]")
