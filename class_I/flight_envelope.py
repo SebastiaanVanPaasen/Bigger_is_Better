@@ -114,6 +114,7 @@ def construct_envelope():
     v_pos,v_neg, n_lim_pos, n_lim_neg,speeds = manoeuvring_envelope(1520276, 9000, 1.52, 211.2, 218)
     V_gust, n_gust_pos, n_gust_neg = gust_envelope(1520276, 9000, 6.2, 211, 4.03, 218, speeds[1]) #w_to, h, cl_alpha, S, c, v_cruise, Vs1
 #    print(n_gust_pos, n_gust_neg)
+    plt.rcParams.update({"font.size": 20})
     plt.plot(v_pos, n_lim_pos)
     plt.plot(v_neg, n_lim_neg)
     plt.plot(V_gust,n_gust_pos)
