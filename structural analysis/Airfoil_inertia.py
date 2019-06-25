@@ -119,7 +119,8 @@ def wing_geometry(I_zz_req, I_zz_spars, N, b, c, boom_area, X_root, dx):
 #        I_yz_airfoil += airfoil_area[i]*(-y_c_airfoil[i] - (-1)*y_centroid_all_sec[i])*(z_c_airfoil[i] - z_centroid_all_sec[i])
 
         single_boom_area[i][0] = (I_zz_req[i] - I_zz_spars[i][0] - I_zz_airfoil)/y_2
-        
+        if single_boom_area[i][0] <= 0:
+            single_boom_area[i][0] = 0.
 #    plt.plot(X_root, single_boom_area)
 #    plt.show()
 #    print("single_boom_area",single_boom_area*10000, len(single_boom_area))

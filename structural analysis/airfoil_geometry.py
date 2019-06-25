@@ -42,10 +42,10 @@ def airfoil_geometry(N,b, c, X_root):
     data_y_lower_all_sec = []
     data_y_upper_all_sec = []
     
-    data_z1, data_y1 = load_airfoil('SC(2)-0616.txt')[1], np.array(load_airfoil('SC(2)-0616.txt')[2])*23/16 
+    data_z1, data_y1 = load_airfoil('SC(2)-0616.txt')[1], np.array(load_airfoil('SC(2)-0616.txt')[2])*20/16 
     data_z2, data_y2 = load_airfoil('SC(2)-0612.txt')[1], np.array(load_airfoil('SC(2)-0612.txt')[2])*14/12
 
-    tc_1 = 0.23
+    tc_1 = 0.20
     tc_2 = 0.14
     switch = b/8
     slope = 0#1 -0.25#(tc_2-tc_1/switch)

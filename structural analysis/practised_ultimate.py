@@ -15,15 +15,14 @@ import parameter_requirements as pr
 from scipy.interpolate import interp1d
 from class_I.lift_distr import get_correct_data, lift_distribution
 
-AR = 13
 D_fus = 7.3
 
 #R_strut = 5 / 1000
 #A_strut = 0.25 * np.pi * ((2 * R_strut) ** 2) ##
 E_strut = 60.1 * (10 ** 9)  
-AR = 15
+AR = 13
 taper = 0.357 
-MAC = 4.03
+MAC = 4.3#4.03
 
 cr = 5.89#5.53
 ct = 2.1#1.97
@@ -331,6 +330,7 @@ boom_area_all = np.zeros(len(A_S_L))
  
 F_strut = np.zeros(len(A_S_L))
 L_str = np.zeros(len(A_S_L))
+gamma_all = np.zeros(len(A_S_L))
 
 for idx in range(len(A_S_L)):
 
@@ -340,10 +340,10 @@ for idx in range(len(A_S_L)):
     boom_area_new = ai.wing_geometry(I_zz_req, I_zz_spar, N, b, calc_chord, boom_area_old, X_root, dx)
 
 #    print(abs(boom_area_new - boom_area_old) )
-    
-    while abs(boom_area_new - boom_area_old) > 1 / 100000:
+    z = 0
+    while abs(boom_area_new - boom_area_old) > 1 / 100000 or z < 5:
         print(abs(boom_area_new - boom_area_old) )
-        print("New iteration")
+        print("New iteration", z)
         boom_area_old = boom_area_new
 #    boom_area_all = 0.0045
     
@@ -366,13 +366,14 @@ for idx in range(len(A_S_L)):
     
         I_zz_sections, I_yy_wing, I_yz_wing = ai.inertia_wing(I_zz_spar, I_yy_spar, I_yz_spar, boom_area_all[idx], N, b, calc_chord, X_root, dx)
     #       
-        print("I_zz_sections",I_zz_sections)
-        print(I_yy_wing)
-        print(I_yz_wing)
+#        print("I_zz_sections",I_zz_sections)
+#        print(I_yy_wing)
+#        print(I_yz_wing)
     #        I_zz_sections = np.array(293 * [0.00499])
         strut_loc_wing = L_wing - A_S_L[idx] - pos_from_centerline
        
         gamma = np.arctan(strut_heigth / strut_loc_wing)
+        gamma_all[idx]=gamma
         L_strut = np.sqrt(strut_heigth**2 + strut_loc_wing**2)
         L_str[idx] = L_strut
     #    print("length strut", L_strut)
@@ -447,7 +448,8 @@ for idx in range(len(A_S_L)):
             if X_root[i+1] > (L_wing - A_E): #and X_root[i - 1] < (L_wing - A_E):
     
                 My_dist[idx][i + 1] -= Thrust * (X_root[i+1]- (L_wing - A_E))
-                
+        z+=1
+        
     d_lift = 0
     d_weight = 0
     d_fuel_weight = 0
