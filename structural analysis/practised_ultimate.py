@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Sun Jun 16 11:13:33 2019
-
-@author: mathi
-"""
-
 import numpy as np
 import matplotlib.pyplot as plt
 import constants_and_conversions as cc
@@ -26,10 +19,10 @@ MAC = 4.3#4.03
 sigma_strut = 1400 * (10 ** 6)
 density_strut = 1580.
 
-cr = 5.89#5.53
-ct = 2.1#1.97
-b = 52#56.3
-S = 208#211.19
+cr = 5.89
+ct = 2.1
+b = 52
+S = 208
 dihedral = (1.5/180) * np.pi
 
 LE_root = 19.11
@@ -39,18 +32,18 @@ pos_from_centerline = 2.5
 strut_loc_fus = LE_root + pos_of_chord * cr + np.tan(sweep)* (b/2)
 strut_heigth = D_fus - np.tan(dihedral)*(b/2) - 1.
 
-W_wing = 139715#156375
+W_wing = 139716
 E_wing = 75 * (10 ** 9)
 I_zz_wing = 0.25
 L_wing = b / 2
 
 H_cr = 9000
-V_cr = 218
+V_cr = 201
 rho_cr = cc.Rho_0 * ((1 + (cc.a * H_cr) / cc.Temp_0) ** (-(cc.g_0 / (cc.R_gas * cc.a) + 1)))
-CD_0_cr = 0.021323#0.02114
-print(rho_cr)
+CD_0_cr = 0.021323
+#print(rho_cr)
 W_TO = 1497151
-W_fuel = 1705482#170698
+W_fuel = 170548
 W_N = 25875
 
 N_eng = 2
@@ -210,8 +203,8 @@ def indet_sys(dx, angle, L_s, a_s, a_e, cl_polar, I_zz_sections):
 
     x_start = L_wing * 0.28
     
-    alpha = np.radians(0.9135)
-    n = -1 * 1.5
+    alpha = np.radians(2.236)
+    n = 2.56 * 1.5
     
     
     lifts_v = n * deter_lift(cl_polar, X_tip[::-1], dx)   
@@ -268,12 +261,11 @@ def indet_sys(dx, angle, L_s, a_s, a_e, cl_polar, I_zz_sections):
     d_strut = np.sin(angle) * sigma_strut * L_s / E_strut 
 #    print("deflection of strut", d_strut)
     d_strut_v = d_wing[int((a_s) / dx)] - d_strut
-    print(d_wing[int((a_s) / dx)])
-    print("dstrutv",d_strut_v)
+#    print("dstrutv",d_strut_v)
     y_a = -(2 * L_wing ** 3 - 3 * (L_wing ** 2) *  (a_s + (dx/2)) +  (a_s + (dx/2)) ** 3)/(6 * E_wing * I_zz_sections[::-1][int((a_s)/dx)])
     theta_a = (((L_wing - (a_s + dx/2)) ** 2) / (2 * E_wing * I_zz_sections[::-1][int((a_s)/dx)])) * (a_s+(dx/2))
-    print("y_a", y_a)
-    print("theta", theta_a)
+#    print("y_a", y_a)
+#    print("theta", theta_a)
     
     F_strut = -(d_strut_v / (y_a + theta_a))  # (2 * ((L_wing) ** 3))) * (6 * E_wing * I_wing)) / np.sin(angle)
     
@@ -324,7 +316,7 @@ for idx in range(len(A_S_L)):
 #    print(abs(boom_area_new - boom_area_old) )
     z = 0
     while abs(boom_area_new - boom_area_old) > 1 / 100000 or z < 5:
-        print(abs(boom_area_new - boom_area_old) )
+#        print(abs(boom_area_new - boom_area_old) )
         print("New iteration", z)
         boom_area_old = boom_area_new
 #        boom_area_all = 0.0045
@@ -341,6 +333,7 @@ for idx in range(len(A_S_L)):
         #    #    print("I_zz_req",I_zz_req)
 #        boom_area = boom_area_new
         boom_area_all[idx] = boom_area_new[0]
+        
         print("Updated boom area for strut pos" + str(A_S_L[idx]))
 #        
         print(boom_area_all[idx] * 10000)
@@ -438,6 +431,9 @@ for idx in range(len(A_S_L)):
     I_req_buck = (abs(F_strut[idx])/np.sin(gamma_all[idx]))*(K*L_str[idx])**2/(np.pi**2*E_strut)
     R_strut_new[idx] = (I_req_buck/(0.25*np.pi))**0.25 
     A_req_new[idx] = abs(F_strut[idx])/sigma_strut
+
+#    print("r_strut_buck", R_strut_new)
+#    print("r_strut_tens", np.sqrt(A_req_new/np.pi))
     
     strut_volume = np.pi*(R_strut_new[idx])**2*L_str[idx]
     strut_mass[idx] = strut_volume*density_strut
