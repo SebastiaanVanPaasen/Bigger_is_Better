@@ -69,9 +69,12 @@ max_stress_low = np.zeros((len(prac.A_S_L),len(prac.X_root)))
 min_stress_up = np.zeros((len(prac.A_S_L),len(prac.X_root)))
 min_stress_low = np.zeros((len(prac.A_S_L),len(prac.X_root))) 
 
+max_up, max_low = np.zeros((len(prac.A_S_L))), np.zeros((len(prac.A_S_L)))
+min_up, min_low = np.zeros((len(prac.A_S_L))), np.zeros((len(prac.A_S_L)))
+
 for i in range(len(prac.A_S_L)):
     
-    z_pos, stress_up, stress_low = wing_stress(56.3, Mz[i], My[i], prac.X_root)
+    z_pos, stress_up, stress_low = wing_stress(52, Mz[i], My[i], prac.X_root)
 #    print(np.shape(stress_up))
     for j in range(len(prac.X_root)):
 #        print(len(stress_up[j]))
@@ -80,6 +83,14 @@ for i in range(len(prac.A_S_L)):
         min_stress_up[i][j] = min(stress_up[j])
         min_stress_low[i][j] = min(stress_low[j])
         
+        
+for k in range(len(prac.A_S_L)):
+    print("strut location", prac.A_S_L[k])
+    print("max_stress up", max_stress_up[k][np.argmax(max_stress_up[k])], np.argmax(max_stress_up[k]))
+    print("max_stress low", max_stress_low[k][np.argmax(max_stress_low[k])], np.argmax(max_stress_low[k]))
+    print("min_stress up", min_stress_up[k][np.argmin(min_stress_up[k])], np.argmin(min_stress_up[k]))
+    print("min_stress low", min_stress_low[k][np.argmin(min_stress_low[k])], np.argmin(min_stress_low[k]))
+
    
 #print(min(stress_up[0]))
 #print(max(stress_low[0]))
@@ -93,10 +104,9 @@ for i in range(len(prac.A_S_L)):
 #    plt.legend(bbox_to_anchor=(1.05,1), loc="upper left")    
 #    plt.show()
     
-print("max_stress up",max(max_stress_up[0]))
-print("max_stress low",max(max_stress_low[0]))
-print("min_stress up",min(min_stress_up[0]))
-print("min_stress low",min(min_stress_low[0]))
+
+
+
  
 #R = 2.5
 #fus_sec = list(np.arange(0,31,1))

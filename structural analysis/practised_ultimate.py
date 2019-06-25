@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Sun Jun 16 11:13:33 2019
-
-@author: mathi
-"""
-
 import numpy as np
 import matplotlib.pyplot as plt
 import constants_and_conversions as cc
@@ -44,7 +37,7 @@ I_zz_wing = 0.25
 L_wing = b / 2
 
 H_cr = 9000
-V_cr = 218
+V_cr = 201
 rho_cr = cc.Rho_0 * ((1 + (cc.a * H_cr) / cc.Temp_0) ** (-(cc.g_0 / (cc.R_gas * cc.a) + 1)))
 CD_0_cr = 0.021323
 #print(rho_cr)
@@ -209,8 +202,8 @@ def indet_sys(dx, angle, L_s, a_s, a_e, cl_polar, I_zz_sections):
 
     x_start = L_wing * 0.28
     
-    alpha = np.radians(0.9135)
-    n = -1 * 1.5
+    alpha = np.radians(2.236)
+    n = 2.56 * 1.5
     
     
     lifts_v = n * deter_lift(cl_polar, X_tip[::-1], dx)   
@@ -282,7 +275,7 @@ def indet_sys(dx, angle, L_s, a_s, a_e, cl_polar, I_zz_sections):
 
 
 A_E = 21.16 #7m from center of fuselage
-A_S_L = np.arange(8.55, 8.65, 0.5)
+A_S_L = np.arange(5.05, 18.55, 2)
 
 cl_polar, cd_polar = get_data()
 
@@ -365,7 +358,7 @@ for idx in range(len(A_S_L)):
         print("Strut force", F_str)
         #    print("Deflection of the strut", d_str)
         ##        print(d_str_v)
-        print("Required strut area", F_str / (140 * (10 ** 6)))
+#        print("Required strut area", F_str / (140 * (10 ** 6)))
         #        print()
         F_strut[idx] = F_str
         #    F_str = results[0]
@@ -436,8 +429,8 @@ for idx in range(len(A_S_L)):
     R_strut_new[idx] = (I_req_buck/(0.25*np.pi))**0.25 
     A_req_new[idx] = abs(F_strut[idx])/sigma_strut
 
-    print("r_strut_buck", R_strut_new)
-    print("r_strut_tens", np.sqrt(A_req_new/np.pi))
+#    print("r_strut_buck", R_strut_new)
+#    print("r_strut_tens", np.sqrt(A_req_new/np.pi))
     
     d_lift = 0
     d_weight = 0
@@ -541,16 +534,16 @@ for idx in range(len(A_S_L)):
 #    plt.figure()
 #    plt.title("Deflection and its derivatives along the half span")
     
-#    label_list = [20.0, 19.5, 19.0, 18.5, 18.0, 17.5]
+    label_list = [21, 19, 17, 15, 13, 11, 9]
     plt.subplot(2, 3, 5)
-    plt.plot(X_root, My_dist[idx], label = "Strut position " + str(A_S_L[idx]))
+    plt.plot(X_root, My_dist[idx], label = "Strut position " + str(label_list[idx]))
     plt.xlabel("X-position [m]")
     plt.ylabel("My [Nm]")
     plt.title("My distribution")
     ax = plt.gca()
     ax.get_yaxis().set_major_formatter(plt.FuncFormatter(lambda x, loc: "{:,}".format(int(x))))
 #
-#    plt.legend(bbox_to_anchor=(1.05,1), loc="upper left")    
+    plt.legend(bbox_to_anchor=(1.05,1), loc="upper left")    
 #    plt.subplot(3, 3, 6)
 #    plt.plot(label = "strut position" + str(A_S_L[idx]))
 #    plt.legend()
