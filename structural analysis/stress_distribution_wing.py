@@ -71,7 +71,7 @@ min_stress_low = np.zeros((len(prac.A_S_L),len(prac.X_root)))
 
 for i in range(len(prac.A_S_L)):
     
-    z_pos, stress_up, stress_low = wing_stress(52, Mz[i], My[i], prac.X_root)
+    z_pos, stress_up, stress_low = wing_stress(56.3, Mz[i], My[i], prac.X_root)
 #    print(np.shape(stress_up))
     for j in range(len(prac.X_root)):
 #        print(len(stress_up[j]))

@@ -22,12 +22,12 @@ D_fus = 7.3
 E_strut = 60.1 * (10 ** 9)  
 AR = 13
 taper = 0.357 
-MAC = 4.3#4.03
+MAC = 4.3
 
-cr = 5.89#5.53
-ct = 2.1#1.97
-b = 52#56.3
-S = 208#211.19
+cr = 5.89
+ct = 2.1
+b = 52
+S = 208
 dihedral = (1.5/180) * np.pi
 
 LE_root = 19.11
@@ -37,7 +37,7 @@ pos_from_centerline = 2.5
 strut_loc_fus = LE_root + pos_of_chord * cr + np.tan(sweep)* (b/2)
 strut_heigth = D_fus - np.tan(dihedral)*(b/2) - 1.
 
-W_wing = 139715#156375
+W_wing = 139716
 E_wing = 75 * (10 ** 9)
 I_zz_wing = 0.25
 L_wing = b / 2
@@ -45,10 +45,10 @@ L_wing = b / 2
 H_cr = 9000
 V_cr = 201
 rho_cr = cc.Rho_0 * ((1 + (cc.a * H_cr) / cc.Temp_0) ** (-(cc.g_0 / (cc.R_gas * cc.a) + 1)))
-CD_0_cr = 0.021323#0.02114
-print(rho_cr)
+CD_0_cr = 0.021323
+#print(rho_cr)
 W_TO = 1497151
-W_fuel = 1705482#170698
+W_fuel = 170548
 W_N = 25875
 
 N_eng = 2
@@ -267,11 +267,11 @@ def indet_sys(dx, angle, L_s, a_s, a_e, cl_polar, I_zz_sections):
     d_strut = np.sin(angle) * sigma * L_s / E_strut 
 #    print("deflection of strut", d_strut)
     d_strut_v = d_wing[int((a_s) / dx)] - d_strut
-    print("dstrutv",d_strut_v)
+#    print("dstrutv",d_strut_v)
     y_a = -(2 * L_wing ** 3 - 3 * (L_wing ** 2) *  (a_s + (dx/2)) +  (a_s + (dx/2)) ** 3)/(6 * E_wing * I_zz_sections[::-1][int((a_s)/dx)])
     theta_a = (((L_wing - (a_s + dx/2)) ** 2) / (2 * E_wing * I_zz_sections[::-1][int((a_s)/dx)])) * (a_s+(dx/2))
-    print("y_a", y_a)
-    print("theta", theta_a)
+#    print("y_a", y_a)
+#    print("theta", theta_a)
     
     F_strut = -(d_strut_v / (y_a + theta_a))  # (2 * ((L_wing) ** 3))) * (6 * E_wing * I_wing)) / np.sin(angle)
     
@@ -319,7 +319,7 @@ for idx in range(len(A_S_L)):
 #    print(abs(boom_area_new - boom_area_old) )
     z = 0
     while abs(boom_area_new - boom_area_old) > 1 / 100000 or z < 5:
-        print(abs(boom_area_new - boom_area_old) )
+#        print(abs(boom_area_new - boom_area_old) )
         print("New iteration", z)
         boom_area_old = boom_area_new
 #        boom_area_all = 0.0045
@@ -335,7 +335,8 @@ for idx in range(len(A_S_L)):
         #    
         #    #    print("I_zz_req",I_zz_req)
 #        boom_area = boom_area_new
-#        boom_area_all[idx] = boom_area_all
+        boom_area_all[idx] = boom_area_new[0]
+        
         print("Updated boom area for strut pos" + str(A_S_L[idx]))
 #        
         print(boom_area_all[idx] * 10000)
