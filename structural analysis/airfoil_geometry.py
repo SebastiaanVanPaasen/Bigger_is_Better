@@ -6,7 +6,7 @@ Created on Thu May 16 09:55:34 2019
 """
 
 import numpy as np  ### Never use * to import stuff, as it makes it difficult to retrace where functions come from
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 #from stress_distribution_wing import load_airfoil
 
 
@@ -42,13 +42,11 @@ def airfoil_geometry(N,b, c, X_root):
     data_y_lower_all_sec = []
     data_y_upper_all_sec = []
     
-    data_z1, data_y1 = load_airfoil('SC(2)-0616.txt')[1], np.array(load_airfoil('SC(2)-0616.txt')[2])*23/16 
-    data_z2, data_y2 = load_airfoil('SC(2)-0612.txt')[1], np.array(load_airfoil('SC(2)-0612.txt')[2])*14/12
+    data_z1, data_y1 = load_airfoil('SC(2)-0616.txt')[1], np.array(load_airfoil('SC(2)-0616.txt')[2])*20/16 
+    data_z2, data_y2 = load_airfoil('SC(2)-0612.txt')[1], np.array(load_airfoil('SC(2)-0612.txt')[2])
 
-    tc_1 = 0.23
-    tc_2 = 0.14
-    switch = b/8
-    slope = 0#1 -0.25#(tc_2-tc_1/switch)
+    tc_1 = 0.20
+    tc_2 = 0.12
     
     for i in range(len(X_root)):
              
@@ -81,30 +79,31 @@ def airfoil_geometry(N,b, c, X_root):
     
 #    print(data_y_upper_all_sec[0])
 #    print(data_y_lower_all_sec[10])
+    
     return data_z_all_sec, data_y_upper_all_sec, data_y_lower_all_sec
 
-dx = 0.1
-b = 56.3
-X_root = np.arange(0, (b/2)+dx, dx)
-
-cr = 5.53
-ct = 1.97
-L_wing = b/2
-
-def calc_chord(x):
-    return cr - ((cr - ct) / L_wing) * x
-
-data_z_all_sec, data_y_upper_all_sec, data_y_lower_all_sec = airfoil_geometry(100,b,calc_chord,X_root)
-
-
-
-#data = load_airfoil('NACA3414.txt')
-#for i in range(int((b/8)/dx)+1):
-##    print(data_y_upper_all_sec[i])#int((b/8)/dx)+1])
-#    if i/10 ==0:
-plt.axis('equal')
-plt.plot(data_z_all_sec[0], data_y_upper_all_sec[0])
-plt.show()
+#dx = 0.1
+#b = 56.3
+#X_root = np.arange(0, (b/2)+dx, dx)
+#
+#cr = 5.53
+#ct = 1.97
+#L_wing = b/2
+#
+#def calc_chord(x):
+#    return cr - ((cr - ct) / L_wing) * x
+#
+#data_z_all_sec, data_y_upper_all_sec, data_y_lower_all_sec = airfoil_geometry(100,b,calc_chord,X_root)
+#
+#
+#
+##data = load_airfoil('NACA3414.txt')
+##for i in range(int((b/8)/dx)+1):
+###    print(data_y_upper_all_sec[i])#int((b/8)/dx)+1])
+##    if i/10 ==0:
+#plt.axis('equal')
+#plt.plot(data_z_all_sec[0], data_y_upper_all_sec[0])
+#plt.show()
 
 #plt.scatter(data_z_all_sec[0], data_y_upper_all_sec[0])
 #plt.scatter(data_z_all_sec[0], data_y_lower_all_sec[0])
