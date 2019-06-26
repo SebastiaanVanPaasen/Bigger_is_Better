@@ -19,34 +19,33 @@ import matplotlib.pyplot as plt
 #R_des = design range [km]
 
 """Design"""
-#
-#SAR = 0.00890419955
-#n_eng = 2.
-#n_pax = 450.
-#hcr = 9000.
-#Mcr = 0.72
-#MTOW = (1520276.626/9.81)
-#R_des = 1100. 
-#des=True
-#Tc = 985    #from cycle calculation 
-#
-#APU = False
+SAR =0.00969
+n_eng = 2.
+n_pax = 450.
+hcr = 9000.
+Mcr = 0.72
+MTOW = 1497151.235/9.81
+R_des = 1100. 
+des=True
+Tc = 985    #from cycle calculation 
+
+APU = True
 """Ref. aircraft"""
 hcr_ref = 11000.
 
 """ b737-max 8""" 
-SAR = 0.0102
-MTOW = 82191.
-n_eng = 2
-n_pax = 200
-hcr = 11000
-Mcr = 0.79
-R_des = 1100.
-des = False
-
-Tc =1055
-
-APU = True
+#SAR = 0.0102
+#MTOW = 82191.
+#n_eng = 2
+#n_pax = 200
+#hcr = 11000
+#Mcr = 0.79
+#R_des = 1100.
+#des = False
+#
+#Tc =1055
+#
+#APU = True
 
 #------------------------------------DEFINITIONS-------------------------------
 def ISA_temp(h):
@@ -160,21 +159,10 @@ NOx = EF_NOx(Tc,0.)
 EF = [H2O,CO2,SO2,N2O,NOx,NMVOC,CO,HC]
 EF_comp = ['H2O','CO2','SO2','N2O','NOx','NMVOC','CO','HC']
 
-
-
-"""Constant variables calculation"""
-if des == True: 
-    #Convert SAR to fuel flow in kg/s for cruise conditions so at TS_cruise
-    Vcr = Vel(Mcr,hcr)                 #m/s
-    Ffuel_cr = (SAR/1000.)*n_pax*Vcr   
-    
-    #Convert Ffuel for a TS of 100
-    Ffuel_max = (Ffuel_cr/(TS_cruise*100.))*100.
-    
-    """LTO cycle emissions"""
+"""LTO cycle emissions"""
 if des == True:
     Emis_tot = []
-    Ffuel =  [1.194,1.0149,0.3582,0.08358,Ffuel_APU]
+    Ffuel =  [1.166,0.9911,0.3498,0.08162,Ffuel_APU]
     EF = [H2O,CO2,SO2,N2O,NOx,NMVOC,CO,HC]
     for i in range(len(Ffuel)):
          E_list = []
