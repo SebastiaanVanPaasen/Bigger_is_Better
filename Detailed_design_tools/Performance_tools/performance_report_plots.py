@@ -52,7 +52,7 @@ Va = 1.3*Vs_land
 Vtd = 1.15*Vs_land
 V_LOF = 1.2*Vs_TO 
 
-
+print (1.2*V_LOF)
 
 """B737-8 MAX inputs"""
 #Wto = 82191*9.81

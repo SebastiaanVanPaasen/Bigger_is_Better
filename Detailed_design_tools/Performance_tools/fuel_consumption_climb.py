@@ -22,47 +22,51 @@ import numpy as np
 #CD0 = 0.02
 #
 #mf = 0.597*0.9
-Wto = 1497151.235
-W_LTO = 295.12*9.81
-Wcl = Wto - W_LTO
-T0 = 432.34*100/2
 
-Vcr = 218.7110308
-Vcl = 0.599*Vcr
-
-
-S = 221.21 
-A = 15
-e = 0.6
-CD0 = 0.02
-
-mf = 0.597*0.9
-
-
+#
+#Wto = 1497151.235
+#W_LTO = 288.222*9.81
+#Wcl = Wto - W_LTO
+#T0 = 428.4*100
+#
+#Vcr = 218.7110308
+#Vcl = 0.57*Vcr
+#
+#
+#S = 208.95
+#A = 13
+#e = 0.74
+#CD0 = 0.0233
+#
+#mf = 0.5247*2
+#
+##
+#h_start = 1000*0.3048
+#h_cr = 9000
 
 
 
 """B737-8 MAX inputs"""
-#Wto = 82191.*9.81
-#W_LTO = 365.3*9.81
-#Wcl = Wto - W_LTO
-#W_des = 64500*9.81
+Wto = 82191.*9.81
+W_LTO = 365.3*9.81
+Wcl = Wto - W_LTO
+W_des = 64500*9.81
+
+T0 = 130.*1000*2.
+
+
+Vcr = 233.0555
+Vcl = 0.57*Vcr
+
+mf = 0.456*2.3
+S = 127
+A = 10.16
+e = 0.7
+CD0 = 0.020
+
 #
-#T0 = 130.*1000*2.
-#
-#
-#Vcr = 233.0555
-#Vcl = 0.599*Vcr
-#
-#mf = 0.456*0.07
-#S = 127
-#A = 10.16
-#e = 0.6
-#CD0 = 0.020
-#
-#
-#h_start = 11000
-#h_cr = 1000*0.3048
+h_start = 1000*0.3048
+h_cr = 9000
 
 
 """Verificitaion A320-200 filippone book"""
@@ -72,11 +76,11 @@ mf = 0.597*0.9
 #
 #T0 = 95*1000*2
 #
-#mf = 0.413
+#mf = 0.413*2
 #Vcl = 137.
 #S = 124.
 #A = 10.3
-#e = 0.6
+#e = 0.8
 #CD0 = 0.02
 #
 #h_start = 3098
@@ -130,7 +134,7 @@ def Vel(M,h):
 #Varying thrust with velocity AT 90% CLIMB THRUST SETTING
 def T_alt(T0,h):
     m = 1.3
-    T = ((T0)*(ISA_density(h)/ISA_density(0))**m)*0.07
+    T = ((T0)*(ISA_density(h)/ISA_density(0))**m)*0.9
     return T
 
 
@@ -151,33 +155,36 @@ def glide_range(L_D,dh):
 
 
 
-print glide_range(19.21,9000-1000*0.3048)/1000
+#print (glide_range(17.43,9000-1000*0.3048)/1000)
 
 #---------------------------------MAIN PROGRAM--------------------------------------
 
 """Cimb"""
-#H = np.arange(h_start,h_cr,205)
-#RC_list = []
-#time = []
-#fuel = []
-#
-#for i in range(len(H)-1):
-#    RCi = abs(RC(Wcl,T0,Vcl,S,A,e,CD0,H[i]))
-#    mfi = mf - 0.001*i
-#    ti = abs((H[i+1] - H[i])/RCi)
-#
-#    if i%2. != 0:
-#        time.append(ti)
-#    
-#    dW = mfi*ti
-#
-#    fuel.append(dW)
-#    
-#    Wcl = Wcl - dW
-#    
-#    
-#print sum(time)
-#print sum(fuel)
+H = np.arange(h_start,h_cr,205)
+
+RC_list = []
+time = []
+fuel = []
+
+
+for i in range(len(H)-1):
+    
+    RCi = abs(RC(Wcl,T0,Vcl,S,A,e,CD0,H[i]))
+    mfi = mf - 0.001*i
+    ti = abs((H[i+1] - H[i])/RCi)
+
+    #if i%2. == 0:
+    time.append(ti)
+    
+    dW = mfi*ti
+
+    fuel.append(dW)
+    
+    Wcl = Wcl - dW
+    
+    
+print (sum(time))
+print (sum(fuel))
 
 
 
