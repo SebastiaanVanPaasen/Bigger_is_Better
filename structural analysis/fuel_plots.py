@@ -3,20 +3,21 @@ import constants_and_conversions as cc
 import matplotlib.pyplot as plt
 
 
-AR = 15
 D_fus = 7.3
 
 #R_strut = 5 / 1000
 #A_strut = 0.25 * np.pi * ((2 * R_strut) ** 2) ##
-E_strut = 60.1 * (10 ** 9)  
-AR = 15
+E_strut = 130 * (10 ** 9)  
+AR = 13
 taper = 0.357 
-MAC = 4.03
+MAC = 4.3#4.03
+sigma_strut = 1400 * (10 ** 6)
+density_strut = 1580.
 
-cr = 5.53
-ct = 1.97
-b = 56.3
-S = 211.19
+cr = 5.89
+ct = 2.1
+b = 52
+S = 208
 dihedral = (1.5/180) * np.pi
 
 LE_root = 19.11
@@ -26,18 +27,18 @@ pos_from_centerline = 2.5
 strut_loc_fus = LE_root + pos_of_chord * cr + np.tan(sweep)* (b/2)
 strut_heigth = D_fus - np.tan(dihedral)*(b/2) - 1.
 
-W_wing = 156375
+W_wing = 25480*9.81/2 #139716/2
 E_wing = 75 * (10 ** 9)
 I_zz_wing = 0.25
 L_wing = b / 2
 
-H_cr = 9000
-V_cr = 218
+H_cr = 9000#7636.9
+V_cr = 201#272.5
 rho_cr = cc.Rho_0 * ((1 + (cc.a * H_cr) / cc.Temp_0) ** (-(cc.g_0 / (cc.R_gas * cc.a) + 1)))
-CD_0_cr = 0.02114
-print(rho_cr)
-W_TO = 1520276 
-W_fuel = 170698
+CD_0_cr = 0.021323
+#print(rho_cr)
+W_TO = 1497151
+W_fuel = 170548
 W_N = 25875
 
 N_eng = 2
@@ -52,7 +53,7 @@ def deter_weight(w_wing, x, width):
     Volumes = np.array([])
     
     for i in range(len(x)):
-        Volumes = np.append(Volumes, (0.6 * 0.0809 * (calc_chord(x[i]) ** 2) * width))
+        Volumes = np.append(Volumes, (0.0809 * (calc_chord(x[i]) ** 2) * width))
         
         
     V_tot = np.sum(Volumes)
@@ -60,7 +61,7 @@ def deter_weight(w_wing, x, width):
     
 
     for i in range(len(x)):
-        W = np.append(W, Volumes[i] * w_spec * 1.02)
+        W = np.append(W, Volumes[i] * w_spec)
         
 #    plt.plot(x, W)
 #    plt.show()
@@ -76,7 +77,7 @@ def deter_fuel(w_fuel, volumes, density, x, x_start):
         
         
         if x[i] > x_start and w_fuel > 0:
-            w_fuel_section = density * volumes[i] * cc.g_0 
+            w_fuel_section = density * volumes[i] * cc.g_0 *0.6 * 0.98
         else:
             w_fuel_section = 0
 
@@ -98,7 +99,7 @@ def deter_fuel(w_fuel, volumes, density, x, x_start):
 dx = 0.1
 X_root = np.arange(0, L_wing+dx, dx) 
 X_tip = np.arange(L_wing - dx / 2, 0, -dx)
-x_start = [0, L_wing * 0.28, L_wing * 0.35]
+x_start = [0, L_wing * 0.28, L_wing * 0.3]
 weights = []
 
 for i in range(len(x_start)):
@@ -106,7 +107,7 @@ for i in range(len(x_start)):
     fuel_weights_v = deter_fuel(W_fuel / 2, Volumes, Rho_fuel, X_tip[::-1], x_start[i])
     weights.append(fuel_weights_v)
     
-plt.rcParams.update({"font.size": 20})
+plt.rcParams.update({"font.size": 15})
 
 plt.subplot(1, 3, 1)
 plt.plot(X_tip[::-1], weights[0])
@@ -124,6 +125,6 @@ plt.subplot(1, 3, 3)
 plt.plot(X_tip[::-1], weights[2])
 plt.xlabel("X-position [m]")
 plt.ylabel("Fuel weight [N]")
-plt.title("Fuel distribution from 0.35 b/2")
+plt.title("Fuel distribution from 0.3 b/2")
 
 plt.show()

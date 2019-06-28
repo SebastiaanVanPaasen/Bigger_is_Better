@@ -15,8 +15,8 @@ def wing_stress(b, Mz, My, X_root):
 #    I_zz_spar, I_yy_spar, I_yz_spar = ai.I_zz_spars(l_spar_h, t_spar_v, t_spar_h, N, b ,prac.calc_chord,prac.boom_area_all)
 #    I_zz_req = pr.required_Izz(N, b, prac.calc_chord, Mz)
 #    
-    airfoil_area, z_c_airfoil, y_c_airfoil = cw.get_skin_centroid(N,b, prac.calc_chord, prac.dx)
-    z_centroid_all_sec, y_centroid_all_sec, y_loc_spar_up, y_loc_spar_low, y_loc_stiff_up, y_loc_stiff_low, y_vertical_spar, z_loc_stiff_up, spar_loc_sec, z_loc_stiff_low, spar_areas_verti = cw.wing_centroid(prac.boom_area_all[0], cw.spar_areas_hori, cw.t_spar_v, z_c_airfoil, y_c_airfoil, cw.n_stiff_up, cw.n_stiff_low, N, b, prac.calc_chord, X_root, prac.dx)
+    airfoil_area, z_c_airfoil, y_c_airfoil = cw.get_skin_centroid(N,b, prac.calc_chord, prac.dx, cw.t_skin)
+    z_centroid_all_sec, y_centroid_all_sec, y_loc_spar_up, y_loc_spar_low, y_loc_stiff_up, y_loc_stiff_low, y_vertical_spar, z_loc_stiff_up, spar_loc_sec, z_loc_stiff_low, spar_areas_verti = cw.wing_centroid(prac.boom_area_new, cw.spar_areas_hori, cw.t_spar_v, z_c_airfoil, y_c_airfoil, cw.n_stiff_up, cw.n_stiff_low, N, b, prac.calc_chord, X_root, prac.dx)
 #    print(z_centroid_all_sec)
 #    boom_area = ai.wing_geometry(I_zz_req, I_zz_spar, N, b, prac.calc_chord)[0][0]
 #    I_zz_wing, I_yy_wing, I_yz_wing = ai.inertia_wing(I_zz_spar, I_yy_spar, I_yz_spar, boom_area, N, b, prac.calc_chord)
@@ -52,8 +52,8 @@ def wing_stress(b, Mz, My, X_root):
             z[i][j] = z_nodes[i][j] - z_centroid_all_sec[i]
             y_up[i][j] = -(y_up_nodes[i][j]-y_centroid_all_sec[i])
             y_low[i][j] = (y_centroid_all_sec[i] - y_low_nodes[i][j])
-            local_stress_up[i][j] = ((My_wing[i]*I_zz_wing[i] + Mz_wing[i]*I_yz_wing[i])*z[i][j] + (-Mz_wing[i]*I_yy_wing[i] - My_wing[i]*I_yz_wing[i])*y_up[i][j])/(I_zz_wing[i]*I_yy_wing[i] - I_yz_wing[i]**2)
-            local_stress_low[i][j] = ((My_wing[i]*I_zz_wing[i] + Mz_wing[i]*I_yz_wing[i])*z[i][j] + (-Mz_wing[i]*I_yy_wing[i] - My_wing[i]*I_yz_wing[i])*y_low[i][j])/(I_zz_wing[i]*I_yy_wing[i] - I_yz_wing[i]**2)
+            local_stress_up[i][j] = (((-1)*My_wing[i]*I_zz_wing[i] + (-1)*Mz_wing[i]*I_yz_wing[i])*z[i][j] + (Mz_wing[i]*I_yy_wing[i] + My_wing[i]*I_yz_wing[i])*y_up[i][j])/(I_zz_wing[i]*I_yy_wing[i] - I_yz_wing[i]**2)
+            local_stress_low[i][j] = (((-1)*My_wing[i]*I_zz_wing[i] + (-1)*Mz_wing[i]*I_yz_wing[i])*z[i][j] + (Mz_wing[i]*I_yy_wing[i] + My_wing[i]*I_yz_wing[i])*y_low[i][j])/(I_zz_wing[i]*I_yy_wing[i] - I_yz_wing[i]**2)
             
 #    print(I_zz_wing)
     
@@ -91,17 +91,27 @@ for k in range(len(prac.A_S_L)):
     print("min_stress up", min_stress_up[k][np.argmin(min_stress_up[k])], np.argmin(min_stress_up[k]))
     print("min_stress low", min_stress_low[k][np.argmin(min_stress_low[k])], np.argmin(min_stress_low[k]))
 
-   
+plt.figure()
+plt.plot(prac.X_root, min_stress_low[0], label = " min lower skin" )
+plt.plot(prac.X_root, max_stress_low[0], label = " max lower skin" )
+plt.plot(prac.X_root, max_stress_up[0], label = " max upper skin" )
+plt.plot(prac.X_root, min_stress_up[0], label = " min upper skin" )
+plt.plot(prac.X_root, np.array(len(prac.X_root) * [114000000]), label = "tensile stress limit")
+plt.plot(prac.X_root, np.array(len(prac.X_root) * [-114000000]), label = "compressive stress limit")
+plt.xlabel("Spanwise position [m]")
+plt.ylabel("Stress [N/m$^2$]")
+plt.legend(bbox_to_anchor=(1.03,1), loc="upper left")    
+plt.show()
+
+
+  
 #print(min(stress_up[0]))
 #print(max(stress_low[0]))
-#    plt.rcParams.update({'font.size': 20})        
-##    plt.figure()
-#    plt.plot(z_pos[i], stress_up[i], 'y', label = 'Initial stress top')
-#    plt.plot(z_pos[i], stress_low[i], 'g', label = 'Initial stress bottom')
-#    plt.xlabel("Chordwise position with respect to the centroid [m]")
-#    plt.ylabel("Stress [N/m$^2$]")
+#plt.rcParams.update({'font.size': 20})        
+#plt.figure()
+#plt.plot(z_pos[i], stress_up[0], 'y', label = 'Initial stress top')
+#plt.plot(z_pos[i], stress_low[0], 'g', label = 'Initial stress bottom')
 #
-#    plt.legend(bbox_to_anchor=(1.05,1), loc="upper left")    
 #    plt.show()
     
 

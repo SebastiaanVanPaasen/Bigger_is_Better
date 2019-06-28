@@ -132,7 +132,7 @@ def fuselage_stiffener_cost(density, stiffener_length, cost, boom_area):
     #option 2: having the same boom areas but different pitch
     return fuselage_mass, fuselage_cost
 
-stiffener_length = 49
+stiffener_length = 49.
 cost = 1.96
 density = 2780
 

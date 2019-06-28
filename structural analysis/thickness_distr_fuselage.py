@@ -44,7 +44,7 @@ def t_fus_due_to_moment(sigma, Mx, My):
   
     print(alpha_segment)
     
-    theta = list(np.arange(30, 35, 10) * np.pi / 180) #list(np.array([-30, 0, 30])* np.pi / 180) # #angle between the moment and the z-axis
+    theta = list(np.arange(-30, 35, 10) * np.pi / 180) #list(np.array([-30, 0, 30])* np.pi / 180) # #angle between the moment and the z-axis
     t_circ = np.zeros((len(theta), len(alpha_segment)))
     t_max_all = []
     
@@ -143,11 +143,14 @@ def max_stress(theta, alpha_segment, I_xx, I_yy, Mx, My, sigma):
 finalthicknessreached = False
 counter = 0
 
+
 sigma = 105 * (10 ** 6)   #ultimate stress of aluminium 
+
 Mx = -37799412
 My = 216.17 * (10 ** 3) * 7
 
 t_iter, alpha_segment, R_2, segment_length, theta, t_circ = t_fus_due_to_moment(sigma, Mx, My)
+
 
 
 while finalthicknessreached == False:  # and counter < 100: 
@@ -212,7 +215,7 @@ while finalthicknessreached == False:  # and counter < 100:
 
             
 plt.figure(2)
-plt.plot(alpha_segment * 180 / np.pi, np.array(t_iter) * 1000, label = 'Iteration = ' + str(counter) + ", theta = 30")
+plt.plot(alpha_segment * 180 / np.pi, np.array(t_iter) * 1000, label = 'Iteration = ' + str(counter))# + ", theta = 30")
 plt.xlabel("\u03B1 [degrees]")
 plt.ylabel("Thickness distribution [mm]")
 plt.legend(bbox_to_anchor=(1.03,1), loc="upper left")    
@@ -227,18 +230,18 @@ internal_p = 78.2 * 10**3
 external_p = 30.1 * 10**3
 
 
-def t_fus_due_to_pressure(sigma_fatigue_hoop, sigma_fatigue_long,R,internal_p, external_p):
-    delta_p = internal_p - external_p
-    t_min_hoop = []
-    t_min_long = []
-    for i in range(len(R)):
-        t_min_hoop.append(delta_p*R[i]/sigma_fatigue_hoop)
-        t_min_long.append(delta_p*R[i]/(2*sigma_fatigue_long))
-    return t_min_hoop, t_min_long
-
-t_min_hoop,t_min_long = t_fus_due_to_pressure(sigma_fatigue_hoop, sigma_fatigue_long, R_2, internal_p, external_p)
-print("tmin hoop", max(t_min_hoop))
-print("tmin long", max(t_min_long))
+#def t_fus_due_to_pressure(sigma_fatigue_hoop, sigma_fatigue_long,R,internal_p, external_p):
+#    delta_p = internal_p - external_p
+#    t_min_hoop = []
+#    t_min_long = []
+#    for i in range(len(R)):
+#        t_min_hoop.append(delta_p*R[i]/sigma_fatigue_hoop)
+#        t_min_long.append(delta_p*R[i]/(2*sigma_fatigue_long))
+#    return t_min_hoop, t_min_long
+#
+#t_min_hoop,t_min_long = t_fus_due_to_pressure(sigma_fatigue_hoop, sigma_fatigue_long, R_2, internal_p, external_p)
+#print("tmin hoop", max(t_min_hoop))
+#print("tmin long", max(t_min_long))
 
 
 #max_stress_ratios = np.zeros((1,len(t_iter)))
