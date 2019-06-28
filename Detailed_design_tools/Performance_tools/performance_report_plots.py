@@ -18,27 +18,57 @@ import matplotlib.pyplot as plt
 m = 1.2
 
 """Design inputs"""
-#Wto = 1520276.626
-#Wland = Wto- 0.9*170698.0674
-#Wcr = 1555182.652 - 0.4*170698.0674
-#T0 = 432.34*1000
-#
-#Vcr = 218.7110308
-#S = 221.21 #211.1888478
-#A = 15
-#e = 0.765
-#CD0 = 0.019
-#CD = 0.025
-#CL_maxcr = 1.75
-#L_D = 19.21
-#L_Dmax=20.39
+Wto = 1497151.235
+Wland = Wto- 0.9*170548.2285
+Wcr = 1497151.235 - 0.4*170548.2285
+T0 = 428.2*1000
+
+Vcr = 218.7110308
+S = 207.9561486
+A = 13
+e = 0.72
+CD0 = 0.0233
+CD = 0.0356#*2.77
+CL_maxcr = 1.48
+L_D = 17.43
+L_Dmax= 18.32
+
+T_land = T0*0.47
+CD0_land = 0.0775
+
+T_app = T0*0.397
+T_TO = T0*0.385
+
+CD0_TO = 0.0318
+
+
+"""Needs new values for new design"""
+CLmax_land = 3.05
+CLmax_TO = 2.77
+Vs_land = np.sqrt((2*Wland)/(1.225*S*CLmax_land))
+Vs_TO = np.sqrt((2*Wto)/(1.225*S*CLmax_TO))
+
+Va = 1.3*Vs_land
+Vtd = 1.15*Vs_land
+V_LOF = 1.2*Vs_TO 
+
+print (1.2*V_LOF)
+
+"""B737-8 MAX inputs"""
+#Wto = 82191*9.81
+#Wcr = (242670. - 0.4*20730)*9.81
+#Wland = (242670. - 0.8*20730)*9.81
+#T0 = 130*1000*2
+#Vcr = 221.2
+#S = 127
+#A = 10.16
+#e = 0.6
+#CD0 = 0.017
+#CD = 0.03
 #
 #T_land = T0*0.35
 #T_app = T0*0.28
 #T_TO = T0*0.37
-#
-#
-#"""Needs new values for new design"""
 #CLmax_land = 3.19
 #CLmax_TO =2.89
 #Vs_land = np.sqrt((2*Wland)/(1.225*S*CLmax_land))
@@ -48,34 +78,8 @@ m = 1.2
 #Vtd = 1.15*Vs_land
 #V_LOF = 1.2*Vs_TO 
 
-
-
-"""B737-8 MAX inputs"""
-Wto = 82191*9.81
-Wcr = (242670. - 0.4*20730)*9.81
-Wland = (242670. - 0.8*20730)*9.81
-T0 = 130*1000*2
-Vcr = 221.2
-S = 127
-A = 10.16
-e = 0.6
-CD0 = 0.017
-CD = 0.03
-
-T_land = T0*0.35
-T_app = T0*0.28
-T_TO = T0*0.37
-CLmax_land = 3.19
-CLmax_TO =2.89
-Vs_land = np.sqrt((2*Wland)/(1.225*S*CLmax_land))
-Vs_TO = np.sqrt((2*Wto)/(1.225*S*CLmax_TO))
-
-Va = 1.3*Vs_land
-Vtd = 1.15*Vs_land
-V_LOF = 1.2*Vs_TO 
-print (V_LOF)
 #Upper and lower limits for the interpolation for the service ceiling
-H_upper  = 13000
+H_upper  = 12000
 H_lower = 10000
 
 
@@ -123,7 +127,7 @@ def Vel(M,h):
 
 #Varying thrust with velocity
 def T_alt(T0,h):
-    T = T0*(ISA_density(h)/ISA_density(0))**m
+    T = 0.9*T0*(ISA_density(h)/ISA_density(0))**m
     return T
 
 
@@ -210,8 +214,8 @@ def glide_range(L_D,dh):
 #plt.figure(8)
 #plt.plot(H,range_list)  
 #plt.vlines(9000,range_list[0],range_list[-1],"gray","--")
-#plt.hlines(172.89,H[0],H[-1],"gray","--")
-#plt.plot(9000,172.89,'ko')
+#plt.hlines(156.87,H[0],H[-1],"gray","--")
+#plt.plot(9000,156.87,'ko')
 ##plt.title("Range during glide")
 #plt.xlabel("Starting altitude [m]",fontsize='x-large' )
 #plt.ylabel("Range [km]",fontsize='x-large' )
@@ -283,12 +287,12 @@ def glide_range(L_D,dh):
 ##ax.get_yaxis().set_major_formatter(plt.FuncFormatter(lambda x, loc: "{:,}".format(int(x))))
 #ax.get_xaxis().set_major_formatter(plt.FuncFormatter(lambda x, loc: "{:,}".format(int(x))))
 #
-##plt.figure(7)
-##plt.plot(H,RC_maxtheta_list)
-###plt.title("Rate of climb at max. climb angle")
-##plt.xlabel("Altitude [m]", fontsize = 'large')
-##plt.ylabel("Rate of climb [m/s]", fontsize = 'large')
-##plt.grid(True)
+#plt.figure(7)
+#plt.plot(H,RC_maxtheta_list)
+##plt.title("Rate of climb at max. climb angle")
+#plt.xlabel("Altitude [m]", fontsize = 'large')
+#plt.ylabel("Rate of climb [m/s]", fontsize = 'large')
+#plt.grid(True)
 #
 #ax = plt.gca()
 ##ax.get_yaxis().set_major_formatter(plt.FuncFormatter(lambda x, loc: "{:,}".format(int(x))))
@@ -297,33 +301,29 @@ def glide_range(L_D,dh):
 
 
 """Climb gradient"""  
-RC_app = RC(Wland,T_app,Va,S,A,e,CD0,0)
-RC_land = RC(Wland,T_land,Vtd,S,A,e,CD0,0)
-RC_to = RC(Wto,T_TO,V_LOF,S,A,e,CD0,0) #at const. EAS thus accelerating during flight
-
-#theta_app = np.arcsin(RC_app/Va)*(180./np.pi)
-#theta_land = np.arcsin(RC_land/Vtd)*(180./np.pi)
-#theta_to = np.arcsin(RC_to/V_LOF)*(180./np.pi)
-
-Vh_app = np.sqrt(Va**2 - RC_app**2)
-Vh_land = np.sqrt(Vtd**2 - RC_land**2)
-Vh_to = np.sqrt(V_LOF**2 - RC_to**2)
-
-theta_app = (RC_app/Vh_app*100)
-theta_land = RC_land/Vh_land*100
-theta_to = RC_to/Vh_to*100
-
-print (theta_app,theta_land,theta_to)  
+#RC_app = RC(Wland,T_app,Va,S,A,e,CD0_land*0.95,0)
+#RC_land = RC(Wland,T_land,Vtd,S,A,e,CD0_land,0)
+#RC_to = RC(Wto,T_TO,V_LOF,S,A,e,CD0_TO,0) #at const. EAS thus accelerating during flight
+#
+#Vh_app = np.sqrt(Va**2 - RC_app**2)
+#Vh_land = np.sqrt(Vtd**2 - RC_land**2)
+#Vh_to = np.sqrt(V_LOF**2 - RC_to**2)
+#
+#theta_app = (RC_app/Vh_app*100)
+#theta_land = RC_land/Vh_land*100
+#theta_to = RC_to/Vh_to*100
+#
+#print (theta_app,theta_land,theta_to)  
 
         
 """Steady Climb rate"""
 #Validation data 
-#RC_validation = RC(Wto,T0,Vcr,S,A,e,CD0,6096)
-#RC_unsteady_vali =RC_unsteady(Wto,T0,Vcr,S,6096,CD)
+#RC_validation = RC(Wto,T0,221.2,S,A,e,CD0,6096)
+#RC_unsteady_vali =RC_unsteady(Wto,T0,221.2,S,6096,CD)
 #print (RC_validation,RC_unsteady_vali)
 #
 #
-#H = np.arange(1000,15000,1000)
+#H = np.arange(1000,14000,1000)
 #V = np.arange(80,350,20)
 #
 #plt.figure(1)
@@ -349,8 +349,8 @@ print (theta_app,theta_land,theta_to)
 #    V_RC_max.append(V_list[k])
 #    M_RC_max.append(M_list[k])
 #    H_RC_max.append(h)
-    
-
+#    
+#
 #plt.plot(M_RC_max,RC_max," ko",label = " Max. RC" )
 ##plt.title("Steady rate of climb" )
 #plt.xlabel("Mach number", fontsize = "x-large" )
@@ -372,7 +372,7 @@ print (theta_app,theta_land,theta_to)
 #ax.get_xaxis().set_major_formatter(plt.FuncFormatter(lambda x, loc: "{:,}".format(int(x))))
 #
 #plt.show()    
-#  
+##  
 #
 """Service and absolute ceilings"""
 #Absolute ceiling is where RCmax = 0

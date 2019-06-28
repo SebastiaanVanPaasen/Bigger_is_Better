@@ -21,29 +21,29 @@ import matplotlib.pyplot as plt
 
 robs = 1.75 #height of the observer
 
-A_w = 35.9
-b_w = 35.9
+A_w = 207.9561486
+b_w = 51.99451828
 
 
-A_h = 32.78
-b_h = 14.35
+A_h = 43.79994488
+b_h = 13.23630536
 
-b_f = 0.599*b_w
-A_f = 0.3*A_w
+b_f = 0.61*b_w
+A_f = 54.
 
-d_main = 44.5*2.54/100.
-d_nose = 27*2.54/100.
+d_main = 1.14
+d_nose = 0.81
 
-n_gear = 4
+n_gear = 8
 n_nose = 2
 
-theta_flap = 5.*np.pi/180.
-V =74*1.5
+theta_flap = 5*np.pi/180.
+V =93.8
 
 r =300.
 
 theta = 90.*np.pi/180.         #emission angle (overhead so 90 degrees)
-phi = 0. #90.*np.pi/180. 
+phi =0.# 90.*np.pi/180. 
 
 #"""Input values of the fokker 70"""
 #A_w = 81.
@@ -322,6 +322,7 @@ plt.ylabel("1/3 Octave Band SPL [dB]",fontsize ='x-large')
 plt.xlim(50,10000)
 plt.xscale('log')
 plt.legend(fontsize ='x-large')
+#plt.ylim(0,80)
 
 plt.figure(2)
 plt.plot(freq,SPL_cor,"k",label = "Total")
@@ -339,8 +340,8 @@ plt.ylabel("1/3 Octave Band SPL [dB]",fontsize ='x-large')
 plt.xlim(50,10000)
 plt.xscale('log')
 plt.legend(fontsize ='x-large')
-
-plt.show()
+plt.ylim(0,80)
+#plt.show()
 
 
 #plt.plot(S_list,F_list)

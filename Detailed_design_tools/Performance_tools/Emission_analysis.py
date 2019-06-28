@@ -19,23 +19,22 @@ import matplotlib.pyplot as plt
 #R_des = design range [km]
 
 """Design"""
-#
-#SAR = 0.00890419955
+#SAR =0.00969
 #n_eng = 2.
 #n_pax = 450.
 #hcr = 9000.
 #Mcr = 0.72
-#MTOW = (1520276.626/9.81)
+#MTOW = 1497151.235/9.81
 #R_des = 1100. 
 #des=True
 #Tc = 985    #from cycle calculation 
 #
-#APU = False
+#APU = True
 """Ref. aircraft"""
 hcr_ref = 11000.
 
 """ b737-max 8""" 
-SAR = 0.0102
+SAR = 0.0108
 MTOW = 82191.
 n_eng = 2
 n_pax = 200
@@ -113,14 +112,12 @@ def RF_NOx(RF,h):
     elif 10515.6 < h:
         k = RF*2.
     return k    
-
-
 #-----------------------------------LTO CYCLE-----------------------------------
 """Time in mode [s]"""
 TIM_TO = 0.7*60. 
 TIM_climb = 2.2*60.
 TIM_app = 4.*60.
-TIM_idle = 5.*60.  #Includes taxiing and holding position
+TIM_idle = 26.*60.  #Includes taxiing and holding position
 TIM_APU = 0. 
 
 if APU == True:
@@ -133,7 +130,7 @@ TS_TO = 1.
 TS_climb = 0.85
 TS_app = 0.3
 TS_idle = 0.07
-TS_cruise = 0.6
+TS_cruise = 0.7
 
 TS = [TS_TO,TS_climb,TS_app,TS_idle]
 phase = ['TO','climb',"app","idle","APU"]
@@ -160,21 +157,11 @@ NOx = EF_NOx(Tc,0.)
 EF = [H2O,CO2,SO2,N2O,NOx,NMVOC,CO,HC]
 EF_comp = ['H2O','CO2','SO2','N2O','NOx','NMVOC','CO','HC']
 
-
-
-"""Constant variables calculation"""
-if des == True: 
-    #Convert SAR to fuel flow in kg/s for cruise conditions so at TS_cruise
-    Vcr = Vel(Mcr,hcr)                 #m/s
-    Ffuel_cr = (SAR/1000.)*n_pax*Vcr   
-    
-    #Convert Ffuel for a TS of 100
-    Ffuel_max = (Ffuel_cr/(TS_cruise*100.))*100.
-    
-    """LTO cycle emissions"""
+"""LTO cycle emissions"""
 if des == True:
     Emis_tot = []
-    Ffuel =  [1.194,1.0149,0.3582,0.08358,Ffuel_APU]
+    Ffuel =  [1.166,0.9911,0.3498,0.08162,Ffuel_APU] 
+
     EF = [H2O,CO2,SO2,N2O,NOx,NMVOC,CO,HC]
     for i in range(len(Ffuel)):
          E_list = []
@@ -187,15 +174,14 @@ if des == True:
                 TIM_phase = TIM[i]
                 
                 Ffueli = Ffuel[i]
-                
                 emission = LTO_emis(Ffueli,TIM_phase,EF_emis)
-                print (NOx)
+                
                 E_list.append(emission)
             elif i == 4.:
     
                 EF_emis = EF[j]
                 TIM_phase = TIM[i]
-                    
+                
                 emission = EF_emis*TIM_APU*Ffuel_APU
                 E_list.append(emission)            
                 

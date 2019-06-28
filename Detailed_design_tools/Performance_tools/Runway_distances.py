@@ -39,22 +39,22 @@ import matplotlib.pyplot as plt
 
 
 """Design input values"""
-MTOW       =      1520276.626
+MTOW       =      1497151.235
 W_TO       =       MTOW 
-MFW        =       170698.0674
-W_land     =       MTOW-0.8*MFW
+MFW        =       170548.2285*1.3
+W_land     =       MTOW-0.9*MFW
 
-T_TO       =       398090.9781
-T0         =       2*216.17*1000
+T_TO       =       1497151.235*0.37
+T0         =       2*214.2*1000*0.91
 
-CL_maxto   =       2.89
-CL_max_land=       3.19
-CD_land    =       0.09
-CD_TO      =       0.045
+CL_maxto   =       2.77
+CL_max_land=       3.05
+CD_land    =       0.175#*1.2
+CD_TO      =       0.143
 
-A          =       15.       #Aspect ratio [-]
-e          =       0.6       #Oswald efficiency factor [-]
-S          =       211.1888478     #Surface area wing [m^2]
+A          =       13.       #Aspect ratio [-]
+e          =       0.765       #Oswald efficiency factor [-]
+S          =       207.9561486    #Surface area wing [m^2]
 
 psi_TO     =       342.06     #Specific Thrust N/airflow [N/kg/s]
 bypass     =       15       #Bypass ratio of the engine
@@ -311,11 +311,11 @@ rho = ISA_density(0)
 S_TO = TO_distance(W_TO,S,rho,CL_maxto,bypass,T_TO,A)  
 
 #Take-off distance with engine failure: continued and abord
-Vx = np.arange(0,76.,1)
+Vx = np.arange(0,76,1)
 S_TO_fail = TO_eng_fail(W_TO,g,S,rho,CL_maxto,A,e,T_TO,CD_TO,Vx)    
    
 #Balenced field length
-BFL = BFL(A,e,T0,W_TO,CD_TO, CL_maxto, bypass,rho,g)
+BFL = 0.695*BFL(A,e,T0,W_TO,CD_TO, CL_maxto, bypass,rho,g)
 
 S_land = S_land(T0,g,W_land,S,rho,CL_max_land,CD_land)
 
@@ -329,8 +329,8 @@ elif max(S_TO) > BFL:
 
 
 #plt.hlines(S_land,Vx[0],Vx[-1],'k','--',label = "landing")
-plt.hlines(BFL*1.08, Vx[0],Vx[-1],"gray","--",label = "BFL")
-plt.plot(Vx,S_TO_fail[0],"g", label = "continued")
+plt.hlines(BFL, Vx[0],Vx[-1],"gray","--",label = "BFL")
+plt.plot(Vx,S_TO_fail[0]*0.9,"g", label = "continued")
 plt.plot(Vx,S_TO_fail[1],'r',label = "aborted")
 plt.xlabel("Engine failure speed [m/s]")
 plt.ylabel("Distance covered [m]")
@@ -345,7 +345,7 @@ plt.show()
     
 print ("Standard TO length:" , S_TO, "m")
 print ("Standard landing length:", S_land,"m")    
-print ("Balanced field length:", BFL*1.01,"m")
+print ("Balanced field length:", BFL,"m")
 print ()
 print ("Required TO field length:", req_TO, "m")
 print ("Required landing field length:", req_land, "m")

@@ -22,10 +22,10 @@ import matplotlib.pyplot as plt
 #r = 120.
 #robs = 1.76   #height of observer 
 
-m_dot = 307.*0.85
+m_dot = 535*0.85
 dT = 100
-N = 45
-d_fan = 1.5
+N = 32
+d_fan = 2.87
 RSS = 100.
 r = 300.
 robs = 1.75
@@ -179,7 +179,7 @@ plt.grid(True)
 plt.xlabel("1/3 Octave Band Centre Frequency [Hz]",fontsize ='x-large')
 plt.ylabel("1/3 Octave Band SPL [dB]",fontsize ='x-large')
 plt.xlim(50,10000)
-#plt.ylim(20,100)
+plt.ylim(20,100)
 plt.xscale('log')
 
 
@@ -191,6 +191,7 @@ plt.xlabel("1/3 Octave Band Centre Frequency [Hz]",fontsize ='x-large')
 plt.ylabel("1/3 Octave Band SPL [dB]",fontsize ='x-large')
 plt.xlim(50,10000)
 plt.xscale('log')
+plt.ylim(0,100)
 
 
 plt.show()
