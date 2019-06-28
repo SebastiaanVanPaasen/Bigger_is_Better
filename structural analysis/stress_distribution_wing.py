@@ -97,7 +97,20 @@ for k in range(len(prac.A_S_L)):
     print("min_stress up", min_stress_up[k][np.argmin(min_stress_up[k])], np.argmin(min_stress_up[k]))
     print("min_stress low", min_stress_low[k][np.argmin(min_stress_low[k])], np.argmin(min_stress_low[k]))
 
-   
+plt.figure()
+plt.plot(prac.X_root, min_stress_low[0], label = " min lower skin" )
+plt.plot(prac.X_root, max_stress_low[0], label = " max lower skin" )
+plt.plot(prac.X_root, max_stress_up[0], label = " max upper skin" )
+plt.plot(prac.X_root, min_stress_up[0], label = " min upper skin" )
+plt.plot(prac.X_root, np.array(len(prac.X_root) * [114000000]), label = "tensile stress limit")
+plt.plot(prac.X_root, np.array(len(prac.X_root) * [-114000000]), label = "compressive stress limit")
+plt.xlabel("Spanwise position [m]")
+plt.ylabel("Stress [N/m$^2$]")
+plt.legend(bbox_to_anchor=(1.03,1), loc="upper left")    
+plt.show()
+
+
+  
 #print(min(stress_up[0]))
 #print(max(stress_low[0]))
 #plt.rcParams.update({'font.size': 20})        

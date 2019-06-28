@@ -139,13 +139,13 @@ def wing_price_weight(A_req_P, A_req_B, density, cost, N, t_skin, b, qcsweep, dx
 t_skin = 0.005
 N = prac.N
 b = prac.b
-sigma = 140 * 10 ** 6
+sigma = 1400 * 10 ** 6
 density = 2780
 cost = 1.96 
 qcsweep = 0 * np.pi
 dx = prac.dx
 
-A_req_P = strut_area_req_F(114 * 10 ** 6)
+A_req_P = strut_area_req_F(1400 * 10 ** 6)
 I_req, A_req_B, sigma_crit= strut_area_req_B()
 
 max_strut_area, strut_volume, strut_mass, cost_strut = strut_cost(A_req_P, A_req_B,1580, 35.2)

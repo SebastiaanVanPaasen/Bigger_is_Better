@@ -71,7 +71,7 @@ plt.grid(True)
 plt.xlabel("1/3 Octave Band Centre Frequency [Hz]",fontsize ='x-large')
 plt.ylabel("1/3 Octave Band SPL [dB]",fontsize ='x-large')
 plt.xlim(50,10000)
-#plt.ylim(40,120)
+#plt.ylim(50,80)
 plt.xscale('log')
 
 plt.figure(4)
@@ -82,29 +82,30 @@ plt.grid(True)
 plt.xlabel("1/3 Octave Band Centre Frequency [Hz]",fontsize ='x-large')
 plt.ylabel("1/3 Octave Band SPL [dB]",fontsize ='x-large')
 plt.xlim(50,10000)
+plt.ylim(30,80)
 plt.xscale('log')
 
 
-plt.figure(5) 
-#plt.plot(freq,A_weight)
-plt.title("A weighted levels overall aircraft") 
-plt.grid(True)
-plt.xlabel("1/3 Octave Band Centre Frequency [Hz]",fontsize ='x-large')
-plt.ylabel("1/3 Octave Band La [dBA]",fontsize ='x-large')
-plt.xlim(50,10000)
-#plt.ylim(40,120)
-plt.xscale('log')
-
-
-plt.figure(6) 
-plt.plot(freq,A_weight_cor)
-#plt.title("A weighted levels corrected levels of overall aircraft") 
-plt.grid(True)
-plt.xlabel("1/3 Octave Band Centre Frequency [Hz]",fontsize ='x-large')
-plt.ylabel("1/3 Octave Band La [dBA]",fontsize ='x-large')
-plt.xlim(50,10000)
-plt.xscale('log')
-
+#plt.figure(5) 
+##plt.plot(freq,A_weight)
+#plt.title("A weighted levels overall aircraft") 
+#plt.grid(True)
+#plt.xlabel("1/3 Octave Band Centre Frequency [Hz]",fontsize ='x-large')
+#plt.ylabel("1/3 Octave Band La [dBA]",fontsize ='x-large')
+#plt.xlim(50,10000)
+##plt.ylim(40,120)
+#plt.xscale('log')
+#
+#
+#plt.figure(6) 
+#plt.plot(freq,A_weight_cor)
+##plt.title("A weighted levels corrected levels of overall aircraft") 
+#plt.grid(True)
+#plt.xlabel("1/3 Octave Band Centre Frequency [Hz]",fontsize ='x-large')
+#plt.ylabel("1/3 Octave Band La [dBA]",fontsize ='x-large')
+#plt.xlim(50,10000)
+#plt.xscale('log')
+#
 
 
 
