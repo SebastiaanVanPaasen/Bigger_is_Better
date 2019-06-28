@@ -12,16 +12,16 @@ D_fus = 7.3
 
 #R_strut = 5 / 1000
 #A_strut = 0.25 * np.pi * ((2 * R_strut) ** 2) ##
-E_strut = 130 * (10 ** 9)  
-AR = 13
+E_strut = 60.1 * (10 ** 9)  
+AR = 15
 taper = 0.357 
-MAC = 4.3#4.03
-sigma_strut = 1400 * (10 ** 6)
+MAC = 4.03
+sigma_strut = 140 * (10 ** 6)
 
-cr = 5.89
-ct = 2.1
-b = 52
-S = 208
+cr = 5.53
+ct = 1.97
+b = 56.3
+S = 211.18
 dihedral = (1.5/180) * np.pi
 
 LE_root = 19.11
@@ -31,7 +31,7 @@ pos_from_centerline = 2.5
 strut_loc_fus = LE_root + pos_of_chord * cr + np.tan(sweep)* (b/2)
 strut_heigth = D_fus - np.tan(dihedral)*(b/2) - 1.
 
-W_wing = 139716
+W_wing = 156354.9793#25480 * 9.81 / 2
 E_wing = 75 * (10 ** 9)
 I_zz_wing = 0.25
 L_wing = b / 2
@@ -39,11 +39,10 @@ L_wing = b / 2
 H_cr = 9000
 V_cr = 201
 rho_cr = cc.Rho_0 * ((1 + (cc.a * H_cr) / cc.Temp_0) ** (-(cc.g_0 / (cc.R_gas * cc.a) + 1)))
-CD_0_cr = 0.021323
+CD_0_cr = 0.021165
 #print(rho_cr)
-W_TO = 1497151
-W_fuel = 170548
-W_N = 25875
+W_TO = 1520177
+W_fuel = 170756
 
 N_eng = 2
 W_eng_v = 102023/2 #4760 * cc.g_0 #+ W_N / N_eng
@@ -275,7 +274,7 @@ def indet_sys(dx, angle, L_s, a_s, a_e, cl_polar, I_zz_sections):
 
 
 A_E = 21.16 #7m from center of fuselage
-A_S_L = np.arange(5.05, 18.55, 2)
+A_S_L = np.arange(8.05, 8.65, 2)
 
 cl_polar, cd_polar = get_data()
 
@@ -418,7 +417,7 @@ for idx in range(len(A_S_L)):
                 
             if X_root[i+1] > (L_wing - A_S_L[idx]): #and X_root[i - 1] < (L_wing - A_S_L[idx]):
                 Mz_dist[idx][i + 1] -= F_str * (X_root[i+1]- (L_wing - A_S_L[idx]))
-                Mz_dist[idx][i + 1] -= (F_str/np.tan(gamma)) * (max(y_loc_stiff_low[int((L_wing - A_S_L[idx])/dx)]) - y_centroid_all_sec[int((L_wing - A_S_L[idx])/dx)])
+                Mz_dist[idx][i + 1] -= (F_str/np.tan(gamma)) * (-min(y_loc_stiff_low[int((L_wing - A_S_L[idx])/dx)]) - y_centroid_all_sec[int((L_wing - A_S_L[idx])/dx)])
             
             if X_root[i+1] > (L_wing - A_E): #and X_root[i - 1] < (L_wing - A_E):
         
@@ -481,69 +480,69 @@ for idx in range(len(A_S_L)):
 #    print(Vz_dist[idx][0])
 ##    
 #    plt.figure()
-    plt.subplot(2, 3, 1)
-    plt.plot(X_root, Vy_dist[idx], label = "Vy for pos " + str(A_S_L[idx]))
-    plt.xlabel("X-position [m]")
-    plt.ylabel("Vy [N]")
-    plt.title("Vy distribution")
-    ax = plt.gca()
-    ax.get_yaxis().set_major_formatter(plt.FuncFormatter(lambda x, loc: "{:,}".format(int(x))))
-#    ax.get_xaxis().set_major_formatter(plt.FuncFormatter(lambda x, loc: "{:,}".format(int(x))))
-#    plt.legend()
-    
-    plt.subplot(2, 3, 4)
-    plt.plot(X_root, Mz_dist[idx], label = "Mz for pos " + str(A_S_L[idx]))
-    plt.xlabel("X-position [m]")
-    plt.ylabel("Mz [Nm]")
-    plt.title("Mz distribution")
-    ax = plt.gca()
-    ax.get_yaxis().set_major_formatter(plt.FuncFormatter(lambda x, loc: "{:,}".format(int(x))))
-
-#    plt.legend()
-    
-    plt.subplot(2, 3, 2)
-    plt.plot(X_root, Vz_dist[idx], label = "Vz for pos " + str(A_S_L[idx]))
-    plt.xlabel("X-position [m]")
-    plt.ylabel("Vz [N]")
-    plt.title("Vz distribution")
-    ax = plt.gca()
-    ax.get_yaxis().set_major_formatter(plt.FuncFormatter(lambda x, loc: "{:,}".format(int(x))))
-
-#    plt.legend()
-    
-    plt.subplot(2, 3, 3)
-#    plt.plot(X_tip, d_lift, label = "lift for pos " + str(A_S_L[idx]))
-#    plt.plot(X_tip, d_weight, label = "weight for pos " + str(A_S_L[idx]))
-#    plt.plot(X_tip, d_fuel_weight, label = "fuel weight for pos " + str(A_S_L[idx]))
-#    plt.plot(X_tip, d_strut, label = "strut for pos " + str(A_S_L[idx]))
-#    plt.plot(X_tip, d_engine, label = "engine for pos " + str(A_S_L[idx]))
-    plt.plot(X_root[::-1], d, label = "Deflection for pos " + str(A_S_L[idx]))
-    plt.xlabel("X-position [m]")
-    plt.ylabel("Deflection [m]")
-#    plt.title("Deflection of loading components along the span")
-    plt.title("Deflection along the span")
+#    plt.subplot(2, 3, 1)
+#    plt.plot(X_root, Vy_dist[idx], label = "Vy for pos " + str(A_S_L[idx]))
+#    plt.xlabel("X-position [m]")
+#    plt.ylabel("Vy [N]")
+#    plt.title("Vy distribution")
 #    ax = plt.gca()
 #    ax.get_yaxis().set_major_formatter(plt.FuncFormatter(lambda x, loc: "{:,}".format(int(x))))
-
-#    plt.legend()
-#    plt.plot(X_root[::-1], d_lift, label = "lift ")#for pos " + str(A_S_L[idx]))
-#    plt.plot(X_root[::-1], d_weight, label = "weight")# for pos " + str(A_S_L[idx]))
-#    plt.plot(X_root[::-1], d_fuel_weight, label = "fuel weight")# for pos " + str(A_S_L[idx]))
-#    plt.plot(X_root[::-1], d_strut, label = "strut")# for pos " + str(A_S_L[idx]))
-#    plt.plot(X_root[::-1], d_engine, label = "engine")# for pos " + str(A_S_L[idx]))
-#    plt.figure()
-#    plt.title("Deflection and its derivatives along the half span")
-    
-    label_list = [21, 19, 17, 15, 13, 11, 9]
-    plt.subplot(2, 3, 5)
-    plt.plot(X_root, My_dist[idx], label = "Strut position " + str(label_list[idx]))
-    plt.xlabel("X-position [m]")
-    plt.ylabel("My [Nm]")
-    plt.title("My distribution")
-    ax = plt.gca()
-    ax.get_yaxis().set_major_formatter(plt.FuncFormatter(lambda x, loc: "{:,}".format(int(x))))
+##    ax.get_xaxis().set_major_formatter(plt.FuncFormatter(lambda x, loc: "{:,}".format(int(x))))
+##    plt.legend()
+#    
+#    plt.subplot(2, 3, 4)
+#    plt.plot(X_root, Mz_dist[idx], label = "Mz for pos " + str(A_S_L[idx]))
+#    plt.xlabel("X-position [m]")
+#    plt.ylabel("Mz [Nm]")
+#    plt.title("Mz distribution")
+#    ax = plt.gca()
+#    ax.get_yaxis().set_major_formatter(plt.FuncFormatter(lambda x, loc: "{:,}".format(int(x))))
 #
-    plt.legend(bbox_to_anchor=(1.05,1), loc="upper left")    
+##    plt.legend()
+#    
+#    plt.subplot(2, 3, 2)
+#    plt.plot(X_root, Vz_dist[idx], label = "Vz for pos " + str(A_S_L[idx]))
+#    plt.xlabel("X-position [m]")
+#    plt.ylabel("Vz [N]")
+#    plt.title("Vz distribution")
+#    ax = plt.gca()
+#    ax.get_yaxis().set_major_formatter(plt.FuncFormatter(lambda x, loc: "{:,}".format(int(x))))
+#
+##    plt.legend()
+#    
+#    plt.subplot(2, 3, 3)
+##    plt.plot(X_tip, d_lift, label = "lift for pos " + str(A_S_L[idx]))
+##    plt.plot(X_tip, d_weight, label = "weight for pos " + str(A_S_L[idx]))
+##    plt.plot(X_tip, d_fuel_weight, label = "fuel weight for pos " + str(A_S_L[idx]))
+##    plt.plot(X_tip, d_strut, label = "strut for pos " + str(A_S_L[idx]))
+##    plt.plot(X_tip, d_engine, label = "engine for pos " + str(A_S_L[idx]))
+#    plt.plot(X_root[::-1], d, label = "Deflection for pos " + str(A_S_L[idx]))
+#    plt.xlabel("X-position [m]")
+#    plt.ylabel("Deflection [m]")
+##    plt.title("Deflection of loading components along the span")
+#    plt.title("Deflection along the span")
+##    ax = plt.gca()
+##    ax.get_yaxis().set_major_formatter(plt.FuncFormatter(lambda x, loc: "{:,}".format(int(x))))
+#
+##    plt.legend()
+##    plt.plot(X_root[::-1], d_lift, label = "lift ")#for pos " + str(A_S_L[idx]))
+##    plt.plot(X_root[::-1], d_weight, label = "weight")# for pos " + str(A_S_L[idx]))
+##    plt.plot(X_root[::-1], d_fuel_weight, label = "fuel weight")# for pos " + str(A_S_L[idx]))
+##    plt.plot(X_root[::-1], d_strut, label = "strut")# for pos " + str(A_S_L[idx]))
+##    plt.plot(X_root[::-1], d_engine, label = "engine")# for pos " + str(A_S_L[idx]))
+##    plt.figure()
+##    plt.title("Deflection and its derivatives along the half span")
+#    
+#    label_list = [21, 19, 17, 15, 13, 11, 9]
+#    plt.subplot(2, 3, 5)
+#    plt.plot(X_root, My_dist[idx], label = "Strut position " + str(label_list[idx]))
+#    plt.xlabel("X-position [m]")
+#    plt.ylabel("My [Nm]")
+#    plt.title("My distribution")
+#    ax = plt.gca()
+#    ax.get_yaxis().set_major_formatter(plt.FuncFormatter(lambda x, loc: "{:,}".format(int(x))))
+##
+#    plt.legend(bbox_to_anchor=(1.05,1), loc="upper left")    
 #    plt.subplot(3, 3, 6)
 #    plt.plot(label = "strut position" + str(A_S_L[idx]))
 #    plt.legend()

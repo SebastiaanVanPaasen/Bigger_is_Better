@@ -17,6 +17,8 @@ def wing_stress(b, Mz, My, X_root):
 #    
     airfoil_area, z_c_airfoil, y_c_airfoil = cw.get_skin_centroid(N,b, prac.calc_chord, prac.dx)
     z_centroid_all_sec, y_centroid_all_sec, y_loc_spar_up, y_loc_spar_low, y_loc_stiff_up, y_loc_stiff_low, y_vertical_spar, z_loc_stiff_up, spar_loc_sec, z_loc_stiff_low, spar_areas_verti = cw.wing_centroid(prac.boom_area_all[0], cw.spar_areas_hori, cw.t_spar_v, z_c_airfoil, y_c_airfoil, cw.n_stiff_up, cw.n_stiff_low, N, b, prac.calc_chord, X_root, prac.dx)
+#    print("the used boom area")
+#    print(prac.boom_area_all[0])
 #    print(z_centroid_all_sec)
 #    boom_area = ai.wing_geometry(I_zz_req, I_zz_spar, N, b, prac.calc_chord)[0][0]
 #    I_zz_wing, I_yy_wing, I_yz_wing = ai.inertia_wing(I_zz_spar, I_yy_spar, I_yz_spar, boom_area, N, b, prac.calc_chord)
@@ -52,8 +54,8 @@ def wing_stress(b, Mz, My, X_root):
             z[i][j] = z_nodes[i][j] - z_centroid_all_sec[i]
             y_up[i][j] = -(y_up_nodes[i][j]-y_centroid_all_sec[i])
             y_low[i][j] = (y_centroid_all_sec[i] - y_low_nodes[i][j])
-            local_stress_up[i][j] = ((My_wing[i]*I_zz_wing[i] + Mz_wing[i]*I_yz_wing[i])*z[i][j] + (-Mz_wing[i]*I_yy_wing[i] - My_wing[i]*I_yz_wing[i])*y_up[i][j])/(I_zz_wing[i]*I_yy_wing[i] - I_yz_wing[i]**2)
-            local_stress_low[i][j] = ((My_wing[i]*I_zz_wing[i] + Mz_wing[i]*I_yz_wing[i])*z[i][j] + (-Mz_wing[i]*I_yy_wing[i] - My_wing[i]*I_yz_wing[i])*y_low[i][j])/(I_zz_wing[i]*I_yy_wing[i] - I_yz_wing[i]**2)
+            local_stress_up[i][j] = (((-1)*My_wing[i]*I_zz_wing[i] + (-1)*Mz_wing[i]*I_yz_wing[i])*z[i][j] + (Mz_wing[i]*I_yy_wing[i] + My_wing[i]*I_yz_wing[i])*y_up[i][j])/(I_zz_wing[i]*I_yy_wing[i] - I_yz_wing[i]**2)
+            local_stress_low[i][j] = (((-1)*My_wing[i]*I_zz_wing[i] + (-1)*Mz_wing[i]*I_yz_wing[i])*z[i][j] + (Mz_wing[i]*I_yy_wing[i] + My_wing[i]*I_yz_wing[i])*y_low[i][j])/(I_zz_wing[i]*I_yy_wing[i] - I_yz_wing[i]**2)
             
 #    print(I_zz_wing)
     
@@ -74,15 +76,19 @@ min_up, min_low = np.zeros((len(prac.A_S_L))), np.zeros((len(prac.A_S_L)))
 
 for i in range(len(prac.A_S_L)):
     
-    z_pos, stress_up, stress_low = wing_stress(52, Mz[i], My[i], prac.X_root)
+    z_pos, stress_up, stress_low = wing_stress(56.3, Mz[i], My[i], prac.X_root)
 #    print(np.shape(stress_up))
     for j in range(len(prac.X_root)):
 #        print(len(stress_up[j]))
         max_stress_up[i][j] = max(stress_up[j])
+#        print([np.argmax(max_stress_up[i])])
         max_stress_low[i][j] = max(stress_low[j])
+#        print([np.argmax(max_stress_low[i])])
         min_stress_up[i][j] = min(stress_up[j])
+#        print([np.argmax(min_stress_up[i])])
         min_stress_low[i][j] = min(stress_low[j])
-        
+#        print([np.argmax(min_stress_up[i])])
+
         
 for k in range(len(prac.A_S_L)):
     print("strut location", prac.A_S_L[k])
@@ -94,16 +100,30 @@ for k in range(len(prac.A_S_L)):
    
 #print(min(stress_up[0]))
 #print(max(stress_low[0]))
-#    plt.rcParams.update({'font.size': 20})        
-##    plt.figure()
-#    plt.plot(z_pos[i], stress_up[i], 'y', label = 'Initial stress top')
-#    plt.plot(z_pos[i], stress_low[i], 'g', label = 'Initial stress bottom')
-#    plt.xlabel("Chordwise position with respect to the centroid [m]")
-#    plt.ylabel("Stress [N/m$^2$]")
-#
-#    plt.legend(bbox_to_anchor=(1.05,1), loc="upper left")    
-#    plt.show()
+#plt.rcParams.update({'font.size': 20})        
+#plt.figure()
+##plt.figure()
+#n = 
+#plt.plot(prac.X_root, max_stress_up[0], 'r', label = 'Maximum stress top')
+#plt.plot(prac.X_root, max_stress_low[0], 'b', label = 'Maximum stress bottom')
+#plt.plot(prac.X_root, min_stress_up[0], 'y', label = 'Minimum stress top')
+#plt.plot(prac.X_root, min_stress_low[0], 'g', label = 'Minimum stress bottom')
+#for i, txt in enumerate(n):
+#    ax.annotate(txt, (z[i], y[i]))
+#plt.xlabel("Spanwise position [m]")
+#plt.ylabel("Stress [N/m$^2$]")
+#    
     
+    
+    
+#plt.plot(z_pos[0], stress_up[0], 'r', label = 'Final stress top')
+#plt.plot(z_pos[0], stress_low[0], 'b', label = 'Final stress bottom')
+#plt.xlabel("Chordwise position with respect to the centroid [m]")
+#plt.ylabel("Stress [N/m$^2$]")
+#
+#plt.legend(bbox_to_anchor=(1.05,1), loc="upper left")    
+#plt.show()
+#    
 
 
 
