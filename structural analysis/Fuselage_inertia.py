@@ -47,7 +47,7 @@ def fuselage_booms(sigma, Mx, My):
         if actual_boom_area[i] <= 0.001:
             actual_boom_area[i] = segment_length[i]*0.002
         elif actual_boom_area[i] > 0.001: 
-            actual_boom_area[i] = 0.0045
+            actual_boom_area[i] = 0.005
 #        elif actual_boom_area[i] > 0 and actual_boom_area[i] < 0.001 : 
 #            actual_boom_area[i] = 0.001
 #        elif actual_boom_area[i] > 0.001 and actual_boom_area[i] < 0.002 : 

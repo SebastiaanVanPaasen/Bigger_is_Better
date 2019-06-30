@@ -1,6 +1,6 @@
-#sys.path.append("C:/Users/mathi/Documents/DSE/Bigger_is_Better")
+sys.path.append("C:/Users/mathi/Documents/DSE/Bigger_is_Better")
 import sys
-sys.path.append("C:/Users/Mels/Desktop/3e jaar TUDelft/DSE/code/Bigger_is_Better")
+#sys.path.append("C:/Users/Mels/Desktop/3e jaar TUDelft/DSE/code/Bigger_is_Better")
 import numpy as np  ### Never use * to import stuff, as it makes it difficult to retrace where functions come from
 import scipy as sp
 from scipy.interpolate import interp1d
