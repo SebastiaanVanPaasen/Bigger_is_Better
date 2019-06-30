@@ -13,17 +13,17 @@ D_fus = 7.3
 
 #R_strut = 5 / 1000
 #A_strut = 0.25 * np.pi * ((2 * R_strut) ** 2) ##
-E_strut = 130 * (10 ** 9)  
-AR = 13
+E_strut = 60.1 * (10 ** 9)  
+AR = 15
 taper = 0.357 
 MAC = 4.3#4.03
 sigma_strut = 1400 * (10 ** 6)
 density_strut = 1580.
 
-cr = 5.89
-ct = 2.1
-b = 52
-S = 208
+cr = 5.53
+ct = 1.97
+b = 56.3
+S = 211.18
 dihedral = (1.5/180) * np.pi
 
 LE_root = 19.11
@@ -41,11 +41,10 @@ L_wing = b / 2
 H_cr = 9000#7636.9
 V_cr = 201#272.5
 rho_cr = cc.Rho_0 * ((1 + (cc.a * H_cr) / cc.Temp_0) ** (-(cc.g_0 / (cc.R_gas * cc.a) + 1)))
-CD_0_cr = 0.021323
+CD_0_cr = 0.021165
 #print(rho_cr)
-W_TO = 1497151
-W_fuel = 170548
-W_N = 25875
+W_TO = 1520177
+W_fuel = 170756
 
 N_eng = 2
 W_eng_v = 102023/2 #4760 * cc.g_0 #+ W_N / N_eng
