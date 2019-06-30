@@ -4,7 +4,6 @@ import constants_and_conversions as cc
 import centroid_wing as cw
 import Airfoil_inertia as ai
 import parameter_requirements as pr
-import math as m
 
 from scipy.interpolate import interp1d
 from class_I.lift_distr import get_correct_data, lift_distribution
@@ -13,17 +12,17 @@ D_fus = 7.3
 
 #R_strut = 5 / 1000
 #A_strut = 0.25 * np.pi * ((2 * R_strut) ** 2) ##
-E_strut = 60.1 * (10 ** 9)  
-AR = 15
+E_strut = 130 * (10 ** 9)  
+AR = 13
 taper = 0.357 
 MAC = 4.3#4.03
 sigma_strut = 1400 * (10 ** 6)
 density_strut = 1580.
 
-cr = 5.53
-ct = 1.97
-b = 56.3
-S = 211.18
+cr = 5.89
+ct = 2.1
+b = 52
+S = 208
 dihedral = (1.5/180) * np.pi
 
 LE_root = 19.11
@@ -41,10 +40,11 @@ L_wing = b / 2
 H_cr = 9000#7636.9
 V_cr = 201#272.5
 rho_cr = cc.Rho_0 * ((1 + (cc.a * H_cr) / cc.Temp_0) ** (-(cc.g_0 / (cc.R_gas * cc.a) + 1)))
-CD_0_cr = 0.021165
+CD_0_cr = 0.021323
 #print(rho_cr)
-W_TO = 1520177
-W_fuel = 170756
+W_TO = 1497151
+W_fuel = 170548
+W_N = 25875
 
 N_eng = 2
 W_eng_v = 102023/2 #4760 * cc.g_0 #+ W_N / N_eng
@@ -333,7 +333,7 @@ for idx in range(len(A_S_L)):
         #    
         #    #    print("I_zz_req",I_zz_req)
 #        boom_area = boom_area_new
-        boom_area_all[idx] = max(boom_area_new) * 10000
+#        boom_area_all[idx] = max(boom_area_new) * 10000
         
         print("Updated boom area for strut pos" + str(A_S_L[idx]))
 #        
@@ -501,78 +501,78 @@ for idx in range(len(A_S_L)):
 #    print(My_dist[idx][0])
 #    print(Vz_dist[idx][0])
 #    plt.rcParams.update({'font.size': 15})        
-    plt.figure()
-    plt.subplot(2, 3, 1)
-    plt.plot(X_root, Vy_dist[idx], label = "Vy for pos " + str(A_S_L[idx]))
-    plt.xlabel("X-position [m]")
-    plt.ylabel("Vy [N]")
-    plt.title("Vy distribution")
-    ax = plt.gca()
-    ax.get_yaxis().set_major_formatter(plt.FuncFormatter(lambda x, loc: "{:,}".format(int(x))))
-#    ax.get_xaxis().set_major_formatter(plt.FuncFormatter(lambda x, loc: "{:,}".format(int(x))))
-#    plt.legend()
-    
-    plt.subplot(2, 3, 4)
-    plt.plot(X_root, Mz_dist[idx], label = "Mz for pos " + str(A_S_L[idx]))
-    plt.xlabel("X-position [m]")
-    plt.ylabel("Mz [Nm]")
-    plt.title("Mz distribution")
-    ax = plt.gca()
-    ax.get_yaxis().set_major_formatter(plt.FuncFormatter(lambda x, loc: "{:,}".format(int(x))))
-
-#    plt.legend()
-    
-    plt.subplot(2, 3, 2)
-    plt.plot(X_root, Vz_dist[idx], label = "Vz for pos " + str(A_S_L[idx]))
-    plt.xlabel("X-position [m]")
-    plt.ylabel("Vz [N]")
-    plt.title("Vz distribution")
-    ax = plt.gca()
-    ax.get_yaxis().set_major_formatter(plt.FuncFormatter(lambda x, loc: "{:,}".format(int(x))))
-
-#    plt.legend()
-    
-    plt.subplot(2, 3, 3)
-#    plt.plot(X_tip, d_lift, label = "lift for pos " + str(A_S_L[idx]))
-#    plt.plot(X_tip, d_weight, label = "weight for pos " + str(A_S_L[idx]))
-#    plt.plot(X_tip, d_fuel_weight, label = "fuel weight for pos " + str(A_S_L[idx]))
-#    plt.plot(X_tip, d_strut, label = "strut for pos " + str(A_S_L[idx]))
-#    plt.plot(X_tip, d_engine, label = "engine for pos " + str(A_S_L[idx]))
-    plt.plot(X_root[::-1], d, label = "Deflection for pos " + str(A_S_L[idx]))
-    plt.xlabel("X-position [m]")
-    plt.ylabel("Deflection [m]")
-#    plt.title("Deflection of loading components along the span")
-    plt.title("Deflection along the span")
+#    plt.figure()
+#    plt.subplot(2, 3, 1)
+#    plt.plot(X_root, Vy_dist[idx], label = "Vy for pos " + str(A_S_L[idx]))
+#    plt.xlabel("X-position [m]")
+#    plt.ylabel("Vy [N]")
+#    plt.title("Vy distribution")
 #    ax = plt.gca()
 #    ax.get_yaxis().set_major_formatter(plt.FuncFormatter(lambda x, loc: "{:,}".format(int(x))))
-
-#    plt.legend()
-#    plt.plot(X_root[::-1], d_lift, label = "lift ")#for pos " + str(A_S_L[idx]))
-#    plt.plot(X_root[::-1], d_weight, label = "weight")# for pos " + str(A_S_L[idx]))
-#    plt.plot(X_root[::-1], d_fuel_weight, label = "fuel weight")# for pos " + str(A_S_L[idx]))
-#    plt.plot(X_root[::-1], d_strut, label = "strut")# for pos " + str(A_S_L[idx]))
-#    plt.plot(X_root[::-1], d_engine, label = "engine")# for pos " + str(A_S_L[idx]))
-#    plt.figure()
-#    plt.title("Deflection and its derivatives along the half span")
-    
-    label_list = [21, 19, 17, 15, 13, 11, 9]
-    plt.subplot(2, 3, 5)
-    plt.plot(X_root, My_dist[idx], label = "Strut position " + str(label_list[idx]))
-    plt.xlabel("X-position [m]")
-    plt.ylabel("My [Nm]")
-    plt.title("My distribution")
-    ax = plt.gca()
-    ax.get_yaxis().set_major_formatter(plt.FuncFormatter(lambda x, loc: "{:,}".format(int(x))))
-##
-#    plt.legend(bbox_to_anchor=(1.05,1), loc="upper left")    
-#    plt.subplot(3, 3, 6)
-#    plt.plot(label = "strut position" + str(A_S_L[idx]))
-#    plt.legend()
-#    plt.show()
-    
-print("r_strut_buck", R_strut_new)
-print("r_strut_tens", np.sqrt(A_req_new/np.pi))
-print("mass_strut", strut_mass)
+##    ax.get_xaxis().set_major_formatter(plt.FuncFormatter(lambda x, loc: "{:,}".format(int(x))))
+##    plt.legend()
+#    
+#    plt.subplot(2, 3, 4)
+#    plt.plot(X_root, Mz_dist[idx], label = "Mz for pos " + str(A_S_L[idx]))
+#    plt.xlabel("X-position [m]")
+#    plt.ylabel("Mz [Nm]")
+#    plt.title("Mz distribution")
+#    ax = plt.gca()
+#    ax.get_yaxis().set_major_formatter(plt.FuncFormatter(lambda x, loc: "{:,}".format(int(x))))
+#
+##    plt.legend()
+#    
+#    plt.subplot(2, 3, 2)
+#    plt.plot(X_root, Vz_dist[idx], label = "Vz for pos " + str(A_S_L[idx]))
+#    plt.xlabel("X-position [m]")
+#    plt.ylabel("Vz [N]")
+#    plt.title("Vz distribution")
+#    ax = plt.gca()
+#    ax.get_yaxis().set_major_formatter(plt.FuncFormatter(lambda x, loc: "{:,}".format(int(x))))
+#
+##    plt.legend()
+#    
+#    plt.subplot(2, 3, 3)
+##    plt.plot(X_tip, d_lift, label = "lift for pos " + str(A_S_L[idx]))
+##    plt.plot(X_tip, d_weight, label = "weight for pos " + str(A_S_L[idx]))
+##    plt.plot(X_tip, d_fuel_weight, label = "fuel weight for pos " + str(A_S_L[idx]))
+##    plt.plot(X_tip, d_strut, label = "strut for pos " + str(A_S_L[idx]))
+##    plt.plot(X_tip, d_engine, label = "engine for pos " + str(A_S_L[idx]))
+#    plt.plot(X_root[::-1], d, label = "Deflection for pos " + str(A_S_L[idx]))
+#    plt.xlabel("X-position [m]")
+#    plt.ylabel("Deflection [m]")
+##    plt.title("Deflection of loading components along the span")
+#    plt.title("Deflection along the span")
+##    ax = plt.gca()
+##    ax.get_yaxis().set_major_formatter(plt.FuncFormatter(lambda x, loc: "{:,}".format(int(x))))
+#
+##    plt.legend()
+##    plt.plot(X_root[::-1], d_lift, label = "lift ")#for pos " + str(A_S_L[idx]))
+##    plt.plot(X_root[::-1], d_weight, label = "weight")# for pos " + str(A_S_L[idx]))
+##    plt.plot(X_root[::-1], d_fuel_weight, label = "fuel weight")# for pos " + str(A_S_L[idx]))
+##    plt.plot(X_root[::-1], d_strut, label = "strut")# for pos " + str(A_S_L[idx]))
+##    plt.plot(X_root[::-1], d_engine, label = "engine")# for pos " + str(A_S_L[idx]))
+##    plt.figure()
+##    plt.title("Deflection and its derivatives along the half span")
+#    
+#    label_list = [21, 19, 17, 15, 13, 11, 9]
+#    plt.subplot(2, 3, 5)
+#    plt.plot(X_root, My_dist[idx], label = "Strut position " + str(label_list[idx]))
+#    plt.xlabel("X-position [m]")
+#    plt.ylabel("My [Nm]")
+#    plt.title("My distribution")
+#    ax = plt.gca()
+#    ax.get_yaxis().set_major_formatter(plt.FuncFormatter(lambda x, loc: "{:,}".format(int(x))))
+###
+##    plt.legend(bbox_to_anchor=(1.05,1), loc="upper left")    
+##    plt.subplot(3, 3, 6)
+##    plt.plot(label = "strut position" + str(A_S_L[idx]))
+##    plt.legend()
+##    plt.show()
+#    
+#print("r_strut_buck", R_strut_new)
+#print("r_strut_tens", np.sqrt(A_req_new/np.pi))
+#print("mass_strut", strut_mass)
 
 #    plt.subplot(1, 3, 1)
 #    plt.plot(X_root[::-1], d, label = "Deflection")# for pos " + str(A_S_L[idx]))
@@ -591,167 +591,167 @@ print("mass_strut", strut_mass)
 ##    
 #    plt.show()
     
-#def strut_area_req_F(sigma):
-#    
-#    F_strut = prac.F_strut
-#    A_req = np.zeros(len(prac.A_S_L))
-#    
-#    for i in range(len(prac.A_S_L)):
+def strut_area_req_F(sigma):
+    
+    F_strut = prac.F_strut
+    A_req = np.zeros(len(prac.A_S_L))
+    
+    for i in range(len(prac.A_S_L)):
+
+        A_req[i] = abs(F_strut[i])/sigma
+
+    return A_req
 #
-#        A_req[i] = abs(F_strut[i])/sigma
+def strut_area_req_B(F_strut, L_strut, gamma, A_S_L, E_strut):
+    
+    P_cr = abs(F_strut)
+    I_req = np.zeros(len(A_S_L))
+    req_area = np.zeros(len(A_S_L))
+    sigma_crit = np.zeros(len(A_S_L))
+    K = 1. 
+    
+    for i in range(len(A_S_L)):
+        I_req[i] = (P_cr[i]/np.sin(gamma[i]))*(K*L_strut[i])**2/(np.pi**2*E_strut)
+
+        R_strut_new = (I_req[i]/(0.25*np.pi))**0.25
+#        while I_strut <I_req[i]:
+#            R_strut += 0.001
+#            I_strut = 0.25*np.pi*(R_strut**4)
+#        print(I_req[i])
+
+#        print("r_strut", R_strut_new)
+
+        req_area[i] = np.pi*R_strut_new**2
+        sigma_crit[i] = P_cr[i]/req_area[i]
+        
+    return I_req, req_area, sigma_crit
+
+def strut_cost(A_req_B, density, cost, L_strut, A_S_L):
+    Max_area = np.zeros(len(A_S_L))
+    strut_volume = np.zeros(len(A_S_L))
+    strut_mass = np.zeros(len(A_S_L))
+    strut_cost = np.zeros(len(A_S_L))
+
+    
+    for i in range(len(A_S_L)):
+        Max_area[i] = A_req_B[i]#max(A_req_P[i], A_req_B[i])#A_req_P[i]#
+        
+        strut_volume[i] = Max_area[i]*L_strut[i]
+        strut_mass[i] = strut_volume[i]*density
+        strut_cost[i] = strut_mass[i]*cost
+
+    return Max_area, strut_volume, strut_mass, strut_cost
+
+
+def wing_price_weight(A_req_B, density, cost, N, t_skin, b, qcsweep, dx, L_strut, A_S_L, boom_area):
+            
+    Max_area, strut_volume, strut_mass, cost_strut = strut_cost(A_req_B, density, cost, L_strut, A_S_L)
+    airfoil_area, z_c_airfoil, y_c_airfoil = cw.get_skin_centroid(N, b, calc_chord, dx, t_skin)
+#    boom_area = boom_area_all
+#    print("boom area",boom_area)
+    X_root = np.arange(0, (b/2)+dx, dx)
+
+    spar_areas_verti = cw.wing_centroid(boom_area, cw.spar_areas_hori, cw.t_spar_v, z_c_airfoil, y_c_airfoil, cw.n_stiff_up, cw.n_stiff_low, N, b, calc_chord,X_root, dx)[10]
+    spar_areas_hori = cw.spar_areas_hori
+#    print(spar_areas_hori)
+    nr_stiff  = cw.n_stiff_low + cw.n_stiff_up
+#    Sweep_LE = m.atan(m.tan(qcsweep) - 4 / AR * (-0.25 * (1 - taper) / (1 + taper))) # rad
+    
+#    print(spar_areas_verti[0])
+#    print(spar_areas_hori)
+#    print(spar_areas_hori)
+#    print(spar_areas_verti[0])
+#    print(spar_areas_verti[1])
+#    print(len(spar_areas_verti[0]))
+    
+    total_spar_volume = 0
+    
+    for i in range(len(spar_areas_verti)):
+        spar_volume = 0
+        for j in range(len(spar_areas_verti[0])):
+            
+            spar_volume += (spar_areas_verti[i][j] + spar_areas_hori[i]*2) 
+        
+        total_spar_volume += spar_volume*dx
+        
+    total_boom_volume = np.zeros(len(A_S_L))
+
+    for i in range(len(A_S_L)):
+        
+        for j in range(len(X_root)):
+            
+            if boom_area[j]> 0:
+            
+                total_boom_volume[i] += (boom_area[j] * nr_stiff)*dx
+        
+            else:
+                total_boom_volume[i] += 0
+        
+#    print("boom_area", boom_area)
+    boom_mass = total_boom_volume * density
+    boom_cost = boom_mass * cost
+    
+    skin_volume = np.zeros(len(X_root))
+
+    for i in range(len(X_root)-1):
+        
+        skin_volume[i] = ai.s_airfoil(N,b,calc_chord, X_root)[0][i] * dx * t_skin[i]
+#    print(skin_volume)
+    skin_mass = sum(skin_volume) * density
+    skin_price = skin_mass * cost
+    
+    spar_mass = total_spar_volume * density
+    spar_price = spar_mass * cost
+    
+    total_price = np.zeros(len(A_S_L))
+    total_mass = np.zeros(len(A_S_L))
+#    print(spar_length, spar_volume, spar_mass, total_spar_area)
+#    print(skin_price, spar_price)
+    for i in range(len(A_S_L)):
+        
+        total_price[i] = (skin_price + spar_price)*2 + cost_strut[i]*2 + boom_cost[i]*2
+        total_mass[i] = (skin_mass + spar_mass)*2 + strut_mass[i]*2 + boom_mass[i]*2
+    
+    return  skin_mass, spar_mass, boom_mass, total_mass, total_price, boom_cost
 #
-#    return A_req
-##
-#def strut_area_req_B(F_strut, L_strut, gamma, A_S_L, E_strut):
-#    
-#    P_cr = abs(F_strut)
-#    I_req = np.zeros(len(A_S_L))
-#    req_area = np.zeros(len(A_S_L))
-#    sigma_crit = np.zeros(len(A_S_L))
-#    K = 1. 
-#    
-#    for i in range(len(A_S_L)):
-#        I_req[i] = (P_cr[i]/np.sin(gamma[i]))*(K*L_strut[i])**2/(np.pi**2*E_strut)
-#
-#        R_strut_new = (I_req[i]/(0.25*np.pi))**0.25
-##        while I_strut <I_req[i]:
-##            R_strut += 0.001
-##            I_strut = 0.25*np.pi*(R_strut**4)
-##        print(I_req[i])
-#
-##        print("r_strut", R_strut_new)
-#
-#        req_area[i] = np.pi*R_strut_new**2
-#        sigma_crit[i] = P_cr[i]/req_area[i]
-#        
-#    return I_req, req_area, sigma_crit
-#
-#def strut_cost(A_req_B, density, cost, L_strut, A_S_L):
-#    Max_area = np.zeros(len(A_S_L))
-#    strut_volume = np.zeros(len(A_S_L))
-#    strut_mass = np.zeros(len(A_S_L))
-#    strut_cost = np.zeros(len(A_S_L))
-#
-#    
-#    for i in range(len(A_S_L)):
-#        Max_area[i] = A_req_B[i]#max(A_req_P[i], A_req_B[i])#A_req_P[i]#
-#        
-#        strut_volume[i] = Max_area[i]*L_strut[i]
-#        strut_mass[i] = strut_volume[i]*density
-#        strut_cost[i] = strut_mass[i]*cost
-#
-#    return Max_area, strut_volume, strut_mass, strut_cost
-#
-#
-#def wing_price_weight(A_req_B, density, cost, N, t_skin, b, qcsweep, dx, L_strut, A_S_L, boom_area):
-#            
-#    Max_area, strut_volume, strut_mass, cost_strut = strut_cost(A_req_B, density, cost, L_strut, A_S_L)
-#    airfoil_area, z_c_airfoil, y_c_airfoil = cw.get_skin_centroid(N, b, calc_chord, dx, t_skin)
-##    boom_area = boom_area_all
-##    print("boom area",boom_area)
-#    X_root = np.arange(0, (b/2)+dx, dx)
-#
-#    spar_areas_verti = cw.wing_centroid(boom_area, cw.spar_areas_hori, cw.t_spar_v, z_c_airfoil, y_c_airfoil, cw.n_stiff_up, cw.n_stiff_low, N, b, calc_chord,X_root, dx)[10]
-#    spar_areas_hori = cw.spar_areas_hori
-##    print(spar_areas_hori)
-#    nr_stiff  = cw.n_stiff_low + cw.n_stiff_up
-##    Sweep_LE = m.atan(m.tan(qcsweep) - 4 / AR * (-0.25 * (1 - taper) / (1 + taper))) # rad
-#    
-##    print(spar_areas_verti[0])
-##    print(spar_areas_hori)
-##    print(spar_areas_hori)
-##    print(spar_areas_verti[0])
-##    print(spar_areas_verti[1])
-##    print(len(spar_areas_verti[0]))
-#    
-#    total_spar_volume = 0
-#    
-#    for i in range(len(spar_areas_verti)):
-#        spar_volume = 0
-#        for j in range(len(spar_areas_verti[0])):
-#            
-#            spar_volume += (spar_areas_verti[i][j] + spar_areas_hori[i]*2) 
-#        
-#        total_spar_volume += spar_volume*dx
-#        
-#    total_boom_volume = np.zeros(len(A_S_L))
-#
-#    for i in range(len(A_S_L)):
-#        
-#        for j in range(len(X_root)):
-#            
-#            if boom_area[j]> 0:
-#            
-#                total_boom_volume[i] += (boom_area[j] * nr_stiff)*dx
-#        
-#            else:
-#                total_boom_volume[i] += 0
-#        
-##    print("boom_area", boom_area)
-#    boom_mass = total_boom_volume * density
-#    boom_cost = boom_mass * cost
-#    
-#    skin_volume = np.zeros(len(X_root))
-#
-#    for i in range(len(X_root)-1):
-#        
-#        skin_volume[i] = ai.s_airfoil(N,b,calc_chord, X_root)[0][i] * dx * t_skin[i]
-##    print(skin_volume)
-#    skin_mass = sum(skin_volume) * density
-#    skin_price = skin_mass * cost
-#    
-#    spar_mass = total_spar_volume * density
-#    spar_price = spar_mass * cost
-#    
-#    total_price = np.zeros(len(A_S_L))
-#    total_mass = np.zeros(len(A_S_L))
-##    print(spar_length, spar_volume, spar_mass, total_spar_area)
-##    print(skin_price, spar_price)
-#    for i in range(len(A_S_L)):
-#        
-#        total_price[i] = (skin_price + spar_price)*2 + cost_strut[i]*2 + boom_cost[i]*2
-#        total_mass[i] = (skin_mass + spar_mass)*2 + strut_mass[i]*2 + boom_mass[i]*2
-#    
-#    return  skin_mass, spar_mass, boom_mass, total_mass, total_price, boom_cost
-##
-#
-#
-#
-#
-#
-#t_skin = cw.t_skin
-#density_wing = 2780
-#cost_wing = 1.96 
-#density_strut = 1580
-#cost_strut = 35.2
-#qcsweep = 0 * np.pi
-#
-#
-#I_req, A_req_B, sigma_crit= strut_area_req_B(F_strut, L_str, gamma_all, A_S_L, E_strut)
-#
-#max_strut_area, strut_volume, strut_mass, cost_strut = strut_cost(A_req_B, density_strut, cost_strut, L_str, A_S_L)
-#skin_mass, spar_mass, boom_mass, total_mass, total_price, boom_cost = wing_price_weight(A_req_B, density_wing, cost_wing, N, t_skin, b, qcsweep, dx, L_str, A_S_L, boom_area_new)
-#
-#
-#print("area due to buckling", A_req_B)
+
+
+
+
+
+t_skin = cw.t_skin
+density_wing = 2780
+cost_wing = 1.96 
+density_strut = 1580
+cost_strut = 35.2
+qcsweep = 0 * np.pi
+
+
+I_req, A_req_B, sigma_crit= strut_area_req_B(F_strut, L_str, gamma_all, A_S_L, E_strut)
+
+max_strut_area, strut_volume, strut_mass, cost_strut = strut_cost(A_req_B, density_strut, cost_strut, L_str, A_S_L)
+skin_mass, spar_mass, boom_mass, total_mass, total_price, boom_cost = wing_price_weight(A_req_B, density_wing, cost_wing, N, t_skin, b, qcsweep, dx, L_str, A_S_L, boom_area_new)
+
+
+print("area due to buckling", A_req_B)
+print()
+print("Total spar mass", spar_mass*2)
+print()
+#print("critical stress", sigma_crit)
 #print()
-#print("Total spar mass", spar_mass*2)
+print("Total skin mass", skin_mass*2)
+print()
+#print("spar mass", spar_mass)
 #print()
-##print("critical stress", sigma_crit)
-##print()
-#print("Total skin mass", skin_mass*2)
-#print()
-##print("spar mass", spar_mass)
-##print()
-#print("Total boom mass", boom_mass*2)
-#print()
-#print("Total boom cost", boom_cost*2)
-#print()
-#print("Total strut mass", strut_mass*2)
-#print()
-#print("Total strut cost", cost_strut*2)
-#print()
-#print("Total wing mass", total_mass)
-#print()
-#print("Total wing cost", total_price)
-#
+print("Total boom mass", boom_mass*2)
+print()
+print("Total boom cost", boom_cost*2)
+print()
+print("Total strut mass", strut_mass*2)
+print()
+print("Total strut cost", cost_strut*2)
+print()
+print("Total wing mass", total_mass)
+print()
+print("Total wing cost", total_price)
+

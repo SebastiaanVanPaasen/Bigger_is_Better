@@ -33,13 +33,13 @@ X_root = np.arange(0, (b/2)+dx, dx)
 t_skin = np.zeros((len(X_root)))
 
 for i in range(len(X_root)):
-    if X_root[i] < b/2 - 8:
+    if X_root[i] < b/2 - 8.:
         t_skin[i] = 0.001#0.005
 
-    elif X_root[i]>= b/2 - 8 and X_root[i]< b/2 - 7: 
+    elif X_root[i]>= b/2 - 8. and X_root[i]< b/2 - 7.: 
         t_skin[i] = 0.001#0.001 - (0.002 - 0.001) * (X_root[i] - (b/2 - 8))
    
-    elif X_root[i] >= b/2 - 7:
+    elif X_root[i] >= b/2 - 7.:
         t_skin[i] = 0.001
 #print(t_skin)
 
@@ -77,22 +77,22 @@ t_spar_v = np.zeros((len(X_root)))
 t_spar_h = np.zeros((len(X_root)))
 
 for i in range(len(X_root)):
-    if X_root[i] < b/2 - 8:
-        l_spar_h[i] = 0.22 + (0.4 - 0.22)/(b/2 - 8) * (X_root[i])
-        t_spar_v[i] = 0.038# + (0.038 - 0.025)/(b/2 - 8) * (X_root[i])
-        t_spar_h[i] = 0.04
+    if X_root[i] < b/2 - 7:
+        l_spar_h[i] = 0.6 - (0.6 - 0.25)/(b/2 - 8) * (X_root[i])
+        t_spar_v[i] = 0.08 - (0.08 - 0.02)/(b/2 - 8) * (X_root[i])
+        t_spar_h[i] = 0.08 - (0.08 - 0.02)/(b/2 - 8) * (X_root[i])
 #    elif X_root[i] >= b/2 - 9 and X_root[i] < b/2 - 8:
 #        l_spar_h[i] = 0.35 + (0.4-0.35) * 1_root[i] - (b/2 - 9) )
-    elif X_root[i]>= b/2 - 8 and X_root[i]< b/2 - 3.5: 
-        l_spar_h[i] = 0.4 - ((0.4-0.05)/4.5) * (X_root[i] - (b/2 - 8))
-        t_spar_v[i] = 0.038 - ((0.038-0.01)/4.5) * (X_root[i] - (b/2 - 8))
-        t_spar_h[i] = 0.04 - ((0.04-0.01)/4.5) * (X_root[i] - (b/2 - 8))
+    elif X_root[i]>= b/2 - 7 and X_root[i]< b/2 - 3.5: 
+        l_spar_h[i] = 0.25 - ((0.25 - 0.05)/3.5) * (X_root[i] - (b/2 - 8))
+        t_spar_v[i] = 0.02 - ((0.02 - 0.01)/3.5) * (X_root[i] - (b/2 - 8))
+        t_spar_h[i] = 0.02 - ((0.02 - 0.01)/3.5) * (X_root[i] - (b/2 - 8))
     elif X_root[i]>= b/2 - 3.5:
         l_spar_h[i] = 0.05
         t_spar_v[i] = 0.01
         t_spar_h[i] = 0.01
         
-print(l_spar_h)
+#print(l_spar_h)
 #t_spar_h = 0.04
 
 nr_spars = sl.nr_spars

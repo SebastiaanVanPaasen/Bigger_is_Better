@@ -1,10 +1,8 @@
 from matplotlib import pyplot as plt
 import numpy as np  
 from airfoil_geometry import airfoil_geometry
-import parameter_requirements as pr
 import practised_ultimate as prac
 import centroid_wing as cw
-import Airfoil_inertia as ai
 
 
 def wing_stress(b, Mz, My, X_root):
@@ -15,8 +13,8 @@ def wing_stress(b, Mz, My, X_root):
 #    I_zz_spar, I_yy_spar, I_yz_spar = ai.I_zz_spars(l_spar_h, t_spar_v, t_spar_h, N, b ,prac.calc_chord,prac.boom_area_all)
 #    I_zz_req = pr.required_Izz(N, b, prac.calc_chord, Mz)
 #    
-    airfoil_area, z_c_airfoil, y_c_airfoil = cw.get_skin_centroid(N,b, prac.calc_chord, prac.dx)
-    z_centroid_all_sec, y_centroid_all_sec, y_loc_spar_up, y_loc_spar_low, y_loc_stiff_up, y_loc_stiff_low, y_vertical_spar, z_loc_stiff_up, spar_loc_sec, z_loc_stiff_low, spar_areas_verti = cw.wing_centroid(prac.boom_area_all[0], cw.spar_areas_hori, cw.t_spar_v, z_c_airfoil, y_c_airfoil, cw.n_stiff_up, cw.n_stiff_low, N, b, prac.calc_chord, X_root, prac.dx)
+    airfoil_area, z_c_airfoil, y_c_airfoil = cw.get_skin_centroid(N,b, prac.calc_chord, prac.dx, cw.t_skin)
+    z_centroid_all_sec, y_centroid_all_sec, y_loc_spar_up, y_loc_spar_low, y_loc_stiff_up, y_loc_stiff_low, y_vertical_spar, z_loc_stiff_up, spar_loc_sec, z_loc_stiff_low, spar_areas_verti = cw.wing_centroid(prac.boom_area_new, cw.spar_areas_hori, cw.t_spar_v, z_c_airfoil, y_c_airfoil, cw.n_stiff_up, cw.n_stiff_low, N, b, prac.calc_chord, X_root, prac.dx)
 #    print("the used boom area")
 #    print(prac.boom_area_all[0])
 #    print(z_centroid_all_sec)
@@ -76,7 +74,7 @@ min_up, min_low = np.zeros((len(prac.A_S_L))), np.zeros((len(prac.A_S_L)))
 
 for i in range(len(prac.A_S_L)):
     
-    z_pos, stress_up, stress_low = wing_stress(56.3, Mz[i], My[i], prac.X_root)
+    z_pos, stress_up, stress_low = wing_stress(52, Mz[i], My[i], prac.X_root)
 #    print(np.shape(stress_up))
     for j in range(len(prac.X_root)):
 #        print(len(stress_up[j]))

@@ -122,12 +122,12 @@ def wing_geometry(I_zz_req, I_zz_spars, N, b, c, boom_area, X_root, dx):
 #        I_yz_airfoil += airfoil_area[i]*(-y_c_airfoil[i] - (-1)*y_centroid_all_sec[i])*(z_c_airfoil[i] - z_centroid_all_sec[i])
 
 #        single_boom_area[i] = (I_zz_req[i] - I_zz_spars[i][0] - I_zz_airfoil)/y_2
-        if X_root[i] <= b/2 - 8.10:
+        if X_root[i] <= b/2 - 16.05:
 #    single_boom_area = np.ones(len(X_root))*max(single_boom_area) 
 ##    print("locatie",np.argmax(max(single_boom_area)))
-            single_boom_area[i] = 0.0011 - ((0.0011-0.0009)/(b/2))*X_root[i] 
-        elif X_root[i] > b/2 - 8.05:
-            single_boom_area[i] = 0.00#0.0011 - ((0.0011-0.000)/(b/2))*X_root[i] 
+            single_boom_area[i] = 0.018 - ((0.018 - 0.000)/(b/2))*X_root[i] 
+        elif X_root[i] > b/2 - 16.05:
+            single_boom_area[i] = 0.0 #0.0011 - ((0.0011-0.000)/(b/2))*X_root[i] 
 
 #        if single_boom_area[i] <= 0:
 #            single_boom_area[i] = 0.

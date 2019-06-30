@@ -42,10 +42,10 @@ def airfoil_geometry(N,b, c, X_root):
     data_y_lower_all_sec = []
     data_y_upper_all_sec = []
     
-    data_z1, data_y1 = load_airfoil('SC(2)-0616.txt')[1], np.array(load_airfoil('SC(2)-0616.txt')[2]) 
+    data_z1, data_y1 = load_airfoil('SC(2)-0616.txt')[1], np.array(load_airfoil('SC(2)-0616.txt')[2]) * 20 / 16
     data_z2, data_y2 = load_airfoil('SC(2)-0612.txt')[1], np.array(load_airfoil('SC(2)-0612.txt')[2])
 
-    tc_1 = 0.16
+    tc_1 = 0.2
     tc_2 = 0.12
     
     for i in range(len(X_root)):
