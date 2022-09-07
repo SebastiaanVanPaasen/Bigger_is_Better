@@ -1,6 +1,6 @@
 import input_files.standard_inputs as ip
 import numpy as np
-
+import matplotlib.pyplot as plt
 from constants_and_conversions import Temp_0, g_0, gamma, a, R_gas, Rho_0, lbs_to_kg
 from class_II_weight_estimation import Class_II
 from class_I.class_I_weight_estimation import class_I
@@ -11,7 +11,7 @@ from class_I.drag_estimation import Wing_wetted_area, H_tail_wetted_area, V_tail
 from class_I.class_I_empennage_landinggear import class_I_empennage, _calc_h_tail_II, _calc_v_tail_II
 from class_I.flight_envelope import manoeuvring_envelope, gust_envelope
 from avl.conv_wing_avl import make_avl_file, run_avl, find_clalpha
-from RF_calc import Radiative, Costs
+from performance.RF_calc import Radiative, Costs
 from class_I.seats import cg_seats, W_seats
 from class_I.loading_diagram import potato
 #from sc_sensitivity import class_II_empennage
@@ -28,7 +28,9 @@ def main_iterator(cf, char, env, eng, opt, tails):
     A_h, QC_sweep_h, tap_h = tails[0], tails[1], tails[2]
     A_v, QC_sweep_v, tap_v = tails[3], tails[4], tails[5]
     N_pas_below = tails[6]
-    
+#    add_weight = tails[7]
+#    print(add_weight)
+#    print(N_eng)
     if H_cr < 11000.:
         Temp_cr = Temp_0 + a * H_cr  # K  based on the altitude you fly at
     else:
@@ -56,23 +58,6 @@ def main_iterator(cf, char, env, eng, opt, tails):
     mass_fractions = ip.mass_fractions
     percentages = []
 
-    fuselage_design = fuselage_cross_section(ip.N_pas, N_pas_below)
-    
-    # Define fuselage parameters out of the fuselage design
-    d_fuselage = fuselage_design[1]
-    l_nosecone = np.sum(fuselage_design[6]) / 2
-    l_cabin = fuselage_design[2]
-    l_tailcone = np.sum(fuselage_design[5]) / 2
-    l_fuselage = fuselage_design[7]
-    V_pax = 0.25 * np.pi * (d_fuselage ** 2) * l_cabin  
-    # m^3  Volume of the passenger cabin
-
-    xcg_seats = cg_seats(fuselage_design[16], fuselage_design[11], fuselage_design[12],l_nosecone)
-    
-    W_window, W_aisle, W_middle = W_seats(fuselage_design[8], fuselage_design[11], fuselage_design[12], fuselage_design[15])
-
-
-    emp_constants = [ip.N_cargo, l_fuselage, ip.cargo_fwdfrac, xcg_seats, W_window, W_aisle, W_middle, ip.N_pas, g_0*ip.m_person]
     
     M_h_cr = M_cr * ip.V_h_norm
     M_w_landing = ip.V_stall_l / np.sqrt(gamma * R_gas * Temp_cr)
@@ -81,19 +66,50 @@ def main_iterator(cf, char, env, eng, opt, tails):
 #    f = l_fuselage / d_fuselage
 #    f_tc = l_tailcone / d_fuselage
 #    f_nc = l_nosecone / d_fuselage
-
-    # Area of freight floor, very rough initial guess for now
-    S_ff = 0.5 * d_fuselage * l_cabin
-    
+    c_root = 5.
+    x_LE_root = 20.
+    LE_sweep =  0.52
+    taper = 0.3
+    d_fuselage = 6.
+    b = 60.
+    iterations = []
     # Starting the iteration process --------------------------------------
     i = 0
     maximum = 20
+#    minimum = 3
     percentage = 1
     W_e_frac = ip.w_e
-    while i < maximum and percentage > 0.01:
+#     and percentage > 0.0001
+    while i < maximum:
         print("Starting on iteration: " + str(i))
+#        print(c_root, x_LE_root)
+        fuselage_design = fuselage_cross_section(ip.N_pas, N_pas_below, c_root, x_LE_root, b, d_fuselage, taper, LE_sweep)
+    
+        # Define fuselage parameters out of the fuselage design
+        d_fuselage = fuselage_design[1]
+        l_nosecone = np.sum(fuselage_design[6]) / 3
+        l_cabin = fuselage_design[2]
+        l_tailcone = np.sum(fuselage_design[5]) / 3
+        l_fuselage = fuselage_design[7]
+        V_pax = 0.25 * np.pi * (d_fuselage ** 2) * l_cabin  
+        
+        l_cabin_above  = fuselage_design[3]
+        l_cabin_below  = fuselage_design[4]
+        # m^3  Volume of the passenger cabin
+    
+        xcg_seats, x_loc_front = cg_seats(fuselage_design[16], fuselage_design[11], fuselage_design[12], fuselage_design[17], fuselage_design[18], fuselage_design[19])
+        
+        W_window, W_aisle, W_middle = W_seats(fuselage_design[8], fuselage_design[11], fuselage_design[12], fuselage_design[15], x_loc_front)
+    
+    
+        emp_constants = [ip.N_cargo, l_fuselage, ip.cargo_fwdfrac, xcg_seats, W_window, W_aisle, W_middle, ip.N_pas, g_0*ip.m_person]
+        
+        # Area of freight floor, very rough initial guess for now
+        S_ff = 0.5 * d_fuselage * l_cabin
+        
+        
         # Performing class I weight estimation ----------------------------
-        weights = class_I(CL_cr, CD_cr, ip.m_range, ip.r_range, V_cr, c_t, 
+        weights, W_nom_F = class_I(CL_cr, CD_cr, ip.m_range, ip.r_range, V_cr, c_t, 
                           ip.w_tfo, W_e_frac, ip.fuel_fractions, ip.N_pas, 
                           ip.N_crew, ip.m_person, ip.m_carg)
 
@@ -109,9 +125,10 @@ def main_iterator(cf, char, env, eng, opt, tails):
 
         # Choosing a design point based on the T/W-W/S diagram ------------
         T_TO, S = W_TO * T_TO_ip, W_TO / S_ip
-        CL_cr = (0.75 * W_TO) / (0.5 * Rho_cr * (V_cr ** 2) * S)
+
+#        CL_cr = (0.75 * W_TO) / (0.5 * Rho_cr * (V_cr ** 2) * S)
+        CL_cr = (W_TO - 0.4*W_F) / (0.5 * Rho_cr * (V_cr ** 2) * S)
         if CL_cr > 1.:
-            CL_cr = 1.
             print("The CL is 1")
 
 #            print(Rho_Cruise, V_cruise, S, CD_cruise)
@@ -121,7 +138,6 @@ def main_iterator(cf, char, env, eng, opt, tails):
 
         # Calculate additional required half chord sweep for later use
         HC_sweep = determine_half_chord_sweep(c_tip, QC_sweep, c_root, b)
-
 
         # Perform first order cg-range estimation based on statistics -----
         x_payload = 0.5 * l_fuselage  # m     cg-location payload w.r.t. nose
@@ -135,36 +151,40 @@ def main_iterator(cf, char, env, eng, opt, tails):
                                                                             [A_h, tap_h, QC_sweep_h])
          
             l_h, c_root_h, c_tip_h, b_h, S_h = tail_h[0], tail_h[1], tail_h[2], tail_h[3], tail_h[4]
-            c_root_v, c_tip_v, b_v, S_v = tail_v[0], tail_v[1], tail_v[2], tail_v[3] 
+            c_root_v, c_tip_v, b_v, S_v, x_v = tail_v[0], tail_v[1], tail_v[2], tail_v[3], tail_v[4]
             opt_Sh_S = S_h / S
             opt_X_LEMAC = x_lemac 
-            print("Old surface =", opt_Sh_S)
-            print("Old arm = ", l_h)
-            print("Old position = ", opt_X_LEMAC)
-                              
-            
+#            print("Old surface =", opt_Sh_S)
+#            print("Old arm = ", l_h)
+#            print("Old position = ", opt_X_LEMAC)
+        
+             
         else:
             
             c_f = 0.25 * mac #flap chord
             b_f0 = 0.4 * b  #end of flap span
             b_fi = 0.1 * b #begin of flap span
             
-            old_S_h = S_h
+#            old_S_h = S_h
             S_h = opt_Sh_S * S
-            S_v = S_h / old_S_h * S_v
+#            S_v = S_h / old_S_h * S_v
             
             x_lemac = opt_X_LEMAC
 #            print("The leading edge of mac " + str(x_lemac))
-            tail_h = _calc_h_tail_II(xcg_aft, A_h, l_fuselage, tap_h, QC_sweep_h, S_h)
-            tail_v = _calc_v_tail_II(A_v, l_fuselage, tap_v, S_v, QC_sweep_v)
+            
+            tail_v = _calc_v_tail_II(x_v, xcg_aft, b, S, A_v, l_fuselage, tap_v, S_v, QC_sweep_v)
+            x_le_v, sweep_LE_v, y_MAC_v, MAC_v, c_root_v, c_tip_v, b_v, x_v, x_le_tip_v, S_v = tail_v
+            tail_h = _calc_h_tail_II(xcg_aft, A_h, l_fuselage, tap_h, QC_sweep_h, S_h, x_le_tip_v)
+            x_le_h, sweep_LE_h, y_MAC_h, MAC_h, l_h, c_root_h, c_tip_h, b_h = tail_h
+#            print(x_le_tip_v)
             min_cg, max_cg, X_LEMAC_range, min_cg_range = potato(l_nosecone, W_TO, ip.xcg_eng, ip.l_nac, mass_fractions, tail_h, 
                                                          tail_v, ip.s_m, cg_locations, x_lemac, emp_constants, mac)
             
             Y_MAC = (b / 6.) * ((1 + 2 * taper) / (1 + taper))
             
             x_cg = np.linspace(min(min_cg), max(max_cg))
-            x_le_h, sweep_LE_h, y_MAC_h, MAC_h, l_h = tail_h
-            x_le_v, sweep_LE_v, y_MAC_v, MAC_v = tail_v
+            
+            
             HC_sweep_h = determine_half_chord_sweep(c_tip_h, QC_sweep_h, c_root_h, b_h)
             x_LE_root = x_lemac - LE_sweep * Y_MAC
             
@@ -174,7 +194,7 @@ def main_iterator(cf, char, env, eng, opt, tails):
                 if tail == 0:
                     
 #                    print("vertical tail part " + str(np.tan(sweep_LE_v) * b_v))
-                    m_tv = fuselage_design[1] / 2.
+                    m_tv = fuselage_design[1] / 2.   
 #                    print("the new tail arm " + str(l_h))
     
                 else:
@@ -210,13 +230,14 @@ def main_iterator(cf, char, env, eng, opt, tails):
             
             
             C_L_alpha_Ah_landing = C_L_alpha_Ah(M_w_landing, ip.eta, HC_sweep, A, fuselage_design[1], b, S, c_root)  
+#            print("cl_alpha_h", C_L_alpha_Ah_landing)
             
-            
-            C_L_Ah_landing = C_L_alpha_Ah_landing * ip.alpha_land
-            
+#            C_L_Ah_landing = C_L_alpha_Ah_landing * ip.alpha_land
+            C_L_Ah_landing = 3.3
+#            print(C_L_Ah_landing)
             mu_2, mu_3 = c_s_coefficients(taper)
             
-            
+            print()
             S_netfus = S - (fuselage_design[1] * c_root)
             control_list = Sh_S_control(ip.CL_H, C_L_Ah_landing, l_h, ip.V_h_norm, x_cg, ip.Cm_0, A, QC_sweep,
                          ip.delta_flap ,b ,b_f0 ,b_fi ,taper , mac, c_f, ip.dc_c_f, mu_2, mu_3, ip.x_ac, ip.CL_l_max,
@@ -224,8 +245,11 @@ def main_iterator(cf, char, env, eng, opt, tails):
             
             
             
-            opt_X_LEMAC, opt_Sh_S, xcg_aft = control_stability_plot(x_cg, min_cg, max_cg, X_LEMAC_range, control_list, stability_list, mac, l_fuselage)
-                
+            opt_X_LEMAC, opt_Sh_S, xcg_aft, _min_, _max_ = control_stability_plot(x_cg, min_cg, max_cg, X_LEMAC_range, control_list, stability_list, mac, l_fuselage)
+#            print(x_LE_root,opt_X_LEMAC, opt_Sh_S, _min_, _max_)
+#            print(opt_Sh_S)
+            print(opt_Sh_S)
+            print("cg  ", _min_, _max_, (_max_ - _min_))
 #        print("tail surface area " + str(S_h/S))
         # Calculate the accompanying tail sizes ---------------------------
         HC_sweep_h = determine_half_chord_sweep(c_tip_h, QC_sweep_h, c_root_h, b_h)
@@ -236,7 +260,7 @@ def main_iterator(cf, char, env, eng, opt, tails):
         horizontal_tail_wet = H_tail_wetted_area(c_root_h, tap_h, b_h)
         vertical_tail_wet = V_tail_wetted_area(c_root_v, tap_v, b_v)
         fuselage_wet = Fus_wetted_area(d_fuselage, l_nosecone, l_cabin, l_tailcone)
-
+        
         # Determine the new CD_0 value ------------------------------------
         CD_0 = Zero_Lift_Drag_est(S, main_wing_wet, horizontal_tail_wet, vertical_tail_wet, fuselage_wet)
         
@@ -249,17 +273,20 @@ def main_iterator(cf, char, env, eng, opt, tails):
                       b_v, c_root_v, QC_sweep_v, tap_v, tail, 12, 5)
 
         new_Oswald, CD_cr = run_avl(CL_cr, M_cr, CD_0)
-        CL_alpha = (find_clalpha(M_cr, CD_0, "conv_wing.avl") * 180) / np.pi
-
+        CL_alpha = (find_clalpha(0., CD_0, "conv_wing.avl") * 180) / np.pi
+        print("cl_alpha", CL_alpha)
+        
         # Determine maximum loads based on manoeuvring and gust envelope------------------------------------------------
         manoeuvring_loads = manoeuvring_envelope(W_TO, H_cr, ip.CL_cr_max, S, V_cr)
-        gust_loads = gust_envelope(W_TO, H_cr, CL_alpha, S, mac, V_cr, manoeuvring_loads[4])
-
+        gust_loads = gust_envelope(W_TO, H_cr, CL_alpha, S, mac, V_cr, manoeuvring_loads[4][1])
+#        print(gust_loads[1])
         V_D = manoeuvring_loads[4][3]
-
-        n_max_manoeuvring = max(manoeuvring_loads[1])
+#        print("manoeuvring", W_TO, H_cr, ip.CL_cr_max, S, V_cr)
+#        print("gust", W_TO, H_cr, CL_alpha, S, mac, V_cr, manoeuvring_loads[4][1])
+        n_max_manoeuvring = max(manoeuvring_loads[2])
         n_max_gust = max(gust_loads[1])
-
+#        print(n_max_gust)
+#        print(n_max_manoeuvring)
         if n_max_manoeuvring > n_max_gust:
             n_ult = 1.5 * n_max_manoeuvring
 #            v_ult =1 manoeuvring_loads[0][list(manoeuvring_loads[1]).index(n_max_manoeuvring)]
@@ -301,14 +328,14 @@ def main_iterator(cf, char, env, eng, opt, tails):
         lg_weight = weight_II.landing_gear_weight() * lbs_to_kg * g_0
         mass_fractions[6] = lg_weight / W_TO
 
-        structural_weight = w_weight + emp_weight + fus_weight + nac_weight + lg_weight
-
+        structural_weight = w_weight + emp_weight + fus_weight + nac_weight + lg_weight 
+        # 
         # Determine the propulsion system weight components ---------------
         eng_weight = weight_II.engine_weight() * lbs_to_kg * g_0
-                    
+        eng_weight = eng_weight - nac_weight
         ai_weight = weight_II.induction_weight(l_inl, N_eng, A_inl, opt[4]) * lbs_to_kg * g_0
-
-
+        
+        
         if opt[5] == 1:
             n_prop = 4
             n_blades = 800
@@ -355,23 +382,36 @@ def main_iterator(cf, char, env, eng, opt, tails):
 
         # Determine final operational empty weight ----------------------------
         W_E_II = structural_weight + prop_sys_weight + fix_equip_weight
-        
+        W_E_II = W_E_II 
+#        + add_weight
         W_TO = W_E_II + W_P + W_F
         W_e_frac = W_E_II / W_TO
 
         percentage = abs((W_E_II - W_E_I) / W_E_I)
-
+        print(W_TO)
 #        print("the percentage equals: " + str(percentage))
 #        print(iteration)
         percentages.append(percentage)
-    
+        iterations.append(i)
         i += 1
-    print(percentages)
-    print("New surface =", opt_Sh_S)
-    print("New arm = ", l_h/l_fuselage)
-    print("New position = ", opt_X_LEMAC/l_fuselage)
-    
-    sar = ((((0.5 * Rho_cr * (V_cr ** 2) * S * CD_cr) * c_t) / V_cr) * 1000 )/ ip.N_pas  
+#        print(x_LE_root)
+        print(opt_X_LEMAC)
+#    print(percentages)
+#    plt.plot(iterations, percentages)
+#    plt.show()
+    print("Percentage", percentage)
+#    print()
+#    print(opt_X_LEMAC)
+#    print("tail arm = ", round(l_h,2))
+#    print("mac = ",round(mac,2))
+#    print("cl a-h = ", round(C_L_Ah_landing,2))
+#    print("wing pos = ", round(opt_X_LEMAC/l_fuselage,2))
+#    print("cg range = ",round(_min_,2), '   ', round(_max_,2))
+#    print("surface = ", round(opt_Sh_S,2))
+#    print()
+#    print(opt_X_LEMAC/l_fuselage)
+    sar = ((((0.5 * Rho_cr * (V_cr ** 2) * S * CD_cr) * c_t) / V_cr) * 1000 )/ ip.N_pas 
+
     # in kg/km/pas
 #    f_decr, rf_decr, cost_decr 
     RF_decr, F_decr = Radiative(H_cr, sar)
@@ -381,14 +421,31 @@ def main_iterator(cf, char, env, eng, opt, tails):
 #    print(C_decr)
 #    print(RF_decr)
 #    print(f_decr, rf_decr, cost_decr)
+    di = np.rad2deg(di)
+    sweep_LE_h = np.rad2deg(sweep_LE_h)
+    sweep_LE_v = np.rad2deg(sweep_LE_v)
+    
+    Tot_fuel_ref = 0.0355
+    Tot_fuel_cons = W_nom_F / ((ip.m_range/1000) * ip.N_pas * g_0)
+    Tot_fuel_diff = (1 - (Tot_fuel_cons/Tot_fuel_ref))*100
     
     weights = [W_TO, W_P, W_F, W_E_II, w_weight, emp_weight, fus_weight, nac_weight, prop_sys_weight, fix_equip_weight]
-    coefficients = [CL_cr, CD_cr, CL_cr/CD_cr, c_t, Oswald]
-    planform = [A, S, b, c_root, c_tip, QC_sweep, taper]
-    fus = [l_fuselage, d_fuselage, l_nosecone, l_tailcone, l_h]
-    tails = [S_h, S_v]
-    environment = [T_TO, M_cr, V_cr, H_cr, sar]
-    differences = [F_decr, RF_decr, C_decr]
+    coefficients = [CL_cr, CD_cr, CL_cr/CD_cr, c_t, Oswald, CD_0]
+    planform = [A, S, b, c_root, c_tip, QC_sweep, taper, mac, di, t_c, x_LE_root]
+    fus = [l_fuselage, d_fuselage, l_nosecone, l_tailcone, l_cabin, _min_, _max_, l_cabin_above, l_cabin_below, N_pas_below]
+    tails = [S_h, x_le_h, sweep_LE_h, MAC_h, l_h, c_root_h, c_tip_h, b_h, S_v, x_le_v, sweep_LE_v, MAC_v, c_root_v, c_tip_v, b_v]
+    environment = [T_TO, M_cr, V_cr, H_cr, sar, Tot_fuel_cons]
+    differences = [F_decr, Tot_fuel_diff, RF_decr, C_decr]
+#    print(W_window, W_aisle, W_middle)
+#    print(sum(W_window)+sum(W_aisle)+sum(W_middle))
+#    print(xcg_seats, xcg_seats[x_loc_front])
+#    wingposition = [x_LE_root, (fuselage_design[3]+4.), (x_LE_root-(fuselage_design[3]+4.))] 
+#    print(fuselage_design[3])
+#    plt.close()
+#    ylist = [0.,b_v, b_v,0.]
+#    xlist = [0., np.tan(sweep_LE_v)*b_v,np.tan(sweep_LE_v)*b_v+c_tip_v, c_root_v ]
+#    plt.plot(xlist, ylist)
+#    plt.show()
     
     return weights, coefficients, planform, fus, tails, environment, differences
 

@@ -34,123 +34,36 @@ import matplotlib.pyplot as plt
 #------------------------------VERIFICATION DATA--------------------------------
 
 """Inputs unit test based on B737 MAX-8"""
-MTOW = 82191*9.81
-OEW = 45070*9.81
-MPW = 20882*9.81
-MZFW = OEW + MPW
-MFW = 31594*9.81*0.75
-W_fr = MFW/105 * 5.
-A = 35.92**2 / 127.
-e = 0.85
-CD0 = 0.020
-V = 233.
+#MTOW = 82191*9.81
+#OEW = 45070*9.81
+#MPW = 20882*9.81
+#MZFW = OEW + MPW
+#MFW = 31594*9.81*0.75
+#W_fr = MFW/105 * 5.
+#A = 35.92**2 / 127.
+#e = 0.85
+#CD0 = 0.020
+#V = 233.
+#g = 9.81
+#R_des = 6570.
+#Ct0 = 12e-06
+
+"""Design inputs"""
+MTOW = 1497151.235
+OEW = 854117.7609
+MPW = 472485.2453
+MZFW =  OEW+MPW
+MFW = 170548.2285*1.3
+W_fr = MFW/105.*5.
+A = 13
+e = 0.72
+CD0 =0.0233
+V = 218.711
 g = 9.81
-R_des = 6570.
-Ct0 = 12e-06
-
-#"""HIGH SEMI DD CONCEPT: design 1"""
-#MTOW = 1580051.306
-#OEW = 966190.5428
-#MPW = 472485.
-#
-#MLW = MTOW - 0.3*OEW
-#MZFW = (OEW+MPW)
-#MFW = 141376.*1.4
-#W_fr = MFW/105 * 5.
-#
-#
-#A = 13.
-#e = 0.85
-#CD0 = 0.023
-#V = 224.58
-#g = 9.81
-#
-#R_des = 1400.
-#Ct0 = 12.9e-06*2
+R_des = 1400.
+Ct0 = 11.6e-06*2.4
 
 
-#"""Design 2"""
-#MTOW = 1520114.
-#OEW = 911477.
-#MPW = 472485.
-#
-#MLW = MTOW - 0.3*OEW
-#MZFW = (OEW+MPW)
-#MFW = 136152.*1.4
-#W_fr = MFW/105 * 5.
-#
-#
-#A = 13.
-#e = 0.85
-#CD0 = 0.023
-#V = 229.43
-#g = 9.81
-#
-#R_des = 1400.
-#Ct0 = 13.1e-06*2
-
-#"""Design 3 (low wing)"""
-#MTOW = 1597097.403
-#OEW = 981787.474
-#MPW = 472485.
-#
-#MLW = MTOW - 0.3*OEW
-#MZFW = (OEW+MPW)
-#MFW = 142825.*1.4
-#W_fr = MFW/105 * 5.
-#
-#
-#A = 13.
-#e = 0.85
-#CD0 = 0.023
-#V = 232.0625
-#g = 9.81
-#
-#R_range = 2500.
-#R_des = 1400.
-#Ct0 = 13.4e-06*2
-
-
-#"""Design 4"""
-#MTOW = 1532734.
-#OEW = 923089.
-#MPW = 472485.
-#
-#MLW = MTOW - 0.3*OEW
-#MZFW = (OEW+MPW)
-#MFW = 137159.*1.4
-#W_fr = MFW/105 * 5.
-#
-#
-#A = 15.
-#e = 0.85
-#CD0 = 0.023
-#V = 228.66
-#g = 9.81
-#
-#R_des = 1400.
-#Ct0 = 13.1e-06*2
-
-#"""Design 5"""
-#MTOW = 1474914.
-#OEW = 871340.
-#MPW = 472485.
-#
-#MLW = MTOW - 0.3*OEW
-#MZFW = (OEW+MPW)
-#MFW = 131089.*1.4
-#W_fr = MFW/105 * 5.
-#
-#
-#A = 14.
-#e = 0.85
-#CD0 = 0.023
-#V = 227.82
-#g = 9.81
-#
-#R_des = 1400.
-#Ct0 = 13.1e-06*2
-#
 
 
 #------------------------------DEFINITIONS-----------------------------------
@@ -182,7 +95,7 @@ def payload_range():
     #R_harmonic = ((V/(g*Ct))*CL_CD(A,e,CD0)*np.log(MTOW/(MTOW-MZFW-W_fr)))/1000.
     
     #Max range line (increase fuel, decrease payload)
-    R_max = ((V/(g*Ct))*CL_CD(A,e,CD0)*np.log(MTOW/(MTOW-((MFW-W_fr)*1))))/1000.
+    R_max = ((V/(g*Ct))*CL_CD(A,e,CD0)*np.log(MTOW/(MTOW-((MFW-W_fr)))))/1000.
     #R_max = ((V/(g*Ct))*CL_CD(A,e,CD0)*np.log(MTOW/(MFW-W_fr)))/1000.
     
     #Ferry range (no payload all fuel, no MTOW anymore)

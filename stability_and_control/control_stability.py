@@ -84,8 +84,10 @@ import matplotlib.pyplot as plt
 
 def control_stability_plot(x_cg, min_cg, max_cg, X_LEMAC_range, S_control, S_stability, MAC, l_fuselage):
 #    print("the X_LEMAC range " + str(X_LEMAC_range))
-    Sh_S = np.linspace(0,2,1000)
+    Sh_S = np.linspace(0,2,10000)
     contr_trend = np.polyfit(x_cg, S_control, 1)
+#    print(S_stability)
+#    print(x_cg)
     stability_trend = np.polyfit(x_cg, S_stability, 1)
     a_control = contr_trend[0]
     b_control = contr_trend[1]
@@ -96,6 +98,9 @@ def control_stability_plot(x_cg, min_cg, max_cg, X_LEMAC_range, S_control, S_sta
     Sh_opt = []
     LEMAC_opt = []
     max_cg_opt_list = []
+    _min_ = []
+    _max_ = []
+
     for i in range(len(X_LEMAC_range)):
         
         for j in range(len(Sh_S)):
@@ -108,9 +113,12 @@ def control_stability_plot(x_cg, min_cg, max_cg, X_LEMAC_range, S_control, S_sta
                 max_cg_opt_list.append(max_cg[i]) 
 #                print("Min cg = ", round(min_cg[i],2))
 #                print("Max cg = ", round(max_cg[i],2))
+                _min_.append(min_cg[i])
+                _max_.append(max_cg[i])
                 break
             elif Sh_S[j] == Sh_S[-1]:
                 Sh_opt.append(0.)
+                print("error")
                 
 #
 #    print(len(Sh_opt))
@@ -122,10 +130,10 @@ def control_stability_plot(x_cg, min_cg, max_cg, X_LEMAC_range, S_control, S_sta
 #    print(max_cg[Sh_opt.index(min(Sh_opt))])
     
     #X_LEMAC = list(np.array(X_LEMAC_range)+LEMAC_opt[Sh_opt.index(min(Sh_opt))])
-#    opt_line = [min_cg[Sh_opt.index(min(Sh_opt))], max_cg[Sh_opt.index(min(Sh_opt))]]
-    #opt_LEMAC = [LEMAC_opt[Sh_opt.index(min(Sh_opt))], LEMAC_opt[Sh_opt.index(min(Sh_opt))]]
-    
-    
+    opt_line = [min_cg[Sh_opt.index(min(Sh_opt))], max_cg[Sh_opt.index(min(Sh_opt))]]
+    opt_LEMAC = [LEMAC_opt[Sh_opt.index(min(Sh_opt))], LEMAC_opt[Sh_opt.index(min(Sh_opt))]]
+#    
+#    plt.close()
 #    fig, ax1 = plt.subplots()
 #    
 #    ax2 = ax1.twinx() 
@@ -137,18 +145,22 @@ def control_stability_plot(x_cg, min_cg, max_cg, X_LEMAC_range, S_control, S_sta
 #    ln3 = ax2.plot(min_cg, X_LEMAC_range, 'b', label="Minimum cg") 
 #    ln4 = ax2.plot(max_cg, X_LEMAC_range, 'y', label="Maximum cg")
 #    ln5 = ax2.plot(opt_line, opt_LEMAC,  'k', label="Optimum cg range")
-#    ax1.set_ylim((0., min(Sh_opt)+0.5))
-#    ax2.set_ylim((LEMAC_opt[Sh_opt.index(min(Sh_opt))]- min(Sh_opt)*0.2, LEMAC_opt[Sh_opt.index(min(Sh_opt))] + 0.5*0.2))
+#    ax1.set_ylim((0., min(Sh_opt)+0.3))
+#    ax2.set_ylim((LEMAC_opt[Sh_opt.index(min(Sh_opt))]- min(Sh_opt)*0.2, LEMAC_opt[Sh_opt.index(min(Sh_opt))] + 0.3*0.2))
 #    lns = ln1+ln2+ln3+ln4+ln5
 #    labs = [l.get_label() for l in lns]
 #    ax1.legend(lns, labs, loc="lower right", prop={'size': 7})
+#    ax1.set_xticks(np.arange(round(_min_[Sh_opt.index(min(Sh_opt))], 0)-1.,round(_min_[Sh_opt.index(min(Sh_opt))], 0)+2., 0.5))
+#    ax1.set_xlim(round(_min_[Sh_opt.index(min(Sh_opt))], 0)-1.,round(_min_[Sh_opt.index(min(Sh_opt))], 0)+1.5)
+#    
 #    ax1.grid(True)
-## ax1.legend(loc="lower right")
+#    ax1.legend(loc="lower right")
 ##    ax2.legend(loc="center right")
-#    plt.show()
+    plt.show()
     
     xcg_aft = max_cg_opt_list[Sh_opt.index(min(Sh_opt))] * MAC + LEMAC_opt[Sh_opt.index(min(Sh_opt))] * l_fuselage
-    return LEMAC_opt[Sh_opt.index(min(Sh_opt))] * l_fuselage, min(Sh_opt), xcg_aft
+#    print(LEMAC_opt[Sh_opt.index(min(Sh_opt))])
+    return LEMAC_opt[Sh_opt.index(min(Sh_opt))] * l_fuselage, min(Sh_opt), xcg_aft, _min_[Sh_opt.index(min(Sh_opt))], _max_[Sh_opt.index(min(Sh_opt))]
 
 #print(control_stability_plot(min_cg, max_cg, X_LEMAC_range, S_control, S_stability))
 

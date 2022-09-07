@@ -11,29 +11,59 @@ import matplotlib.pyplot as plt
 
 
 #------------------------------INPUTS------------------------------------------
-"""Input values for the B737-800 aircraft"""
-MTOW       =       78220*9.81            #Maximum take-off weight [N]
-W_TO       =       63502.9318 *9.81      #MTOW   #Weight at take-off [N]
-W_land     =       58967.0081  *9.81    #65310*9.81 #Maximum landing weight [N]
+"""B737-8 MAX inputs"""
+#MTOW = 82191*9.81
+#W_TO = MTOW
+#W_land = 69308*9.81
+#
+#T_TO =  130*2*1000 *0.7
+##for land and take-off distanes times 0.7
+##To account for normal thrust setting
+#T0 = T_TO
+#
+#CL_maxto   =       2.63
+#CL_max_land=       2.97
+#CD_land    =       0.09
+#CD_TO      =       0.05
+#
+#A = 10.16
+#e = 0.7
+#S = 127
+#
+#psi_TO     =       342.06     #Specific Thrust N/airflow [N/kg/s]
+#bypass     =       9       #Bypass ratio of the engine
+#
+#g          =       9.80665
+#mu         =       0.03         #Ground roll friction on dry concrete/asphalt
+#
 
-T_TO       =       96.3*1000*2#Total static thrust of all engines at take-off [N]
-T0         =       96.3*1000*2 #127.62*1000  #@ SEA LEVEL!!!
 
-CL_maxto   =       2.2 
-CL_max_land=       3.2
-CD_to      =       0.05 
-CD_land    =       0.09
-CD_TO      =       0.07
+"""Design input values"""
+MTOW       =      1497151.235
+W_TO       =       MTOW 
+MFW        =       170548.2285*1.3
+W_land     =       MTOW-0.9*MFW
 
-A          =       9.44       #Aspect ratio [-]
-e          =       0.85       #Oswald efficiency factor [-]
-S          =       124.60     #Surface area wing [m^2]
+T_TO       =       1497151.235*0.37
+T0         =       2*214.2*1000*0.91
+
+CL_maxto   =       2.77
+CL_max_land=       3.05
+CD_land    =       0.175#*1.2
+CD_TO      =       0.143
+
+A          =       13.       #Aspect ratio [-]
+e          =       0.765       #Oswald efficiency factor [-]
+S          =       207.9561486    #Surface area wing [m^2]
 
 psi_TO     =       342.06     #Specific Thrust N/airflow [N/kg/s]
-bypass     =       5.5        #Bypass ratio of the engine
+bypass     =       15       #Bypass ratio of the engine
 
 g          =       9.80665
 mu         =       0.03         #Ground roll friction on dry concrete/asphalt
+
+
+
 
 #------------------------------DEFINITIONS-------------------------------------
 """ISA definitions"""
@@ -277,21 +307,20 @@ def S_land(T0,g,W_land,S,rho,CL_max_land,CD_land):
 
 #------------------------------MAIN PROGRAM------------------------------------
 rho = ISA_density(0)
-
 #Standard take-off distance with all engines functioning
 S_TO = TO_distance(W_TO,S,rho,CL_maxto,bypass,T_TO,A)  
 
 #Take-off distance with engine failure: continued and abord
-Vx = np.arange(0,76.,1)
-S_TO_fail = TO_eng_fail(W_TO,g,S,rho,CL_maxto,A,e,T_TO,CD_to,Vx)    
+Vx = np.arange(0,76,1)
+S_TO_fail = TO_eng_fail(W_TO,g,S,rho,CL_maxto,A,e,T_TO,CD_TO,Vx)    
    
 #Balenced field length
-BFL = BFL(A,e,T_TO,W_TO,CD_to, CL_maxto, bypass,rho,g)
+BFL = 0.695*BFL(A,e,T0,W_TO,CD_TO, CL_maxto, bypass,rho,g)
 
-S_land = S_land(T0,g,W_TO,S,rho,CL_max_land,CD_land)
+S_land = S_land(T0,g,W_land,S,rho,CL_max_land,CD_land)
 
 #Regulations according to flight mechanics
-req_land = (10/6)*max(S_land)
+req_land = (10/6)*S_land[0]
 
 if BFL > max(S_TO):
     req_TO = BFL
@@ -301,16 +330,16 @@ elif max(S_TO) > BFL:
 
 #plt.hlines(S_land,Vx[0],Vx[-1],'k','--',label = "landing")
 plt.hlines(BFL, Vx[0],Vx[-1],"gray","--",label = "BFL")
-plt.plot(Vx,S_TO_fail[0],"g", label = "continued")
-plt.plot(Vx,S_TO_fail[1],'r',label = "abord")
+plt.plot(Vx,S_TO_fail[0]*0.9,"g", label = "continued")
+plt.plot(Vx,S_TO_fail[1],'r',label = "aborted")
 plt.xlabel("Engine failure speed [m/s]")
 plt.ylabel("Distance covered [m]")
-plt.title('Balenced field length (engine failure)')
+#plt.title('Balenced field length (engine failure)')
 plt.legend()
 
 ax = plt.gca()
 ax.get_yaxis().set_major_formatter(plt.FuncFormatter(lambda x, loc: "{:,}".format(int(x))))
-ax.get_xaxis().set_major_formatter(plt.FuncFormatter(lambda x, loc: "{:,}".format(int(x))))
+#ax.get_xaxis().set_major_formatter(plt.FuncFormatter(lambda x, loc: "{:,}".format(int(x))))
 
 plt.show()    
     

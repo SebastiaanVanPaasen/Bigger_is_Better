@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 Wing
 #Mach
 0.75
@@ -35,3 +36,42 @@ CDCL
 -0.5 0.0069 0.3 0.0067 0.9 0.0069
 AFILE
 SC20616.dat
+=======
+Wing
+#Mach
+0.75
+#IYsym IZsym Zsym
+0  0  0
+#Sref  Cref  Bref
+227.1287294 5.928 58 
+#Xref Yref Zref
+0  0.0  0
+#CDcp
+0.019 
+
+SURFACE
+Wing 
+5 1.0 8 -2.0
+YDUPLICATE
+0.0 
+ANGLE
+0.0
+SECTION
+18.362 0 -1 5.928 -0.4 0 0
+CDCL
+-0.5 0.0069 0.3 0.0067 0.9 0.0069
+AFILE
+sc20612.dat
+SECTION
+22.019 7.296 -1.191 4.91 0.1 0 0
+CDCL
+-0.5 0.0069 0.3 0.0067 0.9 0.0069
+AFILE
+sc20612.dat
+SECTION
+32.99 29.184 -1.764 1.854 2.0 0 0
+CDCL
+-0.5 0.0069 0.3 0.0067 0.9 0.0069
+AFILE
+SC20616.dat
+>>>>>>> 41966ca8c9b88bfbe9d543fe3042e98f80a09d32

@@ -110,6 +110,6 @@ FF_fus = FF_body(l_fus, d_fus)
 S_wet_fus = Fus_wetted_area(d_fus, L1, L2, L3)
 
 Cd0_fus = (Cf_fus*FF_fus*S_wet_fus)/S
-print (Cf_fus, FF_fus, S_wet_fus)
-print (Cd0_fus)
+#print (Cf_fus, FF_fus, S_wet_fus)
+#print (Cd0_fus)
     
