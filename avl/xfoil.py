@@ -13,7 +13,7 @@ ROOT_DIR = os.path.dirname(os.path.abspath("XFOIL"))
 Re = 7.5 #in millions
 def xfoil_shit(Re):
     p = subprocess.Popen(str(ROOT_DIR) + "/xfoil.exe", stdin=subprocess.PIPE, universal_newlines=True)
-    p.communicate(os.linesep.join(["naca 3414", "pane","oper", "iter 250", "visc " + str(Re) + "e6", "seqp", "pacc", "polar2", "dump", "cseq -1.5 3.0 .1"]))
+    p.communicate(os.linesep.join(["load", "sc20616.dat", "pane","oper", "iter 100", "visc " + str(Re) + "e6", "seqp", "pacc", "polar2", "dump", "cseq -1  3  .1"]))
     lines = [line.rstrip('\n') for line in open('polar2')]
     CL = []
     CD = []
@@ -26,7 +26,7 @@ def xfoil_shit(Re):
     os.remove("dump")
     return(CL,CD,alpha)
 #%%
-#data = xfoil_shit(Re)
+data = xfoil_shit(31.5 /4.33*6.04)
 #
 ##make_avl_file(12.22, 12.22 * 0.149, 60.90, 0.56, 0.03, 427.8, 0.015, 0.6, 27.90, 21.35, 5, np.radians(35), 0.5, 26.6,18.48, 4, np.radians(46), 0.5, " ", 18, 5)
 ##run_avl(0.5, 0.85, 0.020)
@@ -35,9 +35,9 @@ def xfoil_shit(Re):
 #
 ##plt.figure(10)
 ##Drag polar
-##plt.subplot(221)
-##plt.plot(data[1],data[0])
-##plt.grid()
+#plt.subplot(221)
+#plt.plot(data[1],data[0])
+#plt.grid()
 ##%%
 ##CLalpha curves
 #
@@ -49,11 +49,11 @@ def xfoil_shit(Re):
 ##alpha_range for avl
 #x = np.arange(-5,20,1)
 ##find zero lift AoA
-#CL_array = np.asarray(data[0])
-#alpha_arr = np.asarray(data[2])
-#index = np.where(CL_array == 0.0)
-#zero_lift_angle = alpha_arr[index]
-#print(zero_lift_angle)
+CL_array = np.asarray(data[0])
+alpha_arr = np.asarray(data[2])
+index = np.where(CL_array == 0.0)
+zero_lift_angle = alpha_arr[index]
+print(zero_lift_angle)
 #CLa =  find_clalpha(mach, CD_0, filename)
 #y = CLa*(x-zero_lift_angle) 
 #

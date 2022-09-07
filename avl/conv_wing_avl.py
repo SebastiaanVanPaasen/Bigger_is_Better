@@ -5,13 +5,13 @@ Created on Thu May  9 13:38:52 2019
 @author: floyd
 """
 import sys
-#sys.path.append("C:/Users/floyd/OneDrive/Documenten/GitHub/Bigger_is_Better/class_I")
-sys.path.append("C:/Users/sebas/OneDrive/Documents/DSE/Bigger_is_Better/class_I")
+sys.path.append("C:/Users/floyd/OneDrive/Documenten/GitHub/Bigger_is_Better/class_I")
+#sys.path.append("C:/Users/sebas/OneDrive/Documents/DSE/Bigger_is_Better/class_I")
 #from drag_estimation import *
 import subprocess
 import os
-sys.path.append("C:/Users/sebas/OneDrive/Documents/DSE/Bigger_is_Better/class_I")
-from avl.run_conditions import define_run_condition
+#sys.path.append("C:/Users/sebas/OneDrive/Documents/DSE/Bigger_is_Better/class_I")
+from run_conditions import define_run_condition
 import numpy as np
 
 

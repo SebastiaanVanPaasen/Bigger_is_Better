@@ -1,0 +1,41 @@
+Winglet
+#Mach
+0.75
+#IYsym IZsym Zsym
+0  0  0
+#Sref  Cref  Bref
+238 6.14 60 
+#Xref Yref Zref
+0  0.0  0
+#CDcp
+0.018 
+
+SURFACE
+Winglet 
+5 1.0 8 -2.0
+COMPONENT 
+1 
+ANGLE
+0.0
+SECTION
+0.0 0.0 0.0 1.83 0.0 0.0 0.0
+SECTION
+0.14 0.24 0.03 1.72 0.0 0.0 0.0
+SECTION
+0.29 0.48 0.12 1.61 0.0 0.0 0.0
+SECTION
+0.47 0.72 0.31 1.48 0.0 0.0 0.0
+SECTION
+0.76 0.97 0.74 1.26 0.0 0.0 0.0
+
+SURFACE
+Winglet2 
+5 1.0 8 -2.0
+COMPONENT 
+1 
+ANGLE
+0.0
+SECTION
+0.76 0.97 0.74 1.26 0.0 0.0 0.0
+SECTION
+1.71 1.33 2.09 0.55 0.0 0.0 0.0
